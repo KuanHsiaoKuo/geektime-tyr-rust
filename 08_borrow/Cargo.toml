@@ -1,0 +1,48 @@
+[package]
+name = "borrow"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "ownership_reference"
+path = "src/ownership_reference.rs"
+
+[[bin]]
+name = "local_ref"
+path = "src/local_ref.rs"
+
+[[bin]]
+name = "heap_reference_stack"
+path = "src/heap_reference_stack.rs"
+
+[[bin]]
+name = "heap_reference_stack_outlive"
+path = "src/heap_reference_stack_outlive.rs"
+
+[[bin]]
+name = "multiple_mut_ref"
+path = "src/multiple_mut_ref.rs"
+
+[[bin]]
+name = "multiple_mut_ref1"
+path = "src/multiple_mut_ref1.rs"
+
+[[bin]]
+name = "manual_drop"
+path = "src/manual_drop.rs"
+
+[[bin]]
+name = "vec_grow"
+path = "src/vec_grow.rs"
+
+[[bin]]
+name = "reborrow"
+path = "src/reborrow.rs"
+
+[[bin]]
+name = "reborrow1"
+path = "src/reborrow1.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
