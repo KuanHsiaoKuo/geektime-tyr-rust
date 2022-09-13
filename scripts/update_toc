@@ -1,0 +1,1 @@
+find . -type f -name '*.md' | xargs -I {} scripts/gh-md-toc --insert --no-backup {}

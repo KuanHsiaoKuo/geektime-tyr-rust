@@ -1,0 +1,43 @@
+[book]
+authors = ["kuanhsiaokuo"]
+description = "以rust编程第一课的代码为例进行基础代码分析"
+language = "cn"
+multilingual = false
+src = "src"
+title = "Anatomy In First Rust Programming Class 🦀"
+
+[output.html]
+theme = "mytheme"
+default-theme = "rust"
+git-repository-url = "https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git"
+git-repository-icon = "fa-rust"
+additional-js = ["assets/mermaid/mermaid.min.js", "assets/mermaid/mermaid-init.js", "assets/smart-anchor.js", "assets/pagetoc/sidebar.js"]
+additional-css = ["assets/pagetoc/pagetoc_style.css", "assets/css/mdbook-admonish.css"]
+mathjax-support = true
+
+
+[output.html.playground]
+editable = true
+copy-js = true
+
+[output.html.fold]
+enable = true
+level = 2
+
+# Enables the `mdbook-mermaid` preprocessor
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[preprocessor.kroki-preprocessor]
+
+[preprocessor.puml]
+command = "mdbook-puml"
+
+# Enables the `mdbook-checklist` preprocessor
+[preprocessor.checklist]
+title = "待完善: "
+
+# Enables the `mdbook-admonish` preprocessor
+[preprocessor.admonish]
+command = "mdbook-admonish"
+assets_version = "2.0.0" # do not edit: managed by `mdbook-admonish install`

@@ -1,0 +1,40 @@
+name: UPDATE_TOC_CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build, Test and Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - name: Update Toc First
+        env:
+          GH_TOC_TOKEN: ${{ secrets.GH_MD_TOC }}
+        run: |
+          chmod a+x scripts/update_toc_raw
+          scripts/update_toc_raw
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Auto update markdown TOC
+      - name: Install Mdbook Preprocessors
+        run: |
+          sh scripts/download_mdbook_proprecessors
+          echo "bin/mdbook_preprocessors-$MDBOOK_PREPROCESSORS_VERSION/bin" >> $GITHUB_PATH
+      - run: sudo apt-get update
+      - run: sudo apt-get install ttf-wqy-zenhei
+      - run: sudo apt-get -y install graphviz
+      - run: sudo sh scripts/install_plantuml.sh
+      - run: mdbook build
+
+      - uses: JamesIves/github-pages-deploy-action@4.1.7
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: book # The folder the action should deploy.
