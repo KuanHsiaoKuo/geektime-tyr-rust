@@ -53,7 +53,9 @@
 - Type Definitions
 
 #### Re-exports
+
 > futures_util
+
 ```rust
 pub use reader::DecompressorCustomIo;
 ```
