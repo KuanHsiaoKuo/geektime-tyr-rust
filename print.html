@@ -96,7 +96,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="04_httpie.html"><strong aria-hidden="true">1.</strong> 04.httpie</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 01. 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="04_httpie.html"><strong aria-hidden="true">2.</strong> 04.httpie</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -181,7 +181,104 @@
                 <div class="sidetoc">
                     <nav class="pagetoc"></nav>
                 </div>
-                <h1 id="第四节httpie源码剖析"><a class="header" href="#第四节httpie源码剖析">第四节：httpie源码剖析</a></h1>
+                <h1 id="源码解析逻辑"><a class="header" href="#源码解析逻辑">源码解析逻辑</a></h1>
+<!--ts-->
+<!--te-->
+<h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
+<h3 id="来源"><a class="header" href="#来源">来源</a></h3>
+<ol>
+<li>第三方crate可以在<a href="https://docs.rs/">官方文档</a>上面搜索</li>
+<li>本地crate可以使用命令<code>cargo doc --open</code>.</li>
+</ol>
+<h3 id="cargo-doc命令使用"><a class="header" href="#cargo-doc命令使用">cargo doc命令使用</a></h3>
+<blockquote>
+<p><a href="https://doc.rust-lang.org/cargo/commands/cargo-doc.html">更多内容</a></p>
+</blockquote>
+<h4 id="open"><a class="header" href="#open">–open</a></h4>
+<p>自动生成文档并在浏览器打开</p>
+<h4 id="no-deps"><a class="header" href="#no-deps">–no-deps</a></h4>
+<p>默认情况下会把项目依赖的包文档也生成，这也是文档左侧Crates的来源之一。
+这个参数可以屏蔽掉依赖的crates</p>
+<h3 id="使用区别"><a class="header" href="#使用区别">使用区别</a></h3>
+<ol>
+<li>二者内容没有区别，官方文档也是执行命令生成文档。</li>
+<li>官方文档还可以提供很多细节，比如git分支地址</li>
+</ol>
+<h3 id="使用细节"><a class="header" href="#使用细节">使用细节</a></h3>
+<blockquote>
+<p>这里按照文档的层级进行递进说明</p>
+</blockquote>
+<h4 id="crates"><a class="header" href="#crates">Crates</a></h4>
+<p>所有文档的首页都会有这一项，列出项目包含的crate</p>
+<h4 id="crate包含成员"><a class="header" href="#crate包含成员">crate包含成员</a></h4>
+<blockquote>
+<p>点击Crates下的某个crate，右侧页面就会显示当前crate包含的元素， 主要有下列内容</p>
+</blockquote>
+<ul>
+<li>Re-exports</li>
+<li>Modules</li>
+<li>Macros</li>
+<li>Derive Macros</li>
+<li>Attribute Macros</li>
+<li>Structs</li>
+<li>Enums</li>
+<li>Constants</li>
+<li>Traits</li>
+<li>Functions</li>
+<li>Type Definitions</li>
+</ul>
+<h4 id="re-exports"><a class="header" href="#re-exports">Re-exports</a></h4>
+<blockquote>
+<p>futures_util</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub use reader::DecompressorCustomIo;
+<span class="boring">}
+</span></code></pre></pre>
+<h4 id="modules"><a class="header" href="#modules">Modules</a></h4>
+<p>其实就是mod，点击之后将会列出某个mod里面的成员</p>
+<h4 id="macros"><a class="header" href="#macros">Macros</a></h4>
+<h4 id="derive-macros"><a class="header" href="#derive-macros">Derive Macros</a></h4>
+<blockquote>
+<p>darling_macro、clap_derive</p>
+</blockquote>
+<h4 id="attribute-macros"><a class="header" href="#attribute-macros">Attribute Macros</a></h4>
+<blockquote>
+<p>tokio_macros、futures_macro</p>
+</blockquote>
+<h4 id="structs"><a class="header" href="#structs">Structs</a></h4>
+<h5 id="definition"><a class="header" href="#definition">Definition</a></h5>
+<h5 id="associated-types"><a class="header" href="#associated-types">Associated Types</a></h5>
+<h5 id="implementations"><a class="header" href="#implementations">Implementations</a></h5>
+<h5 id="trait-implementations"><a class="header" href="#trait-implementations">Trait Implementations</a></h5>
+<h5 id="auto-trait-implementations"><a class="header" href="#auto-trait-implementations">Auto Trait Implementations</a></h5>
+<h5 id="blanket-implementations"><a class="header" href="#blanket-implementations">Blanket Implementations</a></h5>
+<h4 id="enums"><a class="header" href="#enums">Enums</a></h4>
+<h5 id="definition-1"><a class="header" href="#definition-1">Definition</a></h5>
+<h5 id="variants"><a class="header" href="#variants">Variants</a></h5>
+<h5 id="trait-implementations-1"><a class="header" href="#trait-implementations-1">Trait Implementations</a></h5>
+<h5 id="auto-trait-implementations-1"><a class="header" href="#auto-trait-implementations-1">Auto Trait Implementations</a></h5>
+<h5 id="blanket-implementations-1"><a class="header" href="#blanket-implementations-1">Blanket Implementations</a></h5>
+<h4 id="constants"><a class="header" href="#constants">Constants</a></h4>
+<h4 id="traits"><a class="header" href="#traits">Traits</a></h4>
+<h5 id="definition-2"><a class="header" href="#definition-2">Definition</a></h5>
+<h5 id="required-methods"><a class="header" href="#required-methods">Required methods</a></h5>
+<h5 id="implementations-on-foreign-types"><a class="header" href="#implementations-on-foreign-types">Implementations on Foreign Types</a></h5>
+<h5 id="implementors"><a class="header" href="#implementors">Implementors</a></h5>
+<h4 id="functions"><a class="header" href="#functions">Functions</a></h4>
+<h5 id="definition-3"><a class="header" href="#definition-3">Definition</a></h5>
+<h4 id="type-definitions"><a class="header" href="#type-definitions">Type Definitions</a></h4>
+<h5 id="definition-4"><a class="header" href="#definition-4">Definition</a></h5>
+<blockquote>
+<p>html2md</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub type BoxedError = Box&lt;dyn Error + Send + Sync&gt;;
+<span class="boring">}
+</span></code></pre></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="第四节httpie源码剖析"><a class="header" href="#第四节httpie源码剖析">第四节：httpie源码剖析</a></h1>
 <!--ts-->
 <ul>
 <li><a href="04_httpie.html#%E7%AC%AC%E5%9B%9B%E8%8A%82httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">第四节：httpie源码剖析</a>
@@ -193,10 +290,10 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 14 06:39:42 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 14 06:42:55 UTC 2022 -->
 <!--te-->
-<h2 id="macros"><a class="header" href="#macros">Macros</a></h2>
-<h2 id="traits"><a class="header" href="#traits">Traits</a></h2>
+<h2 id="macros-1"><a class="header" href="#macros-1">Macros</a></h2>
+<h2 id="traits-1"><a class="header" href="#traits-1">Traits</a></h2>
 <h2 id="structures"><a class="header" href="#structures">Structures</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="checklist"><a class="header" href="#checklist">Checklist</a></h1>
 
