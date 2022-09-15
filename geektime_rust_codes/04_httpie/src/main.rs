@@ -52,7 +52,7 @@ struct Post {
     #[clap(parse(try_from_str = parse_url))]
     url: String,
     /// HTTP 请求的 body
-    #[clap(parse(try_from_str=parse_kv_pair))]
+    #[clap(parse(try_from_str = parse_kv_pair))]
     body: Vec<KvPair>,
 }
 
@@ -161,7 +161,7 @@ async fn main() -> Result<()> {
     // 为我们的 http 客户端添加一些缺省的 HTTP 头
     headers.insert("X-POWERED-BY", "Rust".parse()?);
     headers.insert(header::USER_AGENT, "Rust Httpie".parse()?);
-    let client = reqwest::Client::builder()
+    let client = Client::builder()
         .default_headers(headers)
         .build()?;
     let result = match opts.subcmd {
@@ -204,7 +204,7 @@ mod tests {
             parse_kv_pair("a=1").unwrap(),
             KvPair {
                 k: "a".into(),
-                v: "1".into()
+                v: "1".into(),
             }
         );
 
@@ -212,7 +212,7 @@ mod tests {
             parse_kv_pair("b=").unwrap(),
             KvPair {
                 k: "b".into(),
-                v: "".into()
+                v: "".into(),
             }
         );
     }
