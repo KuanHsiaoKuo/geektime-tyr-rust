@@ -283,16 +283,225 @@
 <ul>
 <li><a href="04_httpie.html#%E7%AC%AC%E5%9B%9B%E8%8A%82httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">第四节：httpie源码剖析</a>
 <ul>
-<li><a href="04_httpie.html#macros">Macros</a></li>
+<li><a href="04_httpie.html#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a>
+<ul>
+<li><a href="04_httpie.html#cargotoml">Cargo.toml</a></li>
+</ul>
+</li>
+<li><a href="04_httpie.html#%E5%9F%BA%E4%BA%8E%E4%BB%A3%E7%A0%81%E8%AF%B4%E6%98%8E">基于代码说明</a>
+<ul>
+<li><a href="04_httpie.html#%E7%89%88%E6%9C%AC%E4%B8%80%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">版本一：指令解析</a>
+<ul>
+<li><a href="04_httpie.html#%E8%A6%81%E7%82%B9%E8%AF%B4%E6%98%8E">要点说明</a>
+<ul>
+<li><a href="04_httpie.html#clapparser">clap::Parser</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="04_httpie.html#%E7%89%88%E6%9C%AC%E4%BA%8C%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">版本二：添加参数验证与键值对改造</a>
+<ul>
+<li><a href="04_httpie.html#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
+<li><a href="04_httpie.html#%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">键值对改造</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="04_httpie.html#macros">Macros</a>
+<ul>
+<li><a href="04_httpie.html#derive-macros">Derive Macros</a></li>
+</ul>
+</li>
 <li><a href="04_httpie.html#traits">Traits</a></li>
 <li><a href="04_httpie.html#structures">Structures</a></li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 14 06:42:55 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 15 14:58:06 UTC 2022 -->
 <!--te-->
+<h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
+<ul>
+<li><a href="https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=%5B%5Bexample%5D%5D#examples">Cargo Targets &gt;&gt; Examples - The Cargo Book</a></li>
+</ul>
+<h3 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h3>
+<pre><code class="language-toml">[package]
+name = &quot;httpie&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[example]]
+name = &quot;cli&quot;
+
+[[example]]
+name = &quot;cli_verify&quot;
+
+[[example]]
+name = &quot;cli_get&quot;
+
+[dependencies]
+anyhow = &quot;1&quot; # 错误处理
+clap = { version = &quot;3&quot;, features = [&quot;derive&quot;] } # 命令行解析
+colored = &quot;2&quot; # 命令终端多彩显示
+jsonxf = &quot;1.1&quot; # JSON pretty print 格式化
+mime = &quot;0.3&quot; # 处理 mime 类型
+# reqwest 默认使用 openssl，有些 linux 用户如果没有安装好 openssl 会无法编译，这里我改成了使用 rustls
+reqwest = { version = &quot;0.11&quot;, default-features = false, features = [&quot;json&quot;, &quot;rustls-tls&quot;] } # HTTP 客户端
+tokio = { version = &quot;1&quot;, features = [&quot;full&quot;] } # 异步处理库
+syntect = &quot;4&quot;
+</code></pre>
+<pre><code class="language-toml">[[example]]
+name = &quot;cli&quot;
+
+[[example]]
+name = &quot;cli_verify&quot;
+
+[[example]]
+name = &quot;cli_get&quot;
+</code></pre>
+<div id="admonition-example使用" class="admonition tip">
+<div class="admonition-title">
+<p>example使用</p>
+<p><a class="admonition-anchor-link" href="04_httpie.html#admonition-example使用"></a></p>
+</div>
+<div>
+<ol>
+<li>示例代码放在根目录的examples文件夹，与src同级</li>
+</ol>
+<pre><code class="language-shell">tree -L 2                                                                                                       ─╯
+.
+├── Cargo.toml
+├── examples
+│   ├── cli.rs
+│   ├── cli_get.rs
+│   └── cli_verify.rs
+└── src
+    └── main.rs
+
+2 directories, 5 files
+</code></pre>
+<ol start="2">
+<li>执行指令</li>
+</ol>
+<pre><code class="language-shell">cargo run --example &lt;example-name-in-cargo&gt;
+cargo run --example cli
+cargo run --example cli_get
+cargo run --example cli_verify
+</code></pre>
+<ol start="3">
+<li>使用示例</li>
+</ol>
+<pre><code class="language-shell">cargo run --example cli                                                                                                                                                                                                                ─╯
+    Finished dev [unoptimized + debuginfo] target(s) in 0.70s
+     Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/cli`
+httpie 1.0
+Tyr Chen &lt;tyr@chen.com&gt;
+A naive httpie implementation with Rust, can you imagine how easy it is?
+
+USAGE:
+    cli &lt;SUBCOMMAND&gt;
+
+OPTIONS:
+    -h, --help       Print help information
+    -V, --version    Print version information
+
+SUBCOMMANDS:
+    get     feed get with an url and we will retrieve the response for you
+    help    Print this message or the help of the given subcommand(s)
+    post    feed post with an url and optional key=value pairs. We will post the data as JSON,
+                and retrieve the response for you
+</code></pre>
+<ul>
+<li>Run a binary or example of the local package</li>
+<li>SUBCOMMANDS来自代码中的注释</li>
+</ul>
+</div>
+</div>
+<h2 id="基于代码说明"><a class="header" href="#基于代码说明">基于代码说明</a></h2>
+<h3 id="版本一指令解析"><a class="header" href="#版本一指令解析">版本一：指令解析</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs}}
+<span class="boring">}
+</span></code></pre></pre>
+<h4 id="要点说明"><a class="header" href="#要点说明">要点说明</a></h4>
+<h5 id="clapparser"><a class="header" href="#clapparser">clap::Parser</a></h5>
+<div id="admonition-clapparser" class="admonition info">
+<div class="admonition-title">
+<p>clap::Parser</p>
+<p><a class="admonition-anchor-link" href="04_httpie.html#admonition-clapparser"></a></p>
+</div>
+<div>
+<ul>
+<li><a href="https://github.com/clap-rs/clap">clap-rs/clap: A full featured, fast Command Line Argument Parser for Rust</a></li>
+<li><a href="https://docs.rs/clap/latest/clap/">clap - Rust</a></li>
+<li><a href="https://docs.rs/clap/latest/clap/parser/index.html">clap::parser - Rust</a></li>
+</ul>
+</div>
+</div>
+<ol>
+<li>clap的parser派生宏会自动实现parse方法来接收指令参数</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs: 9: 15}}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs: 43: 46}}
+<span class="boring">}
+</span></code></pre></pre>
+<ol start="2">
+<li>运行效果</li>
+</ol>
+<pre><code class="language-shell">cargo run --example cli get http://jsonplaceholder.typicode.com/posts/2                                                                                                                                                                ─╯
+   Compiling httpie v0.1.0 (/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/04_httpie)
+    Finished dev [unoptimized + debuginfo] target(s) in 2.31s
+     Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/cli get 'http://jsonplaceholder.typicode.com/posts/2'`
+Opts { subcmd: Get(Get { url: &quot;http://jsonplaceholder.typicode.com/posts/2&quot; }) }
+</code></pre>
+<pre><code class="language-shell">cargo run --example cli post http://jsonplaceholder.typicode.com/posts/2                                                                                                                                                               ─╯
+    Finished dev [unoptimized + debuginfo] target(s) in 0.31s
+     Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/cli post 'http://jsonplaceholder.typicode.com/posts/2'`
+Opts { subcmd: Post(Post { url: &quot;http://jsonplaceholder.typicode.com/posts/2&quot;, body: [] }) }
+</code></pre>
+<pre><code class="language-shell">cargo run --example cli delete http://jsonplaceholder.typicode.com/posts/2                                                                                                                                                             ─╯
+    Finished dev [unoptimized + debuginfo] target(s) in 0.24s
+     Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/cli delete 'http://jsonplaceholder.typicode.com/posts/2'`
+error: Found argument 'delete' which wasn't expected, or isn't valid in this context
+
+USAGE:
+    cli &lt;SUBCOMMAND&gt;
+
+For more information try --help
+
+</code></pre>
+<ul>
+<li>opts的获取：自动以空格分隔，根据<subcommand>模式匹配，之后的参数依次赋值给<subcommand> struct里面的元素</li>
+</ul>
+<h3 id="版本二添加参数验证与键值对改造"><a class="header" href="#版本二添加参数验证与键值对改造">版本二：添加参数验证与键值对改造</a></h3>
+<h4 id="参数验证"><a class="header" href="#参数验证">参数验证</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli_verify.rs: 27: 33}}
+<span class="boring">}
+</span></code></pre></pre>
+<h4 id="键值对改造"><a class="header" href="#键值对改造">键值对改造</a></h4>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli_verify.rs: 37: 84}}
+<span class="boring">}
+</span></code></pre></pre>
 <h2 id="macros-1"><a class="header" href="#macros-1">Macros</a></h2>
+<h3 id="derive-macros-1"><a class="header" href="#derive-macros-1">Derive Macros</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span><span class="boring">}
+</span></code></pre></pre>
 <h2 id="traits-1"><a class="header" href="#traits-1">Traits</a></h2>
 <h2 id="structures"><a class="header" href="#structures">Structures</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="checklist"><a class="header" href="#checklist">Checklist</a></h1>
