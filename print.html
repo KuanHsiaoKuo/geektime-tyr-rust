@@ -318,7 +318,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 15 14:58:06 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 15 15:10:31 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -421,11 +421,53 @@ SUBCOMMANDS:
 </div>
 <h2 id="基于代码说明"><a class="header" href="#基于代码说明">基于代码说明</a></h2>
 <h3 id="版本一指令解析"><a class="header" href="#版本一指令解析">版本一：指令解析</a></h3>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs}}
-<span class="boring">}
-</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">use clap::Parser;
+
+// 定义 httpie 的 CLI 的主入口，它包含若干个子命令
+// 下面 /// 的注释是文档，clap 会将其作为 CLI 的帮助
+
+/// A naive httpie implementation with Rust, can you imagine how easy it is?
+#[derive(Parser, Debug)]
+#[clap(version = &quot;1.0&quot;, author = &quot;Tyr Chen &lt;tyr@chen.com&gt;&quot;)]
+struct Opts {
+    #[clap(subcommand)]
+    subcmd: SubCommand,
+}
+
+// 子命令分别对应不同的 HTTP 方法，目前只支持 get / post
+#[derive(Parser, Debug)]
+enum SubCommand {
+    Get(Get),
+    Post(Post),
+    // 我们暂且不支持其它 HTTP 方法
+}
+
+// get 子命令
+
+/// feed get with an url and we will retrieve the response for you
+#[derive(Parser, Debug)]
+struct Get {
+    /// HTTP 请求的 URL
+    url: String,
+}
+
+// post 子命令。需要输入一个 url，和若干个可选的 key=value，用于提供 json body
+
+/// feed post with an url and optional key=value pairs. We will post the data
+/// as JSON, and retrieve the response for you
+#[derive(Parser, Debug)]
+struct Post {
+    /// HTTP 请求的 URL
+    url: String,
+    /// HTTP 请求的 body
+    body: Vec&lt;String&gt;,
+}
+
+fn main() {
+    let opts: Opts = Opts::parse();
+    println!(&quot;{:?}&quot;, opts);
+}
+</code></pre></pre>
 <h4 id="要点说明"><a class="header" href="#要点说明">要点说明</a></h4>
 <h5 id="clapparser"><a class="header" href="#clapparser">clap::Parser</a></h5>
 <div id="admonition-clapparser" class="admonition info">
@@ -446,14 +488,20 @@ SUBCOMMANDS:
 </ol>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs: 9: 15}}
+</span>struct Opts {
+    #[clap(subcommand)]
+    subcmd: SubCommand,
+}
+
+// 子命令分别对应不同的 HTTP 方法，目前只支持 get / post
+#[derive(Parser, Debug)]
 <span class="boring">}
 </span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs: 43: 46}}
-<span class="boring">}
-</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    let opts: Opts = Opts::parse();
+    println!(&quot;{:?}&quot;, opts);
+}
+</code></pre></pre>
 <ol start="2">
 <li>运行效果</li>
 </ol>
@@ -486,13 +534,66 @@ For more information try --help
 <h4 id="参数验证"><a class="header" href="#参数验证">参数验证</a></h4>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli_verify.rs: 27: 33}}
+</span>/// feed get with an url and we will retrieve the response for you
+#[derive(Parser, Debug)]
+struct Get {
+    /// HTTP 请求的 URL
+    #[clap(parse(try_from_str = parse_url))]
+    url: String,
+}
 <span class="boring">}
 </span></code></pre></pre>
 <h4 id="键值对改造"><a class="header" href="#键值对改造">键值对改造</a></h4>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
-</span>{{# include../ geektime_rust_codes / 04_httpie / examples /cli_verify.rs: 37: 84}}
+</span>/// feed post with an url and optional key=value pairs. We will post the data
+/// as JSON, and retrieve the response for you
+#[derive(Parser, Debug)]
+struct Post {
+    /// HTTP 请求的 URL
+    #[clap(parse(try_from_str = parse_url))]
+    url: String,
+    /// HTTP 请求的 body
+    #[clap(parse(try_from_str=parse_kv_pair))]
+    body: Vec&lt;KvPair&gt;,
+}
+
+/// 命令行中的 key=value 可以通过 parse_kv_pair 解析成 KvPair 结构
+#[allow(dead_code)]
+#[derive(Debug)]
+struct KvPair {
+    k: String,
+    v: String,
+}
+
+/// 当我们实现 FromStr trait 后，可以用 str.parse() 方法将字符串解析成 KvPair
+impl FromStr for KvPair {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &amp;str) -&gt; Result&lt;Self, Self::Err&gt; {
+        // 使用 = 进行 split，这会得到一个迭代器
+        let mut split = s.split('=');
+        let err = || anyhow!(format!(&quot;Failed to parse {}&quot;, s));
+        Ok(Self {
+            // 从迭代器中取第一个结果作为 key，迭代器返回 Some(T)/None
+            // 我们将其转换成 Ok(T)/Err(E)，然后用 ? 处理错误
+            k: (split.next().ok_or_else(err)?).to_string(),
+            // 从迭代器中取第二个结果作为 value
+            v: (split.next().ok_or_else(err)?).to_string(),
+        })
+    }
+}
+
+/// 因为我们为 KvPair 实现了 FromStr，这里可以直接 s.parse() 得到 KvPair
+fn parse_kv_pair(s: &amp;str) -&gt; Result&lt;KvPair&gt; {
+    s.parse()
+}
+fn parse_url(s: &amp;str) -&gt; Result&lt;String&gt; {
+    // 这里我们仅仅检查一下 URL 是否合法
+    let _url: Url = s.parse()?;
+
+    Ok(s.into())
+}
 <span class="boring">}
 </span></code></pre></pre>
 <h2 id="macros-1"><a class="header" href="#macros-1">Macros</a></h2>
