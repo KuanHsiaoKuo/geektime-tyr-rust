@@ -19,11 +19,11 @@
 ### Cargo.toml
 
 ```toml
-{{ #include ../geektime_rust_codes/04_httpie/Cargo.toml}}
+{{#include ../geektime_rust_codes/04_httpie/Cargo.toml}}
 ```
 
 ```toml
-{{ #include ../geektime_rust_codes/04_httpie/Cargo.toml:8:15}}
+{{#include ../geektime_rust_codes/04_httpie/Cargo.toml:8:15}}
 ```
 
 ~~~admonish tip title='example使用'
@@ -84,7 +84,7 @@ SUBCOMMANDS:
 ### 版本一：指令解析
 
 ```rust
-{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs}}
+{{#include ../geektime_rust_codes/04_httpie/examples/cli.rs}}
 ```
 
 #### 要点说明
@@ -101,11 +101,11 @@ SUBCOMMANDS:
 1. clap的parser派生宏会自动实现parse方法来接收指令参数
 
 ```rust
-{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs: 9: 15}}
+{{#include ../geektime_rust_codes/04_httpie/examples/cli.rs:9:15}}
 ```
 
 ```rust
-{{# include../ geektime_rust_codes / 04_httpie / examples /cli.rs: 43: 46}}
+{{#include ../geektime_rust_codes/04_httpie/examples/cli.rs:43:46}}
 ```
 
 2. 运行效果
@@ -145,13 +145,13 @@ For more information try --help
 #### 参数验证
 
 ```rust
-{{# include../ geektime_rust_codes / 04_httpie / examples /cli_verify.rs: 27: 33}}
+{{#include ../geektime_rust_codes/04_httpie/examples/cli_verify.rs:27:33}}
 ```
 
 #### 键值对改造
 
 ```rust
-{{# include../ geektime_rust_codes / 04_httpie / examples /cli_verify.rs: 37: 84}}
+{{#include ../geektime_rust_codes/04_httpie/examples/cli_verify.rs:37:84}}
 ```
 
 ## Macros
