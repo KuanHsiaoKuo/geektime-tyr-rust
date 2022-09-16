@@ -153,6 +153,19 @@ fn get_content_type(resp: &Response) -> Option<Mime> {
         .map(|v| v.to_str().unwrap().parse().unwrap())
 }
 
+fn print_syntect(s: &str, ext: &str) {
+    // Load these once at the start of your program
+    let ps = SyntaxSet::load_defaults_newlines();
+    let ts = ThemeSet::load_defaults();
+    let syntax = ps.find_syntax_by_extension(ext).unwrap();
+    let mut h = HighlightLines::new(syntax, &ts.themes["base16-ocean.dark"]);
+    for line in LinesWithEndings::from(s) {
+        let ranges: Vec<(Style, &str)> = h.highlight(line, &ps);
+        let escaped = as_24_bit_terminal_escaped(&ranges[..], true);
+        print!("{}", escaped);
+    }
+}
+
 /// 程序的入口函数，因为在 http 请求时我们使用了异步处理，所以这里引入 tokio
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -172,18 +185,6 @@ async fn main() -> Result<()> {
     Ok(result)
 }
 
-fn print_syntect(s: &str, ext: &str) {
-    // Load these once at the start of your program
-    let ps = SyntaxSet::load_defaults_newlines();
-    let ts = ThemeSet::load_defaults();
-    let syntax = ps.find_syntax_by_extension(ext).unwrap();
-    let mut h = HighlightLines::new(syntax, &ts.themes["base16-ocean.dark"]);
-    for line in LinesWithEndings::from(s) {
-        let ranges: Vec<(Style, &str)> = h.highlight(line, &ps);
-        let escaped = as_24_bit_terminal_escaped(&ranges[..], true);
-        print!("{}", escaped);
-    }
-}
 
 // 仅在 cargo test 时才编译
 #[cfg(test)]
