@@ -288,37 +288,23 @@
 <li><a href="04_httpie.html#cargotoml">Cargo.toml</a></li>
 </ul>
 </li>
-<li><a href="04_httpie.html#%E5%9F%BA%E4%BA%8E%E4%BB%A3%E7%A0%81%E8%AF%B4%E6%98%8E">基于代码说明</a>
-<ul>
-<li><a href="04_httpie.html#%E7%89%88%E6%9C%AC%E4%B8%80%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">版本一：指令解析</a>
-<ul>
-<li><a href="04_httpie.html#%E8%A6%81%E7%82%B9%E8%AF%B4%E6%98%8E">要点说明</a>
-<ul>
-<li><a href="04_httpie.html#clapparser">clap::Parser</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="04_httpie.html#%E7%89%88%E6%9C%AC%E4%BA%8C%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">版本二：添加参数验证与键值对改造</a>
+<li><a href="04_httpie.html#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a>
+* <a href="04_httpie.html#%E8%A6%81%E7%82%B9%E8%AF%B4%E6%98%8E">要点说明</a>
+* <a href="04_httpie.html#clapparser">clap::Parser</a></li>
+<li><a href="04_httpie.html#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a>
 <ul>
 <li><a href="04_httpie.html#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
 <li><a href="04_httpie.html#%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">键值对改造</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li><a href="04_httpie.html#macros">Macros</a>
-<ul>
-<li><a href="04_httpie.html#derive-macros">Derive Macros</a></li>
-</ul>
-</li>
-<li><a href="04_httpie.html#traits">Traits</a></li>
-<li><a href="04_httpie.html#structures">Structures</a></li>
+<li><a href="04_httpie.html#step3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E6%94%B9%E9%80%A0">Step3：异步请求改造</a></li>
+<li><a href="04_httpie.html#step4-%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E6%89%93%E5%8D%B0">Step4: 语法高亮打印</a></li>
+<li><a href="04_httpie.html#step5-%E6%B7%BB%E5%8A%A0%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">Step5: 添加单元测试</a></li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 15 15:10:31 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 16 03:52:17 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -419,8 +405,7 @@ SUBCOMMANDS:
 </ul>
 </div>
 </div>
-<h2 id="基于代码说明"><a class="header" href="#基于代码说明">基于代码说明</a></h2>
-<h3 id="版本一指令解析"><a class="header" href="#版本一指令解析">版本一：指令解析</a></h3>
+<h2 id="step1指令解析"><a class="header" href="#step1指令解析">Step1：指令解析</a></h2>
 <pre><pre class="playground"><code class="language-rust">use clap::Parser;
 
 // 定义 httpie 的 CLI 的主入口，它包含若干个子命令
@@ -530,8 +515,8 @@ For more information try --help
 <ul>
 <li>opts的获取：自动以空格分隔，根据<subcommand>模式匹配，之后的参数依次赋值给<subcommand> struct里面的元素</li>
 </ul>
-<h3 id="版本二添加参数验证与键值对改造"><a class="header" href="#版本二添加参数验证与键值对改造">版本二：添加参数验证与键值对改造</a></h3>
-<h4 id="参数验证"><a class="header" href="#参数验证">参数验证</a></h4>
+<h2 id="step2添加参数验证与键值对改造"><a class="header" href="#step2添加参数验证与键值对改造">Step2：添加参数验证与键值对改造</a></h2>
+<h3 id="参数验证"><a class="header" href="#参数验证">参数验证</a></h3>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>/// feed get with an url and we will retrieve the response for you
@@ -541,12 +526,10 @@ struct Get {
     #[clap(parse(try_from_str = parse_url))]
     url: String,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="键值对改造"><a class="header" href="#键值对改造">键值对改造</a></h4>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// feed post with an url and optional key=value pairs. We will post the data
+
+// post 子命令。需要输入一个 url，和若干个可选的 key=value，用于提供 json body
+
+/// feed post with an url and optional key=value pairs. We will post the data
 /// as JSON, and retrieve the response for you
 #[derive(Parser, Debug)]
 struct Post {
@@ -557,8 +540,32 @@ struct Post {
     #[clap(parse(try_from_str=parse_kv_pair))]
     body: Vec&lt;KvPair&gt;,
 }
+<span class="boring">}
+</span></code></pre></pre>
+<ol>
+<li>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了parse_url和parse_kv_pair检查一下。</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 因为我们为 KvPair 实现了 FromStr，这里可以直接 s.parse() 得到 KvPair
+fn parse_kv_pair(s: &amp;str) -&gt; Result&lt;KvPair&gt; {
+    s.parse()
+}
+fn parse_url(s: &amp;str) -&gt; Result&lt;String&gt; {
+    // 这里我们仅仅检查一下 URL 是否合法
+    let _url: Url = s.parse()?;
 
-/// 命令行中的 key=value 可以通过 parse_kv_pair 解析成 KvPair 结构
+    Ok(s.into())
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ol>
+<li>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了个parse_url检查一下。</li>
+</ol>
+<h3 id="键值对改造"><a class="header" href="#键值对改造">键值对改造</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// 命令行中的 key=value 可以通过 parse_kv_pair 解析成 KvPair 结构
 #[allow(dead_code)]
 #[derive(Debug)]
 struct KvPair {
@@ -583,28 +590,155 @@ impl FromStr for KvPair {
         })
     }
 }
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="step3异步请求改造"><a class="header" href="#step3异步请求改造">Step3：异步请求改造</a></h2>
+<pre><pre class="playground"><code class="language-rust">#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    let opts: Opts = Opts::parse();
+    // 生成一个
+    let client = Client::new();
+    match opts.subcmd {
+        SubCommand::Get(ref args) =&gt; get(client, args).await?,
+        SubCommand::Post(ref args) =&gt; post(client, args).await?,
+    };
 
-/// 因为我们为 KvPair 实现了 FromStr，这里可以直接 s.parse() 得到 KvPair
-fn parse_kv_pair(s: &amp;str) -&gt; Result&lt;KvPair&gt; {
-    s.parse()
+    Ok(())
 }
-fn parse_url(s: &amp;str) -&gt; Result&lt;String&gt; {
-    // 这里我们仅仅检查一下 URL 是否合法
-    let _url: Url = s.parse()?;
 
-    Ok(s.into())
+async fn get(client: Client, args: &amp;Get) -&gt; Result&lt;()&gt; {
+    let resp = client.get(&amp;args.url).send().await?;
+    println!(&quot;{:?}&quot;, resp.text().await?);
+    Ok(())
+}
+
+async fn post(client: Client, args: &amp;Post) -&gt; Result&lt;()&gt; {
+    let mut body = HashMap::new();
+    for pair in args.body.iter() {
+        body.insert(&amp;pair.k, &amp;pair.v);
+    }
+    let resp = client.post(&amp;args.url).json(&amp;body).send().await?;
+    println!(&quot;{:?}&quot;, resp.text().await?);
+    Ok(())
+}
+</code></pre></pre>
+<h2 id="step4-语法高亮打印"><a class="header" href="#step4-语法高亮打印">Step4: 语法高亮打印</a></h2>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>// 打印服务器版本号 + 状态码
+fn print_status(resp: &amp;Response) {
+    let status = format!(&quot;{:?} {}&quot;, resp.version(), resp.status()).blue();
+    println!(&quot;{}\n&quot;, status);
+}
+
+// 打印服务器返回的 HTTP header
+fn print_headers(resp: &amp;Response) {
+    for (name, value) in resp.headers() {
+        println!(&quot;{}: {:?}&quot;, name.to_string().green(), value);
+    }
+
+    println!();
+}
+
+/// 打印服务器返回的 HTTP body
+fn print_body(m: Option&lt;Mime&gt;, body: &amp;str) {
+    match m {
+        // 对于 &quot;application/json&quot; 我们 pretty print
+        Some(v) if v == mime::APPLICATION_JSON =&gt; print_syntect(body, &quot;json&quot;),
+        Some(v) if v == mime::TEXT_HTML =&gt; print_syntect(body, &quot;html&quot;),
+
+        // 其它 mime type，我们就直接输出
+        _ =&gt; println!(&quot;{}&quot;, body),
+    }
+}
+
+/// 打印整个响应
+async fn print_resp(resp: Response) -&gt; Result&lt;()&gt; {
+    print_status(&amp;resp);
+    print_headers(&amp;resp);
+    let mime = get_content_type(&amp;resp);
+    let body = resp.text().await?;
+    print_body(mime, &amp;body);
+    Ok(())
+}
+
+/// 将服务器返回的 content-type 解析成 Mime 类型
+fn get_content_type(resp: &amp;Response) -&gt; Option&lt;Mime&gt; {
+    resp.headers()
+        .get(header::CONTENT_TYPE)
+        .map(|v| v.to_str().unwrap().parse().unwrap())
+}
+
+fn print_syntect(s: &amp;str, ext: &amp;str) {
+    // Load these once at the start of your program
+    let ps = SyntaxSet::load_defaults_newlines();
+    let ts = ThemeSet::load_defaults();
+    let syntax = ps.find_syntax_by_extension(ext).unwrap();
+    let mut h = HighlightLines::new(syntax, &amp;ts.themes[&quot;base16-ocean.dark&quot;]);
+    for line in LinesWithEndings::from(s) {
+        let ranges: Vec&lt;(Style, &amp;str)&gt; = h.highlight(line, &amp;ps);
+        let escaped = as_24_bit_terminal_escaped(&amp;ranges[..], true);
+        print!(&quot;{}&quot;, escaped);
+    }
 }
 <span class="boring">}
 </span></code></pre></pre>
-<h2 id="macros-1"><a class="header" href="#macros-1">Macros</a></h2>
-<h3 id="derive-macros-1"><a class="header" href="#derive-macros-1">Derive Macros</a></h3>
+<pre><pre class="playground"><code class="language-rust">/// 程序的入口函数，因为在 http 请求时我们使用了异步处理，所以这里引入 tokio
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    let opts: Opts = Opts::parse();
+    let mut headers = header::HeaderMap::new();
+    // 为我们的 http 客户端添加一些缺省的 HTTP 头
+    headers.insert(&quot;X-POWERED-BY&quot;, &quot;Rust&quot;.parse()?);
+    headers.insert(header::USER_AGENT, &quot;Rust Httpie&quot;.parse()?);
+    let client = Client::builder()
+        .default_headers(headers)
+        .build()?;
+    let result = match opts.subcmd {
+        SubCommand::Get(ref args) =&gt; get(client, args).await?,
+        SubCommand::Post(ref args) =&gt; post(client, args).await?,
+    };
+
+    Ok(result)
+}
+</code></pre></pre>
+<h2 id="step5-添加单元测试"><a class="header" href="#step5-添加单元测试">Step5: 添加单元测试</a></h2>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span>
-<span class="boring">fn main() {
-</span><span class="boring">}
+</span><span class="boring">fn main() {
+</span>// 仅在 cargo test 时才编译
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_url_works() {
+        assert!(parse_url(&quot;abc&quot;).is_err());
+        assert!(parse_url(&quot;http://abc.xyz&quot;).is_ok());
+        assert!(parse_url(&quot;https://httpbin.org/post&quot;).is_ok());
+    }
+
+    #[test]
+    fn parse_kv_pair_works() {
+        assert!(parse_kv_pair(&quot;a&quot;).is_err());
+        assert_eq!(
+            parse_kv_pair(&quot;a=1&quot;).unwrap(),
+            KvPair {
+                k: &quot;a&quot;.into(),
+                v: &quot;1&quot;.into(),
+            }
+        );
+
+        assert_eq!(
+            parse_kv_pair(&quot;b=&quot;).unwrap(),
+            KvPair {
+                k: &quot;b&quot;.into(),
+                v: &quot;&quot;.into(),
+            }
+        );
+    }
+}
+<span class="boring">}
 </span></code></pre></pre>
-<h2 id="traits-1"><a class="header" href="#traits-1">Traits</a></h2>
-<h2 id="structures"><a class="header" href="#structures">Structures</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="checklist"><a class="header" href="#checklist">Checklist</a></h1>
 
             </main>
