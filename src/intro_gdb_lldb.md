@@ -28,9 +28,15 @@ cargo run --bin hashmap2
 
 ### 使用gdb/lldb进行调试查看内存结构
 
-1. gdb: 主要是linux系统
+#### gdb: 主要是linux系统
 
-2. lldb: 主要OSX系统
+#### lldb: 主要OSX系统
+
+#### IDEA
+
+> 自带的调试界面同时包含lldb更好的界面功能。
+
+![CleanShot 2022-09-18 at 21.24.12@2x](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/CleanShot%202022-09-18%20at%2021.24.12%402x.png)
 
 #### gdb与lldb命令对照
 
