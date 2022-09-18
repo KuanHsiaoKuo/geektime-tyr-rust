@@ -1,24 +1,21 @@
 # 第四节：httpie源码剖析
 
 <!--ts-->
-
 * [第四节：httpie源码剖析](#第四节httpie源码剖析)
-    * [example的使用](#example的使用)
-        * [Cargo.toml](#cargotoml)
-    * [基于代码说明](#基于代码说明)
-        * [版本一：指令解析](#版本一指令解析)
-            * [要点说明](#要点说明)
-                * [clap::Parser](#clapparser)
-        * [版本二：添加参数验证与键值对改造](#版本二添加参数验证与键值对改造)
-            * [参数验证](#参数验证)
-            * [键值对改造](#键值对改造)
-    * [Macros](#macros)
-        * [Derive Macros](#derive-macros)
-    * [Traits](#traits)
-    * [Structures](#structures)
+   * [example的使用](#example的使用)
+      * [Cargo.toml](#cargotoml)
+   * [Step1：指令解析](#step1指令解析)
+         * [要点说明](#要点说明)
+            * [clap::Parser](#clapparser)
+   * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
+      * [参数验证](#参数验证)
+      * [键值对改造](#键值对改造)
+   * [Step3：异步请求改造](#step3异步请求改造)
+   * [Step4: 语法高亮打印](#step4-语法高亮打印)
+   * [Step5: 添加单元测试](#step5-添加单元测试)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 15 15:10:31 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 16 03:52:17 UTC 2022 -->
 
 <!--te-->
 
