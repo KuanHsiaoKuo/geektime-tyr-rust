@@ -96,7 +96,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 01. 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="04_httpie.html"><strong aria-hidden="true">2.</strong> 04.httpie</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="04_httpie.html"><strong aria-hidden="true">2.</strong> httpie</a></li><li class="chapter-item expanded "><a href="17_hashmap.html"><strong aria-hidden="true">3.</strong> hash table</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -304,7 +304,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 16 03:52:17 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 18 05:03:18 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -450,7 +450,12 @@ struct Post {
 
 fn main() {
     let opts: Opts = Opts::parse();
-    println!(&quot;{:?}&quot;, opts);
+    let opt_subcmd: SubCommand = opts.subcmd;
+    // println!(&quot;{:?}&quot;, opts);
+    println!(&quot;{:?}&quot;, opt_subcmd);
+    // println!(&quot;{:?}&quot;, opts.subcmd);
+    // 这里就可以看出，结构体的内在元素使用&quot;.&quot;来获取
+    // println!(&quot;{:?}&quot;, opts::subcmd);
 }
 </code></pre></pre>
 <h4 id="要点说明"><a class="header" href="#要点说明">要点说明</a></h4>
@@ -484,8 +489,8 @@ fn main() {
 </span></code></pre></pre>
 <pre><pre class="playground"><code class="language-rust">fn main() {
     let opts: Opts = Opts::parse();
-    println!(&quot;{:?}&quot;, opts);
-}
+    let opt_subcmd: SubCommand = opts.subcmd;
+    // println!(&quot;{:?}&quot;, opts);
 </code></pre></pre>
 <ol start="2">
 <li>运行效果</li>
@@ -739,6 +744,71 @@ mod tests {
 }
 <span class="boring">}
 </span></code></pre></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="解剖哈希表数据结构"><a class="header" href="#解剖哈希表数据结构">解剖哈希表数据结构</a></h1>
+<!--ts-->
+<ul>
+<li><a href="17_hashmap.html#%E8%A7%A3%E5%89%96%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">解剖哈希表数据结构</a>
+<ul>
+<li><a href="17_hashmap.html#bin%E9%85%8D%E7%BD%AE%E4%B8%8E%E8%BF%90%E8%A1%8C">bin配置与运行</a></li>
+<li><a href="17_hashmap.html#gdb%E4%BD%BF%E7%94%A8">gdb使用</a></li>
+<li><a href="17_hashmap.html#lldb%E4%BD%BF%E7%94%A8">lldb使用</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Sep 18 05:03:18 UTC 2022 -->
+<!--te-->
+<h2 id="bin配置与运行"><a class="header" href="#bin配置与运行">bin配置与运行</a></h2>
+<ul>
+<li><a href="https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=bin#binaries">Cargo Targets - The Cargo Book</a></li>
+</ul>
+<pre><code class="language-toml">[package]
+name = &quot;hashtable&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[[bin]]
+name = &quot;hashmap1&quot;
+path = &quot;src/hashmap1.rs&quot;
+
+[[bin]]
+name = &quot;hashmap2&quot;
+path = &quot;src/hashmap2.rs&quot;
+
+[[bin]]
+name = &quot;hash&quot;
+path = &quot;src/hash.rs&quot;
+
+[[bin]]
+name = &quot;siphasher&quot;
+path = &quot;src/siphasher.rs&quot;
+doc = false
+
+[[bin]]
+name = &quot;hashmap3&quot;
+path = &quot;src/hashmap3.rs&quot;
+
+[[bin]]
+name = &quot;btreemap1&quot;
+path = &quot;src/btreemap1.rs&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+</code></pre>
+<blockquote>
+<p>如果要单独运行指定bin文件：</p>
+</blockquote>
+<pre><code class="language-shell">cargo run --bin hashmap2
+</code></pre>
+<h2 id="gdb使用"><a class="header" href="#gdb使用">gdb使用</a></h2>
+<blockquote>
+<p>主要是linux系统</p>
+</blockquote>
+<h2 id="lldb使用"><a class="header" href="#lldb使用">lldb使用</a></h2>
+<blockquote>
+<p>主要OSX系统</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="checklist"><a class="header" href="#checklist">Checklist</a></h1>
 
             </main>

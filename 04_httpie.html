@@ -3,7 +3,7 @@
 <head>
     <!-- Book generated using mdBook -->
     <meta charset="UTF-8">
-    <title>04.httpie - Anatomy In First Rust Programming Class 🦀</title>
+    <title>httpie - Anatomy In First Rust Programming Class 🦀</title>
 
 
     <!-- Custom HTML head -->
@@ -95,7 +95,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 01. 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="04_httpie.html" class="active"><strong aria-hidden="true">2.</strong> 04.httpie</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="04_httpie.html" class="active"><strong aria-hidden="true">2.</strong> httpie</a></li><li class="chapter-item expanded "><a href="17_hashmap.html"><strong aria-hidden="true">3.</strong> hash table</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -206,7 +206,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 16 03:52:17 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 18 05:03:18 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -352,7 +352,12 @@ struct Post {
 
 fn main() {
     let opts: Opts = Opts::parse();
-    println!(&quot;{:?}&quot;, opts);
+    let opt_subcmd: SubCommand = opts.subcmd;
+    // println!(&quot;{:?}&quot;, opts);
+    println!(&quot;{:?}&quot;, opt_subcmd);
+    // println!(&quot;{:?}&quot;, opts.subcmd);
+    // 这里就可以看出，结构体的内在元素使用&quot;.&quot;来获取
+    // println!(&quot;{:?}&quot;, opts::subcmd);
 }
 </code></pre></pre>
 <h4 id="要点说明"><a class="header" href="#要点说明">要点说明</a></h4>
@@ -386,8 +391,8 @@ fn main() {
 </span></code></pre></pre>
 <pre><pre class="playground"><code class="language-rust">fn main() {
     let opts: Opts = Opts::parse();
-    println!(&quot;{:?}&quot;, opts);
-}
+    let opt_subcmd: SubCommand = opts.subcmd;
+    // println!(&quot;{:?}&quot;, opts);
 </code></pre></pre>
 <ol start="2">
 <li>运行效果</li>
@@ -658,7 +663,7 @@ mod tests {
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="checklist.html" class="mobile-nav-chapters next"
+                    <a rel="next" href="17_hashmap.html" class="mobile-nav-chapters next"
                        title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -674,7 +679,7 @@ mod tests {
                 <i class="fa fa-angle-left"></i>
             </a>
 
-            <a rel="next" href="checklist.html" class="nav-chapters next" title="Next chapter"
+            <a rel="next" href="17_hashmap.html" class="nav-chapters next" title="Next chapter"
                aria-label="Next chapter" aria-keyshortcuts="Right">
                 <i class="fa fa-angle-right"></i>
             </a>
