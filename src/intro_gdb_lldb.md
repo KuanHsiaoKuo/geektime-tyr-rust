@@ -1,23 +1,12 @@
-# 解剖哈希表数据结构
+# gdb/lldb调试或查看内存结构
 
 <!--ts-->
-* [解剖哈希表数据结构](#解剖哈希表数据结构)
-   * [bin配置与运行](#bin配置与运行)
-   * [目标调试代码](#目标调试代码)
-   * [使用gdb/lldb进行调试查看内存结构](#使用gdblldb进行调试查看内存结构)
-      * [开始调试](#开始调试)
-      * [b(reakpoint): 添加断点](#breakpoint-添加断点)
-      * [r(un):运行到断点](#run运行到断点)
-      * [c(ontinue):继续单步执行](#continue继续单步执行)
-      * [x: 打印内存地址](#x-打印内存地址)
-      * [c(tinue): 继续执行到下一个断点](#ctinue-继续执行到下一个断点)
-
-<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 18 05:39:46 UTC 2022 -->
 
 <!--te-->
 
-## bin配置与运行
+## 查看hashmap内存结构
+
+### bin配置与运行
 
 - [Cargo Targets - The Cargo Book](https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=bin#binaries)
 
@@ -31,19 +20,19 @@
 cargo run --bin hashmap2
 ```
 
-## 目标调试代码
+### 目标调试代码
 
 ```rust, editable
 {{#include ../geektime_rust_codes/17_hash_table/src/hashmap2.rs}}
 ```
 
-## 使用gdb/lldb进行调试查看内存结构
+### 使用gdb/lldb进行调试查看内存结构
 
 1. gdb: 主要是linux系统
 
 2. 主要OSX系统
 
-### 开始调试
+#### 开始调试
 
 ```shell
 rust-lldb target/debug/hashmap2                                                                                                                  ─╯
@@ -73,7 +62,7 @@ Current executable set to '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab
 (lldb)
 ```
 
-### b(reakpoint): 添加断点
+#### b(reakpoint): 添加断点
 
 > 在32行打断点，方便看std::mem::transmute(arr)
 
@@ -82,7 +71,7 @@ Current executable set to '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab
 Breakpoint 1: where = hashmap2`hashmap2::explain::h4091c852f38a0de4 + 406 at hashmap2.rs:32:34, address = 0x0000000100008d16
 ```
 
-### r(un):运行到断点
+#### r(un):运行到断点
 
 ```shell
 (lldb) r
@@ -104,7 +93,7 @@ Target 0: (hashmap2) stopped.
 empty: bucket_mask 0x0, ctrl 0x100043d20, growth_left: 0, items: 0
 ```
 
-### c(ontinue):继续单步执行
+#### c(ontinue):继续单步执行
 
 ```shell
 (lldb) c
@@ -126,7 +115,7 @@ Target 0: (hashmap2) stopped.
 added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
 ```
 
-### x: 打印内存地址
+#### x: 打印内存地址
 
 - [打印内存的值 | 100个gdb小技巧](https://wizardforcel.gitbooks.io/100-gdb-tips/content/examine-memory.html)
 
@@ -138,7 +127,7 @@ added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
 0x600001700180: 0x20ec913f 0x00007ff8 0x4e5ef01e 0x00000000
 ```
 
-### c(tinue): 继续执行到下一个断点
+#### c(ontinue): 继续执行到下一个断点
 
 ```shell
 (lldb) c
