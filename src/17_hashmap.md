@@ -16,7 +16,7 @@
 - [Cargo Targets - The Cargo Book](https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=bin#binaries)
 
 ```toml
-{{ #include ../geektime_rust_codes/17_hash_table/Cargo.toml}}
+{{#include ../geektime_rust_codes/17_hash_table/Cargo.toml}}
 ```
 
 > 如果要单独运行指定bin文件：
