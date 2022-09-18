@@ -3,11 +3,17 @@
 <!--ts-->
 * [解剖哈希表数据结构](#解剖哈希表数据结构)
    * [bin配置与运行](#bin配置与运行)
-   * [gdb使用](#gdb使用)
-   * [lldb使用](#lldb使用)
+   * [目标调试代码](#目标调试代码)
+   * [使用gdb/lldb进行调试查看内存结构](#使用gdblldb进行调试查看内存结构)
+      * [开始调试](#开始调试)
+      * [b(reakpoint): 添加断点](#breakpoint-添加断点)
+      * [r(un):运行到断点](#run运行到断点)
+      * [c(ontinue):继续单步执行](#continue继续单步执行)
+      * [x: 打印内存地址](#x-打印内存地址)
+      * [c(tinue): 继续执行到下一个断点](#ctinue-继续执行到下一个断点)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 18 05:03:18 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 18 05:39:46 UTC 2022 -->
 
 <!--te-->
 
