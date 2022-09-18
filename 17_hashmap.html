@@ -186,13 +186,22 @@
 <li><a href="#%E8%A7%A3%E5%89%96%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">解剖哈希表数据结构</a>
 <ul>
 <li><a href="#bin%E9%85%8D%E7%BD%AE%E4%B8%8E%E8%BF%90%E8%A1%8C">bin配置与运行</a></li>
-<li><a href="#gdb%E4%BD%BF%E7%94%A8">gdb使用</a></li>
-<li><a href="#lldb%E4%BD%BF%E7%94%A8">lldb使用</a></li>
+<li><a href="#%E7%9B%AE%E6%A0%87%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81">目标调试代码</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8gdblldb%E8%BF%9B%E8%A1%8C%E8%B0%83%E8%AF%95%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">使用gdb/lldb进行调试查看内存结构</a>
+<ul>
+<li><a href="#%E5%BC%80%E5%A7%8B%E8%B0%83%E8%AF%95">开始调试</a></li>
+<li><a href="#breakpoint-%E6%B7%BB%E5%8A%A0%E6%96%AD%E7%82%B9">b(reakpoint): 添加断点</a></li>
+<li><a href="#run%E8%BF%90%E8%A1%8C%E5%88%B0%E6%96%AD%E7%82%B9">r(un):运行到断点</a></li>
+<li><a href="#continue%E7%BB%A7%E7%BB%AD%E5%8D%95%E6%AD%A5%E6%89%A7%E8%A1%8C">c(ontinue):继续单步执行</a></li>
+<li><a href="#x-%E6%89%93%E5%8D%B0%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80">x: 打印内存地址</a></li>
+<li><a href="#ctinue-%E7%BB%A7%E7%BB%AD%E6%89%A7%E8%A1%8C%E5%88%B0%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%96%AD%E7%82%B9">c(tinue): 继续执行到下一个断点</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 18 05:03:18 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 18 05:39:46 UTC 2022 -->
 <!--te-->
 <h2 id="bin配置与运行"><a class="header" href="#bin配置与运行">bin配置与运行</a></h2>
 <ul>
@@ -237,14 +246,204 @@ path = &quot;src/btreemap1.rs&quot;
 </blockquote>
 <pre><code class="language-shell">cargo run --bin hashmap2
 </code></pre>
-<h2 id="gdb使用"><a class="header" href="#gdb使用">gdb使用</a></h2>
-<blockquote>
-<p>主要是linux系统</p>
-</blockquote>
-<h2 id="lldb使用"><a class="header" href="#lldb使用">lldb使用</a></h2>
-<blockquote>
+<h2 id="目标调试代码"><a class="header" href="#目标调试代码">目标调试代码</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">use std::collections::HashMap;
+
+fn main() {
+    let map = HashMap::new();
+    let mut map = explain(&quot;empty&quot;, map);
+
+    map.insert('a', 1);
+    let mut map = explain(&quot;added 1&quot;, map);
+    map.insert('b', 2);
+    map.insert('c', 3);
+
+    let mut map = explain(&quot;added 3&quot;, map);
+
+    map.insert('d', 4);
+
+    let mut map = explain(&quot;added 4&quot;, map);
+
+    map.remove(&amp;'a');
+
+    explain(&quot;final&quot;, map);
+}
+
+// HashMap 结构有两个 u64 的 RandomState，然后是四个 usize，
+// 分别是 bucket_mask, ctrl, growth_left 和 items
+// 我们 transmute 打印之后，再 transmute 回去
+fn explain&lt;K, V&gt;(name: &amp;str, map: HashMap&lt;K, V&gt;) -&gt; HashMap&lt;K, V&gt; {
+    let arr: [usize; 6] = unsafe { std::mem::transmute(map) };
+    println!(
+        &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
+        name, arr[2], arr[3], arr[4], arr[5]
+    );
+    unsafe { std::mem::transmute(arr) }
+}
+</code></pre></pre>
+<h2 id="使用gdblldb进行调试查看内存结构"><a class="header" href="#使用gdblldb进行调试查看内存结构">使用gdb/lldb进行调试查看内存结构</a></h2>
+<ol>
+<li>
+<p>gdb: 主要是linux系统</p>
+</li>
+<li>
 <p>主要OSX系统</p>
+</li>
+</ol>
+<h3 id="开始调试"><a class="header" href="#开始调试">开始调试</a></h3>
+<pre><code class="language-shell">rust-lldb target/debug/hashmap2                                                                                                                  ─╯
+(lldb) command script import &quot;/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_lookup.py&quot;
+(lldb) command source -s 0 '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_commands'
+Executing commands in '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_commands'.
+(lldb) type synthetic add -l lldb_lookup.synthetic_lookup -x &quot;.*&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)String$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^&amp;(mut )?str$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^&amp;(mut )?\\[.+\\]$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::ffi::([a-z_]+::)+)OsString$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Vec&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)VecDeque&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)BTreeSet&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)BTreeMap&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::collections::([a-z_]+::)+)HashMap&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::collections::([a-z_]+::)+)HashSet&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Rc&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Arc&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)Cell&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)Ref&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)RefMut&lt;.+&gt;$&quot; --category Rust
+(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)RefCell&lt;.+&gt;$&quot; --category Rust
+(lldb) type category enable Rust
+(lldb) target create &quot;target/debug/hashmap2&quot;
+Current executable set to '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/hashmap2' (x86_64).
+(lldb)
+</code></pre>
+<h3 id="breakpoint-添加断点"><a class="header" href="#breakpoint-添加断点">b(reakpoint): 添加断点</a></h3>
+<blockquote>
+<p>在32行打断点，方便看std::mem::transmute(arr)</p>
 </blockquote>
+<pre><code class="language-shell">(lldb) b hashmap2.rs:32
+Breakpoint 1: where = hashmap2`hashmap2::explain::h4091c852f38a0de4 + 406 at hashmap2.rs:32:34, address = 0x0000000100008d16
+</code></pre>
+<h3 id="run运行到断点"><a class="header" href="#run运行到断点">r(un):运行到断点</a></h3>
+<pre><code class="language-shell">(lldb) r
+Process 69337 launched: '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/hashmap2' (x86_64)
+empty: bucket_mask 0x0, ctrl 0x100043d20, growth_left: 0, items: 0
+Process 69337 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;empty&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
+   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
+   30           name, arr[2], arr[3], arr[4], arr[5]
+   31       );
+-&gt; 32       unsafe { std::mem::transmute(arr) }
+   33   }
+Target 0: (hashmap2) stopped.
+</code></pre>
+<pre><code class="language-shell"># 最初的状态，哈希表为空
+empty: bucket_mask 0x0, ctrl 0x100043d20, growth_left: 0, items: 0
+</code></pre>
+<h3 id="continue继续单步执行"><a class="header" href="#continue继续单步执行">c(ontinue):继续单步执行</a></h3>
+<pre><code class="language-shell">(lldb) c
+Process 69337 resuming
+added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
+Process 69337 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;added 1&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
+   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
+   30           name, arr[2], arr[3], arr[4], arr[5]
+   31       );
+-&gt; 32       unsafe { std::mem::transmute(arr) }
+   33   }
+Target 0: (hashmap2) stopped.
+</code></pre>
+<pre><code class="language-shell"># 插入了一个元素后，bucket 有 4 个（0x3+1），堆地址起始位置 0x600001700160 - 4*8(0x20)
+added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
+</code></pre>
+<h3 id="x-打印内存地址"><a class="header" href="#x-打印内存地址">x: 打印内存地址</a></h3>
+<ul>
+<li><a href="https://wizardforcel.gitbooks.io/100-gdb-tips/content/examine-memory.html">打印内存的值 | 100个gdb小技巧</a></li>
+</ul>
+<pre><code class="language-shell"># 以12进制打印从内存地址开始的值
+(lldb) x/12x 0x600001700160
+0x600001700160: 0xffff6dff 0xffffffff 0xffffffff 0xffffffff
+0x600001700170: 0xffff6dff 0x00000000 0x00000000 0x00000000
+0x600001700180: 0x20ec913f 0x00007ff8 0x4e5ef01e 0x00000000
+</code></pre>
+<h3 id="ctinue-继续执行到下一个断点"><a class="header" href="#ctinue-继续执行到下一个断点">c(tinue): 继续执行到下一个断点</a></h3>
+<pre><code class="language-shell">(lldb) c
+Process 69337 resuming
+added 3: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 0, items: 3
+Process 69337 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;added 3&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
+   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
+   30           name, arr[2], arr[3], arr[4], arr[5]
+   31       );
+-&gt; 32       unsafe { std::mem::transmute(arr) }
+   33   }
+Target 0: (hashmap2) stopped.
+</code></pre>
+<pre><code class="language-shell"># # 插入了三个元素后，哈希表没有剩余空间，堆地址起始位置不变 0x600001700160 - 4*8(0x20)
+added 3: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 0, items: 3
+</code></pre>
+<pre><code class="language-shell">(lldb) x/12x 0x600001700160
+0x600001700160: 0x16ff6d66 0xffffffff 0xffffffff 0xffffffff
+0x600001700170: 0x16ff6d66 0x00000000 0x00000000 0x00000000
+0x600001700180: 0x20ec913f 0x00007ff8 0x4e5ef01e 0x00000000
+</code></pre>
+<pre><code class="language-shell">(lldb) c
+Process 69337 resuming
+added 4: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 3, items: 4
+Process 69337 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;added 4&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
+   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
+   30           name, arr[2], arr[3], arr[4], arr[5]
+   31       );
+-&gt; 32       unsafe { std::mem::transmute(arr) }
+   33   }
+Target 0: (hashmap2) stopped.
+</code></pre>
+<pre><code class="language-shell"># 插入第四个元素后，哈希表扩容，堆地址起始位置变为 0x600002604040 - 8*8(0x40)
+added 4: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 3, items: 4
+</code></pre>
+<pre><code class="language-shell">(lldb) x/12x 0x600002604040
+0x600002604040: 0x16446d66 0xffffffff 0xffffffff 0xffffffff
+0x600002604050: 0x16446d66 0xffffffff 0x00000000 0x00000000
+0x600002604060: 0x00000000 0x00000000 0x00000000 0x00000000
+(lldb) x/20x 0x600002604040
+0x600002604040: 0x16446d66 0xffffffff 0xffffffff 0xffffffff
+0x600002604050: 0x16446d66 0xffffffff 0x00000000 0x00000000
+0x600002604060: 0x00000000 0x00000000 0x00000000 0x00000000
+0x600002604070: 0x00000000 0x00000000 0x00000000 0x00000000
+0x600002604080: 0x00000000 0x00000000 0x00000000 0x00000000
+</code></pre>
+<pre><code class="language-shell">(lldb) c
+Process 69337 resuming
+final: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 4, items: 3
+Process 69337 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
+    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;final&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
+   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
+   30           name, arr[2], arr[3], arr[4], arr[5]
+   31       );
+-&gt; 32       unsafe { std::mem::transmute(arr) }
+   33   }
+Target 0: (hashmap2) stopped.
+</code></pre>
+<pre><code class="language-shell"># 删除 a 后，剩余 4 个位置。注意 ctrl bit 的变化，以及 0x61 0x1 并没有被清除
+final: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 4, items: 3
+</code></pre>
+<pre><code class="language-shell">(lldb) x/12x 0x600002604040
+0x600002604040: 0x1644ff66 0xffffffff 0xffffffff 0xffffffff
+0x600002604050: 0x1644ff66 0xffffffff 0x00000000 0x00000000
+0x600002604060: 0x00000000 0x00000000 0x00000000 0x00000000
+(lldb) x/20x 0x600002604040
+0x600002604040: 0x1644ff66 0xffffffff 0xffffffff 0xffffffff
+0x600002604050: 0x1644ff66 0xffffffff 0x00000000 0x00000000
+0x600002604060: 0x00000000 0x00000000 0x00000000 0x00000000
+0x600002604070: 0x00000000 0x00000000 0x00000000 0x00000000
+0x600002604080: 0x00000000 0x00000000 0x00000000 0x00000000
+</code></pre>
 
             </main>
 
@@ -288,6 +487,9 @@ path = &quot;src/btreemap1.rs&quot;
 
 
 
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
 
     <script type="text/javascript">
         window.playground_copyable = true;
