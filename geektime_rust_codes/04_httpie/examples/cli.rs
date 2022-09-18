@@ -42,5 +42,10 @@ struct Post {
 
 fn main() {
     let opts: Opts = Opts::parse();
-    println!("{:?}", opts);
+    let opt_subcmd: SubCommand = opts.subcmd;
+    // println!("{:?}", opts);
+    println!("{:?}", opt_subcmd);
+    // println!("{:?}", opts.subcmd);
+    // 这里就可以看出，结构体的内在元素使用"."来获取
+    // println!("{:?}", opts::subcmd);
 }
