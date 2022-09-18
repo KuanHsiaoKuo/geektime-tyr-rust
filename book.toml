@@ -19,6 +19,7 @@ mathjax-support = true
 [output.html.playground]
 editable = true
 copy-js = true
+line-numbers = true
 
 [output.html.fold]
 enable = true
