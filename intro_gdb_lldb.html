@@ -3,7 +3,7 @@
 <head>
     <!-- Book generated using mdBook -->
     <meta charset="UTF-8">
-    <title>hash table - Anatomy In First Rust Programming Class 🦀</title>
+    <title>gdb/lldb调试或查看内存结构 - Anatomy In First Rust Programming Class 🦀</title>
 
 
     <!-- Custom HTML head -->
@@ -95,7 +95,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="04_httpie.html"><strong aria-hidden="true">2.</strong> httpie</a></li><li class="chapter-item expanded "><a href="17_hashmap.html" class="active"><strong aria-hidden="true">3.</strong> hash table</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="04_httpie.html"><strong aria-hidden="true">2.</strong> httpie</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html" class="active"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -180,30 +180,11 @@
                 <div class="sidetoc">
                     <nav class="pagetoc"></nav>
                 </div>
-                <h1 id="解剖哈希表数据结构"><a class="header" href="#解剖哈希表数据结构">解剖哈希表数据结构</a></h1>
+                <h1 id="gdblldb调试或查看内存结构"><a class="header" href="#gdblldb调试或查看内存结构">gdb/lldb调试或查看内存结构</a></h1>
 <!--ts-->
-<ul>
-<li><a href="#%E8%A7%A3%E5%89%96%E5%93%88%E5%B8%8C%E8%A1%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">解剖哈希表数据结构</a>
-<ul>
-<li><a href="#bin%E9%85%8D%E7%BD%AE%E4%B8%8E%E8%BF%90%E8%A1%8C">bin配置与运行</a></li>
-<li><a href="#%E7%9B%AE%E6%A0%87%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81">目标调试代码</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8gdblldb%E8%BF%9B%E8%A1%8C%E8%B0%83%E8%AF%95%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">使用gdb/lldb进行调试查看内存结构</a>
-<ul>
-<li><a href="#%E5%BC%80%E5%A7%8B%E8%B0%83%E8%AF%95">开始调试</a></li>
-<li><a href="#breakpoint-%E6%B7%BB%E5%8A%A0%E6%96%AD%E7%82%B9">b(reakpoint): 添加断点</a></li>
-<li><a href="#run%E8%BF%90%E8%A1%8C%E5%88%B0%E6%96%AD%E7%82%B9">r(un):运行到断点</a></li>
-<li><a href="#continue%E7%BB%A7%E7%BB%AD%E5%8D%95%E6%AD%A5%E6%89%A7%E8%A1%8C">c(ontinue):继续单步执行</a></li>
-<li><a href="#x-%E6%89%93%E5%8D%B0%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80">x: 打印内存地址</a></li>
-<li><a href="#ctinue-%E7%BB%A7%E7%BB%AD%E6%89%A7%E8%A1%8C%E5%88%B0%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%96%AD%E7%82%B9">c(tinue): 继续执行到下一个断点</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 18 05:39:46 UTC 2022 -->
 <!--te-->
-<h2 id="bin配置与运行"><a class="header" href="#bin配置与运行">bin配置与运行</a></h2>
+<h2 id="查看hashmap内存结构"><a class="header" href="#查看hashmap内存结构">查看hashmap内存结构</a></h2>
+<h3 id="bin配置与运行"><a class="header" href="#bin配置与运行">bin配置与运行</a></h3>
 <ul>
 <li><a href="https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=bin#binaries">Cargo Targets - The Cargo Book</a></li>
 </ul>
@@ -246,7 +227,7 @@ path = &quot;src/btreemap1.rs&quot;
 </blockquote>
 <pre><code class="language-shell">cargo run --bin hashmap2
 </code></pre>
-<h2 id="目标调试代码"><a class="header" href="#目标调试代码">目标调试代码</a></h2>
+<h3 id="目标调试代码"><a class="header" href="#目标调试代码">目标调试代码</a></h3>
 <pre><pre class="playground"><code class="language-rust  editable">use std::collections::HashMap;
 
 fn main() {
@@ -281,7 +262,7 @@ fn explain&lt;K, V&gt;(name: &amp;str, map: HashMap&lt;K, V&gt;) -&gt; HashMap&l
     unsafe { std::mem::transmute(arr) }
 }
 </code></pre></pre>
-<h2 id="使用gdblldb进行调试查看内存结构"><a class="header" href="#使用gdblldb进行调试查看内存结构">使用gdb/lldb进行调试查看内存结构</a></h2>
+<h3 id="使用gdblldb进行调试查看内存结构"><a class="header" href="#使用gdblldb进行调试查看内存结构">使用gdb/lldb进行调试查看内存结构</a></h3>
 <ol>
 <li>
 <p>gdb: 主要是linux系统</p>
@@ -290,7 +271,7 @@ fn explain&lt;K, V&gt;(name: &amp;str, map: HashMap&lt;K, V&gt;) -&gt; HashMap&l
 <p>主要OSX系统</p>
 </li>
 </ol>
-<h3 id="开始调试"><a class="header" href="#开始调试">开始调试</a></h3>
+<h4 id="开始调试"><a class="header" href="#开始调试">开始调试</a></h4>
 <pre><code class="language-shell">rust-lldb target/debug/hashmap2                                                                                                                  ─╯
 (lldb) command script import &quot;/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_lookup.py&quot;
 (lldb) command source -s 0 '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_commands'
@@ -317,14 +298,14 @@ Executing commands in '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-appl
 Current executable set to '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/hashmap2' (x86_64).
 (lldb)
 </code></pre>
-<h3 id="breakpoint-添加断点"><a class="header" href="#breakpoint-添加断点">b(reakpoint): 添加断点</a></h3>
+<h4 id="breakpoint-添加断点"><a class="header" href="#breakpoint-添加断点">b(reakpoint): 添加断点</a></h4>
 <blockquote>
 <p>在32行打断点，方便看std::mem::transmute(arr)</p>
 </blockquote>
 <pre><code class="language-shell">(lldb) b hashmap2.rs:32
 Breakpoint 1: where = hashmap2`hashmap2::explain::h4091c852f38a0de4 + 406 at hashmap2.rs:32:34, address = 0x0000000100008d16
 </code></pre>
-<h3 id="run运行到断点"><a class="header" href="#run运行到断点">r(un):运行到断点</a></h3>
+<h4 id="run运行到断点"><a class="header" href="#run运行到断点">r(un):运行到断点</a></h4>
 <pre><code class="language-shell">(lldb) r
 Process 69337 launched: '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/hashmap2' (x86_64)
 empty: bucket_mask 0x0, ctrl 0x100043d20, growth_left: 0, items: 0
@@ -341,7 +322,7 @@ Target 0: (hashmap2) stopped.
 <pre><code class="language-shell"># 最初的状态，哈希表为空
 empty: bucket_mask 0x0, ctrl 0x100043d20, growth_left: 0, items: 0
 </code></pre>
-<h3 id="continue继续单步执行"><a class="header" href="#continue继续单步执行">c(ontinue):继续单步执行</a></h3>
+<h4 id="continue继续单步执行"><a class="header" href="#continue继续单步执行">c(ontinue):继续单步执行</a></h4>
 <pre><code class="language-shell">(lldb) c
 Process 69337 resuming
 added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
@@ -358,7 +339,7 @@ Target 0: (hashmap2) stopped.
 <pre><code class="language-shell"># 插入了一个元素后，bucket 有 4 个（0x3+1），堆地址起始位置 0x600001700160 - 4*8(0x20)
 added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
 </code></pre>
-<h3 id="x-打印内存地址"><a class="header" href="#x-打印内存地址">x: 打印内存地址</a></h3>
+<h4 id="x-打印内存地址"><a class="header" href="#x-打印内存地址">x: 打印内存地址</a></h4>
 <ul>
 <li><a href="https://wizardforcel.gitbooks.io/100-gdb-tips/content/examine-memory.html">打印内存的值 | 100个gdb小技巧</a></li>
 </ul>
@@ -368,7 +349,7 @@ added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
 0x600001700170: 0xffff6dff 0x00000000 0x00000000 0x00000000
 0x600001700180: 0x20ec913f 0x00007ff8 0x4e5ef01e 0x00000000
 </code></pre>
-<h3 id="ctinue-继续执行到下一个断点"><a class="header" href="#ctinue-继续执行到下一个断点">c(tinue): 继续执行到下一个断点</a></h3>
+<h4 id="continue-继续执行到下一个断点"><a class="header" href="#continue-继续执行到下一个断点">c(ontinue): 继续执行到下一个断点</a></h4>
 <pre><code class="language-shell">(lldb) c
 Process 69337 resuming
 added 3: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 0, items: 3
