@@ -4,6 +4,12 @@
 
 <!--te-->
 
+## 资料整理
+
+### 官方数据结构cheat sheet
+
+- [Rust Language Cheat Sheet](https://cheats.rs/#data-layout)
+
 ## 查看hashmap内存结构
 
 ### bin配置与运行
