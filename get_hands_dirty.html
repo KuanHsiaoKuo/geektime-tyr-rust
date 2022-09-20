@@ -3,8 +3,7 @@
 <head>
     <!-- Book generated using mdBook -->
     <meta charset="UTF-8">
-    <title>Anatomy In First Rust Programming Class 🦀</title>
-        <meta name="robots" content="noindex"/>
+    <title>get hands dirty - Anatomy In First Rust Programming Class 🦀</title>
 
 
     <!-- Custom HTML head -->
@@ -96,7 +95,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">2.</strong> get hands dirty</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html" class="active"><strong aria-hidden="true">2.</strong> get hands dirty</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -181,217 +180,51 @@
                 <div class="sidetoc">
                     <nav class="pagetoc"></nav>
                 </div>
-                <h1 id="源码解析逻辑"><a class="header" href="#源码解析逻辑">源码解析逻辑</a></h1>
+                <h1 id="get-hands-dirty"><a class="header" href="#get-hands-dirty">get hands dirty</a></h1>
 <!--ts-->
 <ul>
-<li><a href="anatomy_logic.html#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E9%80%BB%E8%BE%91">源码解析逻辑</a>
+<li><a href="#get-hands-dirty">get hands dirty</a>
 <ul>
-<li><a href="anatomy_logic.html#%E9%A1%B9%E7%9B%AE%E6%96%87%E6%A1%A3">项目文档</a>
+<li><a href="#httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">httpie源码剖析</a>
 <ul>
-<li><a href="anatomy_logic.html#%E6%9D%A5%E6%BA%90">来源</a></li>
-<li><a href="anatomy_logic.html#cargo-doc%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8">cargo doc命令使用</a>
+<li><a href="#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a>
 <ul>
-<li><a href="anatomy_logic.html#--open">–open</a></li>
-<li><a href="anatomy_logic.html#--no-deps">–no-deps</a></li>
+<li><a href="#cargotoml">Cargo.toml</a></li>
 </ul>
 </li>
-<li><a href="anatomy_logic.html#%E4%BD%BF%E7%94%A8%E5%8C%BA%E5%88%AB">使用区别</a></li>
-<li><a href="anatomy_logic.html#%E4%BD%BF%E7%94%A8%E7%BB%86%E8%8A%82">使用细节</a>
+<li><a href="#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a>
+* <a href="#%E8%A6%81%E7%82%B9%E8%AF%B4%E6%98%8E">要点说明</a>
+* <a href="#clapparser">clap::Parser</a></li>
+<li><a href="#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a>
 <ul>
-<li><a href="anatomy_logic.html#crates">Crates</a></li>
-<li><a href="anatomy_logic.html#crate%E5%8C%85%E5%90%AB%E6%88%90%E5%91%98">crate包含成员</a></li>
-<li><a href="anatomy_logic.html#re-exports">Re-exports</a></li>
-<li><a href="anatomy_logic.html#modules">Modules</a></li>
-<li><a href="anatomy_logic.html#macros">Macros</a></li>
-<li><a href="anatomy_logic.html#derive-macros">Derive Macros</a></li>
-<li><a href="anatomy_logic.html#attribute-macros">Attribute Macros</a></li>
-<li><a href="anatomy_logic.html#structs">Structs</a>
-<ul>
-<li><a href="anatomy_logic.html#definition">Definition</a></li>
-<li><a href="anatomy_logic.html#associated-types">Associated Types</a></li>
-<li><a href="anatomy_logic.html#implementations">Implementations</a></li>
-<li><a href="anatomy_logic.html#trait-implementations">Trait Implementations</a></li>
-<li><a href="anatomy_logic.html#auto-trait-implementations">Auto Trait Implementations</a></li>
-<li><a href="anatomy_logic.html#blanket-implementations">Blanket Implementations</a></li>
+<li><a href="#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
+<li><a href="#%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">键值对改造</a></li>
 </ul>
 </li>
-<li><a href="anatomy_logic.html#enums">Enums</a>
-<ul>
-<li><a href="anatomy_logic.html#definition-1">Definition</a></li>
-<li><a href="anatomy_logic.html#variants">Variants</a></li>
-<li><a href="anatomy_logic.html#trait-implementations-1">Trait Implementations</a></li>
-<li><a href="anatomy_logic.html#auto-trait-implementations-1">Auto Trait Implementations</a></li>
-<li><a href="anatomy_logic.html#blanket-implementations-1">Blanket Implementations</a></li>
+<li><a href="#step3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E6%94%B9%E9%80%A0">Step3：异步请求改造</a></li>
+<li><a href="#step4-%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E6%89%93%E5%8D%B0">Step4: 语法高亮打印</a></li>
+<li><a href="#step5-%E6%B7%BB%E5%8A%A0%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">Step5: 添加单元测试</a></li>
 </ul>
 </li>
-<li><a href="anatomy_logic.html#constants">Constants</a></li>
-<li><a href="anatomy_logic.html#traits">Traits</a>
+<li><a href="#thumbor%E5%9B%BE%E7%89%87%E6%9C%8D%E5%8A%A1">thumbor图片服务</a>
 <ul>
-<li><a href="anatomy_logic.html#definition-2">Definition</a></li>
-<li><a href="anatomy_logic.html#required-methods">Required methods</a></li>
-<li><a href="anatomy_logic.html#implementations-on-foreign-types">Implementations on Foreign Types</a></li>
-<li><a href="anatomy_logic.html#implementors">Implementors</a></li>
+<li><a href="#abiproto">abi.proto</a></li>
+<li><a href="#buildrs">build.rs</a></li>
+<li><a href="#modrs%E8%A1%A8%E6%98%8E%E6%A8%A1%E5%9D%97">mod.rs表明模块</a></li>
+<li><a href="#pb%E6%A8%A1%E5%9D%97">pb模块</a>
+<ul>
+<li><a href="#pbmodrs%E5%A3%B0%E6%98%8E%E6%A8%A1%E5%9D%97">pb/mod.rs声明模块</a></li>
+<li><a href="#pbabirs%E9%87%8C%E9%9D%A2%E8%BF%98%E6%9C%89%E5%AD%90%E6%A8%A1%E5%9D%97">pb/abi.rs里面还有子模块</a></li>
+<li><a href="#pbabirs%E5%8F%A6%E5%A4%96%E5%AE%9A%E4%B9%89%E4%BA%86specdata%E9%87%8C%E9%9D%A2%E7%9A%84%E5%90%84%E4%B8%AA%E5%85%83%E7%B4%A0%E7%BB%93%E6%9E%84%E4%BD%93%E5%B5%8C%E5%A5%97%E6%A8%A1%E5%9D%97mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></li>
+<li><a href="#pbabirs%E6%9C%89%E4%B8%AA%E7%89%B9%E6%AE%8A%E7%BB%93%E6%9E%84%E4%BD%93">pb/abi.rs有个特殊结构体</a></li>
+<li><a href="#imagespec%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0">ImageSpec的定义与实现</a></li>
+<li><a href="#filter%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0">Filter的定义与实现</a></li>
+<li><a href="#samplefilter">SampleFilter</a></li>
+<li><a href="#spec">Spec</a></li>
+<li><a href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
 </ul>
 </li>
-<li><a href="anatomy_logic.html#functions">Functions</a>
-<ul>
-<li><a href="anatomy_logic.html#definition-3">Definition</a></li>
-</ul>
-</li>
-<li><a href="anatomy_logic.html#type-definitions">Type Definitions</a>
-<ul>
-<li><a href="anatomy_logic.html#definition-4">Definition</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Sep 20 13:08:34 UTC 2022 -->
-<!--te-->
-<h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
-<h3 id="来源"><a class="header" href="#来源">来源</a></h3>
-<ol>
-<li>第三方crate可以在<a href="https://docs.rs/">官方文档</a>上面搜索</li>
-<li>本地crate可以使用命令<code>cargo doc --open</code>.</li>
-</ol>
-<h3 id="cargo-doc命令使用"><a class="header" href="#cargo-doc命令使用">cargo doc命令使用</a></h3>
-<blockquote>
-<p><a href="https://doc.rust-lang.org/cargo/commands/cargo-doc.html">更多内容</a></p>
-</blockquote>
-<h4 id="open"><a class="header" href="#open">–open</a></h4>
-<p>自动生成文档并在浏览器打开</p>
-<h4 id="no-deps"><a class="header" href="#no-deps">–no-deps</a></h4>
-<p>默认情况下会把项目依赖的包文档也生成，这也是文档左侧Crates的来源之一。
-这个参数可以屏蔽掉依赖的crates</p>
-<h3 id="使用区别"><a class="header" href="#使用区别">使用区别</a></h3>
-<ol>
-<li>二者内容没有区别，官方文档也是执行命令生成文档。</li>
-<li>官方文档还可以提供很多细节，比如git分支地址</li>
-</ol>
-<h3 id="使用细节"><a class="header" href="#使用细节">使用细节</a></h3>
-<blockquote>
-<p>这里按照文档的层级进行递进说明</p>
-</blockquote>
-<h4 id="crates"><a class="header" href="#crates">Crates</a></h4>
-<p>所有文档的首页都会有这一项，列出项目包含的crate</p>
-<h4 id="crate包含成员"><a class="header" href="#crate包含成员">crate包含成员</a></h4>
-<blockquote>
-<p>点击Crates下的某个crate，右侧页面就会显示当前crate包含的元素， 主要有下列内容</p>
-</blockquote>
-<ul>
-<li>Re-exports</li>
-<li>Modules</li>
-<li>Macros</li>
-<li>Derive Macros</li>
-<li>Attribute Macros</li>
-<li>Structs</li>
-<li>Enums</li>
-<li>Constants</li>
-<li>Traits</li>
-<li>Functions</li>
-<li>Type Definitions</li>
-</ul>
-<h4 id="re-exports"><a class="header" href="#re-exports">Re-exports</a></h4>
-<blockquote>
-<p>futures_util</p>
-</blockquote>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub use reader::DecompressorCustomIo;
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="modules"><a class="header" href="#modules">Modules</a></h4>
-<p>其实就是mod，点击之后将会列出某个mod里面的成员</p>
-<h4 id="macros"><a class="header" href="#macros">Macros</a></h4>
-<h4 id="derive-macros"><a class="header" href="#derive-macros">Derive Macros</a></h4>
-<blockquote>
-<p>darling_macro、clap_derive</p>
-</blockquote>
-<h4 id="attribute-macros"><a class="header" href="#attribute-macros">Attribute Macros</a></h4>
-<blockquote>
-<p>tokio_macros、futures_macro</p>
-</blockquote>
-<h4 id="structs"><a class="header" href="#structs">Structs</a></h4>
-<h5 id="definition"><a class="header" href="#definition">Definition</a></h5>
-<h5 id="associated-types"><a class="header" href="#associated-types">Associated Types</a></h5>
-<h5 id="implementations"><a class="header" href="#implementations">Implementations</a></h5>
-<h5 id="trait-implementations"><a class="header" href="#trait-implementations">Trait Implementations</a></h5>
-<h5 id="auto-trait-implementations"><a class="header" href="#auto-trait-implementations">Auto Trait Implementations</a></h5>
-<h5 id="blanket-implementations"><a class="header" href="#blanket-implementations">Blanket Implementations</a></h5>
-<h4 id="enums"><a class="header" href="#enums">Enums</a></h4>
-<h5 id="definition-1"><a class="header" href="#definition-1">Definition</a></h5>
-<h5 id="variants"><a class="header" href="#variants">Variants</a></h5>
-<h5 id="trait-implementations-1"><a class="header" href="#trait-implementations-1">Trait Implementations</a></h5>
-<h5 id="auto-trait-implementations-1"><a class="header" href="#auto-trait-implementations-1">Auto Trait Implementations</a></h5>
-<h5 id="blanket-implementations-1"><a class="header" href="#blanket-implementations-1">Blanket Implementations</a></h5>
-<h4 id="constants"><a class="header" href="#constants">Constants</a></h4>
-<h4 id="traits"><a class="header" href="#traits">Traits</a></h4>
-<h5 id="definition-2"><a class="header" href="#definition-2">Definition</a></h5>
-<h5 id="required-methods"><a class="header" href="#required-methods">Required methods</a></h5>
-<h5 id="implementations-on-foreign-types"><a class="header" href="#implementations-on-foreign-types">Implementations on Foreign Types</a></h5>
-<h5 id="implementors"><a class="header" href="#implementors">Implementors</a></h5>
-<h4 id="functions"><a class="header" href="#functions">Functions</a></h4>
-<h5 id="definition-3"><a class="header" href="#definition-3">Definition</a></h5>
-<h4 id="type-definitions"><a class="header" href="#type-definitions">Type Definitions</a></h4>
-<h5 id="definition-4"><a class="header" href="#definition-4">Definition</a></h5>
-<blockquote>
-<p>html2md</p>
-</blockquote>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub type BoxedError = Box&lt;dyn Error + Send + Sync&gt;;
-<span class="boring">}
-</span></code></pre></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="get-hands-dirty"><a class="header" href="#get-hands-dirty">get hands dirty</a></h1>
-<!--ts-->
-<ul>
-<li><a href="get_hands_dirty.html#get-hands-dirty">get hands dirty</a>
-<ul>
-<li><a href="get_hands_dirty.html#httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">httpie源码剖析</a>
-<ul>
-<li><a href="get_hands_dirty.html#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a>
-<ul>
-<li><a href="get_hands_dirty.html#cargotoml">Cargo.toml</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a>
-* <a href="get_hands_dirty.html#%E8%A6%81%E7%82%B9%E8%AF%B4%E6%98%8E">要点说明</a>
-* <a href="get_hands_dirty.html#clapparser">clap::Parser</a></li>
-<li><a href="get_hands_dirty.html#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
-<li><a href="get_hands_dirty.html#%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">键值对改造</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#step3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E6%94%B9%E9%80%A0">Step3：异步请求改造</a></li>
-<li><a href="get_hands_dirty.html#step4-%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E6%89%93%E5%8D%B0">Step4: 语法高亮打印</a></li>
-<li><a href="get_hands_dirty.html#step5-%E6%B7%BB%E5%8A%A0%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">Step5: 添加单元测试</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#thumbor%E5%9B%BE%E7%89%87%E6%9C%8D%E5%8A%A1">thumbor图片服务</a>
-<ul>
-<li><a href="get_hands_dirty.html#abiproto">abi.proto</a></li>
-<li><a href="get_hands_dirty.html#buildrs">build.rs</a></li>
-<li><a href="get_hands_dirty.html#modrs%E8%A1%A8%E6%98%8E%E6%A8%A1%E5%9D%97">mod.rs表明模块</a></li>
-<li><a href="get_hands_dirty.html#pb%E6%A8%A1%E5%9D%97">pb模块</a>
-<ul>
-<li><a href="get_hands_dirty.html#pbmodrs%E5%A3%B0%E6%98%8E%E6%A8%A1%E5%9D%97">pb/mod.rs声明模块</a></li>
-<li><a href="get_hands_dirty.html#pbabirs%E9%87%8C%E9%9D%A2%E8%BF%98%E6%9C%89%E5%AD%90%E6%A8%A1%E5%9D%97">pb/abi.rs里面还有子模块</a></li>
-<li><a href="get_hands_dirty.html#pbabirs%E5%8F%A6%E5%A4%96%E5%AE%9A%E4%B9%89%E4%BA%86specdata%E9%87%8C%E9%9D%A2%E7%9A%84%E5%90%84%E4%B8%AA%E5%85%83%E7%B4%A0%E7%BB%93%E6%9E%84%E4%BD%93%E5%B5%8C%E5%A5%97%E6%A8%A1%E5%9D%97mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></li>
-<li><a href="get_hands_dirty.html#pbabirs%E6%9C%89%E4%B8%AA%E7%89%B9%E6%AE%8A%E7%BB%93%E6%9E%84%E4%BD%93">pb/abi.rs有个特殊结构体</a></li>
-<li><a href="get_hands_dirty.html#imagespec%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0">ImageSpec的定义与实现</a></li>
-<li><a href="get_hands_dirty.html#filter%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0">Filter的定义与实现</a></li>
-<li><a href="get_hands_dirty.html#samplefilter">SampleFilter</a></li>
-<li><a href="get_hands_dirty.html#spec">Spec</a></li>
-<li><a href="get_hands_dirty.html#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#engine%E6%A8%A1%E5%9D%97">engine模块</a></li>
+<li><a href="#engine%E6%A8%A1%E5%9D%97">engine模块</a></li>
 </ul>
 </li>
 </ul>
@@ -445,7 +278,7 @@ name = &quot;cli_get&quot;
 <div id="admonition-example使用" class="admonition tip">
 <div class="admonition-title">
 <p>example使用</p>
-<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-example使用"></a></p>
+<p><a class="admonition-anchor-link" href="#admonition-example使用"></a></p>
 </div>
 <div>
 <ol>
@@ -558,7 +391,7 @@ fn main() {
 <div id="admonition-clapparser" class="admonition info">
 <div class="admonition-title">
 <p>clap::Parser</p>
-<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-clapparser"></a></p>
+<p><a class="admonition-anchor-link" href="#admonition-clapparser"></a></p>
 </div>
 <div>
 <ul>
@@ -1295,470 +1128,6 @@ mod tests {
 <span class="boring">}
 </span></code></pre></pre>
 <h3 id="engine模块"><a class="header" href="#engine模块">engine模块</a></h3>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="gdblldb调试或查看内存结构"><a class="header" href="#gdblldb调试或查看内存结构">gdb/lldb调试或查看内存结构</a></h1>
-<!--ts-->
-<!--te-->
-<h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
-<h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
-<ul>
-<li><a href="https://cheats.rs/#data-layout">Rust Language Cheat Sheet</a></li>
-</ul>
-<h2 id="查看hashmap内存结构"><a class="header" href="#查看hashmap内存结构">查看hashmap内存结构</a></h2>
-<h3 id="bin配置与运行"><a class="header" href="#bin配置与运行">bin配置与运行</a></h3>
-<ul>
-<li><a href="https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=bin#binaries">Cargo Targets - The Cargo Book</a></li>
-</ul>
-<pre><code class="language-toml">[package]
-name = &quot;hashtable&quot;
-version = &quot;0.1.0&quot;
-edition = &quot;2021&quot;
-
-[[bin]]
-name = &quot;hashmap1&quot;
-path = &quot;src/hashmap1.rs&quot;
-
-[[bin]]
-name = &quot;hashmap2&quot;
-path = &quot;src/hashmap2.rs&quot;
-
-[[bin]]
-name = &quot;hash&quot;
-path = &quot;src/hash.rs&quot;
-
-[[bin]]
-name = &quot;siphasher&quot;
-path = &quot;src/siphasher.rs&quot;
-doc = false
-
-[[bin]]
-name = &quot;hashmap3&quot;
-path = &quot;src/hashmap3.rs&quot;
-
-[[bin]]
-name = &quot;btreemap1&quot;
-path = &quot;src/btreemap1.rs&quot;
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-</code></pre>
-<blockquote>
-<p>如果要单独运行指定bin文件：</p>
-</blockquote>
-<pre><code class="language-shell">cargo run --bin hashmap2
-</code></pre>
-<h3 id="目标调试代码"><a class="header" href="#目标调试代码">目标调试代码</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">use std::collections::HashMap;
-
-fn main() {
-    let map = HashMap::new();
-    let mut map = explain(&quot;empty&quot;, map);
-
-    map.insert('a', 1);
-    let mut map = explain(&quot;added 1&quot;, map);
-    map.insert('b', 2);
-    map.insert('c', 3);
-
-    let mut map = explain(&quot;added 3&quot;, map);
-
-    map.insert('d', 4);
-
-    let mut map = explain(&quot;added 4&quot;, map);
-
-    map.remove(&amp;'a');
-
-    explain(&quot;final&quot;, map);
-}
-
-// HashMap 结构有两个 u64 的 RandomState，然后是四个 usize，
-// 分别是 bucket_mask, ctrl, growth_left 和 items
-// 我们 transmute 打印之后，再 transmute 回去
-fn explain&lt;K, V&gt;(name: &amp;str, map: HashMap&lt;K, V&gt;) -&gt; HashMap&lt;K, V&gt; {
-    let arr: [usize; 6] = unsafe { std::mem::transmute(map) };
-    println!(
-        &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
-        name, arr[2], arr[3], arr[4], arr[5]
-    );
-    unsafe { std::mem::transmute(arr) }
-}
-</code></pre></pre>
-<h3 id="使用gdblldb进行调试查看内存结构"><a class="header" href="#使用gdblldb进行调试查看内存结构">使用gdb/lldb进行调试查看内存结构</a></h3>
-<h4 id="gdb-主要是linux系统"><a class="header" href="#gdb-主要是linux系统">gdb: 主要是linux系统</a></h4>
-<h4 id="lldb-主要osx系统"><a class="header" href="#lldb-主要osx系统">lldb: 主要OSX系统</a></h4>
-<h4 id="idea"><a class="header" href="#idea">IDEA</a></h4>
-<blockquote>
-<p>自带的调试界面同时包含lldb更好的界面功能。</p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/CleanShot%202022-09-18%20at%2021.24.12%402x.png" alt="CleanShot 2022-09-18 at 21.24.12@2x" /></p>
-<h4 id="gdb与lldb命令对照"><a class="header" href="#gdb与lldb命令对照">gdb与lldb命令对照</a></h4>
-<ul>
-<li><a href="https://lldb.llvm.org/use/map.html">GDB to LLDB command map — The LLDB Debugger</a></li>
-</ul>
-<h4 id="开始调试"><a class="header" href="#开始调试">开始调试</a></h4>
-<pre><code class="language-shell">rust-lldb target/debug/hashmap2                                                                                                                  ─╯
-(lldb) command script import &quot;/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_lookup.py&quot;
-(lldb) command source -s 0 '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_commands'
-Executing commands in '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_commands'.
-(lldb) type synthetic add -l lldb_lookup.synthetic_lookup -x &quot;.*&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)String$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^&amp;(mut )?str$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^&amp;(mut )?\\[.+\\]$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::ffi::([a-z_]+::)+)OsString$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Vec&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)VecDeque&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)BTreeSet&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)BTreeMap&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::collections::([a-z_]+::)+)HashMap&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::collections::([a-z_]+::)+)HashSet&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Rc&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Arc&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)Cell&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)Ref&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)RefMut&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)RefCell&lt;.+&gt;$&quot; --category Rust
-(lldb) type category enable Rust
-(lldb) target create &quot;target/debug/hashmap2&quot;
-Current executable set to '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/hashmap2' (x86_64).
-(lldb)
-</code></pre>
-<h4 id="breakpoint-添加断点"><a class="header" href="#breakpoint-添加断点">b(reakpoint): 添加断点</a></h4>
-<blockquote>
-<p>在32行打断点，方便看std::mem::transmute(arr)</p>
-</blockquote>
-<pre><code class="language-shell">(lldb) b hashmap2.rs:32
-Breakpoint 1: where = hashmap2`hashmap2::explain::h4091c852f38a0de4 + 406 at hashmap2.rs:32:34, address = 0x0000000100008d16
-</code></pre>
-<h4 id="run运行到断点"><a class="header" href="#run运行到断点">r(un):运行到断点</a></h4>
-<pre><code class="language-shell">(lldb) r
-Process 69337 launched: '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/hashmap2' (x86_64)
-empty: bucket_mask 0x0, ctrl 0x100043d20, growth_left: 0, items: 0
-Process 69337 stopped
-* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;empty&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
-   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
-   30           name, arr[2], arr[3], arr[4], arr[5]
-   31       );
--&gt; 32       unsafe { std::mem::transmute(arr) }
-   33   }
-Target 0: (hashmap2) stopped.
-</code></pre>
-<pre><code class="language-shell"># 最初的状态，哈希表为空
-empty: bucket_mask 0x0, ctrl 0x100043d20, growth_left: 0, items: 0
-</code></pre>
-<h4 id="continue继续单步执行"><a class="header" href="#continue继续单步执行">c(ontinue):继续单步执行</a></h4>
-<pre><code class="language-shell">(lldb) c
-Process 69337 resuming
-added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
-Process 69337 stopped
-* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;added 1&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
-   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
-   30           name, arr[2], arr[3], arr[4], arr[5]
-   31       );
--&gt; 32       unsafe { std::mem::transmute(arr) }
-   33   }
-Target 0: (hashmap2) stopped.
-</code></pre>
-<pre><code class="language-shell"># 插入了一个元素后，bucket 有 4 个（0x3+1），堆地址起始位置 0x600001700160 - 4*8(0x20)
-added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
-</code></pre>
-<h4 id="x-打印内存地址"><a class="header" href="#x-打印内存地址">x: 打印内存地址</a></h4>
-<ul>
-<li><a href="https://wizardforcel.gitbooks.io/100-gdb-tips/content/examine-memory.html">打印内存的值 | 100个gdb小技巧</a></li>
-</ul>
-<pre><code class="language-shell"># 以12进制打印从内存地址开始的值
-(lldb) x/12x 0x600001700160
-0x600001700160: 0xffff6dff 0xffffffff 0xffffffff 0xffffffff
-0x600001700170: 0xffff6dff 0x00000000 0x00000000 0x00000000
-0x600001700180: 0x20ec913f 0x00007ff8 0x4e5ef01e 0x00000000
-</code></pre>
-<h4 id="continue-继续执行到下一个断点"><a class="header" href="#continue-继续执行到下一个断点">c(ontinue): 继续执行到下一个断点</a></h4>
-<pre><code class="language-shell">(lldb) c
-Process 69337 resuming
-added 3: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 0, items: 3
-Process 69337 stopped
-* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;added 3&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
-   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
-   30           name, arr[2], arr[3], arr[4], arr[5]
-   31       );
--&gt; 32       unsafe { std::mem::transmute(arr) }
-   33   }
-Target 0: (hashmap2) stopped.
-</code></pre>
-<pre><code class="language-shell"># # 插入了三个元素后，哈希表没有剩余空间，堆地址起始位置不变 0x600001700160 - 4*8(0x20)
-added 3: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 0, items: 3
-</code></pre>
-<pre><code class="language-shell">(lldb) x/12x 0x600001700160
-0x600001700160: 0x16ff6d66 0xffffffff 0xffffffff 0xffffffff
-0x600001700170: 0x16ff6d66 0x00000000 0x00000000 0x00000000
-0x600001700180: 0x20ec913f 0x00007ff8 0x4e5ef01e 0x00000000
-</code></pre>
-<pre><code class="language-shell">(lldb) c
-Process 69337 resuming
-added 4: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 3, items: 4
-Process 69337 stopped
-* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;added 4&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
-   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
-   30           name, arr[2], arr[3], arr[4], arr[5]
-   31       );
--&gt; 32       unsafe { std::mem::transmute(arr) }
-   33   }
-Target 0: (hashmap2) stopped.
-</code></pre>
-<pre><code class="language-shell"># 插入第四个元素后，哈希表扩容，堆地址起始位置变为 0x600002604040 - 8*8(0x40)
-added 4: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 3, items: 4
-</code></pre>
-<pre><code class="language-shell">(lldb) x/12x 0x600002604040
-0x600002604040: 0x16446d66 0xffffffff 0xffffffff 0xffffffff
-0x600002604050: 0x16446d66 0xffffffff 0x00000000 0x00000000
-0x600002604060: 0x00000000 0x00000000 0x00000000 0x00000000
-(lldb) x/20x 0x600002604040
-0x600002604040: 0x16446d66 0xffffffff 0xffffffff 0xffffffff
-0x600002604050: 0x16446d66 0xffffffff 0x00000000 0x00000000
-0x600002604060: 0x00000000 0x00000000 0x00000000 0x00000000
-0x600002604070: 0x00000000 0x00000000 0x00000000 0x00000000
-0x600002604080: 0x00000000 0x00000000 0x00000000 0x00000000
-</code></pre>
-<pre><code class="language-shell">(lldb) c
-Process 69337 resuming
-final: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 4, items: 3
-Process 69337 stopped
-* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-    frame #0: 0x0000000100008d16 hashmap2`hashmap2::explain::h4091c852f38a0de4(name=&quot;final&quot;, map=&lt;unavailable&gt;) at hashmap2.rs:32:34
-   29           &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
-   30           name, arr[2], arr[3], arr[4], arr[5]
-   31       );
--&gt; 32       unsafe { std::mem::transmute(arr) }
-   33   }
-Target 0: (hashmap2) stopped.
-</code></pre>
-<pre><code class="language-shell"># 删除 a 后，剩余 4 个位置。注意 ctrl bit 的变化，以及 0x61 0x1 并没有被清除
-final: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 4, items: 3
-</code></pre>
-<pre><code class="language-shell">(lldb) x/12x 0x600002604040
-0x600002604040: 0x1644ff66 0xffffffff 0xffffffff 0xffffffff
-0x600002604050: 0x1644ff66 0xffffffff 0x00000000 0x00000000
-0x600002604060: 0x00000000 0x00000000 0x00000000 0x00000000
-(lldb) x/20x 0x600002604040
-0x600002604040: 0x1644ff66 0xffffffff 0xffffffff 0xffffffff
-0x600002604050: 0x1644ff66 0xffffffff 0x00000000 0x00000000
-0x600002604060: 0x00000000 0x00000000 0x00000000 0x00000000
-0x600002604070: 0x00000000 0x00000000 0x00000000 0x00000000
-0x600002604080: 0x00000000 0x00000000 0x00000000 0x00000000
-</code></pre>
-<h2 id="查看闭包的结构"><a class="header" href="#查看闭包的结构">查看闭包的结构</a></h2>
-<h3 id="代码"><a class="header" href="#代码">代码</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">use std::{collections::HashMap, mem::size_of_val};
-fn main() {
-    // 长度为 0
-    let c1 = || println!(&quot;hello world!&quot;);
-    // 和参数无关，长度也为 0
-    let c2 = |i: i32| println!(&quot;hello: {}&quot;, i);
-    let name = String::from(&quot;tyr&quot;);
-    let name1 = name.clone();
-    let mut table = HashMap::new();
-    table.insert(&quot;hello&quot;, &quot;world&quot;);
-    // 如果捕获一个引用，长度为 8
-    let c3 = || println!(&quot;hello: {}&quot;, name);
-    // 捕获移动的数据 name1(长度 24) + table(长度 48)，closure 长度 72
-    let c4 = move || println!(&quot;hello: {}, {:?}&quot;, name1, table);
-    let name2 = name.clone();
-    // 和局部变量无关，捕获了一个 String name2，closure 长度 24
-    let c5 = move || {
-        let x = 1;
-        let name3 = String::from(&quot;lindsey&quot;);
-        println!(&quot;hello: {}, {:?}, {:?}&quot;, x, name2, name3);
-    };
-
-    println!(
-        &quot;c1: {}, c2: {}, c3: {}, c4: {}, c5: {}, main: {}&quot;,
-        size_of_val(&amp;c1),
-        size_of_val(&amp;c2),
-        size_of_val(&amp;c3),
-        size_of_val(&amp;c4),
-        size_of_val(&amp;c5),
-        size_of_val(&amp;main),
-    )
-}
-</code></pre></pre>
-<h3 id="运行进入lldb"><a class="header" href="#运行进入lldb">运行进入lldb</a></h3>
-<pre><code class="language-shell"># 自动去examples目录找对应名字的代码文件
-cargo run --example closure_size
-</code></pre>
-<pre><code class="language-shell">rust-lldb ../target/debug/examples/closure_size                                                                                                  ─╯
-(lldb) command script import &quot;/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_lookup.py&quot;
-(lldb) command source -s 0 '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_commands'
-Executing commands in '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_commands'.
-(lldb) type synthetic add -l lldb_lookup.synthetic_lookup -x &quot;.*&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)String$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^&amp;(mut )?str$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^&amp;(mut )?\\[.+\\]$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::ffi::([a-z_]+::)+)OsString$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Vec&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)VecDeque&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)BTreeSet&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)BTreeMap&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::collections::([a-z_]+::)+)HashMap&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(std::collections::([a-z_]+::)+)HashSet&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Rc&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(alloc::([a-z_]+::)+)Arc&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)Cell&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)Ref&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)RefMut&lt;.+&gt;$&quot; --category Rust
-(lldb) type summary add -F lldb_lookup.summary_lookup  -e -x -h &quot;^(core::([a-z_]+::)+)RefCell&lt;.+&gt;$&quot; --category Rust
-(lldb) type category enable Rust
-(lldb) target create &quot;../target/debug/examples/closure_size&quot;
-Current executable set to '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/closure_size' (x86_64).
-(lldb)
-</code></pre>
-<pre><code class="language-shell">(lldb) b closure_size.rs:14
-Breakpoint 1: where = closure_size`closure_size::main::h679d75437a0cd078 + 199 at closure_size.rs:14:14, address = 0x00000001000056b7
-</code></pre>
-<pre><code class="language-shell">(lldb) r
-Process 95084 launched: '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/closure_size' (x86_64)
-Process 95084 stopped
-* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1
-    frame #0: 0x00000001000056b7 closure_size`closure_size::main::h679d75437a0cd078 at closure_size.rs:14:14
-   11       // 如果捕获一个引用，长度为 8
-   12       let c3 = || println!(&quot;hello: {}&quot;, name);
-   13       // 捕获移动的数据 name1(长度 24) + table(长度 48)，closure 长度 72
--&gt; 14       let c4 = move || println!(&quot;hello: {}, {:?}&quot;, name1, table);
-   15       let name2 = name.clone();
-   16       // 和局部变量无关，捕获了一个 String name2，closure 长度 24
-   17       let c5 = move || {
-Target 0: (closure_size) stopped.
-</code></pre>
-<pre><code class="language-shell">(lldb) frame variable
-(closure_size::main::{closure_env#0}) c1 =
-(closure_size::main::{closure_env#1}) c2 =
-(alloc::string::String) name = &quot;tyr&quot; {
-  vec = size=3 {
-    [0] = 't'
-    [1] = 'y'
-    [2] = 'r'
-  }
-}
-(alloc::string::String) name1 = &quot;tyr&quot; {
-  vec = size=3 {
-    [0] = 't'
-    [1] = 'y'
-    [2] = 'r'
-  }
-}
-(std::collections::hash::map::HashMap&lt;&amp;str, &amp;str, std::collections::hash::map::RandomState&gt;) table = size=1 {
-  [0] = {
-    0 = &quot;hello&quot; {
-      data_ptr = 0x0000000100043daf &quot;helloworld, c2: , c3: , c4: , c5: \n&quot;
-      length = 5
-    }
-    1 = &quot;world&quot; {
-      data_ptr = 0x0000000100043db4 &quot;world, c2: , c3: , c4: , c5: \n&quot;
-      length = 5
-    }
-  }
-}
-(lldb) fr v
-(closure_size::main::{closure_env#0}) c1 =
-(closure_size::main::{closure_env#1}) c2 =
-(alloc::string::String) name = &quot;tyr&quot; {
-  vec = size=3 {
-    [0] = 't'
-    [1] = 'y'
-    [2] = 'r'
-  }
-}
-(alloc::string::String) name1 = &quot;tyr&quot; {
-  vec = size=3 {
-    [0] = 't'
-    [1] = 'y'
-    [2] = 'r'
-  }
-}
-(std::collections::hash::map::HashMap&lt;&amp;str, &amp;str, std::collections::hash::map::RandomState&gt;) table = size=1 {
-  [0] = {
-    0 = &quot;hello&quot; {
-      data_ptr = 0x0000000100043daf &quot;helloworld, c2: , c3: , c4: , c5: \n&quot;
-      length = 5
-    }
-    1 = &quot;world&quot; {
-      data_ptr = 0x0000000100043db4 &quot;world, c2: , c3: , c4: , c5: \n&quot;
-      length = 5
-    }
-  }
-}
-</code></pre>
-<pre><code class="language-shell">(lldb) x/gx c1
-error: memory read failed for 0x0
-(lldb) x/gx &amp;c1
-0x7ff7bfefed20: 0x0000000100266000
-(lldb) x/gx &amp;c2
-0x7ff7bfefed28: 0x00006000017041c0
-(lldb) x/gx &amp;c3
-0x7ff7bfefed90: 0x00007ff7bfefed30
-(lldb) x/gx 0x00007ff7bfefed30
-0x7ff7bfefed30: 0x0000600000008010
-(lldb) x/3c  0x0000600000008010
-error: reading memory as characters of size 8 is not supported
-(lldb) x/gx  0x0000600000008010
-0x600000008010: 0x0000000000727974
-</code></pre>
-<ul>
-<li>g表示八字节。当我们指定了字节长度后，GDB会从指内存定的内存地址开始，读写指定字节，并把其当作一个值取出来。</li>
-<li>可以看出：c1是</li>
-</ul>
-<pre><code class="language-shell">(lldb) n
-Process 95084 stopped
-* thread #1, queue = 'com.apple.main-thread', stop reason = step over
-    frame #0: 0x0000000100005744 closure_size`closure_size::main::h679d75437a0cd078 at closure_size.rs:15:17
-   12       let c3 = || println!(&quot;hello: {}&quot;, name);
-   13       // 捕获移动的数据 name1(长度 24) + table(长度 48)，closure 长度 72
-   14       let c4 = move || println!(&quot;hello: {}, {:?}&quot;, name1, table);
--&gt; 15       let name2 = name.clone();
-   16       // 和局部变量无关，捕获了一个 String name2，closure 长度 24
-   17       let c5 = move || {
-   18           let x = 1;
-Target 0: (closure_size) stopped.
-(lldb) x/9gx c4
-error: memory read failed for 0x0
-(lldb) x/9gx &amp;c4
-0x7ff7bfefed98: 0x0000600000008020 0x0000000000000003
-0x7ff7bfefeda8: 0x0000000000000003 0x3e49f3270a1a0fb0
-0x7ff7bfefedb8: 0x79dd9a78e6c327e7 0x0000000000000003
-0x7ff7bfefedc8: 0x0000600003304080 0x0000000000000002
-0x7ff7bfefedd8: 0x0000000000000001
-(lldb) x/3c 0x0000600000008020
-error: reading memory as characters of size 8 is not supported
-(lldb) x/gx 0x0000600000008020
-0x600000008020: 0x0000000000727974
-(lldb) x/18gx 0x0000600000008020 - 0x80
-error: memory read takes a start address expression with an optional end address expression.
-warning: Expressions should be quoted if they contain spaces or other special characters.
-(lldb) x/18gx '0x0000600000008020 - 0x80'
-0x600000007fa0: 0x0000000000000000 0x0000000000000000
-0x600000007fb0: 0x0000000000000000 0x0000000000000000
-0x600000007fc0: 0x0000000000000000 0x0000000000000000
-0x600000007fd0: 0x0000000000000000 0x0000000000000000
-0x600000007fe0: 0x0000000000000000 0x0000000000000000
-0x600000007ff0: 0x0000000000000000 0x0000000000000000
-0x600000008000: 0x000000006e69616d 0x0000000000000000
-0x600000008010: 0x0000000000727974 0x0000000000000000
-0x600000008020: 0x0000000000727974 0x0000000000000000
-</code></pre>
-<ul>
-<li>0x: C语言里的0x0和0x1分别表示十六进制的数的0和1。</li>
-</ul>
-<p>C语言、C++、Shell、Python、Java语言及其他相近的语言使用字首“0x”，例如“0x5A3”。开头的“0”令解析器更易辨认数，而“x”则代表十六进制（就如“O”代表八进制）。在“0x”中的“x”可以大写或小写。对于字符量C语言中则以x+两位十六进制数的方式表示，如xFF。</p>
-<p>因此，0x0中“0x”表示的是十六进制数，0是十六进制数值0，0x,1中“0x”表示的是十六进制数，1是十六进制数值1</p>
-<ul>
-<li>C语言中的相关数值表示法：</li>
-</ul>
-<p>1、在C语言里，整数有三种表示形式：十进制，八进制，十六进制。其中以数字0开头，由0~7组成的数是八进制。以0X或0x开头，由0~9，A~F或a~f 组成是十六进制。除表示正负的符号外，以1~9开头，由0~9组成是十进制。</p>
-<p>2、十进制：除表示正负的符号外，以1~9开头，由0~9组成。如，128，+234，-278。</p>
-<p>3、八进制：以0开头，由0~7组成的数。如，0126,050000.</p>
-<p>4、十六进制：以0X或0x开头，由0~9，A~F或a~f 组成。如，0x12A,0x5a000。</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="checklist"><a class="header" href="#checklist">Checklist</a></h1>
 
             </main>
 
@@ -1771,7 +1140,15 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 
             <nav class="nav-wrapper" aria-label="Page navigation">
                 <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="anatomy_logic.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
 
+                    <a rel="next" href="intro_gdb_lldb.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
 
                 <div style="clear: both"></div>
             </nav>
@@ -1779,7 +1156,15 @@ warning: Expressions should be quoted if they contain spaces or other special ch
     </div>
 
     <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="anatomy_logic.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
 
+            <a rel="next" href="intro_gdb_lldb.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
     </nav>
 
 </div>
@@ -1814,12 +1199,5 @@ warning: Expressions should be quoted if they contain spaces or other special ch
     <script type="text/javascript" src="assets/smart-anchor.js"></script>
     <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
 
-        <script type="text/javascript">
-            window.addEventListener('load', function () {
-                MathJax.Hub.Register.StartupHook('End', function () {
-                    window.setTimeout(window.print, 100);
-                });
-            });
-        </script>
 </body>
 </html>
