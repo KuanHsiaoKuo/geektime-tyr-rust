@@ -1,29 +1,32 @@
-# 第四节：httpie源码剖析
+# get hands dirty
 
 <!--ts-->
+
 * [第四节：httpie源码剖析](#第四节httpie源码剖析)
-   * [example的使用](#example的使用)
-      * [Cargo.toml](#cargotoml)
-   * [Step1：指令解析](#step1指令解析)
-         * [要点说明](#要点说明)
-            * [clap::Parser](#clapparser)
-   * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
-      * [参数验证](#参数验证)
-      * [键值对改造](#键值对改造)
-   * [Step3：异步请求改造](#step3异步请求改造)
-   * [Step4: 语法高亮打印](#step4-语法高亮打印)
-   * [Step5: 添加单元测试](#step5-添加单元测试)
+    * [example的使用](#example的使用)
+        * [Cargo.toml](#cargotoml)
+    * [Step1：指令解析](#step1指令解析)
+      * [要点说明](#要点说明)
+      * [clap::Parser](#clapparser)
+    * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
+        * [参数验证](#参数验证)
+        * [键值对改造](#键值对改造)
+    * [Step3：异步请求改造](#step3异步请求改造)
+    * [Step4: 语法高亮打印](#step4-语法高亮打印)
+    * [Step5: 添加单元测试](#step5-添加单元测试)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Mon Sep 19 03:42:15 UTC 2022 -->
 
 <!--te-->
 
-## example的使用
+## httpie源码剖析
+
+### example的使用
 
 - [Cargo Targets >> Examples - The Cargo Book](https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=%5B%5Bexample%5D%5D#examples)
 
-### Cargo.toml
+#### Cargo.toml
 
 ```toml
 {{#include ../geektime_rust_codes/04_httpie/Cargo.toml}}
@@ -86,16 +89,15 @@ SUBCOMMANDS:
 - SUBCOMMANDS来自代码中的注释
 ~~~
 
-
-## Step1：指令解析
+### Step1：指令解析
 
 ```rust
 {{#include ../geektime_rust_codes/04_httpie/examples/cli.rs}}
 ```
 
-#### 要点说明
+##### 要点说明
 
-##### clap::Parser
+###### clap::Parser
 
 ~~~admonish info title='clap::Parser'
 
@@ -146,9 +148,9 @@ For more information try --help
 
 - opts的获取：自动以空格分隔，根据<subcommand>模式匹配，之后的参数依次赋值给<subcommand> struct里面的元素
 
-## Step2：添加参数验证与键值对改造
+### Step2：添加参数验证与键值对改造
 
-### 参数验证
+#### 参数验证
 
 ```rust
 {{#include ../geektime_rust_codes/04_httpie/examples/cli_verify.rs:27:47}}
@@ -162,19 +164,19 @@ For more information try --help
 
 1. clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了个parse_url检查一下。
 
-### 键值对改造
+#### 键值对改造
 
 ```rust
 {{#include ../geektime_rust_codes/04_httpie/examples/cli_verify.rs:49:73}}
 ```
 
-## Step3：异步请求改造
+### Step3：异步请求改造
 
 ```rust
 {{#include ../geektime_rust_codes/04_httpie/examples/cli_get.rs:85:112}}
 ```
 
-## Step4: 语法高亮打印
+### Step4: 语法高亮打印
 
 ```rust
 {{#include ../geektime_rust_codes/04_httpie/src/main.rs:112:167}}
@@ -184,8 +186,14 @@ For more information try --help
 {{#include ../geektime_rust_codes/04_httpie/src/main.rs:169:186}}
 ```
 
-## Step5: 添加单元测试
+### Step5: 添加单元测试
 
 ```rust
 {{#include ../geektime_rust_codes/04_httpie/src/main.rs:189:220}}
 ```
+
+## thumbor图片服务
+
+### abi.proto
+
+### build.rs
