@@ -6,8 +6,8 @@
     * [example的使用](#example的使用)
         * [Cargo.toml](#cargotoml)
     * [Step1：指令解析](#step1指令解析)
-      * [要点说明](#要点说明)
-      * [clap::Parser](#clapparser)
+        * [要点说明](#要点说明)
+        * [clap::Parser](#clapparser)
     * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
         * [参数验证](#参数验证)
         * [键值对改造](#键值对改造)
@@ -196,4 +196,110 @@ For more information try --help
 
 ### abi.proto
 
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/abi.proto}}
+```
+
 ### build.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/build.rs}}
+```
+
+- [option_env in std - Rust](https://doc.rust-lang.org/std/macro.option_env.html)
+
+> 在编译时可选择检查环境变量。
+
+### mod.rs表明模块
+
+一个目录下的所有代码，可以通过 mod.rs 声明
+
+### pb模块
+
+#### pb/mod.rs声明模块
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:5:6}}
+```
+
+#### pb/abi.rs里面还有子模块
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/abi.rs:94:113}}
+```
+
+#### pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/abi.rs:1:87}}
+```
+
+#### pb/abi.rs有个特殊结构体
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/abi.rs:88:93}}
+```
+
+#### ImageSpec的定义与实现
+
+- pb/abi.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/abi.rs:1:6}}
+```
+
+- pb/mod.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:8:30}}
+```
+
+#### Filter的定义与实现
+
+- pb/abi.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/abi.rs:68:79}}
+```
+
+- pb/mod.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:32:42}}
+```
+
+#### SampleFilter
+
+- pb/abi.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/abi.rs:19:37}}
+```
+
+- pb/mod.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:45:56}}
+```
+
+#### Spec
+
+- pb/abi.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/abi.rs:88:93}}
+```
+
+- pb/mod.rs
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:58:95}}
+```
+
+#### 单元测试
+
+```rust
+{{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:97:110}}
+```
+
+### engine模块
