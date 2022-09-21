@@ -559,6 +559,58 @@ cargo build -p queryer
 
 ## queryer package
 
+### cargo.toml
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer/cargo.toml}}
+```
+
+### 两个使用示例
+
+#### dialect.rs:SQL解析
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer/examples/dialect.rs}}
+```
+
+#### covid.rs: AST转换
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer/examples/covid.rs}}
+```
+
+### src/convert.rs
+
+#### 结构体定义:sql与对应部分结构体
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer/src/convert.rs:8:28}}
+```
+
+#### sql的转换
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer/src/convert.rs:30:86}}
+```
+
+#### 对应部分结构体的转换
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer/src/convert.rs:88:227}}
+```
+
+#### 单元测试
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer/src/convert.rs:229:250}}
+```
+
+### src/dialect.rs
+
+### src/loader.rs
+
+### src/fetcher.rs
+
 ## queryer-js package
 
 ## queryer-py package
