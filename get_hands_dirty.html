@@ -213,7 +213,7 @@
 <li><a href="#buildrs">build.rs</a></li>
 <li><a href="#%E5%85%B3%E4%BA%8Erust%E7%9A%84%E6%A8%A1%E5%9D%97">关于rust的模块</a></li>
 <li><a href="#mod%E6%96%87%E4%BB%B6%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0%E5%88%86%E7%A6%BB">mod文件定义与实现分离</a></li>
-<li><a href="#pb%E6%A8%A1%E5%9D%97">pb模块</a>
+<li><a href="#pb%E6%A8%A1%E5%9D%97-%E5%A4%84%E7%90%86protobuf">pb模块: 处理protobuf</a>
 <ul>
 <li><a href="#pbmodrs%E5%A3%B0%E6%98%8E%E6%A8%A1%E5%9D%97">pb/mod.rs声明模块</a></li>
 <li><a href="#pbabirs%E9%87%8C%E9%9D%A2%E8%BF%98%E6%9C%89%E5%AD%90%E6%A8%A1%E5%9D%97">pb/abi.rs里面还有子模块</a></li>
@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 07:23:04 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 07:33:55 UTC 2022 -->
 <!--te-->
 <h1 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h1>
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
@@ -785,6 +785,12 @@ fn main() {
 <blockquote>
 <p>可以参考这篇：<a href="https://zhuanlan.zhihu.com/p/443926839">Rust 模块系统理解 - 知乎</a></p>
 </blockquote>
+<div id="admonition-mod全认识" class="admonition tip">
+<div class="admonition-title">
+<p>mod全认识</p>
+<p><a class="admonition-anchor-link" href="#admonition-mod全认识"></a></p>
+</div>
+<div>
 <ol>
 <li>mod(mod.rs或mod关键字)将代码分为多个逻辑模块，并管理这些模块的可见性（public / private）。</li>
 <li>模块是项（item）的集合，项可以是：函数，结构体，trait，impl块，甚至其它模块。</li>
@@ -805,10 +811,12 @@ fn main() {
 语句可以将mod-name2下的item-name提升到这条语句所在的空间，item-name通常是函数或者结构体。Rust社区通常用这个方法来缩短库API的命名空间深度
 编译器规定use语句一定要在mod语句之前</li>
 </ol>
+</div>
+</div>
 <h2 id="mod文件定义与实现分离"><a class="header" href="#mod文件定义与实现分离">mod文件定义与实现分离</a></h2>
 <p>在rust中，一般会在模块的mod.rs文件中对供外部使用的项进行实现, 项可以是：函数，结构体，trait，impl块，甚至其它模块.
 这样有个好处，高内聚，可以在代码增长时，将变动局限在服务提供者内部，对外提供的api不变，不会造成破坏性更新。</p>
-<h2 id="pb模块"><a class="header" href="#pb模块">pb模块</a></h2>
+<h2 id="pb模块-处理protobuf"><a class="header" href="#pb模块-处理protobuf">pb模块: 处理protobuf</a></h2>
 <h3 id="pbmodrs声明模块"><a class="header" href="#pbmodrs声明模块">pb/mod.rs声明模块</a></h3>
 <pre><pre class="playground"><code class="language-rust  editable">mod abi; // 声明 abi.rs
 pub use abi::*;
