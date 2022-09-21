@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 03:32:43 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 07:23:04 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -350,8 +350,7 @@
 <div style="break-before: page; page-break-before: always;"></div><h1 id="get-hands-dirty"><a class="header" href="#get-hands-dirty">get hands dirty</a></h1>
 <!--ts-->
 <ul>
-<li><a href="get_hands_dirty.html#get-hands-dirty">get hands dirty</a>
-<ul>
+<li><a href="get_hands_dirty.html#get-hands-dirty">get hands dirty</a></li>
 <li><a href="get_hands_dirty.html#httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">httpie源码剖析</a>
 <ul>
 <li><a href="get_hands_dirty.html#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a>
@@ -360,8 +359,10 @@
 </ul>
 </li>
 <li><a href="get_hands_dirty.html#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a>
-* <a href="get_hands_dirty.html#%E8%A6%81%E7%82%B9%E8%AF%B4%E6%98%8E">要点说明</a>
-* <a href="get_hands_dirty.html#clapparser">clap::Parser</a></li>
+<ul>
+<li><a href="get_hands_dirty.html#clapparser">clap::Parser</a></li>
+</ul>
+</li>
 <li><a href="get_hands_dirty.html#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a>
 <ul>
 <li><a href="get_hands_dirty.html#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
@@ -385,12 +386,28 @@
 <li><a href="get_hands_dirty.html#pbabirs%E9%87%8C%E9%9D%A2%E8%BF%98%E6%9C%89%E5%AD%90%E6%A8%A1%E5%9D%97">pb/abi.rs里面还有子模块</a></li>
 <li><a href="get_hands_dirty.html#pbabirs%E5%8F%A6%E5%A4%96%E5%AE%9A%E4%B9%89%E4%BA%86specdata%E9%87%8C%E9%9D%A2%E7%9A%84%E5%90%84%E4%B8%AA%E5%85%83%E7%B4%A0%E7%BB%93%E6%9E%84%E4%BD%93%E5%B5%8C%E5%A5%97%E6%A8%A1%E5%9D%97mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></li>
 <li><a href="get_hands_dirty.html#pbabirs%E6%9C%89%E4%B8%AA%E7%89%B9%E6%AE%8A%E7%BB%93%E6%9E%84%E4%BD%93">pb/abi.rs有个特殊结构体</a></li>
-<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0%E5%88%86%E7%A6%BB">定义与实现分离</a>
+<li><a href="get_hands_dirty.html#imagespec">ImageSpec</a>
 <ul>
-<li><a href="get_hands_dirty.html#imagespec">ImageSpec</a></li>
-<li><a href="get_hands_dirty.html#filter%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0">Filter的定义与实现</a></li>
-<li><a href="get_hands_dirty.html#samplefilter">SampleFilter</a></li>
-<li><a href="get_hands_dirty.html#spec">Spec</a></li>
+<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84">定义：有序数组</a></li>
+<li><a href="get_hands_dirty.html#%E5%AE%9E%E7%8E%B0new%E6%96%B9%E6%B3%95fromtryfrom%E5%AE%9E%E7%8E%B0%E7%B1%BB%E5%9E%8B%E8%BD%AC%E5%8C%96">实现：new方法、From&amp;TryFrom实现类型转化</a></li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#filter">Filter</a>
+<ul>
+<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E4%BD%93mod">定义：枚举体mod</a></li>
+<li><a href="get_hands_dirty.html#%E5%AE%9E%E7%8E%B0%E5%8F%8C%E5%BC%95%E5%8F%B7%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D">实现：双引号的使用、模式匹配</a></li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#samplefilter">SampleFilter</a>
+<ul>
+<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E4%BD%93mod-1">定义：枚举体mod</a></li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#%E5%AE%9E%E7%8E%B0mod%E4%BD%BF%E7%94%A8%E5%8F%8C%E5%BC%95%E5%8F%B7from%E8%BD%AC%E4%B8%BA%E4%B8%8D%E5%90%8C%E7%BB%93%E6%9E%9C">实现：mod使用双引号、From转为不同结果</a></li>
+<li><a href="get_hands_dirty.html#spec">Spec</a>
+<ul>
+<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E7%BB%93%E6%9E%84%E4%BD%93">定义：结构体</a></li>
+<li><a href="get_hands_dirty.html#%E5%AE%9E%E7%8E%B0%E7%B1%BB%E4%BC%BC%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%B7%BB%E5%8A%A0%E7%B1%BB%E6%96%B9%E6%B3%95self">实现：类似面向对象中添加类方法Self</a></li>
 </ul>
 </li>
 <li><a href="get_hands_dirty.html#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
@@ -400,17 +417,15 @@
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 03:32:43 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 07:23:04 UTC 2022 -->
 <!--te-->
-<h2 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h2>
-<h3 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h3>
+<h1 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h1>
+<h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
 <li><a href="https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=%5B%5Bexample%5D%5D#examples">Cargo Targets &gt;&gt; Examples - The Cargo Book</a></li>
 </ul>
-<h4 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h4>
+<h3 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h3>
 <pre><code class="language-toml">[package]
 name = &quot;httpie&quot;
 version = &quot;0.1.0&quot;
@@ -505,8 +520,8 @@ SUBCOMMANDS:
 </ul>
 </div>
 </div>
-<h3 id="step1指令解析"><a class="header" href="#step1指令解析">Step1：指令解析</a></h3>
-<pre><pre class="playground"><code class="language-rust">use clap::Parser;
+<h2 id="step1指令解析"><a class="header" href="#step1指令解析">Step1：指令解析</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">use clap::Parser;
 
 // 定义 httpie 的 CLI 的主入口，它包含若干个子命令
 // 下面 /// 的注释是文档，clap 会将其作为 CLI 的帮助
@@ -558,8 +573,7 @@ fn main() {
     // println!(&quot;{:?}&quot;, opts::subcmd);
 }
 </code></pre></pre>
-<h5 id="要点说明"><a class="header" href="#要点说明">要点说明</a></h5>
-<h6 id="clapparser"><a class="header" href="#clapparser">clap::Parser</a></h6>
+<h3 id="clapparser"><a class="header" href="#clapparser">clap::Parser</a></h3>
 <div id="admonition-clapparser" class="admonition info">
 <div class="admonition-title">
 <p>clap::Parser</p>
@@ -576,18 +590,15 @@ fn main() {
 <ol>
 <li>clap的parser派生宏会自动实现parse方法来接收指令参数</li>
 </ol>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>struct Opts {
+<pre><pre class="playground"><code class="language-rust  editable">struct Opts {
     #[clap(subcommand)]
     subcmd: SubCommand,
 }
 
 // 子命令分别对应不同的 HTTP 方法，目前只支持 get / post
 #[derive(Parser, Debug)]
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">fn main() {
+</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust  editable">fn main() {
     let opts: Opts = Opts::parse();
     let opt_subcmd: SubCommand = opts.subcmd;
     // println!(&quot;{:?}&quot;, opts);
@@ -620,11 +631,9 @@ For more information try --help
 <ul>
 <li>opts的获取：自动以空格分隔，根据<subcommand>模式匹配，之后的参数依次赋值给<subcommand> struct里面的元素</li>
 </ul>
-<h3 id="step2添加参数验证与键值对改造"><a class="header" href="#step2添加参数验证与键值对改造">Step2：添加参数验证与键值对改造</a></h3>
-<h4 id="参数验证"><a class="header" href="#参数验证">参数验证</a></h4>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// feed get with an url and we will retrieve the response for you
+<h2 id="step2添加参数验证与键值对改造"><a class="header" href="#step2添加参数验证与键值对改造">Step2：添加参数验证与键值对改造</a></h2>
+<h3 id="参数验证"><a class="header" href="#参数验证">参数验证</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">/// feed get with an url and we will retrieve the response for you
 #[derive(Parser, Debug)]
 struct Get {
     /// HTTP 请求的 URL
@@ -645,14 +654,11 @@ struct Post {
     #[clap(parse(try_from_str=parse_kv_pair))]
     body: Vec&lt;KvPair&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre></pre>
 <ol>
 <li>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了parse_url和parse_kv_pair检查一下。</li>
 </ol>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// 因为我们为 KvPair 实现了 FromStr，这里可以直接 s.parse() 得到 KvPair
+<pre><pre class="playground"><code class="language-rust  editable">/// 因为我们为 KvPair 实现了 FromStr，这里可以直接 s.parse() 得到 KvPair
 fn parse_kv_pair(s: &amp;str) -&gt; Result&lt;KvPair&gt; {
     s.parse()
 }
@@ -662,15 +668,12 @@ fn parse_url(s: &amp;str) -&gt; Result&lt;String&gt; {
 
     Ok(s.into())
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre></pre>
 <ol>
 <li>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了个parse_url检查一下。</li>
 </ol>
-<h4 id="键值对改造"><a class="header" href="#键值对改造">键值对改造</a></h4>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// 命令行中的 key=value 可以通过 parse_kv_pair 解析成 KvPair 结构
+<h3 id="键值对改造"><a class="header" href="#键值对改造">键值对改造</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">/// 命令行中的 key=value 可以通过 parse_kv_pair 解析成 KvPair 结构
 #[allow(dead_code)]
 #[derive(Debug)]
 struct KvPair {
@@ -695,10 +698,9 @@ impl FromStr for KvPair {
         })
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="step3异步请求改造"><a class="header" href="#step3异步请求改造">Step3：异步请求改造</a></h3>
-<pre><pre class="playground"><code class="language-rust">#[tokio::main]
+</code></pre></pre>
+<h2 id="step3异步请求改造"><a class="header" href="#step3异步请求改造">Step3：异步请求改造</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">#[tokio::main]
 async fn main() -&gt; Result&lt;()&gt; {
     let opts: Opts = Opts::parse();
     // 生成一个
@@ -727,10 +729,8 @@ async fn post(client: Client, args: &amp;Post) -&gt; Result&lt;()&gt; {
     Ok(())
 }
 </code></pre></pre>
-<h3 id="step4-语法高亮打印"><a class="header" href="#step4-语法高亮打印">Step4: 语法高亮打印</a></h3>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// 打印服务器版本号 + 状态码
+<h2 id="step4-语法高亮打印"><a class="header" href="#step4-语法高亮打印">Step4: 语法高亮打印</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">// 打印服务器版本号 + 状态码
 fn print_status(resp: &amp;Response) {
     let status = format!(&quot;{:?} {}&quot;, resp.version(), resp.status()).blue();
     println!(&quot;{}\n&quot;, status);
@@ -786,9 +786,8 @@ fn print_syntect(s: &amp;str, ext: &amp;str) {
         print!(&quot;{}&quot;, escaped);
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<pre><pre class="playground"><code class="language-rust">/// 程序的入口函数，因为在 http 请求时我们使用了异步处理，所以这里引入 tokio
+</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust  editable">/// 程序的入口函数，因为在 http 请求时我们使用了异步处理，所以这里引入 tokio
 #[tokio::main]
 async fn main() -&gt; Result&lt;()&gt; {
     let opts: Opts = Opts::parse();
@@ -807,10 +806,8 @@ async fn main() -&gt; Result&lt;()&gt; {
     Ok(result)
 }
 </code></pre></pre>
-<h3 id="step5-添加单元测试"><a class="header" href="#step5-添加单元测试">Step5: 添加单元测试</a></h3>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// 仅在 cargo test 时才编译
+<h2 id="step5-添加单元测试"><a class="header" href="#step5-添加单元测试">Step5: 添加单元测试</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">// 仅在 cargo test 时才编译
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -842,13 +839,10 @@ mod tests {
         );
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h2 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h2>
-<h3 id="abiproto"><a class="header" href="#abiproto">abi.proto</a></h3>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>syntax = &quot;proto3&quot;;
+</code></pre></pre>
+<h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
+<h2 id="abiproto"><a class="header" href="#abiproto">abi.proto</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">syntax = &quot;proto3&quot;;
 
 package abi;
 
@@ -923,10 +917,9 @@ message Spec {
     Watermark watermark = 7;
   }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="buildrs"><a class="header" href="#buildrs">build.rs</a></h3>
-<pre><pre class="playground"><code class="language-rust">use std::process::Command;
+</code></pre></pre>
+<h2 id="buildrs"><a class="header" href="#buildrs">build.rs</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">use std::process::Command;
 
 fn main() {
     // 在编译时可选择检查环境变量。
@@ -955,7 +948,7 @@ fn main() {
 <blockquote>
 <p>在编译时可选择检查环境变量。</p>
 </blockquote>
-<h3 id="关于rust的模块"><a class="header" href="#关于rust的模块">关于rust的模块</a></h3>
+<h2 id="关于rust的模块"><a class="header" href="#关于rust的模块">关于rust的模块</a></h2>
 <blockquote>
 <p>可以参考这篇：<a href="https://zhuanlan.zhihu.com/p/443926839">Rust 模块系统理解 - 知乎</a></p>
 </blockquote>
@@ -979,21 +972,16 @@ fn main() {
 语句可以将mod-name2下的item-name提升到这条语句所在的空间，item-name通常是函数或者结构体。Rust社区通常用这个方法来缩短库API的命名空间深度
 编译器规定use语句一定要在mod语句之前</li>
 </ol>
-<h3 id="mod文件定义与实现分离"><a class="header" href="#mod文件定义与实现分离">mod文件定义与实现分离</a></h3>
+<h2 id="mod文件定义与实现分离"><a class="header" href="#mod文件定义与实现分离">mod文件定义与实现分离</a></h2>
 <p>在rust中，一般会在模块的mod.rs文件中对供外部使用的项进行实现, 项可以是：函数，结构体，trait，impl块，甚至其它模块.
 这样有个好处，高内聚，可以在代码增长时，将变动局限在服务提供者内部，对外提供的api不变，不会造成破坏性更新。</p>
-<h3 id="pb模块"><a class="header" href="#pb模块">pb模块</a></h3>
-<h4 id="pbmodrs声明模块"><a class="header" href="#pbmodrs声明模块">pb/mod.rs声明模块</a></h4>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>mod abi; // 声明 abi.rs
+<h2 id="pb模块"><a class="header" href="#pb模块">pb模块</a></h2>
+<h3 id="pbmodrs声明模块"><a class="header" href="#pbmodrs声明模块">pb/mod.rs声明模块</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">mod abi; // 声明 abi.rs
 pub use abi::*;
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="pbabirs里面还有子模块"><a class="header" href="#pbabirs里面还有子模块">pb/abi.rs里面还有子模块</a></h4>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// Nested message and enum types in `Spec`.
+</code></pre></pre>
+<h3 id="pbabirs里面还有子模块"><a class="header" href="#pbabirs里面还有子模块">pb/abi.rs里面还有子模块</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">/// Nested message and enum types in `Spec`.
 pub mod spec {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Data {
@@ -1013,12 +1001,9 @@ pub mod spec {
         Watermark(super::Watermark),
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod"><a class="header" href="#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></h4>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
+</code></pre></pre>
+<h3 id="pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod"><a class="header" href="#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">/// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ImageSpec {
     #[prost(message, repeated, tag = &quot;1&quot;)]
@@ -1105,40 +1090,32 @@ pub struct Watermark {
     #[prost(uint32, tag = &quot;2&quot;)]
     pub y: u32,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="pbabirs有个特殊结构体"><a class="header" href="#pbabirs有个特殊结构体">pb/abi.rs有个特殊结构体</a></h4>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// 一个 spec 可以包含上述的处理方式之一
+</code></pre></pre>
+<h3 id="pbabirs有个特殊结构体"><a class="header" href="#pbabirs有个特殊结构体">pb/abi.rs有个特殊结构体</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">/// 一个 spec 可以包含上述的处理方式之一
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Spec {
     #[prost(oneof = &quot;spec::Data&quot;, tags = &quot;1, 2, 3, 4, 5, 6, 7&quot;)]
     pub data: ::core::option::Option&lt;spec::Data&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="定义与实现分离"><a class="header" href="#定义与实现分离">定义与实现分离</a></h4>
-<h5 id="imagespec"><a class="header" href="#imagespec">ImageSpec</a></h5>
+</code></pre></pre>
+<h3 id="imagespec"><a class="header" href="#imagespec">ImageSpec</a></h3>
+<h4 id="定义有序数组"><a class="header" href="#定义有序数组">定义：有序数组</a></h4>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
+<pre><pre class="playground"><code class="language-rust  editable">/// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ImageSpec {
     #[prost(message, repeated, tag = &quot;1&quot;)]
     pub specs: ::prost::alloc::vec::Vec&lt;Spec&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre></pre>
+<h4 id="实现new方法fromtryfrom实现类型转化"><a class="header" href="#实现new方法fromtryfrom实现类型转化">实现：new方法、From&amp;TryFrom实现类型转化</a></h4>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>impl ImageSpec {
+<pre><pre class="playground"><code class="language-rust  editable">impl ImageSpec {
     pub fn new(specs: Vec&lt;Spec&gt;) -&gt; Self {
         Self { specs }
     }
@@ -1161,15 +1138,13 @@ impl TryFrom&lt;&amp;str&gt; for ImageSpec {
         Ok(ImageSpec::decode(&amp;data[..])?)
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="filter的定义与实现"><a class="header" href="#filter的定义与实现">Filter的定义与实现</a></h5>
+</code></pre></pre>
+<h3 id="filter"><a class="header" href="#filter">Filter</a></h3>
+<h4 id="定义枚举体mod"><a class="header" href="#定义枚举体mod">定义：枚举体mod</a></h4>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// Nested message and enum types in `Filter`.
+<pre><pre class="playground"><code class="language-rust  editable">/// Nested message and enum types in `Filter`.
 pub mod filter {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
     #[repr(i32)]
@@ -1181,14 +1156,12 @@ pub mod filter {
         Marine = 3,
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre></pre>
+<h4 id="实现双引号的使用模式匹配"><a class="header" href="#实现双引号的使用模式匹配">实现：双引号的使用、模式匹配</a></h4>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// 辅助函数，photon_rs 相应的方法里需要字符串
+<pre><pre class="playground"><code class="language-rust  editable">// 辅助函数，photon_rs 相应的方法里需要字符串
 impl filter::Filter {
     pub fn to_str(self) -&gt; Option&lt;&amp;'static str&gt; {
         match self {
@@ -1199,15 +1172,13 @@ impl filter::Filter {
         }
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="samplefilter"><a class="header" href="#samplefilter">SampleFilter</a></h5>
+</code></pre></pre>
+<h3 id="samplefilter"><a class="header" href="#samplefilter">SampleFilter</a></h3>
+<h4 id="定义枚举体mod-1"><a class="header" href="#定义枚举体mod-1">定义：枚举体mod</a></h4>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// Nested message and enum types in `Resize`.
+<pre><pre class="playground"><code class="language-rust  editable">/// Nested message and enum types in `Resize`.
 pub mod resize {
     #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
     #[repr(i32)]
@@ -1226,14 +1197,12 @@ pub mod resize {
         Lanczos3 = 5,
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre></pre>
+<h3 id="实现mod使用双引号from转为不同结果"><a class="header" href="#实现mod使用双引号from转为不同结果">实现：mod使用双引号、From转为不同结果</a></h3>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>impl From&lt;resize::SampleFilter&gt; for SamplingFilter {
+<pre><pre class="playground"><code class="language-rust  editable">impl From&lt;resize::SampleFilter&gt; for SamplingFilter {
     fn from(v: resize::SampleFilter) -&gt; Self {
         match v {
             resize::SampleFilter::Undefined =&gt; SamplingFilter::Nearest,
@@ -1245,28 +1214,28 @@ pub mod resize {
         }
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h5 id="spec"><a class="header" href="#spec">Spec</a></h5>
+</code></pre></pre>
+<h3 id="spec"><a class="header" href="#spec">Spec</a></h3>
+<h4 id="定义结构体"><a class="header" href="#定义结构体">定义：结构体</a></h4>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>/// 一个 spec 可以包含上述的处理方式之一
+<pre><pre class="playground"><code class="language-rust  editable">/// 一个 spec 可以包含上述的处理方式之一
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Spec {
     #[prost(oneof = &quot;spec::Data&quot;, tags = &quot;1, 2, 3, 4, 5, 6, 7&quot;)]
     pub data: ::core::option::Option&lt;spec::Data&gt;,
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre></pre>
+<h4 id="实现类似面向对象中添加类方法self"><a class="header" href="#实现类似面向对象中添加类方法self">实现：类似面向对象中添加类方法Self</a></h4>
+<blockquote>
+<p>注意区别Self和self的使用：
+<a href="https://stackoverflow.com/questions/32304595/whats-the-difference-between-self-and-self">rust - What’s the difference between self and Self? - Stack Overflow</a></p>
+</blockquote>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>// 提供一些辅助函数，让创建一个 spec 的过程简单一些
+<pre><pre class="playground"><code class="language-rust  editable">// 提供一些辅助函数，让创建一个 spec 的过程简单一些
 impl Spec {
     pub fn new_resize_seam_carve(width: u32, height: u32) -&gt; Self {
         Self {
@@ -1304,12 +1273,9 @@ impl Spec {
         }
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h4 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h4>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>#[cfg(test)]
+</code></pre></pre>
+<h3 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
 mod tests {
     use super::*;
     use std::borrow::Borrow;
@@ -1323,9 +1289,8 @@ mod tests {
         assert_eq!(image_spec, s.as_str().try_into().unwrap());
     }
 }
-<span class="boring">}
-</span></code></pre></pre>
-<h3 id="engine模块"><a class="header" href="#engine模块">engine模块</a></h3>
+</code></pre></pre>
+<h2 id="engine模块"><a class="header" href="#engine模块">engine模块</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="gdblldb调试或查看内存结构"><a class="header" href="#gdblldb调试或查看内存结构">gdb/lldb调试或查看内存结构</a></h1>
 <!--ts-->
 <!--te-->
