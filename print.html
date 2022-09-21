@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 10:05:57 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 13:58:55 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -462,7 +462,28 @@
 <li><a href="get_hands_dirty.html#workspace%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F">workspace使用方式</a></li>
 </ul>
 </li>
-<li><a href="get_hands_dirty.html#queryer-package">queryer package</a></li>
+<li><a href="get_hands_dirty.html#queryer-package">queryer package</a>
+<ul>
+<li><a href="get_hands_dirty.html#cargotoml-1">cargo.toml</a></li>
+<li><a href="get_hands_dirty.html#%E4%B8%A4%E4%B8%AA%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">两个使用示例</a>
+<ul>
+<li><a href="get_hands_dirty.html#dialectrssql%E8%A7%A3%E6%9E%90">dialect.rs:SQL解析</a></li>
+<li><a href="get_hands_dirty.html#covidrs-ast%E8%BD%AC%E6%8D%A2">covid.rs: AST转换</a></li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#srcconvertrs">src/convert.rs</a>
+<ul>
+<li><a href="get_hands_dirty.html#%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9A%E4%B9%89sql%E4%B8%8E%E5%AF%B9%E5%BA%94%E9%83%A8%E5%88%86%E7%BB%93%E6%9E%84%E4%BD%93-%E6%B3%A8%E6%84%8F%E9%99%90%E4%BA%8E%E5%AD%A4%E5%84%BF%E5%8E%9F%E5%88%99%E7%9A%84%E5%86%8D%E5%8C%85%E8%A3%85">结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装</a></li>
+<li><a href="get_hands_dirty.html#sql%E7%9A%84%E8%BD%AC%E6%8D%A2">sql的转换</a></li>
+<li><a href="get_hands_dirty.html#%E5%AF%B9%E5%BA%94%E9%83%A8%E5%88%86%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E8%BD%AC%E6%8D%A2">对应部分结构体的转换</a></li>
+<li><a href="get_hands_dirty.html#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95-1">单元测试</a></li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#srcdialectrs">src/dialect.rs</a></li>
+<li><a href="get_hands_dirty.html#srcloaderrs">src/loader.rs</a></li>
+<li><a href="get_hands_dirty.html#srcfetcherrs">src/fetcher.rs</a></li>
+</ul>
+</li>
 <li><a href="get_hands_dirty.html#queryer-js-package">queryer-js package</a></li>
 <li><a href="get_hands_dirty.html#queryer-py-package">queryer-py package</a></li>
 <li><a href="get_hands_dirty.html#data-viewer-package">data-viewer package</a></li>
@@ -470,7 +491,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 10:05:57 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 13:58:55 UTC 2022 -->
 <!--te-->
 <h1 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h1>
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
@@ -1700,6 +1721,300 @@ cargo build -p queryer
 </div>
 </div>
 <h2 id="queryer-package"><a class="header" href="#queryer-package">queryer package</a></h2>
+<h3 id="cargotoml-1"><a class="header" href="#cargotoml-1">cargo.toml</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/06_queryer/queryer/cargo.toml}}
+</code></pre></pre>
+<h3 id="两个使用示例"><a class="header" href="#两个使用示例">两个使用示例</a></h3>
+<h4 id="dialectrssql解析"><a class="header" href="#dialectrssql解析">dialect.rs:SQL解析</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use sqlparser::{dialect::GenericDialect, parser::Parser};
+
+fn main() {
+    tracing_subscriber::fmt::init();
+
+    let sql = &quot;SELECT a a1, b, 123, myfunc(b), * \
+    FROM data_source \
+    WHERE a &gt; b AND b &lt; 100 AND c BETWEEN 10 AND 20 \
+    ORDER BY a DESC, b \
+    LIMIT 50 OFFSET 10&quot;;
+
+    let ast = Parser::parse_sql(&amp;GenericDialect::default(), sql);
+    println!(&quot;{:#?}&quot;, ast);
+}
+</code></pre></pre>
+<h4 id="covidrs-ast转换"><a class="header" href="#covidrs-ast转换">covid.rs: AST转换</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use anyhow::Result;
+use queryer::query;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+
+    let url = &quot;https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/latest/owid-covid-latest.csv&quot;;
+
+    // 使用 sql 从 URL 里获取数据
+    let sql = format!(
+        &quot;SELECT location name, total_cases, new_cases, total_deaths, new_deaths \
+        FROM {} where new_deaths &gt;= 500 ORDER BY new_cases DESC&quot;,
+        url
+    );
+    let df1 = query(sql).await?;
+    println!(&quot;{:?}&quot;, df1);
+
+    Ok(())
+}
+</code></pre></pre>
+<h3 id="srcconvertrs"><a class="header" href="#srcconvertrs">src/convert.rs</a></h3>
+<h4 id="结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装"><a class="header" href="#结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装">结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">/// 解析出来的 SQL
+pub struct Sql&lt;'a&gt; {
+    pub(crate) selection: Vec&lt;Expr&gt;,
+    pub(crate) condition: Option&lt;Expr&gt;,
+    pub(crate) source: &amp;'a str,
+    pub(crate) order_by: Vec&lt;(String, bool)&gt;,
+    pub(crate) offset: Option&lt;i64&gt;,
+    pub(crate) limit: Option&lt;usize&gt;,
+}
+
+// 因为 Rust trait 的孤儿规则，我们如果要想对已有的类型实现已有的 trait，
+// 需要简单包装一下
+
+pub struct Expression(pub(crate) Box&lt;SqlExpr&gt;);
+pub struct Operation(pub(crate) SqlBinaryOperator);
+pub struct Projection&lt;'a&gt;(pub(crate) &amp;'a SelectItem);
+pub struct Source&lt;'a&gt;(pub(crate) &amp;'a [TableWithJoins]);
+pub struct Order&lt;'a&gt;(pub(crate) &amp;'a OrderByExpr);
+pub struct Offset&lt;'a&gt;(pub(crate) &amp;'a SqlOffset);
+pub struct Limit&lt;'a&gt;(pub(crate) &amp;'a SqlExpr);
+pub struct Value(pub(crate) SqlValue);
+</code></pre></pre>
+<h4 id="sql的转换"><a class="header" href="#sql的转换">sql的转换</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">/// 把 SqlParser 解析出来的 Statement 转换成我们需要的结构
+impl&lt;'a&gt; TryFrom&lt;&amp;'a Statement&gt; for Sql&lt;'a&gt; {
+    type Error = anyhow::Error;
+
+    fn try_from(sql: &amp;'a Statement) -&gt; Result&lt;Self, Self::Error&gt; {
+        match sql {
+            // 目前我们只关心 query (select ... from ... where ...)
+            Statement::Query(q) =&gt; {
+                let offset = q.offset.as_ref();
+                let limit = q.limit.as_ref();
+                let orders = &amp;q.order_by;
+                let Select {
+                    from: table_with_joins,
+                    selection: where_clause,
+                    projection,
+
+                    group_by: _,
+                    ..
+                } = match &amp;q.body {
+                    SetExpr::Select(statement) =&gt; statement.as_ref(),
+                    _ =&gt; return Err(anyhow!(&quot;We only support Select Query at the moment&quot;)),
+                };
+
+                let source = Source(table_with_joins).try_into()?;
+
+                let condition = match where_clause {
+                    Some(expr) =&gt; Some(Expression(Box::new(expr.to_owned())).try_into()?),
+                    None =&gt; None,
+                };
+
+                let mut selection = Vec::with_capacity(8);
+                for p in projection {
+                    let expr = Projection(p).try_into()?;
+                    selection.push(expr);
+                }
+
+                let mut order_by = Vec::new();
+                for expr in orders {
+                    order_by.push(Order(expr).try_into()?);
+                }
+
+                let offset = offset.map(|v| Offset(v).into());
+                let limit = limit.map(|v| Limit(v).into());
+
+                Ok(Sql {
+                    selection,
+                    condition,
+                    source,
+                    order_by,
+                    offset,
+                    limit,
+                })
+            }
+            _ =&gt; Err(anyhow!(&quot;We only support Query at the moment&quot;)),
+        }
+    }
+}
+</code></pre></pre>
+<h4 id="对应部分结构体的转换"><a class="header" href="#对应部分结构体的转换">对应部分结构体的转换</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">/// 把 SqlParser 的 Expr 转换成 DataFrame 的 Expr
+impl TryFrom&lt;Expression&gt; for Expr {
+    type Error = anyhow::Error;
+
+    fn try_from(expr: Expression) -&gt; Result&lt;Self, Self::Error&gt; {
+        match *expr.0 {
+            SqlExpr::BinaryOp { left, op, right } =&gt; Ok(Expr::BinaryExpr {
+                left: Box::new(Expression(left).try_into()?),
+                op: Operation(op).try_into()?,
+                right: Box::new(Expression(right).try_into()?),
+            }),
+            SqlExpr::Wildcard =&gt; Ok(Self::Wildcard),
+            SqlExpr::IsNull(expr) =&gt; Ok(Self::IsNull(Box::new(Expression(expr).try_into()?))),
+            SqlExpr::IsNotNull(expr) =&gt; Ok(Self::IsNotNull(Box::new(Expression(expr).try_into()?))),
+            SqlExpr::Identifier(id) =&gt; Ok(Self::Column(Arc::new(id.value))),
+            SqlExpr::Value(v) =&gt; Ok(Self::Literal(Value(v).try_into()?)),
+            v =&gt; Err(anyhow!(&quot;expr {:#?} is not supported&quot;, v)),
+        }
+    }
+}
+
+/// 把 SqlParser 的 BinaryOperator 转换成 DataFrame 的 Operator
+impl TryFrom&lt;Operation&gt; for Operator {
+    type Error = anyhow::Error;
+
+    fn try_from(op: Operation) -&gt; Result&lt;Self, Self::Error&gt; {
+        match op.0 {
+            SqlBinaryOperator::Plus =&gt; Ok(Self::Plus),
+            SqlBinaryOperator::Minus =&gt; Ok(Self::Minus),
+            SqlBinaryOperator::Multiply =&gt; Ok(Self::Multiply),
+            SqlBinaryOperator::Divide =&gt; Ok(Self::Divide),
+            SqlBinaryOperator::Modulo =&gt; Ok(Self::Modulus),
+            SqlBinaryOperator::Gt =&gt; Ok(Self::Gt),
+            SqlBinaryOperator::Lt =&gt; Ok(Self::Lt),
+            SqlBinaryOperator::GtEq =&gt; Ok(Self::GtEq),
+            SqlBinaryOperator::LtEq =&gt; Ok(Self::LtEq),
+            SqlBinaryOperator::Eq =&gt; Ok(Self::Eq),
+            SqlBinaryOperator::NotEq =&gt; Ok(Self::NotEq),
+            SqlBinaryOperator::And =&gt; Ok(Self::And),
+            SqlBinaryOperator::Or =&gt; Ok(Self::Or),
+            v =&gt; Err(anyhow!(&quot;Operator {} is not supported&quot;, v)),
+        }
+    }
+}
+
+/// 把 SqlParser 的 SelectItem 转换成 DataFrame 的 Expr
+impl&lt;'a&gt; TryFrom&lt;Projection&lt;'a&gt;&gt; for Expr {
+    type Error = anyhow::Error;
+
+    fn try_from(p: Projection&lt;'a&gt;) -&gt; Result&lt;Self, Self::Error&gt; {
+        match p.0 {
+            SelectItem::UnnamedExpr(SqlExpr::Identifier(id)) =&gt; Ok(col(&amp;id.to_string())),
+            SelectItem::ExprWithAlias {
+                expr: SqlExpr::Identifier(id),
+                alias,
+            } =&gt; Ok(Expr::Alias(
+                Box::new(Expr::Column(Arc::new(id.to_string()))),
+                Arc::new(alias.to_string()),
+            )),
+            SelectItem::QualifiedWildcard(v) =&gt; Ok(col(&amp;v.to_string())),
+            SelectItem::Wildcard =&gt; Ok(col(&quot;*&quot;)),
+            item =&gt; Err(anyhow!(&quot;projection {} not supported&quot;, item)),
+        }
+    }
+}
+
+impl&lt;'a&gt; TryFrom&lt;Source&lt;'a&gt;&gt; for &amp;'a str {
+    type Error = anyhow::Error;
+
+    fn try_from(source: Source&lt;'a&gt;) -&gt; Result&lt;Self, Self::Error&gt; {
+        if source.0.len() != 1 {
+            return Err(anyhow!(&quot;We only support single data source at the moment&quot;));
+        }
+
+        let table = &amp;source.0[0];
+        if !table.joins.is_empty() {
+            return Err(anyhow!(&quot;We do not support joint data source at the moment&quot;));
+        }
+
+        match &amp;table.relation {
+            TableFactor::Table { name, .. } =&gt; Ok(&amp;name.0.first().unwrap().value),
+            _ =&gt; Err(anyhow!(&quot;We only support table&quot;)),
+        }
+    }
+}
+
+/// 把 SqlParser 的 order by expr 转换成 (列名, 排序方法)
+impl&lt;'a&gt; TryFrom&lt;Order&lt;'a&gt;&gt; for (String, bool) {
+    type Error = anyhow::Error;
+
+    fn try_from(o: Order) -&gt; Result&lt;Self, Self::Error&gt; {
+        let name = match &amp;o.0.expr {
+            SqlExpr::Identifier(id) =&gt; id.to_string(),
+            expr =&gt; {
+                return Err(anyhow!(
+                    &quot;We only support identifier for order by, got {}&quot;,
+                    expr
+                ))
+            }
+        };
+
+        Ok((name, !o.0.asc.unwrap_or(true)))
+    }
+}
+
+/// 把 SqlParser 的 offset expr 转换成 i64
+impl&lt;'a&gt; From&lt;Offset&lt;'a&gt;&gt; for i64 {
+    fn from(offset: Offset) -&gt; Self {
+        match offset.0 {
+            SqlOffset {
+                value: SqlExpr::Value(SqlValue::Number(v, _b)),
+                ..
+            } =&gt; v.parse().unwrap_or(0),
+            _ =&gt; 0,
+        }
+    }
+}
+
+/// 把 SqlParser 的 Limit expr 转换成 usize
+impl&lt;'a&gt; From&lt;Limit&lt;'a&gt;&gt; for usize {
+    fn from(l: Limit&lt;'a&gt;) -&gt; Self {
+        match l.0 {
+            SqlExpr::Value(SqlValue::Number(v, _b)) =&gt; v.parse().unwrap_or(usize::MAX),
+            _ =&gt; usize::MAX,
+        }
+    }
+}
+
+/// 把 SqlParser 的 value 转换成 DataFrame 支持的 LiteralValue
+impl TryFrom&lt;Value&gt; for LiteralValue {
+    type Error = anyhow::Error;
+    fn try_from(v: Value) -&gt; Result&lt;Self, Self::Error&gt; {
+        match v.0 {
+            SqlValue::Number(v, _) =&gt; Ok(LiteralValue::Float64(v.parse().unwrap())),
+            SqlValue::Boolean(v) =&gt; Ok(LiteralValue::Boolean(v)),
+            SqlValue::Null =&gt; Ok(LiteralValue::Null),
+            v =&gt; Err(anyhow!(&quot;Value {} is not supported&quot;, v)),
+        }
+    }
+}
+</code></pre></pre>
+<h4 id="单元测试-1"><a class="header" href="#单元测试-1">单元测试</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::TyrDialect;
+    use sqlparser::parser::Parser;
+
+    #[test]
+    fn parse_sql_works() {
+        let url = &quot;http://abc.xyz/abc?a=1&amp;b=2&quot;;
+        let sql = format!(
+            &quot;select a, b, c from {} where a=1 order by c desc limit 5 offset 10&quot;,
+            url
+        );
+        let statement = &amp;Parser::parse_sql(&amp;TyrDialect::default(), sql.as_ref()).unwrap()[0];
+        let sql: Sql = statement.try_into().unwrap();
+        assert_eq!(sql.source, url);
+        assert_eq!(sql.limit, Some(5));
+        assert_eq!(sql.offset, Some(10));
+        assert_eq!(sql.order_by, vec![(&quot;c&quot;.into(), true)]);
+        assert_eq!(sql.selection, vec![col(&quot;a&quot;), col(&quot;b&quot;), col(&quot;c&quot;)]);
+    }
+}
+</code></pre></pre>
+<h3 id="srcdialectrs"><a class="header" href="#srcdialectrs">src/dialect.rs</a></h3>
+<h3 id="srcloaderrs"><a class="header" href="#srcloaderrs">src/loader.rs</a></h3>
+<h3 id="srcfetcherrs"><a class="header" href="#srcfetcherrs">src/fetcher.rs</a></h3>
 <h2 id="queryer-js-package"><a class="header" href="#queryer-js-package">queryer-js package</a></h2>
 <h2 id="queryer-py-package"><a class="header" href="#queryer-py-package">queryer-py package</a></h2>
 <h2 id="data-viewer-package"><a class="header" href="#data-viewer-package">data-viewer package</a></h2>
