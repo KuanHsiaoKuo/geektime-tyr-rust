@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 07:33:54 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 09:01:07 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -413,12 +413,51 @@
 <li><a href="get_hands_dirty.html#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
 </ul>
 </li>
-<li><a href="get_hands_dirty.html#engine%E6%A8%A1%E5%9D%97">engine模块</a></li>
+<li><a href="get_hands_dirty.html#engine%E6%A8%A1%E5%9D%97-%E5%A4%84%E7%90%86%E5%9B%BE%E7%89%87">engine模块: 处理图片</a>
+<ul>
+<li><a href="get_hands_dirty.html#modrs-%E5%AE%9A%E4%B9%89%E7%BB%9F%E4%B8%80%E7%9A%84%E5%BC%95%E6%93%8Etrait">mod.rs: 定义统一的引擎trait</a></li>
+<li><a href="get_hands_dirty.html#photonrs--%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F%E5%8A%A0%E8%BD%BD">photon.rs &gt; 静态变量加载</a></li>
+<li><a href="get_hands_dirty.html#photonrs--%E5%85%B7%E4%BD%93%E5%BC%95%E6%93%8Ephoton%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E8%BD%AC%E5%8C%96tryfrom">photon.rs &gt; 具体引擎Photon的定义与转化TryFrom</a></li>
+<li><a href="get_hands_dirty.html#photonrs--%E5%85%B7%E4%BD%93%E5%BC%95%E6%93%8Ephoton%E7%9A%84trait%E5%AE%9E%E7%8E%B0">photon.rs &gt; 具体引擎Photon的trait实现</a>
+<ul>
+<li><a href="get_hands_dirty.html#engine-trait">Engine Trait</a></li>
+<li><a href="get_hands_dirty.html#spectransform-trait">SpecTransform Trait</a>
+<ul>
+<li><a href="get_hands_dirty.html#%E6%A0%BC%E5%BC%8F%E8%AF%AD%E4%B9%89%E5%8C%96">格式语义化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#photonrs--%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E5%AF%B9%E5%9B%BE%E7%89%87%E8%BD%AC%E6%8D%A2%E6%A0%BC%E5%BC%8F%E7%9A%84%E6%96%B9%E6%B3%95">photon.rs &gt; 在内存中对图片转换格式的方法</a></li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#mainrs">main.rs</a>
+<ul>
+<li><a href="get_hands_dirty.html#%E5%85%88%E5%BC%95%E5%85%A5mod%E5%86%8Duse">先引入mod，再use</a></li>
+<li><a href="get_hands_dirty.html#%E5%9B%BE%E7%89%87%E8%B5%84%E6%BA%90%E7%94%A8%E5%88%B0lru%E7%AD%96%E7%95%A5%E7%BC%93%E5%AD%98type%E5%AE%9A%E4%B9%89">图片资源用到Lru策略缓存type定义</a></li>
+<li><a href="get_hands_dirty.html#%E4%B8%BB%E6%B5%81%E7%A8%8Bmain%E5%87%BD%E6%95%B0">主流程main函数</a>
+<ul>
+<li><a href="get_hands_dirty.html#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F">建造者模式</a></li>
+<li><a href="get_hands_dirty.html#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">类型转换</a>
+<ul>
+<li><a href="get_hands_dirty.html#%E6%95%B0%E5%AD%97%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2">数字与字符串</a></li>
+<li><a href="get_hands_dirty.html#string-%E4%B8%8E--str">String 与 &amp; str</a></li>
+<li><a href="get_hands_dirty.html#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88">智能指针</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#%E8%B7%AF%E7%94%B1%E7%BB%91%E5%AE%9A%E7%9A%84%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0handler">路由绑定的处理函数handler</a></li>
+<li><a href="get_hands_dirty.html#%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E7%94%A8%E5%88%B0%E7%9A%84%E5%9B%BE%E7%89%87%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95">处理函数用到的图片获取方法</a></li>
+<li><a href="get_hands_dirty.html#%E4%B8%80%E4%B8%AA%E7%94%A8%E4%BA%8E%E8%B0%83%E8%AF%95%E7%9A%84%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0">一个用于调试的辅助函数</a></li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#%E8%BF%90%E8%A1%8C%E4%B8%8E%E6%97%A5%E5%BF%97">运行与日志</a></li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 07:33:55 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 09:01:07 UTC 2022 -->
 <!--te-->
 <h1 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h1>
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
@@ -1298,7 +1337,298 @@ mod tests {
     }
 }
 </code></pre></pre>
-<h2 id="engine模块"><a class="header" href="#engine模块">engine模块</a></h2>
+<h2 id="engine模块-处理图片"><a class="header" href="#engine模块-处理图片">engine模块: 处理图片</a></h2>
+<h3 id="modrs-定义统一的引擎trait"><a class="header" href="#modrs-定义统一的引擎trait">mod.rs: 定义统一的引擎trait</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">// Engine trait：未来可以添加更多的 engine，主流程只需要替换 engine
+pub trait Engine {
+    // 对 engine 按照 specs 进行一系列有序的处理
+    fn apply(&amp;mut self, specs: &amp;[Spec]);
+    // 从 engine 中生成目标图片，注意这里用的是 self，而非 self 的引用
+    fn generate(self, format: ImageOutputFormat) -&gt; Vec&lt;u8&gt;;
+}
+
+// SpecTransform：未来如果添加更多的 spec，只需要实现它即可
+pub trait SpecTransform&lt;T&gt; {
+    // 对图片使用 op 做 transform
+    fn transform(&amp;mut self, op: T);
+}
+</code></pre></pre>
+<h3 id="photonrs--静态变量加载"><a class="header" href="#photonrs--静态变量加载">photon.rs &gt; 静态变量加载</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">lazy_static! {
+    // 预先把水印文件加载为静态变量
+    static ref WATERMARK: PhotonImage = {
+        let data = include_bytes!(&quot;../../rust-logo.png&quot;);
+        let watermark = open_image_from_bytes(data).unwrap();
+        transform::resize(&amp;watermark, 64, 64, transform::SamplingFilter::Nearest)
+    };
+}
+</code></pre></pre>
+<h3 id="photonrs--具体引擎photon的定义与转化tryfrom"><a class="header" href="#photonrs--具体引擎photon的定义与转化tryfrom">photon.rs &gt; 具体引擎Photon的定义与转化TryFrom</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">pub struct Photon(PhotonImage);
+
+// 从 Bytes 转换成 Photon 结构
+impl TryFrom&lt;Bytes&gt; for Photon {
+    type Error = anyhow::Error;
+
+    fn try_from(data: Bytes) -&gt; Result&lt;Self, Self::Error&gt; {
+        Ok(Self(open_image_from_bytes(&amp;data)?))
+    }
+}
+</code></pre></pre>
+<h3 id="photonrs--具体引擎photon的trait实现"><a class="header" href="#photonrs--具体引擎photon的trait实现">photon.rs &gt; 具体引擎Photon的trait实现</a></h3>
+<h4 id="engine-trait"><a class="header" href="#engine-trait">Engine Trait</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">impl Engine for Photon {
+    fn apply(&amp;mut self, specs: &amp;[Spec]) {
+        for spec in specs.iter() {
+            match spec.data {
+                Some(spec::Data::Crop(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Contrast(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Filter(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Fliph(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Flipv(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Resize(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Watermark(ref v)) =&gt; self.transform(v),
+                // 对于目前不认识的 spec，不做任何处理
+                _ =&gt; {}
+            }
+        }
+    }
+</code></pre></pre>
+<h4 id="spectransform-trait"><a class="header" href="#spectransform-trait">SpecTransform Trait</a></h4>
+<h5 id="格式语义化"><a class="header" href="#格式语义化">格式语义化</a></h5>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl SpecTransform(&amp;OpreationName) for SpecificEngine {
+    fn transform(&amp;mut self, _op: &amp;OperationName) {
+        transform::OperationMethod(&amp;mut self.0)
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust  editable">impl SpecTransform&lt;&amp;Crop&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Crop) {
+        let img = transform::crop(&amp;mut self.0, op.x1, op.y1, op.x2, op.y2);
+        self.0 = img;
+    }
+}
+
+impl SpecTransform&lt;&amp;Contrast&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Contrast) {
+        effects::adjust_contrast(&amp;mut self.0, op.contrast);
+    }
+}
+
+impl SpecTransform&lt;&amp;Flipv&gt; for Photon {
+    fn transform(&amp;mut self, _op: &amp;Flipv) {
+        transform::flipv(&amp;mut self.0)
+    }
+}
+
+impl SpecTransform&lt;&amp;Fliph&gt; for Photon {
+    fn transform(&amp;mut self, _op: &amp;Fliph) {
+        transform::fliph(&amp;mut self.0)
+    }
+}
+
+impl SpecTransform&lt;&amp;Filter&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Filter) {
+        match filter::Filter::from_i32(op.filter) {
+            Some(filter::Filter::Unspecified) =&gt; {}
+            Some(f) =&gt; filters::filter(&amp;mut self.0, f.to_str().unwrap()),
+            _ =&gt; {}
+        }
+    }
+}
+
+impl SpecTransform&lt;&amp;Resize&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Resize) {
+        let img = match resize::ResizeType::from_i32(op.rtype).unwrap() {
+            resize::ResizeType::Normal =&gt; transform::resize(
+                &amp;self.0,
+                op.width,
+                op.height,
+                resize::SampleFilter::from_i32(op.filter).unwrap().into(),
+            ),
+            resize::ResizeType::SeamCarve =&gt; transform::seam_carve(&amp;self.0, op.width, op.height),
+        };
+        self.0 = img;
+    }
+}
+
+impl SpecTransform&lt;&amp;Watermark&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Watermark) {
+        multiple::watermark(&amp;mut self.0, &amp;WATERMARK, op.x, op.y);
+    }
+}
+</code></pre></pre>
+<h3 id="photonrs--在内存中对图片转换格式的方法"><a class="header" href="#photonrs--在内存中对图片转换格式的方法">photon.rs &gt; 在内存中对图片转换格式的方法</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">fn image_to_buf(img: PhotonImage, format: ImageOutputFormat) -&gt; Vec&lt;u8&gt; {
+    let raw_pixels = img.get_raw_pixels();
+    let width = img.get_width();
+    let height = img.get_height();
+
+    let img_buffer = ImageBuffer::from_vec(width, height, raw_pixels).unwrap();
+    let dynimage = DynamicImage::ImageRgba8(img_buffer);
+
+    let mut buffer = Vec::with_capacity(32768);
+    dynimage.write_to(&amp;mut buffer, format).unwrap();
+    buffer
+}
+</code></pre></pre>
+<h2 id="mainrs"><a class="header" href="#mainrs">main.rs</a></h2>
+<h3 id="先引入mod再use"><a class="header" href="#先引入mod再use">先引入mod，再use</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">// 参数使用 serde 做 Deserialize，axum 会自动识别并解析
+#[derive(Deserialize)]
+struct Params {
+    spec: String,
+    url: String,
+}
+</code></pre></pre>
+<h3 id="图片资源用到lru策略缓存type定义"><a class="header" href="#图片资源用到lru策略缓存type定义">图片资源用到Lru策略缓存type定义</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">type Cache = Arc&lt;Mutex&lt;LruCache&lt;u64, Bytes&gt;&gt;&gt;;
+</code></pre></pre>
+<h3 id="主流程main函数"><a class="header" href="#主流程main函数">主流程main函数</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">#[tokio::main]
+async fn main() {
+    // 初始化 tracing
+    tracing_subscriber::fmt::init();
+    let cache: Cache = Arc::new(Mutex::new(LruCache::new(1024)));
+    // 构建路由
+    let app = Router::new()
+        // `GET /` 会执行
+        .route(&quot;/image/:spec/:url&quot;, get(generate))
+        .layer(
+            ServiceBuilder::new()
+                .load_shed()
+                .concurrency_limit(1024)
+                .timeout(Duration::from_secs(10))
+                .layer(TraceLayer::new_for_http())
+                .layer(AddExtensionLayer::new(cache))
+                .layer(CompressionLayer::new())
+                .into_inner(),
+        );
+
+    // 运行 web 服务器
+    let addr = &quot;127.0.0.1:3000&quot;.parse().unwrap();
+    print_test_url(&quot;https://images.pexels.com/photos/1562477/pexels-photo-1562477.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260&quot;);
+    info!(&quot;Listening on {}&quot;, addr);
+    axum::Server::bind(&amp;addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+</code></pre></pre>
+<h4 id="建造者模式"><a class="header" href="#建造者模式">建造者模式</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">            ServiceBuilder::new()
+                .load_shed()
+                .concurrency_limit(1024)
+                .timeout(Duration::from_secs(10))
+                .layer(TraceLayer::new_for_http())
+                .layer(AddExtensionLayer::new(cache))
+                .layer(CompressionLayer::new())
+                .into_inner(),
+</code></pre></pre>
+<h4 id="类型转换"><a class="header" href="#类型转换">类型转换</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">    // 运行 web 服务器
+    let addr = &quot;127.0.0.1:3000&quot;.parse().unwrap();
+</code></pre></pre>
+<h5 id="数字与字符串"><a class="header" href="#数字与字符串">数字与字符串</a></h5>
+<p>||i32|u32|f64|String*|
+|--|---|---|---|-------|
+|i32|\|x as u32|x as f64|x.to_string()|
+|u32|x as i32|\|x as f64|x.to_string()|
+|f64|x as i32|x as u32|\|x.to_string()|
+|String*|x.parse().unwrap()|x.parse().unwrap()|x.parse().unwrap()|\|</p>
+<h5 id="string-与--str"><a class="header" href="#string-与--str">String 与 &amp; str</a></h5>
+<p>|\|String|&amp;str|
+|-|------|----|
+|String|\|&amp;*x|
+|&amp;str|x.to_string()|\|</p>
+<h5 id="智能指针"><a class="header" href="#智能指针">智能指针</a></h5>
+<p>|\|Vec&lt;T&gt;|&amp;[T]|Box&lt;[T]&gt;|
+|-|------|----|--------|
+|Vec&lt;T&gt;|\|&amp;x[…]|x.into_boxed_slice()|
+|&amp;[T]|x.to_vec()|\|Box::new(*x)|
+|Box&lt;[T]&gt;|x.to_vec()|&amp;*x|\|</p>
+<h3 id="路由绑定的处理函数handler"><a class="header" href="#路由绑定的处理函数handler">路由绑定的处理函数handler</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">// basic handler that responds with a static string
+async fn generate(
+    Path(Params { spec, url }): Path&lt;Params&gt;,
+    Extension(cache): Extension&lt;Cache&gt;,
+) -&gt; Result&lt;(HeaderMap, Vec&lt;u8&gt;), StatusCode&gt; {
+    let spec: ImageSpec = spec
+        .as_str()
+        .try_into()
+        .map_err(|_| StatusCode::BAD_REQUEST)?;
+
+    let url: &amp;str = &amp;percent_decode_str(&amp;url).decode_utf8_lossy();
+    let data = retrieve_image(url, cache)
+        .await
+        .map_err(|_| StatusCode::BAD_REQUEST)?;
+
+    // 使用 image engine 处理
+    let mut engine: Photon = data
+        .try_into()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    engine.apply(&amp;spec.specs);
+    // TODO: 这里目前类型写死了，应该使用 content negotiation
+    let image = engine.generate(ImageOutputFormat::Jpeg(85));
+
+    info!(&quot;Finished processing: image size {}&quot;, image.len());
+    let mut headers = HeaderMap::new();
+
+    headers.insert(&quot;content-type&quot;, HeaderValue::from_static(&quot;image/jpeg&quot;));
+    Ok((headers, image))
+}
+</code></pre></pre>
+<h3 id="处理函数用到的图片获取方法"><a class="header" href="#处理函数用到的图片获取方法">处理函数用到的图片获取方法</a></h3>
+<blockquote>
+<p>对于图片的网络请求，我们先把 URL 做个哈希，在 LRU 缓存中查找，找不到才用 reqwest 发送请求。</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">#[instrument(level = &quot;info&quot;, skip(cache))]
+async fn retrieve_image(url: &amp;str, cache: Cache) -&gt; Result&lt;Bytes&gt; {
+    let mut hasher = DefaultHasher::new();
+    url.hash(&amp;mut hasher);
+    let key = hasher.finish();
+
+    let g = &amp;mut cache.lock().await;
+    let data = match g.get(&amp;key) {
+        Some(v) =&gt; {
+            info!(&quot;Match cache {}&quot;, key);
+            v.to_owned()
+        }
+        None =&gt; {
+            info!(&quot;Retrieve url&quot;);
+            let resp = reqwest::get(url).await?;
+            let data = resp.bytes().await?;
+            g.put(key, data.clone());
+            data
+        }
+    };
+
+    Ok(data)
+}
+</code></pre></pre>
+<h3 id="一个用于调试的辅助函数"><a class="header" href="#一个用于调试的辅助函数">一个用于调试的辅助函数</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">// 调试辅助函数
+fn print_test_url(url: &amp;str) {
+    use std::borrow::Borrow;
+    let spec1 = Spec::new_resize(500, 800, resize::SampleFilter::CatmullRom);
+    let spec2 = Spec::new_watermark(20, 20);
+    let spec3 = Spec::new_filter(filter::Filter::Marine);
+    let image_spec = ImageSpec::new(vec![spec1, spec2, spec3]);
+    let s: String = image_spec.borrow().into();
+    let test_image = percent_encode(url.as_bytes(), NON_ALPHANUMERIC).to_string();
+    println!(&quot;test url: http://localhost:3000/image/{}/{}&quot;, s, test_image);
+}
+</code></pre></pre>
+<h2 id="运行与日志"><a class="header" href="#运行与日志">运行与日志</a></h2>
+<blockquote>
+<p>将RUST_LOG级别设置为info</p>
+</blockquote>
+<pre><code class="language-shell">cargo build --release
+RUST_LOG=info target/release/thumbor
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="gdblldb调试或查看内存结构"><a class="header" href="#gdblldb调试或查看内存结构">gdb/lldb调试或查看内存结构</a></h1>
 <!--ts-->
 <!--te-->
