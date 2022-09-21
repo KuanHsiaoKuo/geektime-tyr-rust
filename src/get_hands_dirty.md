@@ -1,42 +1,43 @@
 # get hands dirty
 
 <!--ts-->
+
 * [get hands dirty](#get-hands-dirty)
 * [httpie源码剖析](#httpie源码剖析)
-   * [example的使用](#example的使用)
-      * [Cargo.toml](#cargotoml)
-   * [Step1：指令解析](#step1指令解析)
-      * [clap::Parser](#clapparser)
-   * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
-      * [参数验证](#参数验证)
-      * [键值对改造](#键值对改造)
-   * [Step3：异步请求改造](#step3异步请求改造)
-   * [Step4: 语法高亮打印](#step4-语法高亮打印)
-   * [Step5: 添加单元测试](#step5-添加单元测试)
+    * [example的使用](#example的使用)
+        * [Cargo.toml](#cargotoml)
+    * [Step1：指令解析](#step1指令解析)
+        * [clap::Parser](#clapparser)
+    * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
+        * [参数验证](#参数验证)
+        * [键值对改造](#键值对改造)
+    * [Step3：异步请求改造](#step3异步请求改造)
+    * [Step4: 语法高亮打印](#step4-语法高亮打印)
+    * [Step5: 添加单元测试](#step5-添加单元测试)
 * [thumbor图片服务](#thumbor图片服务)
-   * [abi.proto](#abiproto)
-   * [build.rs](#buildrs)
-   * [关于rust的模块](#关于rust的模块)
-   * [mod文件定义与实现分离](#mod文件定义与实现分离)
-   * [pb模块](#pb模块)
-      * [pb/mod.rs声明模块](#pbmodrs声明模块)
-      * [pb/abi.rs里面还有子模块](#pbabirs里面还有子模块)
-      * [pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod](#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod)
-      * [pb/abi.rs有个特殊结构体](#pbabirs有个特殊结构体)
-      * [ImageSpec](#imagespec)
-         * [定义：有序数组](#定义有序数组)
-         * [实现：new方法、From&amp;TryFrom实现类型转化](#实现new方法fromtryfrom实现类型转化)
-      * [Filter](#filter)
-         * [定义：枚举体mod](#定义枚举体mod)
-         * [实现：双引号的使用、模式匹配](#实现双引号的使用模式匹配)
-      * [SampleFilter](#samplefilter)
-         * [定义：枚举体mod](#定义枚举体mod-1)
-      * [实现：mod使用双引号、From转为不同结果](#实现mod使用双引号from转为不同结果)
-      * [Spec](#spec)
-         * [定义：结构体](#定义结构体)
-         * [实现：类似面向对象中添加类方法Self](#实现类似面向对象中添加类方法self)
-      * [单元测试](#单元测试)
-   * [engine模块](#engine模块)
+    * [abi.proto](#abiproto)
+    * [build.rs](#buildrs)
+    * [关于rust的模块](#关于rust的模块)
+    * [mod文件定义与实现分离](#mod文件定义与实现分离)
+    * [pb模块](#pb模块)
+        * [pb/mod.rs声明模块](#pbmodrs声明模块)
+        * [pb/abi.rs里面还有子模块](#pbabirs里面还有子模块)
+        * [pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod](#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod)
+        * [pb/abi.rs有个特殊结构体](#pbabirs有个特殊结构体)
+        * [ImageSpec](#imagespec)
+            * [定义：有序数组](#定义有序数组)
+            * [实现：new方法、From&amp;TryFrom实现类型转化](#实现new方法fromtryfrom实现类型转化)
+        * [Filter](#filter)
+            * [定义：枚举体mod](#定义枚举体mod)
+            * [实现：双引号的使用、模式匹配](#实现双引号的使用模式匹配)
+        * [SampleFilter](#samplefilter)
+            * [定义：枚举体mod](#定义枚举体mod-1)
+        * [实现：mod使用双引号、From转为不同结果](#实现mod使用双引号from转为不同结果)
+        * [Spec](#spec)
+            * [定义：结构体](#定义结构体)
+            * [实现：类似面向对象中添加类方法Self](#实现类似面向对象中添加类方法self)
+        * [单元测试](#单元测试)
+    * [engine模块](#engine模块)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Sep 21 07:23:04 UTC 2022 -->
@@ -235,6 +236,7 @@ For more information try --help
 
 > 可以参考这篇：[Rust 模块系统理解 - 知乎](https://zhuanlan.zhihu.com/p/443926839)
 
+~~~admonish tip title='mod全认识'
 1. mod(mod.rs或mod关键字)将代码分为多个逻辑模块，并管理这些模块的可见性（public / private）。
 2. 模块是项（item）的集合，项可以是：函数，结构体，trait，impl块，甚至其它模块。
 3. 一个目录下的所有代码，可以通过 mod.rs 声明
@@ -250,13 +252,14 @@ For more information try --help
 10. “pub use mod-nam1::mod-name2::item-name;“
     语句可以将mod-name2下的item-name提升到这条语句所在的空间，item-name通常是函数或者结构体。Rust社区通常用这个方法来缩短库API的命名空间深度
     编译器规定use语句一定要在mod语句之前
+~~~
 
 ## mod文件定义与实现分离
 
 在rust中，一般会在模块的mod.rs文件中对供外部使用的项进行实现, 项可以是：函数，结构体，trait，impl块，甚至其它模块.
 这样有个好处，高内聚，可以在代码增长时，将变动局限在服务提供者内部，对外提供的api不变，不会造成破坏性更新。
 
-## pb模块
+## pb模块: 处理protobuf
 
 ### pb/mod.rs声明模块
 
