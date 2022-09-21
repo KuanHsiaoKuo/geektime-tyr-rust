@@ -62,12 +62,24 @@
    * [workspace: 这里使用虚拟清单(virtual manifest)方式](#workspace-这里使用虚拟清单virtual-manifest方式)
       * [workspace使用方式](#workspace使用方式)
    * [queryer package](#queryer-package)
+      * [cargo.toml](#cargotoml-1)
+      * [两个使用示例](#两个使用示例)
+         * [dialect.rs:SQL解析](#dialectrssql解析)
+         * [covid.rs: AST转换](#covidrs-ast转换)
+      * [src/convert.rs](#srcconvertrs)
+         * [结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装](#结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装)
+         * [sql的转换](#sql的转换)
+         * [对应部分结构体的转换](#对应部分结构体的转换)
+         * [单元测试](#单元测试-1)
+      * [src/dialect.rs](#srcdialectrs)
+      * [src/loader.rs](#srcloaderrs)
+      * [src/fetcher.rs](#srcfetcherrs)
    * [queryer-js package](#queryer-js-package)
    * [queryer-py package](#queryer-py-package)
    * [data-viewer package](#data-viewer-package)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 10:05:57 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 13:58:55 UTC 2022 -->
 
 <!--te-->
 
