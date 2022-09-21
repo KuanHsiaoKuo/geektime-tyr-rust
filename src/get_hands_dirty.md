@@ -366,4 +366,137 @@ For more information try --help
 {{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:97:110}}
 ```
 
-## engine模块
+## engine模块: 处理图片
+
+### mod.rs: 定义统一的引擎trait
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/engine/mod.rs:7:19}}
+```
+
+### photon.rs > 静态变量加载
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/engine/photon.rs:11:18}}
+```
+
+### photon.rs > 具体引擎Photon的定义与转化TryFrom
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/engine/photon.rs:21:30}}
+```
+
+### photon.rs > 具体引擎Photon的trait实现
+
+#### Engine Trait
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/engine/photon.rs:32:47}}
+```
+
+#### SpecTransform Trait
+
+##### 格式语义化
+
+```rust
+impl SpecTransform(&OpreationName) for SpecificEngine {
+    fn transform(&mut self, _op: &OperationName) {
+        transform::OperationMethod(&mut self.0)
+    }
+}
+```
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/engine/photon.rs:54:108}}
+```
+
+### photon.rs > 在内存中对图片转换格式的方法
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/engine/photon.rs:111:122}}
+```
+
+## main.rs
+
+### 先引入mod，再use
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/main.rs:34:39}}
+```
+
+### 图片资源用到Lru策略缓存type定义
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/main.rs:41:41}}
+```
+
+### 主流程main函数
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/main.rs:43:71}}
+```
+
+#### 建造者模式
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/main.rs:53:60}}
+```
+
+#### 类型转换
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/main.rs:63:64}}
+```
+
+##### 数字与字符串
+
+|         | i32                | u32                | f64                | String*       |
+|---------|--------------------|--------------------|--------------------|---------------|
+| i32     | \                  | x as u32           | x as f64           | x.to_string() |
+| u32     | x as i32           | \                  | x as f64           | x.to_string() |
+| f64     | x as i32           | x as u32           | \                  | x.to_string() |
+| String* | x.parse().unwrap() | x.parse().unwrap() | x.parse().unwrap() | \             |
+
+##### String 与 & str
+
+| \      | String        | &str |
+|--------|---------------|------|
+| String | \             | &*x  |
+| &str   | x.to_string() | \    |
+
+##### 智能指针
+
+| \        | Vec\<T\>   | &[T]    | Box<[T]>             |
+|----------|------------|---------|----------------------|
+| Vec\<T\> | \          | &x[...] | x.into_boxed_slice() |
+| &[T]     | x.to_vec() | \       | Box::new(\*x)        |
+| Box<[T]> | x.to_vec() | &\*x    | \                    |
+
+### 路由绑定的处理函数handler
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/main.rs:73:101}}
+```
+
+### 处理函数用到的图片获取方法
+
+> 对于图片的网络请求，我们先把 URL 做个哈希，在 LRU 缓存中查找，找不到才用 reqwest 发送请求。
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/main.rs:103:125}}
+```
+
+### 一个用于调试的辅助函数
+
+```rust, editable
+{{#include ../geektime_rust_codes/05_thumbor/src/main.rs:127:137}}
+```
+
+## 运行与日志
+
+> 将RUST_LOG级别设置为info
+
+```shell
+cargo build --release
+RUST_LOG=info target/release/thumbor
+```
