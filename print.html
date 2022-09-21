@@ -96,7 +96,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">2.</strong> get hands dirty</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">2.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">2.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">2.2.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">2.3.</strong> queryer</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">2.4.</strong> rgrep</a></li></ol></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 13:58:55 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 15:31:37 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -348,152 +348,36 @@
 <span class="boring">}
 </span></code></pre></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="get-hands-dirty"><a class="header" href="#get-hands-dirty">get hands dirty</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h1>
 <!--ts-->
 <ul>
-<li><a href="get_hands_dirty.html#get-hands-dirty">get hands dirty</a></li>
-<li><a href="get_hands_dirty.html#httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">httpie源码剖析</a>
+<li><a href="httpie.html#httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">httpie源码剖析</a>
 <ul>
-<li><a href="get_hands_dirty.html#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a>
+<li><a href="httpie.html#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a>
 <ul>
-<li><a href="get_hands_dirty.html#cargotoml">Cargo.toml</a></li>
+<li><a href="httpie.html#cargotoml">Cargo.toml</a></li>
 </ul>
 </li>
-<li><a href="get_hands_dirty.html#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a>
+<li><a href="httpie.html#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a>
 <ul>
-<li><a href="get_hands_dirty.html#clapparser">clap::Parser</a></li>
+<li><a href="httpie.html#clapparser">clap::Parser</a></li>
 </ul>
 </li>
-<li><a href="get_hands_dirty.html#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a>
+<li><a href="httpie.html#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a>
 <ul>
-<li><a href="get_hands_dirty.html#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
-<li><a href="get_hands_dirty.html#%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">键值对改造</a></li>
+<li><a href="httpie.html#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
+<li><a href="httpie.html#%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">键值对改造</a></li>
 </ul>
 </li>
-<li><a href="get_hands_dirty.html#step3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E6%94%B9%E9%80%A0">Step3：异步请求改造</a></li>
-<li><a href="get_hands_dirty.html#step4-%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E6%89%93%E5%8D%B0">Step4: 语法高亮打印</a></li>
-<li><a href="get_hands_dirty.html#step5-%E6%B7%BB%E5%8A%A0%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">Step5: 添加单元测试</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#thumbor%E5%9B%BE%E7%89%87%E6%9C%8D%E5%8A%A1">thumbor图片服务</a>
-<ul>
-<li><a href="get_hands_dirty.html#abiproto">abi.proto</a></li>
-<li><a href="get_hands_dirty.html#buildrs">build.rs</a></li>
-<li><a href="get_hands_dirty.html#%E5%85%B3%E4%BA%8Erust%E7%9A%84%E6%A8%A1%E5%9D%97">关于rust的模块</a></li>
-<li><a href="get_hands_dirty.html#mod%E6%96%87%E4%BB%B6%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0%E5%88%86%E7%A6%BB">mod文件定义与实现分离</a></li>
-<li><a href="get_hands_dirty.html#pb%E6%A8%A1%E5%9D%97-%E5%A4%84%E7%90%86protobuf">pb模块: 处理protobuf</a>
-<ul>
-<li><a href="get_hands_dirty.html#pbmodrs%E5%A3%B0%E6%98%8E%E6%A8%A1%E5%9D%97">pb/mod.rs声明模块</a></li>
-<li><a href="get_hands_dirty.html#pbabirs%E9%87%8C%E9%9D%A2%E8%BF%98%E6%9C%89%E5%AD%90%E6%A8%A1%E5%9D%97">pb/abi.rs里面还有子模块</a></li>
-<li><a href="get_hands_dirty.html#pbabirs%E5%8F%A6%E5%A4%96%E5%AE%9A%E4%B9%89%E4%BA%86specdata%E9%87%8C%E9%9D%A2%E7%9A%84%E5%90%84%E4%B8%AA%E5%85%83%E7%B4%A0%E7%BB%93%E6%9E%84%E4%BD%93%E5%B5%8C%E5%A5%97%E6%A8%A1%E5%9D%97mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></li>
-<li><a href="get_hands_dirty.html#pbabirs%E6%9C%89%E4%B8%AA%E7%89%B9%E6%AE%8A%E7%BB%93%E6%9E%84%E4%BD%93">pb/abi.rs有个特殊结构体</a></li>
-<li><a href="get_hands_dirty.html#imagespec">ImageSpec</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84">定义：有序数组</a></li>
-<li><a href="get_hands_dirty.html#%E5%AE%9E%E7%8E%B0new%E6%96%B9%E6%B3%95fromtryfrom%E5%AE%9E%E7%8E%B0%E7%B1%BB%E5%9E%8B%E8%BD%AC%E5%8C%96">实现：new方法、From&amp;TryFrom实现类型转化</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#filter">Filter</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E4%BD%93mod">定义：枚举体mod</a></li>
-<li><a href="get_hands_dirty.html#%E5%AE%9E%E7%8E%B0%E5%8F%8C%E5%BC%95%E5%8F%B7%E7%9A%84%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D">实现：双引号的使用、模式匹配</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#samplefilter">SampleFilter</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E6%9E%9A%E4%B8%BE%E4%BD%93mod-1">定义：枚举体mod</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#%E5%AE%9E%E7%8E%B0mod%E4%BD%BF%E7%94%A8%E5%8F%8C%E5%BC%95%E5%8F%B7from%E8%BD%AC%E4%B8%BA%E4%B8%8D%E5%90%8C%E7%BB%93%E6%9E%9C">实现：mod使用双引号、From转为不同结果</a></li>
-<li><a href="get_hands_dirty.html#spec">Spec</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E5%AE%9A%E4%B9%89%E7%BB%93%E6%9E%84%E4%BD%93">定义：结构体</a></li>
-<li><a href="get_hands_dirty.html#%E5%AE%9E%E7%8E%B0%E7%B1%BB%E4%BC%BC%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E4%B8%AD%E6%B7%BB%E5%8A%A0%E7%B1%BB%E6%96%B9%E6%B3%95self">实现：类似面向对象中添加类方法Self</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#engine%E6%A8%A1%E5%9D%97-%E5%A4%84%E7%90%86%E5%9B%BE%E7%89%87">engine模块: 处理图片</a>
-<ul>
-<li><a href="get_hands_dirty.html#modrs-%E5%AE%9A%E4%B9%89%E7%BB%9F%E4%B8%80%E7%9A%84%E5%BC%95%E6%93%8Etrait">mod.rs: 定义统一的引擎trait</a></li>
-<li><a href="get_hands_dirty.html#photonrs--%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8F%E5%8A%A0%E8%BD%BD">photon.rs &gt; 静态变量加载</a></li>
-<li><a href="get_hands_dirty.html#photonrs--%E5%85%B7%E4%BD%93%E5%BC%95%E6%93%8Ephoton%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E8%BD%AC%E5%8C%96tryfrom">photon.rs &gt; 具体引擎Photon的定义与转化TryFrom</a></li>
-<li><a href="get_hands_dirty.html#photonrs--%E5%85%B7%E4%BD%93%E5%BC%95%E6%93%8Ephoton%E7%9A%84trait%E5%AE%9E%E7%8E%B0">photon.rs &gt; 具体引擎Photon的trait实现</a>
-<ul>
-<li><a href="get_hands_dirty.html#engine-trait">Engine Trait</a></li>
-<li><a href="get_hands_dirty.html#spectransform-trait">SpecTransform Trait</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E6%A0%BC%E5%BC%8F%E8%AF%AD%E4%B9%89%E5%8C%96">格式语义化</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#photonrs--%E5%9C%A8%E5%86%85%E5%AD%98%E4%B8%AD%E5%AF%B9%E5%9B%BE%E7%89%87%E8%BD%AC%E6%8D%A2%E6%A0%BC%E5%BC%8F%E7%9A%84%E6%96%B9%E6%B3%95">photon.rs &gt; 在内存中对图片转换格式的方法</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#mainrs">main.rs</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E5%85%88%E5%BC%95%E5%85%A5mod%E5%86%8Duse">先引入mod，再use</a></li>
-<li><a href="get_hands_dirty.html#%E5%9B%BE%E7%89%87%E8%B5%84%E6%BA%90%E7%94%A8%E5%88%B0lru%E7%AD%96%E7%95%A5%E7%BC%93%E5%AD%98type%E5%AE%9A%E4%B9%89">图片资源用到Lru策略缓存type定义</a></li>
-<li><a href="get_hands_dirty.html#%E4%B8%BB%E6%B5%81%E7%A8%8Bmain%E5%87%BD%E6%95%B0">主流程main函数</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E5%BB%BA%E9%80%A0%E8%80%85%E6%A8%A1%E5%BC%8F">建造者模式</a></li>
-<li><a href="get_hands_dirty.html#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">类型转换</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E6%95%B0%E5%AD%97%E4%B8%8E%E5%AD%97%E7%AC%A6%E4%B8%B2">数字与字符串</a></li>
-<li><a href="get_hands_dirty.html#string-%E4%B8%8E--str">String 与 &amp; str</a></li>
-<li><a href="get_hands_dirty.html#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88">智能指针</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#%E8%B7%AF%E7%94%B1%E7%BB%91%E5%AE%9A%E7%9A%84%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0handler">路由绑定的处理函数handler</a></li>
-<li><a href="get_hands_dirty.html#%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E7%94%A8%E5%88%B0%E7%9A%84%E5%9B%BE%E7%89%87%E8%8E%B7%E5%8F%96%E6%96%B9%E6%B3%95">处理函数用到的图片获取方法</a></li>
-<li><a href="get_hands_dirty.html#%E4%B8%80%E4%B8%AA%E7%94%A8%E4%BA%8E%E8%B0%83%E8%AF%95%E7%9A%84%E8%BE%85%E5%8A%A9%E5%87%BD%E6%95%B0">一个用于调试的辅助函数</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#%E8%BF%90%E8%A1%8C%E4%B8%8E%E6%97%A5%E5%BF%97">运行与日志</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#sql%E6%9F%A5%E8%AF%A2%E5%B7%A5%E5%85%B7">SQL查询工具</a>
-<ul>
-<li><a href="get_hands_dirty.html#workspace-%E8%BF%99%E9%87%8C%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%B8%85%E5%8D%95virtual-manifest%E6%96%B9%E5%BC%8F">workspace: 这里使用虚拟清单(virtual manifest)方式</a>
-<ul>
-<li><a href="get_hands_dirty.html#workspace%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F">workspace使用方式</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#queryer-package">queryer package</a>
-<ul>
-<li><a href="get_hands_dirty.html#cargotoml-1">cargo.toml</a></li>
-<li><a href="get_hands_dirty.html#%E4%B8%A4%E4%B8%AA%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">两个使用示例</a>
-<ul>
-<li><a href="get_hands_dirty.html#dialectrssql%E8%A7%A3%E6%9E%90">dialect.rs:SQL解析</a></li>
-<li><a href="get_hands_dirty.html#covidrs-ast%E8%BD%AC%E6%8D%A2">covid.rs: AST转换</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#srcconvertrs">src/convert.rs</a>
-<ul>
-<li><a href="get_hands_dirty.html#%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9A%E4%B9%89sql%E4%B8%8E%E5%AF%B9%E5%BA%94%E9%83%A8%E5%88%86%E7%BB%93%E6%9E%84%E4%BD%93-%E6%B3%A8%E6%84%8F%E9%99%90%E4%BA%8E%E5%AD%A4%E5%84%BF%E5%8E%9F%E5%88%99%E7%9A%84%E5%86%8D%E5%8C%85%E8%A3%85">结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装</a></li>
-<li><a href="get_hands_dirty.html#sql%E7%9A%84%E8%BD%AC%E6%8D%A2">sql的转换</a></li>
-<li><a href="get_hands_dirty.html#%E5%AF%B9%E5%BA%94%E9%83%A8%E5%88%86%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E8%BD%AC%E6%8D%A2">对应部分结构体的转换</a></li>
-<li><a href="get_hands_dirty.html#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95-1">单元测试</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#srcdialectrs">src/dialect.rs</a></li>
-<li><a href="get_hands_dirty.html#srcloaderrs">src/loader.rs</a></li>
-<li><a href="get_hands_dirty.html#srcfetcherrs">src/fetcher.rs</a></li>
-</ul>
-</li>
-<li><a href="get_hands_dirty.html#queryer-js-package">queryer-js package</a></li>
-<li><a href="get_hands_dirty.html#queryer-py-package">queryer-py package</a></li>
-<li><a href="get_hands_dirty.html#data-viewer-package">data-viewer package</a></li>
+<li><a href="httpie.html#step3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E6%94%B9%E9%80%A0">Step3：异步请求改造</a></li>
+<li><a href="httpie.html#step4-%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E6%89%93%E5%8D%B0">Step4: 语法高亮打印</a></li>
+<li><a href="httpie.html#step5-%E6%B7%BB%E5%8A%A0%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">Step5: 添加单元测试</a></li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 13:58:55 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 15:31:38 UTC 2022 -->
 <!--te-->
-<h1 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h1>
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
 <li><a href="https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=%5B%5Bexample%5D%5D#examples">Cargo Targets &gt;&gt; Examples - The Cargo Book</a></li>
@@ -538,7 +422,7 @@ name = &quot;cli_get&quot;
 <div id="admonition-example使用" class="admonition tip">
 <div class="admonition-title">
 <p>example使用</p>
-<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-example使用"></a></p>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-example使用"></a></p>
 </div>
 <div>
 <ol>
@@ -650,7 +534,7 @@ fn main() {
 <div id="admonition-clapparser" class="admonition info">
 <div class="admonition-title">
 <p>clap::Parser</p>
-<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-clapparser"></a></p>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-clapparser"></a></p>
 </div>
 <div>
 <ul>
@@ -913,7 +797,9 @@ mod tests {
     }
 }
 </code></pre></pre>
-<h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
+<!--ts-->
+<!--te-->
 <h2 id="abiproto"><a class="header" href="#abiproto">abi.proto</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">syntax = &quot;proto3&quot;;
 
@@ -1028,7 +914,7 @@ fn main() {
 <div id="admonition-mod全认识" class="admonition tip">
 <div class="admonition-title">
 <p>mod全认识</p>
-<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-mod全认识"></a></p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-mod全认识"></a></p>
 </div>
 <div>
 <ol>
@@ -1663,7 +1549,66 @@ fn print_test_url(url: &amp;str) {
 <pre><code class="language-shell">cargo build --release
 RUST_LOG=info target/release/thumbor
 </code></pre>
-<h1 id="sql查询工具"><a class="header" href="#sql查询工具">SQL查询工具</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="sql查询工具"><a class="header" href="#sql查询工具">SQL查询工具</a></h1>
+<!--ts-->
+<ul>
+<li><a href="queryer.html#sql%E6%9F%A5%E8%AF%A2%E5%B7%A5%E5%85%B7">SQL查询工具</a>
+<ul>
+<li><a href="queryer.html#workspace-%E8%BF%99%E9%87%8C%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%B8%85%E5%8D%95virtual-manifest%E6%96%B9%E5%BC%8F">workspace: 这里使用虚拟清单(virtual manifest)方式</a>
+<ul>
+<li><a href="queryer.html#workspace%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F">workspace使用方式</a></li>
+</ul>
+</li>
+<li><a href="queryer.html#queryer-package">queryer package</a>
+<ul>
+<li><a href="queryer.html#cargotoml">cargo.toml</a></li>
+<li><a href="queryer.html#%E4%B8%A4%E4%B8%AA%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">两个使用示例</a>
+<ul>
+<li><a href="queryer.html#dialectrssql%E8%A7%A3%E6%9E%90">dialect.rs:SQL解析</a></li>
+<li><a href="queryer.html#covidrs-ast%E8%BD%AC%E6%8D%A2">covid.rs: AST转换</a></li>
+</ul>
+</li>
+<li><a href="queryer.html#srcconvertrs">src/convert.rs</a>
+<ul>
+<li><a href="queryer.html#%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9A%E4%B9%89sql%E4%B8%8E%E5%AF%B9%E5%BA%94%E9%83%A8%E5%88%86%E7%BB%93%E6%9E%84%E4%BD%93-%E6%B3%A8%E6%84%8F%E9%99%90%E4%BA%8E%E5%AD%A4%E5%84%BF%E5%8E%9F%E5%88%99%E7%9A%84%E5%86%8D%E5%8C%85%E8%A3%85">结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装</a></li>
+<li><a href="queryer.html#sql%E7%9A%84%E8%BD%AC%E6%8D%A2">sql的转换</a></li>
+<li><a href="queryer.html#%E5%AF%B9%E5%BA%94%E9%83%A8%E5%88%86%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E8%BD%AC%E6%8D%A2">对应部分结构体的转换</a></li>
+<li><a href="queryer.html#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
+</ul>
+</li>
+<li><a href="queryer.html#srcdialectrs">src/dialect.rs</a>
+<ul>
+<li><a href="queryer.html#%E5%AE%9A%E4%B9%89%E6%96%B9%E8%A8%80%E7%BB%93%E6%9E%84%E4%BD%93">定义方言结构体</a></li>
+<li><a href="queryer.html#%E7%BB%99%E6%96%B9%E8%A8%80%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9E%E7%8E%B0trait">给方言结构体实现trait</a></li>
+<li><a href="queryer.html#%E6%B7%BB%E5%8A%A0%E6%B5%8B%E8%AF%95%E7%94%A8%E5%87%BD%E6%95%B0">添加测试用函数</a></li>
+<li><a href="queryer.html#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95-1">单元测试</a></li>
+</ul>
+</li>
+<li><a href="queryer.html#srcloaderrs">src/loader.rs</a>
+<ul>
+<li><a href="queryer.html#%E5%AE%9A%E4%B9%89loader%E4%B8%8Ecsvloader">定义Loader与CsvLoader</a></li>
+<li><a href="queryer.html#%E5%AE%9A%E4%B9%89trait%E5%B9%B6%E7%BB%99csvloader%E5%AE%9E%E7%8E%B0">定义trait并给CsvLoader实现</a></li>
+<li><a href="queryer.html#todo-%E7%BB%99csvloader%E6%B7%BB%E5%8A%A0%E5%86%85%E5%AE%B9%E6%A3%80%E6%B5%8B">todo: 给CsvLoader添加内容检测</a></li>
+</ul>
+</li>
+<li><a href="queryer.html#srcfetcherrs">src/fetcher.rs</a>
+<ul>
+<li><a href="queryer.html#%E5%AE%9A%E4%B9%89urlfetcher%E4%B8%8Efilefetcher">定义UrlFetcher与FileFetcher</a></li>
+<li><a href="queryer.html#%E5%AE%9A%E4%B9%89trait%E5%B9%B6%E7%BB%99fetcher%E4%B8%8Efilefetcher%E5%AE%9E%E7%8E%B0">定义trait并给Fetcher与FileFetcher实现</a></li>
+<li><a href="queryer.html#%E6%9C%80%E5%90%8E%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95">最后定义一个获取数据的方法</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="queryer.html#queryer-js-package">queryer-js package</a></li>
+<li><a href="queryer.html#queryer-py-package">queryer-py package</a></li>
+<li><a href="queryer.html#data-viewer-package">data-viewer package</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Wed Sep 21 15:31:38 UTC 2022 -->
+<!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
 <p><a href="https://course.rs/cargo/reference/workspaces.html">工作空间 Workspace - Rust语言圣经(Rust Course)</a></p>
@@ -1680,7 +1625,7 @@ members = [
 <div id="admonition-虚拟清单" class="admonition info">
 <div class="admonition-title">
 <p>虚拟清单</p>
-<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-虚拟清单"></a></p>
+<p><a class="admonition-anchor-link" href="queryer.html#admonition-虚拟清单"></a></p>
 </div>
 <div>
 <p>若一个 Cargo.toml 有 [workspace] 但是没有 [package] 部分，则它是虚拟清单类型的工作空间。</p>
@@ -1690,7 +1635,7 @@ members = [
 <div id="admonition-workspace关键点" class="admonition tip">
 <div class="admonition-title">
 <p>workspace关键点</p>
-<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-workspace关键点"></a></p>
+<p><a class="admonition-anchor-link" href="queryer.html#admonition-workspace关键点"></a></p>
 </div>
 <div>
 <ul>
@@ -1707,7 +1652,7 @@ cargo build -p queryer
 <div id="admonition-使用说明" class="admonition info">
 <div class="admonition-title">
 <p>使用说明</p>
-<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-使用说明"></a></p>
+<p><a class="admonition-anchor-link" href="queryer.html#admonition-使用说明"></a></p>
 </div>
 <div>
 <ol>
@@ -2013,13 +1958,176 @@ mod tests {
 }
 </code></pre></pre>
 <h3 id="srcdialectrs"><a class="header" href="#srcdialectrs">src/dialect.rs</a></h3>
+<h4 id="定义方言结构体"><a class="header" href="#定义方言结构体">定义方言结构体</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">#[derive(Debug, Default)]
+pub struct TyrDialect;
+</code></pre></pre>
+<h4 id="给方言结构体实现trait"><a class="header" href="#给方言结构体实现trait">给方言结构体实现trait</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">// 创建自己的 sql 方言。TyrDialect 支持 identifier 可以是简单的 url
+impl Dialect for TyrDialect {
+    fn is_identifier_start(&amp;self, ch: char) -&gt; bool {
+        ('a'..='z').contains(&amp;ch) || ('A'..='Z').contains(&amp;ch) || ch == '_'
+    }
+
+    // identifier 可以有 ':', '/', '?', '&amp;', '='
+    fn is_identifier_part(&amp;self, ch: char) -&gt; bool {
+        ('a'..='z').contains(&amp;ch)
+            || ('A'..='Z').contains(&amp;ch)
+            || ('0'..='9').contains(&amp;ch)
+            || [':', '/', '?', '&amp;', '=', '-', '_', '.'].contains(&amp;ch)
+    }
+}
+</code></pre></pre>
+<h4 id="添加测试用函数"><a class="header" href="#添加测试用函数">添加测试用函数</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">/// 测试辅助函数
+pub fn example_sql() -&gt; String {
+    let url = &quot;https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/latest/owid-covid-latest.csv&quot;;
+
+    let sql = format!(
+        &quot;SELECT location name, total_cases, new_cases, total_deaths, new_deaths \
+        FROM {} where new_deaths &gt;= 500 ORDER BY new_cases DESC LIMIT 6 OFFSET 5&quot;,
+        url
+    );
+
+    sql
+}
+</code></pre></pre>
+<h4 id="单元测试-2"><a class="header" href="#单元测试-2">单元测试</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
+mod tests {
+    use super::*;
+    use sqlparser::parser::Parser;
+
+    #[test]
+    fn it_works() {
+        assert!(Parser::parse_sql(&amp;TyrDialect::default(), &amp;example_sql()).is_ok());
+    }
+}
+</code></pre></pre>
 <h3 id="srcloaderrs"><a class="header" href="#srcloaderrs">src/loader.rs</a></h3>
+<h4 id="定义loader与csvloader"><a class="header" href="#定义loader与csvloader">定义Loader与CsvLoader</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">#[derive(Debug)]
+#[non_exhaustive]
+pub enum Loader {
+    Csv(CsvLoader),
+}
+
+#[derive(Default, Debug)]
+pub struct CsvLoader(pub(crate) String);
+</code></pre></pre>
+<h4 id="定义trait并给csvloader实现"><a class="header" href="#定义trait并给csvloader实现">定义trait并给CsvLoader实现</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">
+    let sql = format!(
+        &quot;SELECT location name, total_cases, new_cases, total_deaths, new_deaths \
+        FROM {} where new_deaths &gt;= 500 ORDER BY new_cases DESC LIMIT 6 OFFSET 5&quot;,
+        url
+    );
+
+    sql
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use sqlparser::parser::Parser;
+
+</code></pre></pre>
+<h4 id="todo-给csvloader添加内容检测"><a class="header" href="#todo-给csvloader添加内容检测">todo: 给CsvLoader添加内容检测</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">    fn it_works() {
+        assert!(Parser::parse_sql(&amp;TyrDialect::default(), &amp;example_sql()).is_ok());
+    }
+}
+</code></pre></pre>
 <h3 id="srcfetcherrs"><a class="header" href="#srcfetcherrs">src/fetcher.rs</a></h3>
+<h4 id="定义urlfetcher与filefetcher"><a class="header" href="#定义urlfetcher与filefetcher">定义UrlFetcher与FileFetcher</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">struct UrlFetcher&lt;'a&gt;(pub(crate) &amp;'a str);
+
+struct FileFetcher&lt;'a&gt;(pub(crate) &amp;'a str);
+</code></pre></pre>
+<h4 id="定义trait并给fetcher与filefetcher实现"><a class="header" href="#定义trait并给fetcher与filefetcher实现">定义trait并给Fetcher与FileFetcher实现</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">// Rust 的 async trait 还没有稳定，可以用 async_trait 宏
+#[async_trait]
+pub trait Fetch {
+    type Error;
+    async fn fetch(&amp;self) -&gt; Result&lt;String, Self::Error&gt;;
+}
+
+#[async_trait]
+impl&lt;'a&gt; Fetch for UrlFetcher&lt;'a&gt; {
+    type Error = anyhow::Error;
+
+    async fn fetch(&amp;self) -&gt; Result&lt;String, Self::Error&gt; {
+        Ok(reqwest::get(self.0).await?.text().await?)
+    }
+}
+
+#[async_trait]
+impl&lt;'a&gt; Fetch for FileFetcher&lt;'a&gt; {
+    type Error = anyhow::Error;
+
+    async fn fetch(&amp;self) -&gt; Result&lt;String, Self::Error&gt; {
+        Ok(fs::read_to_string(&amp;self.0[7..]).await?)
+    }
+}
+</code></pre></pre>
+<h4 id="最后定义一个获取数据的方法"><a class="header" href="#最后定义一个获取数据的方法">最后定义一个获取数据的方法</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">/// 从文件源或者 http 源中获取数据，返回字符串
+pub async fn retrieve_data(source: impl AsRef&lt;str&gt;) -&gt; Result&lt;String&gt; {
+    let name = source.as_ref();
+    match &amp;name[..4] {
+        // 包括 http / https
+        &quot;http&quot; =&gt; UrlFetcher(name).fetch().await,
+        // 处理 file://&lt;filename&gt;
+        &quot;file&quot; =&gt; FileFetcher(name).fetch().await,
+        _ =&gt; Err(anyhow!(&quot;We only support http/https/file at the moment&quot;)),
+    }
+}
+</code></pre></pre>
 <h2 id="queryer-js-package"><a class="header" href="#queryer-js-package">queryer-js package</a></h2>
 <h2 id="queryer-py-package"><a class="header" href="#queryer-py-package">queryer-py package</a></h2>
 <h2 id="data-viewer-package"><a class="header" href="#data-viewer-package">data-viewer package</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rgrep"><a class="header" href="#rgrep">rgrep</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="gdblldb调试或查看内存结构"><a class="header" href="#gdblldb调试或查看内存结构">gdb/lldb调试或查看内存结构</a></h1>
 <!--ts-->
+<ul>
+<li><a href="intro_gdb_lldb.html#gdblldb%E8%B0%83%E8%AF%95%E6%88%96%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">gdb/lldb调试或查看内存结构</a>
+<ul>
+<li><a href="intro_gdb_lldb.html#%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86">资料整理</a>
+<ul>
+<li><a href="intro_gdb_lldb.html#%E5%AE%98%E6%96%B9%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84cheat-sheet">官方数据结构cheat sheet</a></li>
+</ul>
+</li>
+<li><a href="intro_gdb_lldb.html#%E6%9F%A5%E7%9C%8Bhashmap%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">查看hashmap内存结构</a>
+<ul>
+<li><a href="intro_gdb_lldb.html#bin%E9%85%8D%E7%BD%AE%E4%B8%8E%E8%BF%90%E8%A1%8C">bin配置与运行</a></li>
+<li><a href="intro_gdb_lldb.html#%E7%9B%AE%E6%A0%87%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81">目标调试代码</a></li>
+<li><a href="intro_gdb_lldb.html#%E4%BD%BF%E7%94%A8gdblldb%E8%BF%9B%E8%A1%8C%E8%B0%83%E8%AF%95%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">使用gdb/lldb进行调试查看内存结构</a>
+<ul>
+<li><a href="intro_gdb_lldb.html#gdb-%E4%B8%BB%E8%A6%81%E6%98%AFlinux%E7%B3%BB%E7%BB%9F">gdb: 主要是linux系统</a></li>
+<li><a href="intro_gdb_lldb.html#lldb-%E4%B8%BB%E8%A6%81osx%E7%B3%BB%E7%BB%9F">lldb: 主要OSX系统</a></li>
+<li><a href="intro_gdb_lldb.html#idea">IDEA</a></li>
+<li><a href="intro_gdb_lldb.html#gdb%E4%B8%8Elldb%E5%91%BD%E4%BB%A4%E5%AF%B9%E7%85%A7">gdb与lldb命令对照</a></li>
+<li><a href="intro_gdb_lldb.html#%E5%BC%80%E5%A7%8B%E8%B0%83%E8%AF%95">开始调试</a></li>
+<li><a href="intro_gdb_lldb.html#breakpoint-%E6%B7%BB%E5%8A%A0%E6%96%AD%E7%82%B9">b(reakpoint): 添加断点</a></li>
+<li><a href="intro_gdb_lldb.html#run%E8%BF%90%E8%A1%8C%E5%88%B0%E6%96%AD%E7%82%B9">r(un):运行到断点</a></li>
+<li><a href="intro_gdb_lldb.html#continue%E7%BB%A7%E7%BB%AD%E5%8D%95%E6%AD%A5%E6%89%A7%E8%A1%8C">c(ontinue):继续单步执行</a></li>
+<li><a href="intro_gdb_lldb.html#x-%E6%89%93%E5%8D%B0%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80">x: 打印内存地址</a></li>
+<li><a href="intro_gdb_lldb.html#continue-%E7%BB%A7%E7%BB%AD%E6%89%A7%E8%A1%8C%E5%88%B0%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%96%AD%E7%82%B9">c(ontinue): 继续执行到下一个断点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="intro_gdb_lldb.html#%E6%9F%A5%E7%9C%8B%E9%97%AD%E5%8C%85%E7%9A%84%E7%BB%93%E6%9E%84">查看闭包的结构</a>
+<ul>
+<li><a href="intro_gdb_lldb.html#%E4%BB%A3%E7%A0%81">代码</a></li>
+<li><a href="intro_gdb_lldb.html#%E8%BF%90%E8%A1%8C%E8%BF%9B%E5%85%A5lldb">运行进入lldb</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Wed Sep 21 15:31:38 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>

@@ -95,7 +95,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">2.</strong> get hands dirty</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html" class="active"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">2.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">2.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">2.2.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">2.3.</strong> queryer</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">2.4.</strong> rgrep</a></li></ol></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html" class="active"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -182,6 +182,45 @@
                 </div>
                 <h1 id="gdblldb调试或查看内存结构"><a class="header" href="#gdblldb调试或查看内存结构">gdb/lldb调试或查看内存结构</a></h1>
 <!--ts-->
+<ul>
+<li><a href="#gdblldb%E8%B0%83%E8%AF%95%E6%88%96%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">gdb/lldb调试或查看内存结构</a>
+<ul>
+<li><a href="#%E8%B5%84%E6%96%99%E6%95%B4%E7%90%86">资料整理</a>
+<ul>
+<li><a href="#%E5%AE%98%E6%96%B9%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84cheat-sheet">官方数据结构cheat sheet</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9F%A5%E7%9C%8Bhashmap%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">查看hashmap内存结构</a>
+<ul>
+<li><a href="#bin%E9%85%8D%E7%BD%AE%E4%B8%8E%E8%BF%90%E8%A1%8C">bin配置与运行</a></li>
+<li><a href="#%E7%9B%AE%E6%A0%87%E8%B0%83%E8%AF%95%E4%BB%A3%E7%A0%81">目标调试代码</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8gdblldb%E8%BF%9B%E8%A1%8C%E8%B0%83%E8%AF%95%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E7%BB%93%E6%9E%84">使用gdb/lldb进行调试查看内存结构</a>
+<ul>
+<li><a href="#gdb-%E4%B8%BB%E8%A6%81%E6%98%AFlinux%E7%B3%BB%E7%BB%9F">gdb: 主要是linux系统</a></li>
+<li><a href="#lldb-%E4%B8%BB%E8%A6%81osx%E7%B3%BB%E7%BB%9F">lldb: 主要OSX系统</a></li>
+<li><a href="#idea">IDEA</a></li>
+<li><a href="#gdb%E4%B8%8Elldb%E5%91%BD%E4%BB%A4%E5%AF%B9%E7%85%A7">gdb与lldb命令对照</a></li>
+<li><a href="#%E5%BC%80%E5%A7%8B%E8%B0%83%E8%AF%95">开始调试</a></li>
+<li><a href="#breakpoint-%E6%B7%BB%E5%8A%A0%E6%96%AD%E7%82%B9">b(reakpoint): 添加断点</a></li>
+<li><a href="#run%E8%BF%90%E8%A1%8C%E5%88%B0%E6%96%AD%E7%82%B9">r(un):运行到断点</a></li>
+<li><a href="#continue%E7%BB%A7%E7%BB%AD%E5%8D%95%E6%AD%A5%E6%89%A7%E8%A1%8C">c(ontinue):继续单步执行</a></li>
+<li><a href="#x-%E6%89%93%E5%8D%B0%E5%86%85%E5%AD%98%E5%9C%B0%E5%9D%80">x: 打印内存地址</a></li>
+<li><a href="#continue-%E7%BB%A7%E7%BB%AD%E6%89%A7%E8%A1%8C%E5%88%B0%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%96%AD%E7%82%B9">c(ontinue): 继续执行到下一个断点</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E6%9F%A5%E7%9C%8B%E9%97%AD%E5%8C%85%E7%9A%84%E7%BB%93%E6%9E%84">查看闭包的结构</a>
+<ul>
+<li><a href="#%E4%BB%A3%E7%A0%81">代码</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E8%BF%9B%E5%85%A5lldb">运行进入lldb</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Wed Sep 21 15:31:38 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -655,7 +694,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 
             <nav class="nav-wrapper" aria-label="Page navigation">
                 <!-- Mobile navigation buttons -->
-                    <a rel="prev" href="get_hands_dirty.html" class="mobile-nav-chapters previous"
+                    <a rel="prev" href="rgrep.html" class="mobile-nav-chapters previous"
                        title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
@@ -671,7 +710,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
     </div>
 
     <nav class="nav-wide-wrapper" aria-label="Page navigation">
-            <a rel="prev" href="get_hands_dirty.html" class="nav-chapters previous" title="Previous chapter"
+            <a rel="prev" href="rgrep.html" class="nav-chapters previous" title="Previous chapter"
                aria-label="Previous chapter" aria-keyshortcuts="Left">
                 <i class="fa fa-angle-left"></i>
             </a>

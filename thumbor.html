@@ -1,0 +1,1007 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>thumbor - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">2.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">2.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="thumbor.html" class="active"><strong aria-hidden="true">2.2.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">2.3.</strong> queryer</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">2.4.</strong> rgrep</a></li></ol></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
+<!--ts-->
+<!--te-->
+<h2 id="abiproto"><a class="header" href="#abiproto">abi.proto</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">syntax = &quot;proto3&quot;;
+
+package abi;
+
+// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
+message ImageSpec { repeated Spec specs = 1; }
+
+// 处理图片改变大小
+message Resize {
+  uint32 width = 1;
+  uint32 height = 2;
+
+  enum ResizeType {
+    NORMAL = 0;
+    SEAM_CARVE = 1;
+  }
+
+  ResizeType rtype = 3;
+
+  enum SampleFilter {
+    UNDEFINED = 0;
+    NEAREST = 1;
+    TRIANGLE = 2;
+    CATMULL_ROM = 3;
+    GAUSSIAN = 4;
+    LANCZOS3 = 5;
+  }
+
+  SampleFilter filter = 4;
+}
+
+// 处理图片截取
+message Crop {
+  uint32 x1 = 1;
+  uint32 y1 = 2;
+  uint32 x2 = 3;
+  uint32 y2 = 4;
+}
+
+// 处理水平翻转
+message Fliph {}
+// 处理垂直翻转
+message Flipv {}
+// 处理对比度
+message Contrast { float contrast = 1; }
+// 处理滤镜
+message Filter {
+  enum Filter {
+    UNSPECIFIED = 0;
+    OCEANIC = 1;
+    ISLANDS = 2;
+    MARINE = 3;
+    // more: https://docs.rs/photon-rs/0.3.1/photon_rs/filters/fn.filter.html
+  }
+  Filter filter = 1;
+}
+
+// 处理水印
+message Watermark {
+  uint32 x = 1;
+  uint32 y = 2;
+}
+
+// 一个 spec 可以包含上述的处理方式之一
+message Spec {
+  oneof data {
+    Resize resize = 1;
+    Crop crop = 2;
+    Flipv flipv = 3;
+    Fliph fliph = 4;
+    Contrast contrast = 5;
+    Filter filter = 6;
+    Watermark watermark = 7;
+  }
+}
+</code></pre></pre>
+<h2 id="buildrs"><a class="header" href="#buildrs">build.rs</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">use std::process::Command;
+
+fn main() {
+    // 在编译时可选择检查环境变量。
+    let build_enabled = option_env!(&quot;BUILD_PROTO&quot;)
+        .map(|v| v == &quot;1&quot;)
+        .unwrap_or(false);
+    // 如果没有找到环境变量的对应值，就直接return，不再进行后续编译
+    if !build_enabled {
+        println!(&quot;=== Skipped compiling protos ===&quot;);
+        return;
+    }
+    // 使用 prost_build 把 abi.proto 编译到 src/pb 目录下
+    prost_build::Config::new()
+        .out_dir(&quot;src/pb&quot;)
+        .compile_protos(&amp;[&quot;abi.proto&quot;], &amp;[&quot;.&quot;])
+        .unwrap();
+    Command::new(&quot;cargo&quot;)
+        .args(&amp;[&quot;fmt&quot;, &quot;--&quot;, &quot;src/*.rs&quot;])
+        .status()
+        .expect(&quot;cargo fmt failed&quot;);
+}
+</code></pre></pre>
+<ul>
+<li><a href="https://doc.rust-lang.org/std/macro.option_env.html">option_env in std - Rust</a></li>
+</ul>
+<blockquote>
+<p>在编译时可选择检查环境变量。</p>
+</blockquote>
+<h2 id="关于rust的模块"><a class="header" href="#关于rust的模块">关于rust的模块</a></h2>
+<blockquote>
+<p>可以参考这篇：<a href="https://zhuanlan.zhihu.com/p/443926839">Rust 模块系统理解 - 知乎</a></p>
+</blockquote>
+<div id="admonition-mod全认识" class="admonition tip">
+<div class="admonition-title">
+<p>mod全认识</p>
+<p><a class="admonition-anchor-link" href="#admonition-mod全认识"></a></p>
+</div>
+<div>
+<ol>
+<li>mod(mod.rs或mod关键字)将代码分为多个逻辑模块，并管理这些模块的可见性（public / private）。</li>
+<li>模块是项（item）的集合，项可以是：函数，结构体，trait，impl块，甚至其它模块。</li>
+<li>一个目录下的所有代码，可以通过 mod.rs 声明</li>
+<li>Rust模块有三种形式:
+<ul>
+<li>mod.rs: 一个目录下的所有代码，可以通过 mod.rs 声明</li>
+<li>文件/目录即模块：编译器的机制决定，除了mod.rs外，每一个文件和目录都是一个模块。不允许只分拆文件，但是不声明mod，我们通常使用pub use，在父空间直接调用子空间的函数。</li>
+<li>mod关键字: 在文件内部分拆模块</li>
+</ul>
+</li>
+<li>Rust编译器只接受一个源文件，输出一个crate</li>
+<li>每一个crate都有一个匿名的根命名空间，命名空间可以无限嵌套</li>
+<li>“mod mod-name { … }“ 将大括号中的代码置于命名空间mod-name之下</li>
+<li>“use mod-name1::mod-name2;“ 可以打开命名空间，减少无休止的::操作符</li>
+<li>“mod mod-name;“ 可以指导编译器将多个文件组装成一个文件</li>
+<li>“pub use mod-nam1::mod-name2::item-name;“
+语句可以将mod-name2下的item-name提升到这条语句所在的空间，item-name通常是函数或者结构体。Rust社区通常用这个方法来缩短库API的命名空间深度
+编译器规定use语句一定要在mod语句之前</li>
+</ol>
+</div>
+</div>
+<h2 id="mod文件定义与实现分离"><a class="header" href="#mod文件定义与实现分离">mod文件定义与实现分离</a></h2>
+<p>在rust中，一般会在模块的mod.rs文件中对供外部使用的项进行实现, 项可以是：函数，结构体，trait，impl块，甚至其它模块.
+这样有个好处，高内聚，可以在代码增长时，将变动局限在服务提供者内部，对外提供的api不变，不会造成破坏性更新。</p>
+<h2 id="pb模块-处理protobuf"><a class="header" href="#pb模块-处理protobuf">pb模块: 处理protobuf</a></h2>
+<h3 id="pbmodrs声明模块"><a class="header" href="#pbmodrs声明模块">pb/mod.rs声明模块</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">mod abi; // 声明 abi.rs
+pub use abi::*;
+</code></pre></pre>
+<h3 id="pbabirs里面还有子模块"><a class="header" href="#pbabirs里面还有子模块">pb/abi.rs里面还有子模块</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">/// Nested message and enum types in `Spec`.
+pub mod spec {
+    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    pub enum Data {
+        #[prost(message, tag = &quot;1&quot;)]
+        Resize(super::Resize),
+        #[prost(message, tag = &quot;2&quot;)]
+        Crop(super::Crop),
+        #[prost(message, tag = &quot;3&quot;)]
+        Flipv(super::Flipv),
+        #[prost(message, tag = &quot;4&quot;)]
+        Fliph(super::Fliph),
+        #[prost(message, tag = &quot;5&quot;)]
+        Contrast(super::Contrast),
+        #[prost(message, tag = &quot;6&quot;)]
+        Filter(super::Filter),
+        #[prost(message, tag = &quot;7&quot;)]
+        Watermark(super::Watermark),
+    }
+}
+</code></pre></pre>
+<h3 id="pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod"><a class="header" href="#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">/// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ImageSpec {
+    #[prost(message, repeated, tag = &quot;1&quot;)]
+    pub specs: ::prost::alloc::vec::Vec&lt;Spec&gt;,
+}
+/// 处理图片改变大小
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Resize {
+    #[prost(uint32, tag = &quot;1&quot;)]
+    pub width: u32,
+    #[prost(uint32, tag = &quot;2&quot;)]
+    pub height: u32,
+    #[prost(enumeration = &quot;resize::ResizeType&quot;, tag = &quot;3&quot;)]
+    pub rtype: i32,
+    #[prost(enumeration = &quot;resize::SampleFilter&quot;, tag = &quot;4&quot;)]
+    pub filter: i32,
+}
+/// Nested message and enum types in `Resize`.
+pub mod resize {
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[repr(i32)]
+    pub enum ResizeType {
+        Normal = 0,
+        SeamCarve = 1,
+    }
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[repr(i32)]
+    pub enum SampleFilter {
+        Undefined = 0,
+        Nearest = 1,
+        Triangle = 2,
+        CatmullRom = 3,
+        Gaussian = 4,
+        Lanczos3 = 5,
+    }
+}
+/// 处理图片截取
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Crop {
+    #[prost(uint32, tag = &quot;1&quot;)]
+    pub x1: u32,
+    #[prost(uint32, tag = &quot;2&quot;)]
+    pub y1: u32,
+    #[prost(uint32, tag = &quot;3&quot;)]
+    pub x2: u32,
+    #[prost(uint32, tag = &quot;4&quot;)]
+    pub y2: u32,
+}
+/// 处理水平翻转
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Fliph {}
+/// 处理垂直翻转
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Flipv {}
+/// 处理对比度
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Contrast {
+    #[prost(float, tag = &quot;1&quot;)]
+    pub contrast: f32,
+}
+/// 处理滤镜
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Filter {
+    #[prost(enumeration = &quot;filter::Filter&quot;, tag = &quot;1&quot;)]
+    pub filter: i32,
+}
+/// Nested message and enum types in `Filter`.
+pub mod filter {
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[repr(i32)]
+    pub enum Filter {
+        Unspecified = 0,
+        Oceanic = 1,
+        Islands = 2,
+        /// more: &lt;https://docs.rs/photon-rs/0.3.1/photon_rs/filters/fn.filter.html&gt;
+        Marine = 3,
+    }
+}
+/// 处理水印
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Watermark {
+    #[prost(uint32, tag = &quot;1&quot;)]
+    pub x: u32,
+    #[prost(uint32, tag = &quot;2&quot;)]
+    pub y: u32,
+}
+</code></pre></pre>
+<h3 id="pbabirs有个特殊结构体"><a class="header" href="#pbabirs有个特殊结构体">pb/abi.rs有个特殊结构体</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">/// 一个 spec 可以包含上述的处理方式之一
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Spec {
+    #[prost(oneof = &quot;spec::Data&quot;, tags = &quot;1, 2, 3, 4, 5, 6, 7&quot;)]
+    pub data: ::core::option::Option&lt;spec::Data&gt;,
+}
+</code></pre></pre>
+<h3 id="imagespec"><a class="header" href="#imagespec">ImageSpec</a></h3>
+<h4 id="定义有序数组"><a class="header" href="#定义有序数组">定义：有序数组</a></h4>
+<ul>
+<li>pb/abi.rs</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">/// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ImageSpec {
+    #[prost(message, repeated, tag = &quot;1&quot;)]
+    pub specs: ::prost::alloc::vec::Vec&lt;Spec&gt;,
+}
+</code></pre></pre>
+<h4 id="实现new方法fromtryfrom实现类型转化"><a class="header" href="#实现new方法fromtryfrom实现类型转化">实现：new方法、From&amp;TryFrom实现类型转化</a></h4>
+<ul>
+<li>pb/mod.rs</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">impl ImageSpec {
+    pub fn new(specs: Vec&lt;Spec&gt;) -&gt; Self {
+        Self { specs }
+    }
+}
+
+// 让 ImageSpec 可以生成一个字符串
+impl From&lt;&amp;ImageSpec&gt; for String {
+    fn from(image_spec: &amp;ImageSpec) -&gt; Self {
+        let data = image_spec.encode_to_vec();
+        encode_config(data, URL_SAFE_NO_PAD)
+    }
+}
+
+// 让 ImageSpec 可以通过一个字符串创建。比如 s.parse().unwrap()
+impl TryFrom&lt;&amp;str&gt; for ImageSpec {
+    type Error = anyhow::Error;
+
+    fn try_from(value: &amp;str) -&gt; Result&lt;Self, Self::Error&gt; {
+        let data = decode_config(value, URL_SAFE_NO_PAD)?;
+        Ok(ImageSpec::decode(&amp;data[..])?)
+    }
+}
+</code></pre></pre>
+<h3 id="filter"><a class="header" href="#filter">Filter</a></h3>
+<h4 id="定义枚举体mod"><a class="header" href="#定义枚举体mod">定义：枚举体mod</a></h4>
+<ul>
+<li>pb/abi.rs</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">/// Nested message and enum types in `Filter`.
+pub mod filter {
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[repr(i32)]
+    pub enum Filter {
+        Unspecified = 0,
+        Oceanic = 1,
+        Islands = 2,
+        /// more: &lt;https://docs.rs/photon-rs/0.3.1/photon_rs/filters/fn.filter.html&gt;
+        Marine = 3,
+    }
+}
+</code></pre></pre>
+<h4 id="实现双引号的使用模式匹配"><a class="header" href="#实现双引号的使用模式匹配">实现：双引号的使用、模式匹配</a></h4>
+<ul>
+<li>pb/mod.rs</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">// 辅助函数，photon_rs 相应的方法里需要字符串
+impl filter::Filter {
+    pub fn to_str(self) -&gt; Option&lt;&amp;'static str&gt; {
+        match self {
+            filter::Filter::Unspecified =&gt; None,
+            filter::Filter::Oceanic =&gt; Some(&quot;oceanic&quot;),
+            filter::Filter::Islands =&gt; Some(&quot;islands&quot;),
+            filter::Filter::Marine =&gt; Some(&quot;marine&quot;),
+        }
+    }
+}
+</code></pre></pre>
+<h3 id="samplefilter"><a class="header" href="#samplefilter">SampleFilter</a></h3>
+<h4 id="定义枚举体mod-1"><a class="header" href="#定义枚举体mod-1">定义：枚举体mod</a></h4>
+<ul>
+<li>pb/abi.rs</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">/// Nested message and enum types in `Resize`.
+pub mod resize {
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[repr(i32)]
+    pub enum ResizeType {
+        Normal = 0,
+        SeamCarve = 1,
+    }
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[repr(i32)]
+    pub enum SampleFilter {
+        Undefined = 0,
+        Nearest = 1,
+        Triangle = 2,
+        CatmullRom = 3,
+        Gaussian = 4,
+        Lanczos3 = 5,
+    }
+}
+</code></pre></pre>
+<h3 id="实现mod使用双引号from转为不同结果"><a class="header" href="#实现mod使用双引号from转为不同结果">实现：mod使用双引号、From转为不同结果</a></h3>
+<ul>
+<li>pb/mod.rs</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">impl From&lt;resize::SampleFilter&gt; for SamplingFilter {
+    fn from(v: resize::SampleFilter) -&gt; Self {
+        match v {
+            resize::SampleFilter::Undefined =&gt; SamplingFilter::Nearest,
+            resize::SampleFilter::Nearest =&gt; SamplingFilter::Nearest,
+            resize::SampleFilter::Triangle =&gt; SamplingFilter::Triangle,
+            resize::SampleFilter::CatmullRom =&gt; SamplingFilter::CatmullRom,
+            resize::SampleFilter::Gaussian =&gt; SamplingFilter::Gaussian,
+            resize::SampleFilter::Lanczos3 =&gt; SamplingFilter::Lanczos3,
+        }
+    }
+}
+</code></pre></pre>
+<h3 id="spec"><a class="header" href="#spec">Spec</a></h3>
+<h4 id="定义结构体"><a class="header" href="#定义结构体">定义：结构体</a></h4>
+<ul>
+<li>pb/abi.rs</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">/// 一个 spec 可以包含上述的处理方式之一
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Spec {
+    #[prost(oneof = &quot;spec::Data&quot;, tags = &quot;1, 2, 3, 4, 5, 6, 7&quot;)]
+    pub data: ::core::option::Option&lt;spec::Data&gt;,
+}
+</code></pre></pre>
+<h4 id="实现类似面向对象中添加类方法self"><a class="header" href="#实现类似面向对象中添加类方法self">实现：类似面向对象中添加类方法Self</a></h4>
+<blockquote>
+<p>注意区别Self和self的使用：
+<a href="https://stackoverflow.com/questions/32304595/whats-the-difference-between-self-and-self">rust - What’s the difference between self and Self? - Stack Overflow</a></p>
+</blockquote>
+<ul>
+<li>pb/mod.rs</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">// 提供一些辅助函数，让创建一个 spec 的过程简单一些
+impl Spec {
+    pub fn new_resize_seam_carve(width: u32, height: u32) -&gt; Self {
+        Self {
+            data: Some(spec::Data::Resize(Resize {
+                width,
+                height,
+                rtype: resize::ResizeType::SeamCarve as i32,
+                filter: resize::SampleFilter::Undefined as i32,
+            })),
+        }
+    }
+
+    pub fn new_resize(width: u32, height: u32, filter: resize::SampleFilter) -&gt; Self {
+        Self {
+            data: Some(spec::Data::Resize(Resize {
+                width,
+                height,
+                rtype: resize::ResizeType::Normal as i32,
+                filter: filter as i32,
+            })),
+        }
+    }
+
+    pub fn new_filter(filter: filter::Filter) -&gt; Self {
+        Self {
+            data: Some(spec::Data::Filter(Filter {
+                filter: filter as i32,
+            })),
+        }
+    }
+
+    pub fn new_watermark(x: u32, y: u32) -&gt; Self {
+        Self {
+            data: Some(spec::Data::Watermark(Watermark { x, y })),
+        }
+    }
+}
+</code></pre></pre>
+<h3 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::borrow::Borrow;
+
+    #[test]
+    fn encoded_spec_could_be_decoded() {
+        let spec1 = Spec::new_resize(600, 600, resize::SampleFilter::CatmullRom);
+        let spec2 = Spec::new_filter(filter::Filter::Marine);
+        let image_spec = ImageSpec::new(vec![spec1, spec2]);
+        let s: String = image_spec.borrow().into();
+        assert_eq!(image_spec, s.as_str().try_into().unwrap());
+    }
+}
+</code></pre></pre>
+<h2 id="engine模块-处理图片"><a class="header" href="#engine模块-处理图片">engine模块: 处理图片</a></h2>
+<h3 id="modrs-定义统一的引擎trait"><a class="header" href="#modrs-定义统一的引擎trait">mod.rs: 定义统一的引擎trait</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">// Engine trait：未来可以添加更多的 engine，主流程只需要替换 engine
+pub trait Engine {
+    // 对 engine 按照 specs 进行一系列有序的处理
+    fn apply(&amp;mut self, specs: &amp;[Spec]);
+    // 从 engine 中生成目标图片，注意这里用的是 self，而非 self 的引用
+    fn generate(self, format: ImageOutputFormat) -&gt; Vec&lt;u8&gt;;
+}
+
+// SpecTransform：未来如果添加更多的 spec，只需要实现它即可
+pub trait SpecTransform&lt;T&gt; {
+    // 对图片使用 op 做 transform
+    fn transform(&amp;mut self, op: T);
+}
+</code></pre></pre>
+<h3 id="photonrs--静态变量加载"><a class="header" href="#photonrs--静态变量加载">photon.rs &gt; 静态变量加载</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">lazy_static! {
+    // 预先把水印文件加载为静态变量
+    static ref WATERMARK: PhotonImage = {
+        let data = include_bytes!(&quot;../../rust-logo.png&quot;);
+        let watermark = open_image_from_bytes(data).unwrap();
+        transform::resize(&amp;watermark, 64, 64, transform::SamplingFilter::Nearest)
+    };
+}
+</code></pre></pre>
+<h3 id="photonrs--具体引擎photon的定义与转化tryfrom"><a class="header" href="#photonrs--具体引擎photon的定义与转化tryfrom">photon.rs &gt; 具体引擎Photon的定义与转化TryFrom</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">pub struct Photon(PhotonImage);
+
+// 从 Bytes 转换成 Photon 结构
+impl TryFrom&lt;Bytes&gt; for Photon {
+    type Error = anyhow::Error;
+
+    fn try_from(data: Bytes) -&gt; Result&lt;Self, Self::Error&gt; {
+        Ok(Self(open_image_from_bytes(&amp;data)?))
+    }
+}
+</code></pre></pre>
+<h3 id="photonrs--具体引擎photon的trait实现"><a class="header" href="#photonrs--具体引擎photon的trait实现">photon.rs &gt; 具体引擎Photon的trait实现</a></h3>
+<h4 id="engine-trait"><a class="header" href="#engine-trait">Engine Trait</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">impl Engine for Photon {
+    fn apply(&amp;mut self, specs: &amp;[Spec]) {
+        for spec in specs.iter() {
+            match spec.data {
+                Some(spec::Data::Crop(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Contrast(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Filter(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Fliph(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Flipv(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Resize(ref v)) =&gt; self.transform(v),
+                Some(spec::Data::Watermark(ref v)) =&gt; self.transform(v),
+                // 对于目前不认识的 spec，不做任何处理
+                _ =&gt; {}
+            }
+        }
+    }
+</code></pre></pre>
+<h4 id="spectransform-trait"><a class="header" href="#spectransform-trait">SpecTransform Trait</a></h4>
+<h5 id="格式语义化"><a class="header" href="#格式语义化">格式语义化</a></h5>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl SpecTransform(&amp;OpreationName) for SpecificEngine {
+    fn transform(&amp;mut self, _op: &amp;OperationName) {
+        transform::OperationMethod(&amp;mut self.0)
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust  editable">impl SpecTransform&lt;&amp;Crop&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Crop) {
+        let img = transform::crop(&amp;mut self.0, op.x1, op.y1, op.x2, op.y2);
+        self.0 = img;
+    }
+}
+
+impl SpecTransform&lt;&amp;Contrast&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Contrast) {
+        effects::adjust_contrast(&amp;mut self.0, op.contrast);
+    }
+}
+
+impl SpecTransform&lt;&amp;Flipv&gt; for Photon {
+    fn transform(&amp;mut self, _op: &amp;Flipv) {
+        transform::flipv(&amp;mut self.0)
+    }
+}
+
+impl SpecTransform&lt;&amp;Fliph&gt; for Photon {
+    fn transform(&amp;mut self, _op: &amp;Fliph) {
+        transform::fliph(&amp;mut self.0)
+    }
+}
+
+impl SpecTransform&lt;&amp;Filter&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Filter) {
+        match filter::Filter::from_i32(op.filter) {
+            Some(filter::Filter::Unspecified) =&gt; {}
+            Some(f) =&gt; filters::filter(&amp;mut self.0, f.to_str().unwrap()),
+            _ =&gt; {}
+        }
+    }
+}
+
+impl SpecTransform&lt;&amp;Resize&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Resize) {
+        let img = match resize::ResizeType::from_i32(op.rtype).unwrap() {
+            resize::ResizeType::Normal =&gt; transform::resize(
+                &amp;self.0,
+                op.width,
+                op.height,
+                resize::SampleFilter::from_i32(op.filter).unwrap().into(),
+            ),
+            resize::ResizeType::SeamCarve =&gt; transform::seam_carve(&amp;self.0, op.width, op.height),
+        };
+        self.0 = img;
+    }
+}
+
+impl SpecTransform&lt;&amp;Watermark&gt; for Photon {
+    fn transform(&amp;mut self, op: &amp;Watermark) {
+        multiple::watermark(&amp;mut self.0, &amp;WATERMARK, op.x, op.y);
+    }
+}
+</code></pre></pre>
+<h3 id="photonrs--在内存中对图片转换格式的方法"><a class="header" href="#photonrs--在内存中对图片转换格式的方法">photon.rs &gt; 在内存中对图片转换格式的方法</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">fn image_to_buf(img: PhotonImage, format: ImageOutputFormat) -&gt; Vec&lt;u8&gt; {
+    let raw_pixels = img.get_raw_pixels();
+    let width = img.get_width();
+    let height = img.get_height();
+
+    let img_buffer = ImageBuffer::from_vec(width, height, raw_pixels).unwrap();
+    let dynimage = DynamicImage::ImageRgba8(img_buffer);
+
+    let mut buffer = Vec::with_capacity(32768);
+    dynimage.write_to(&amp;mut buffer, format).unwrap();
+    buffer
+}
+</code></pre></pre>
+<h2 id="mainrs"><a class="header" href="#mainrs">main.rs</a></h2>
+<h3 id="先引入mod再use"><a class="header" href="#先引入mod再use">先引入mod，再use</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">// 参数使用 serde 做 Deserialize，axum 会自动识别并解析
+#[derive(Deserialize)]
+struct Params {
+    spec: String,
+    url: String,
+}
+</code></pre></pre>
+<h3 id="图片资源用到lru策略缓存type定义"><a class="header" href="#图片资源用到lru策略缓存type定义">图片资源用到Lru策略缓存type定义</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">type Cache = Arc&lt;Mutex&lt;LruCache&lt;u64, Bytes&gt;&gt;&gt;;
+</code></pre></pre>
+<h3 id="主流程main函数"><a class="header" href="#主流程main函数">主流程main函数</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">#[tokio::main]
+async fn main() {
+    // 初始化 tracing
+    tracing_subscriber::fmt::init();
+    let cache: Cache = Arc::new(Mutex::new(LruCache::new(1024)));
+    // 构建路由
+    let app = Router::new()
+        // `GET /` 会执行
+        .route(&quot;/image/:spec/:url&quot;, get(generate))
+        .layer(
+            ServiceBuilder::new()
+                .load_shed()
+                .concurrency_limit(1024)
+                .timeout(Duration::from_secs(10))
+                .layer(TraceLayer::new_for_http())
+                .layer(AddExtensionLayer::new(cache))
+                .layer(CompressionLayer::new())
+                .into_inner(),
+        );
+
+    // 运行 web 服务器
+    let addr = &quot;127.0.0.1:3000&quot;.parse().unwrap();
+    print_test_url(&quot;https://images.pexels.com/photos/1562477/pexels-photo-1562477.jpeg?auto=compress&amp;cs=tinysrgb&amp;dpr=3&amp;h=750&amp;w=1260&quot;);
+    info!(&quot;Listening on {}&quot;, addr);
+    axum::Server::bind(&amp;addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}
+</code></pre></pre>
+<h4 id="建造者模式"><a class="header" href="#建造者模式">建造者模式</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">            ServiceBuilder::new()
+                .load_shed()
+                .concurrency_limit(1024)
+                .timeout(Duration::from_secs(10))
+                .layer(TraceLayer::new_for_http())
+                .layer(AddExtensionLayer::new(cache))
+                .layer(CompressionLayer::new())
+                .into_inner(),
+</code></pre></pre>
+<h4 id="类型转换"><a class="header" href="#类型转换">类型转换</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">    // 运行 web 服务器
+    let addr = &quot;127.0.0.1:3000&quot;.parse().unwrap();
+</code></pre></pre>
+<h5 id="数字与字符串"><a class="header" href="#数字与字符串">数字与字符串</a></h5>
+<p>||i32|u32|f64|String*|
+|--|---|---|---|-------|
+|i32|\|x as u32|x as f64|x.to_string()|
+|u32|x as i32|\|x as f64|x.to_string()|
+|f64|x as i32|x as u32|\|x.to_string()|
+|String*|x.parse().unwrap()|x.parse().unwrap()|x.parse().unwrap()|\|</p>
+<h5 id="string-与--str"><a class="header" href="#string-与--str">String 与 &amp; str</a></h5>
+<p>|\|String|&amp;str|
+|-|------|----|
+|String|\|&amp;*x|
+|&amp;str|x.to_string()|\|</p>
+<h5 id="智能指针"><a class="header" href="#智能指针">智能指针</a></h5>
+<p>|\|Vec&lt;T&gt;|&amp;[T]|Box&lt;[T]&gt;|
+|-|------|----|--------|
+|Vec&lt;T&gt;|\|&amp;x[…]|x.into_boxed_slice()|
+|&amp;[T]|x.to_vec()|\|Box::new(*x)|
+|Box&lt;[T]&gt;|x.to_vec()|&amp;*x|\|</p>
+<h3 id="路由绑定的处理函数handler"><a class="header" href="#路由绑定的处理函数handler">路由绑定的处理函数handler</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">// basic handler that responds with a static string
+async fn generate(
+    Path(Params { spec, url }): Path&lt;Params&gt;,
+    Extension(cache): Extension&lt;Cache&gt;,
+) -&gt; Result&lt;(HeaderMap, Vec&lt;u8&gt;), StatusCode&gt; {
+    let spec: ImageSpec = spec
+        .as_str()
+        .try_into()
+        .map_err(|_| StatusCode::BAD_REQUEST)?;
+
+    let url: &amp;str = &amp;percent_decode_str(&amp;url).decode_utf8_lossy();
+    let data = retrieve_image(url, cache)
+        .await
+        .map_err(|_| StatusCode::BAD_REQUEST)?;
+
+    // 使用 image engine 处理
+    let mut engine: Photon = data
+        .try_into()
+        .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)?;
+    engine.apply(&amp;spec.specs);
+    // TODO: 这里目前类型写死了，应该使用 content negotiation
+    let image = engine.generate(ImageOutputFormat::Jpeg(85));
+
+    info!(&quot;Finished processing: image size {}&quot;, image.len());
+    let mut headers = HeaderMap::new();
+
+    headers.insert(&quot;content-type&quot;, HeaderValue::from_static(&quot;image/jpeg&quot;));
+    Ok((headers, image))
+}
+</code></pre></pre>
+<h3 id="处理函数用到的图片获取方法"><a class="header" href="#处理函数用到的图片获取方法">处理函数用到的图片获取方法</a></h3>
+<blockquote>
+<p>对于图片的网络请求，我们先把 URL 做个哈希，在 LRU 缓存中查找，找不到才用 reqwest 发送请求。</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">#[instrument(level = &quot;info&quot;, skip(cache))]
+async fn retrieve_image(url: &amp;str, cache: Cache) -&gt; Result&lt;Bytes&gt; {
+    let mut hasher = DefaultHasher::new();
+    url.hash(&amp;mut hasher);
+    let key = hasher.finish();
+
+    let g = &amp;mut cache.lock().await;
+    let data = match g.get(&amp;key) {
+        Some(v) =&gt; {
+            info!(&quot;Match cache {}&quot;, key);
+            v.to_owned()
+        }
+        None =&gt; {
+            info!(&quot;Retrieve url&quot;);
+            let resp = reqwest::get(url).await?;
+            let data = resp.bytes().await?;
+            g.put(key, data.clone());
+            data
+        }
+    };
+
+    Ok(data)
+}
+</code></pre></pre>
+<h3 id="一个用于调试的辅助函数"><a class="header" href="#一个用于调试的辅助函数">一个用于调试的辅助函数</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">// 调试辅助函数
+fn print_test_url(url: &amp;str) {
+    use std::borrow::Borrow;
+    let spec1 = Spec::new_resize(500, 800, resize::SampleFilter::CatmullRom);
+    let spec2 = Spec::new_watermark(20, 20);
+    let spec3 = Spec::new_filter(filter::Filter::Marine);
+    let image_spec = ImageSpec::new(vec![spec1, spec2, spec3]);
+    let s: String = image_spec.borrow().into();
+    let test_image = percent_encode(url.as_bytes(), NON_ALPHANUMERIC).to_string();
+    println!(&quot;test url: http://localhost:3000/image/{}/{}&quot;, s, test_image);
+}
+</code></pre></pre>
+<h2 id="运行与日志"><a class="header" href="#运行与日志">运行与日志</a></h2>
+<blockquote>
+<p>将RUST_LOG级别设置为info</p>
+</blockquote>
+<pre><code class="language-shell">cargo build --release
+RUST_LOG=info target/release/thumbor
+</code></pre>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="httpie.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="queryer.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="httpie.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="queryer.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
