@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 09:01:07 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 10:05:57 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -455,9 +455,22 @@
 <li><a href="get_hands_dirty.html#%E8%BF%90%E8%A1%8C%E4%B8%8E%E6%97%A5%E5%BF%97">运行与日志</a></li>
 </ul>
 </li>
+<li><a href="get_hands_dirty.html#sql%E6%9F%A5%E8%AF%A2%E5%B7%A5%E5%85%B7">SQL查询工具</a>
+<ul>
+<li><a href="get_hands_dirty.html#workspace-%E8%BF%99%E9%87%8C%E4%BD%BF%E7%94%A8%E8%99%9A%E6%8B%9F%E6%B8%85%E5%8D%95virtual-manifest%E6%96%B9%E5%BC%8F">workspace: 这里使用虚拟清单(virtual manifest)方式</a>
+<ul>
+<li><a href="get_hands_dirty.html#workspace%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F">workspace使用方式</a></li>
+</ul>
+</li>
+<li><a href="get_hands_dirty.html#queryer-package">queryer package</a></li>
+<li><a href="get_hands_dirty.html#queryer-js-package">queryer-js package</a></li>
+<li><a href="get_hands_dirty.html#queryer-py-package">queryer-py package</a></li>
+<li><a href="get_hands_dirty.html#data-viewer-package">data-viewer package</a></li>
+</ul>
+</li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 09:01:07 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 10:05:57 UTC 2022 -->
 <!--te-->
 <h1 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h1>
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
@@ -1629,6 +1642,67 @@ fn print_test_url(url: &amp;str) {
 <pre><code class="language-shell">cargo build --release
 RUST_LOG=info target/release/thumbor
 </code></pre>
+<h1 id="sql查询工具"><a class="header" href="#sql查询工具">SQL查询工具</a></h1>
+<h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
+<blockquote>
+<p><a href="https://course.rs/cargo/reference/workspaces.html">工作空间 Workspace - Rust语言圣经(Rust Course)</a></p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">[workspace]
+
+members = [
+  &quot;queryer&quot;,
+  &quot;queryer-js&quot;,
+  &quot;queryer-py&quot;,
+  &quot;data-viewer/src-tauri&quot;
+]
+</code></pre></pre>
+<div id="admonition-虚拟清单" class="admonition info">
+<div class="admonition-title">
+<p>虚拟清单</p>
+<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-虚拟清单"></a></p>
+</div>
+<div>
+<p>若一个 Cargo.toml 有 [workspace] 但是没有 [package] 部分，则它是虚拟清单类型的工作空间。</p>
+<p>对于没有主 package 的场景或你希望将所有的 package 组织在单独的目录中时，这种方式就非常适合。</p>
+</div>
+</div>
+<div id="admonition-workspace关键点" class="admonition tip">
+<div class="admonition-title">
+<p>workspace关键点</p>
+<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-workspace关键点"></a></p>
+</div>
+<div>
+<ul>
+<li>所有的 package 共享同一个 Cargo.lock 文件，该文件位于工作空间的根目录中</li>
+<li>所有的 package 共享同一个输出目录，该目录默认的名称是 target ，位于工作空间根目录下</li>
+<li>只有工作空间根目录的 Cargo.toml 才能包含 [patch], [replace] 和 [profile.*]，而成员的 Cargo.toml 中的相应部分将被自动忽略</li>
+</ul>
+</div>
+</div>
+<h3 id="workspace使用方式"><a class="header" href="#workspace使用方式">workspace使用方式</a></h3>
+<pre><code class="language-shell">cargo run -p &lt;member package&gt;
+cargo build -p queryer
+</code></pre>
+<div id="admonition-使用说明" class="admonition info">
+<div class="admonition-title">
+<p>使用说明</p>
+<p><a class="admonition-anchor-link" href="get_hands_dirty.html#admonition-使用说明"></a></p>
+</div>
+<div>
+<ol>
+<li>
+<p>在工作空间中，package 相关的 Cargo 命令(例如 cargo build )可以使用 -p 、 –package 或 –workspace 命令行参数来指定想要操作的 package。</p>
+</li>
+<li>
+<p>若没有指定任何参数，则 Cargo 将使用当前工作目录的中的 package 。若工作目录是虚拟清单类型的工作空间，则该命令将作用在所有成员上(就好像是使用了 –workspace 命令行参数)。而 default-members 可以在命令行参数没有被提供时，手动指定操作的成员</p>
+</li>
+</ol>
+</div>
+</div>
+<h2 id="queryer-package"><a class="header" href="#queryer-package">queryer package</a></h2>
+<h2 id="queryer-js-package"><a class="header" href="#queryer-js-package">queryer-js package</a></h2>
+<h2 id="queryer-py-package"><a class="header" href="#queryer-py-package">queryer-py package</a></h2>
+<h2 id="data-viewer-package"><a class="header" href="#data-viewer-package">data-viewer package</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="gdblldb调试或查看内存结构"><a class="header" href="#gdblldb调试或查看内存结构">gdb/lldb调试或查看内存结构</a></h1>
 <!--ts-->
 <!--te-->
