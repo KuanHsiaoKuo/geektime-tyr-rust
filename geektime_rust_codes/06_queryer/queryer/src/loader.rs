@@ -3,10 +3,6 @@ use anyhow::Result;
 use polars::prelude::*;
 use std::io::Cursor;
 
-pub trait Load {
-    type Error;
-    fn load(self) -> Result<DataSet, Self::Error>;
-}
 
 #[derive(Debug)]
 #[non_exhaustive]
@@ -25,9 +21,9 @@ impl Loader {
     }
 }
 
-pub fn detect_content(data: String) -> Loader {
-    // TODO: 内容检测
-    Loader::Csv(CsvLoader(data))
+pub trait Load {
+    type Error;
+    fn load(self) -> Result<DataSet, Self::Error>;
 }
 
 impl Load for CsvLoader {
@@ -39,4 +35,9 @@ impl Load for CsvLoader {
             .finish()?;
         Ok(DataSet(df))
     }
+}
+
+pub fn detect_content(data: String) -> Loader {
+    // TODO: 内容检测
+    Loader::Csv(CsvLoader(data))
 }
