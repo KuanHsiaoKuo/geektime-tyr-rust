@@ -1,34 +1,35 @@
 # get hands dirty
 
 <!--ts-->
+
 * [get hands dirty](#get-hands-dirty)
-   * [httpie源码剖析](#httpie源码剖析)
-      * [example的使用](#example的使用)
-         * [Cargo.toml](#cargotoml)
-      * [Step1：指令解析](#step1指令解析)
+    * [httpie源码剖析](#httpie源码剖析)
+        * [example的使用](#example的使用)
+            * [Cargo.toml](#cargotoml)
+        * [Step1：指令解析](#step1指令解析)
             * [要点说明](#要点说明)
-               * [clap::Parser](#clapparser)
-      * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
-         * [参数验证](#参数验证)
-         * [键值对改造](#键值对改造)
-      * [Step3：异步请求改造](#step3异步请求改造)
-      * [Step4: 语法高亮打印](#step4-语法高亮打印)
-      * [Step5: 添加单元测试](#step5-添加单元测试)
-   * [thumbor图片服务](#thumbor图片服务)
-      * [abi.proto](#abiproto)
-      * [build.rs](#buildrs)
-      * [mod.rs表明模块](#modrs表明模块)
-      * [pb模块](#pb模块)
-         * [pb/mod.rs声明模块](#pbmodrs声明模块)
-         * [pb/abi.rs里面还有子模块](#pbabirs里面还有子模块)
-         * [pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod](#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod)
-         * [pb/abi.rs有个特殊结构体](#pbabirs有个特殊结构体)
-         * [ImageSpec的定义与实现](#imagespec的定义与实现)
-         * [Filter的定义与实现](#filter的定义与实现)
-         * [SampleFilter](#samplefilter)
-         * [Spec](#spec)
-         * [单元测试](#单元测试)
-      * [engine模块](#engine模块)
+            * [clap::Parser](#clapparser)
+        * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
+            * [参数验证](#参数验证)
+            * [键值对改造](#键值对改造)
+        * [Step3：异步请求改造](#step3异步请求改造)
+        * [Step4: 语法高亮打印](#step4-语法高亮打印)
+        * [Step5: 添加单元测试](#step5-添加单元测试)
+    * [thumbor图片服务](#thumbor图片服务)
+        * [abi.proto](#abiproto)
+        * [build.rs](#buildrs)
+        * [mod.rs表明模块](#modrs表明模块)
+        * [pb模块](#pb模块)
+            * [pb/mod.rs声明模块](#pbmodrs声明模块)
+            * [pb/abi.rs里面还有子模块](#pbabirs里面还有子模块)
+            * [pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod](#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod)
+            * [pb/abi.rs有个特殊结构体](#pbabirs有个特殊结构体)
+            * [ImageSpec的定义与实现](#imagespec的定义与实现)
+            * [Filter的定义与实现](#filter的定义与实现)
+            * [SampleFilter](#samplefilter)
+            * [Spec](#spec)
+            * [单元测试](#单元测试)
+        * [engine模块](#engine模块)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Tue Sep 20 13:08:35 UTC 2022 -->
@@ -225,9 +226,30 @@ For more information try --help
 
 > 在编译时可选择检查环境变量。
 
-### mod.rs表明模块
+### 关于rust的模块
 
-一个目录下的所有代码，可以通过 mod.rs 声明
+> 可以参考这篇：[Rust 模块系统理解 - 知乎](https://zhuanlan.zhihu.com/p/443926839)
+
+1. mod(mod.rs或mod关键字)将代码分为多个逻辑模块，并管理这些模块的可见性（public / private）。
+2. 模块是项（item）的集合，项可以是：函数，结构体，trait，impl块，甚至其它模块。
+3. 一个目录下的所有代码，可以通过 mod.rs 声明
+4. Rust模块有三种形式:
+    - mod.rs: 一个目录下的所有代码，可以通过 mod.rs 声明
+    - 文件/目录即模块：编译器的机制决定，除了mod.rs外，每一个文件和目录都是一个模块。不允许只分拆文件，但是不声明mod，我们通常使用pub use，在父空间直接调用子空间的函数。
+    - mod关键字: 在文件内部分拆模块
+5. Rust编译器只接受一个源文件，输出一个crate
+6. 每一个crate都有一个匿名的根命名空间，命名空间可以无限嵌套
+7. “mod mod-name { ... }“ 将大括号中的代码置于命名空间mod-name之下
+8. “use mod-name1::mod-name2;" 可以打开命名空间，减少无休止的::操作符
+9. “mod mod-name;“ 可以指导编译器将多个文件组装成一个文件
+10. “pub use mod-nam1::mod-name2::item-name;“
+    语句可以将mod-name2下的item-name提升到这条语句所在的空间，item-name通常是函数或者结构体。Rust社区通常用这个方法来缩短库API的命名空间深度
+    编译器规定use语句一定要在mod语句之前
+
+### mod文件定义与实现分离
+
+在rust中，一般会在模块的mod.rs文件中对供外部使用的项进行实现, 项可以是：函数，结构体，trait，impl块，甚至其它模块.
+这样有个好处，高内聚，可以在代码增长时，将变动局限在服务提供者内部，对外提供的api不变，不会造成破坏性更新。
 
 ### pb模块
 
@@ -255,7 +277,9 @@ For more information try --help
 {{#include ../geektime_rust_codes/05_thumbor/src/pb/abi.rs:88:93}}
 ```
 
-#### ImageSpec的定义与实现
+#### 定义与实现分离
+
+##### ImageSpec
 
 - pb/abi.rs
 
@@ -269,7 +293,7 @@ For more information try --help
 {{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:8:30}}
 ```
 
-#### Filter的定义与实现
+##### Filter的定义与实现
 
 - pb/abi.rs
 
@@ -283,7 +307,7 @@ For more information try --help
 {{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:32:42}}
 ```
 
-#### SampleFilter
+##### SampleFilter
 
 - pb/abi.rs
 
@@ -297,7 +321,7 @@ For more information try --help
 {{#include ../geektime_rust_codes/05_thumbor/src/pb/mod.rs:45:56}}
 ```
 
-#### Spec
+##### Spec
 
 - pb/abi.rs
 
