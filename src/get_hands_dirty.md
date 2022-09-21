@@ -36,10 +36,31 @@
          * [定义：结构体](#定义结构体)
          * [实现：类似面向对象中添加类方法Self](#实现类似面向对象中添加类方法self)
       * [单元测试](#单元测试)
-   * [engine模块](#engine模块)
+   * [engine模块: 处理图片](#engine模块-处理图片)
+      * [mod.rs: 定义统一的引擎trait](#modrs-定义统一的引擎trait)
+      * [photon.rs &gt; 静态变量加载](#photonrs--静态变量加载)
+      * [photon.rs &gt; 具体引擎Photon的定义与转化TryFrom](#photonrs--具体引擎photon的定义与转化tryfrom)
+      * [photon.rs &gt; 具体引擎Photon的trait实现](#photonrs--具体引擎photon的trait实现)
+         * [Engine Trait](#engine-trait)
+         * [SpecTransform Trait](#spectransform-trait)
+            * [格式语义化](#格式语义化)
+      * [photon.rs &gt; 在内存中对图片转换格式的方法](#photonrs--在内存中对图片转换格式的方法)
+   * [main.rs](#mainrs)
+      * [先引入mod，再use](#先引入mod再use)
+      * [图片资源用到Lru策略缓存type定义](#图片资源用到lru策略缓存type定义)
+      * [主流程main函数](#主流程main函数)
+         * [建造者模式](#建造者模式)
+         * [类型转换](#类型转换)
+            * [数字与字符串](#数字与字符串)
+            * [String 与 &amp; str](#string-与--str)
+            * [智能指针](#智能指针)
+      * [路由绑定的处理函数handler](#路由绑定的处理函数handler)
+      * [处理函数用到的图片获取方法](#处理函数用到的图片获取方法)
+      * [一个用于调试的辅助函数](#一个用于调试的辅助函数)
+   * [运行与日志](#运行与日志)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 07:33:55 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 09:01:07 UTC 2022 -->
 
 <!--te-->
 
