@@ -210,17 +210,22 @@
 <ul>
 <li><a href="#abiproto">abi.proto</a></li>
 <li><a href="#buildrs">build.rs</a></li>
-<li><a href="#modrs%E8%A1%A8%E6%98%8E%E6%A8%A1%E5%9D%97">mod.rs表明模块</a></li>
+<li><a href="#%E5%85%B3%E4%BA%8Erust%E7%9A%84%E6%A8%A1%E5%9D%97">关于rust的模块</a></li>
+<li><a href="#mod%E6%96%87%E4%BB%B6%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0%E5%88%86%E7%A6%BB">mod文件定义与实现分离</a></li>
 <li><a href="#pb%E6%A8%A1%E5%9D%97">pb模块</a>
 <ul>
 <li><a href="#pbmodrs%E5%A3%B0%E6%98%8E%E6%A8%A1%E5%9D%97">pb/mod.rs声明模块</a></li>
 <li><a href="#pbabirs%E9%87%8C%E9%9D%A2%E8%BF%98%E6%9C%89%E5%AD%90%E6%A8%A1%E5%9D%97">pb/abi.rs里面还有子模块</a></li>
 <li><a href="#pbabirs%E5%8F%A6%E5%A4%96%E5%AE%9A%E4%B9%89%E4%BA%86specdata%E9%87%8C%E9%9D%A2%E7%9A%84%E5%90%84%E4%B8%AA%E5%85%83%E7%B4%A0%E7%BB%93%E6%9E%84%E4%BD%93%E5%B5%8C%E5%A5%97%E6%A8%A1%E5%9D%97mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></li>
 <li><a href="#pbabirs%E6%9C%89%E4%B8%AA%E7%89%B9%E6%AE%8A%E7%BB%93%E6%9E%84%E4%BD%93">pb/abi.rs有个特殊结构体</a></li>
-<li><a href="#imagespec%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0">ImageSpec的定义与实现</a></li>
+<li><a href="#%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0%E5%88%86%E7%A6%BB">定义与实现分离</a>
+<ul>
+<li><a href="#imagespec">ImageSpec</a></li>
 <li><a href="#filter%E7%9A%84%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%AE%9E%E7%8E%B0">Filter的定义与实现</a></li>
 <li><a href="#samplefilter">SampleFilter</a></li>
 <li><a href="#spec">Spec</a></li>
+</ul>
+</li>
 <li><a href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
 </ul>
 </li>
@@ -231,7 +236,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Sep 20 13:08:35 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 21 03:32:43 UTC 2022 -->
 <!--te-->
 <h2 id="httpie源码剖析"><a class="header" href="#httpie源码剖析">httpie源码剖析</a></h2>
 <h3 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h3>
@@ -783,8 +788,33 @@ fn main() {
 <blockquote>
 <p>在编译时可选择检查环境变量。</p>
 </blockquote>
-<h3 id="modrs表明模块"><a class="header" href="#modrs表明模块">mod.rs表明模块</a></h3>
-<p>一个目录下的所有代码，可以通过 mod.rs 声明</p>
+<h3 id="关于rust的模块"><a class="header" href="#关于rust的模块">关于rust的模块</a></h3>
+<blockquote>
+<p>可以参考这篇：<a href="https://zhuanlan.zhihu.com/p/443926839">Rust 模块系统理解 - 知乎</a></p>
+</blockquote>
+<ol>
+<li>mod(mod.rs或mod关键字)将代码分为多个逻辑模块，并管理这些模块的可见性（public / private）。</li>
+<li>模块是项（item）的集合，项可以是：函数，结构体，trait，impl块，甚至其它模块。</li>
+<li>一个目录下的所有代码，可以通过 mod.rs 声明</li>
+<li>Rust模块有三种形式:
+<ul>
+<li>mod.rs: 一个目录下的所有代码，可以通过 mod.rs 声明</li>
+<li>文件/目录即模块：编译器的机制决定，除了mod.rs外，每一个文件和目录都是一个模块。不允许只分拆文件，但是不声明mod，我们通常使用pub use，在父空间直接调用子空间的函数。</li>
+<li>mod关键字: 在文件内部分拆模块</li>
+</ul>
+</li>
+<li>Rust编译器只接受一个源文件，输出一个crate</li>
+<li>每一个crate都有一个匿名的根命名空间，命名空间可以无限嵌套</li>
+<li>“mod mod-name { … }“ 将大括号中的代码置于命名空间mod-name之下</li>
+<li>“use mod-name1::mod-name2;“ 可以打开命名空间，减少无休止的::操作符</li>
+<li>“mod mod-name;“ 可以指导编译器将多个文件组装成一个文件</li>
+<li>“pub use mod-nam1::mod-name2::item-name;“
+语句可以将mod-name2下的item-name提升到这条语句所在的空间，item-name通常是函数或者结构体。Rust社区通常用这个方法来缩短库API的命名空间深度
+编译器规定use语句一定要在mod语句之前</li>
+</ol>
+<h3 id="mod文件定义与实现分离"><a class="header" href="#mod文件定义与实现分离">mod文件定义与实现分离</a></h3>
+<p>在rust中，一般会在模块的mod.rs文件中对供外部使用的项进行实现, 项可以是：函数，结构体，trait，impl块，甚至其它模块.
+这样有个好处，高内聚，可以在代码增长时，将变动局限在服务提供者内部，对外提供的api不变，不会造成破坏性更新。</p>
 <h3 id="pb模块"><a class="header" href="#pb模块">pb模块</a></h3>
 <h4 id="pbmodrs声明模块"><a class="header" href="#pbmodrs声明模块">pb/mod.rs声明模块</a></h4>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -921,7 +951,8 @@ pub struct Spec {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<h4 id="imagespec的定义与实现"><a class="header" href="#imagespec的定义与实现">ImageSpec的定义与实现</a></h4>
+<h4 id="定义与实现分离"><a class="header" href="#定义与实现分离">定义与实现分离</a></h4>
+<h5 id="imagespec"><a class="header" href="#imagespec">ImageSpec</a></h5>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -965,7 +996,7 @@ impl TryFrom&lt;&amp;str&gt; for ImageSpec {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<h4 id="filter的定义与实现"><a class="header" href="#filter的定义与实现">Filter的定义与实现</a></h4>
+<h5 id="filter的定义与实现"><a class="header" href="#filter的定义与实现">Filter的定义与实现</a></h5>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -1003,7 +1034,7 @@ impl filter::Filter {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<h4 id="samplefilter"><a class="header" href="#samplefilter">SampleFilter</a></h4>
+<h5 id="samplefilter"><a class="header" href="#samplefilter">SampleFilter</a></h5>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -1049,7 +1080,7 @@ pub mod resize {
 }
 <span class="boring">}
 </span></code></pre></pre>
-<h4 id="spec"><a class="header" href="#spec">Spec</a></h4>
+<h5 id="spec"><a class="header" href="#spec">Spec</a></h5>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
