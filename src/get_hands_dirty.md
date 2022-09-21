@@ -587,7 +587,7 @@ cargo build -p queryer
 
 ### src/convert.rs
 
-#### 结构体定义:sql与对应部分结构体
+#### 结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装
 
 ```rust, editable
 {{#include ../geektime_rust_codes/06_queryer/queryer/src/convert.rs:8:28}}
