@@ -1,6 +1,26 @@
 # rgrep
 
 <!--ts-->
+* [rgrep](#rgrep)
+   * [Cargo.toml](#cargotoml)
+   * [src/error.rs: thiserror会自动转换](#srcerrorrs-thiserror会自动转换)
+   * [src/lib.rs：定义结构体+实现方法+单元测试](#srclibrs定义结构体实现方法单元测试)
+      * [mod引入与使用](#mod引入与使用)
+      * [定义结构体](#定义结构体)
+         * [专门简化复杂类型](#专门简化复杂类型)
+         * [专门的结合版本grep结构体](#专门的结合版本grep结构体)
+      * [给结构体实现方法](#给结构体实现方法)
+      * [默认策略: default_strategy](#默认策略-default_strategy)
+      * [格式化输出](#格式化输出)
+      * [单元测试](#单元测试)
+   * [src/main.rs](#srcmainrs)
+      * [引入lib.rs中的内容](#引入librs中的内容)
+      * [主函数：main()](#主函数main)
+   * [使用](#使用)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Sep 22 04:16:34 UTC 2022 -->
+
 <!--te-->
 
 ## Cargo.toml
