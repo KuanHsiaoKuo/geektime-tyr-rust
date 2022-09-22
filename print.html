@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 04:36:54 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 13:11:37 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -387,7 +387,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 04:36:55 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 13:11:37 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -878,7 +878,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 04:36:54 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 13:11:37 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1332,7 +1332,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 04:36:55 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 13:11:38 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/Cargo.toml}}
@@ -2233,7 +2233,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 04:36:55 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 13:11:37 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -2913,6 +2913,54 @@ fn main() {
 </blockquote>
 </div>
 </div><div style="break-before: page; page-break-before: always;"></div><h1 id="iv-宏编程"><a class="header" href="#iv-宏编程">IV 宏编程</a></h1>
+<!--ts-->
+<ul>
+<li><a href="4_macros.html#iv-%E5%AE%8F%E7%BC%96%E7%A8%8B">IV 宏编程</a>
+<ul>
+<li><a href="4_macros.html#%E5%AE%8F%E7%9A%84%E5%88%86%E7%B1%BB">宏的分类</a>
+<ul>
+<li><a href="4_macros.html#%E5%A3%B0%E6%98%8E%E5%AE%8F-macro_rules">声明宏: macro_rules!</a></li>
+<li><a href="4_macros.html#%E8%BF%87%E7%A8%8B%E5%AE%8F%E6%B7%B1%E5%BA%A6%E5%AE%9A%E5%88%B6%E4%B8%8E%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81">过程宏：深度定制与生成代码</a>
+<ul>
+<li><a href="4_macros.html#%E5%87%BD%E6%95%B0%E5%AE%8F">函数宏</a></li>
+<li><a href="4_macros.html#%E5%B1%9E%E6%80%A7%E5%AE%8F">属性宏</a></li>
+<li><a href="4_macros.html#%E6%B4%BE%E7%94%9F%E5%AE%8F">派生宏</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Sep 22 13:11:36 UTC 2022 -->
+<!--te-->
+<h2 id="宏的分类"><a class="header" href="#宏的分类">宏的分类</a></h2>
+<h3 id="声明宏-macro_rules"><a class="header" href="#声明宏-macro_rules">声明宏: macro_rules!</a></h3>
+<blockquote>
+<p>对代码模版做简单替换
+声明宏可以用 macro_rules! 来描述, 如果重复性的代码无法用函数来封装，那么声明宏就是一个好的选择</p>
+</blockquote>
+<h3 id="过程宏深度定制与生成代码"><a class="header" href="#过程宏深度定制与生成代码">过程宏：深度定制与生成代码</a></h3>
+<ul>
+<li><a href="https://www.bilibili.com/video/BV1Za411q7LQ">Rust 过程宏(1)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1Fu411m7W7">Rust 过程宏(2)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1dr4y1v74n">Rust 过程宏(3)</a></li>
+</ul>
+<h4 id="函数宏"><a class="header" href="#函数宏">函数宏</a></h4>
+<p>看起来像函数的宏，但在编译期进行处理.</p>
+<blockquote>
+<p>sqlx 用函数宏来处理SQL query、tokio使用属性宏 #[tokio::main] 来引入 runtime。
+它们可以帮助目标代码的实现逻辑变得更加简单， 但一般除非特别必要，否则并不推荐写。
+并没有特定的使用场景</p>
+</blockquote>
+<h4 id="属性宏"><a class="header" href="#属性宏">属性宏</a></h4>
+<p>可以在其他代码块上添加属性，为代码块提供更多功能。</p>
+<h4 id="派生宏"><a class="header" href="#派生宏">派生宏</a></h4>
+<p>为 derive属性添加新的功能。这是我们平时使用最多的宏，比如 #[derive(Debug)].</p>
+<blockquote>
+<p>如果你定义的 trait 别人实现起来有固定的模式可循，那么可以考虑为其构建派生宏</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="v-并发与异步"><a class="header" href="#v-并发与异步">V 并发与异步</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="vi-混合编程"><a class="header" href="#vi-混合编程">VI 混合编程</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="kv-server设计与实现"><a class="header" href="#kv-server设计与实现">KV Server设计与实现</a></h1>
