@@ -95,7 +95,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">2.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">2.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">2.2.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">2.3.</strong> queryer</a></li><li class="chapter-item expanded "><a href="rgrep.html" class="active"><strong aria-hidden="true">2.4.</strong> rgrep</a></li></ol></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">2.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">2.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html" class="active"><strong aria-hidden="true">2.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">2.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">2.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">3.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -181,6 +181,111 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="rgrep"><a class="header" href="#rgrep">rgrep</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#rgrep">rgrep</a>
+<ul>
+<li><a href="#cargotoml">Cargo.toml</a></li>
+<li><a href="#srcerrorrs-thiserror%E4%BC%9A%E8%87%AA%E5%8A%A8%E8%BD%AC%E6%8D%A2">src/error.rs: thiserror会自动转换</a></li>
+<li><a href="#srclibrs%E5%AE%9A%E4%B9%89%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">src/lib.rs：定义结构体+实现方法+单元测试</a>
+<ul>
+<li><a href="#mod%E5%BC%95%E5%85%A5%E4%B8%8E%E4%BD%BF%E7%94%A8">mod引入与使用</a></li>
+<li><a href="#%E5%AE%9A%E4%B9%89%E7%BB%93%E6%9E%84%E4%BD%93">定义结构体</a>
+<ul>
+<li><a href="#%E4%B8%93%E9%97%A8%E7%AE%80%E5%8C%96%E5%A4%8D%E6%9D%82%E7%B1%BB%E5%9E%8B">专门简化复杂类型</a></li>
+<li><a href="#%E4%B8%93%E9%97%A8%E7%9A%84%E7%BB%93%E5%90%88%E7%89%88%E6%9C%ACgrep%E7%BB%93%E6%9E%84%E4%BD%93">专门的结合版本grep结构体</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BB%99%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95">给结构体实现方法</a></li>
+<li><a href="#%E9%BB%98%E8%AE%A4%E7%AD%96%E7%95%A5-default_strategy">默认策略: default_strategy</a></li>
+<li><a href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA">格式化输出</a></li>
+<li><a href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
+</ul>
+</li>
+<li><a href="#srcmainrs">src/main.rs</a>
+<ul>
+<li><a href="#%E5%BC%95%E5%85%A5librs%E4%B8%AD%E7%9A%84%E5%86%85%E5%AE%B9">引入lib.rs中的内容</a></li>
+<li><a href="#%E4%B8%BB%E5%87%BD%E6%95%B0main">主函数：main()</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Sep 22 04:16:34 UTC 2022 -->
+<!--te-->
+<h2 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h2>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/Cargo.toml}}
+</code></pre></pre>
+<h2 id="srcerrorrs-thiserror会自动转换"><a class="header" href="#srcerrorrs-thiserror会自动转换">src/error.rs: thiserror会自动转换</a></h2>
+<blockquote>
+<p>它们都是需要进行转换的错误。thiserror 能够通过宏帮我们完成错误类型的转换。</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/error.rs}}
+</code></pre></pre>
+<h2 id="srclibrs定义结构体实现方法单元测试"><a class="header" href="#srclibrs定义结构体实现方法单元测试">src/lib.rs：定义结构体+实现方法+单元测试</a></h2>
+<h3 id="mod引入与使用"><a class="header" href="#mod引入与使用">mod引入与使用</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:13:14}}
+</code></pre></pre>
+<h3 id="定义结构体"><a class="header" href="#定义结构体">定义结构体</a></h3>
+<h4 id="专门简化复杂类型"><a class="header" href="#专门简化复杂类型">专门简化复杂类型</a></h4>
+<blockquote>
+<p>这里其实就是传入一个指定结构的函数对象</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:16:17}}
+</code></pre></pre>
+<h4 id="专门的结合版本grep结构体"><a class="header" href="#专门的结合版本grep结构体">专门的结合版本grep结构体</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:19:27}}
+</code></pre></pre>
+<h3 id="给结构体实现方法"><a class="header" href="#给结构体实现方法">给结构体实现方法</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:29:55}}
+</code></pre></pre>
+<blockquote>
+<p>主要实现两种解析策略：</p>
+</blockquote>
+<ol>
+<li>默认策略：match_with_default_strategy, 使用default_strategy</li>
+<li>指定策略：match_with, 使用传入的strategy: StrategyFn</li>
+</ol>
+<h3 id="默认策略-default_strategy"><a class="header" href="#默认策略-default_strategy">默认策略: default_strategy</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:57:87}}
+</code></pre></pre>
+<h3 id="格式化输出"><a class="header" href="#格式化输出">格式化输出</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:89:103}}
+</code></pre></pre>
+<h3 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:105:139}}
+</code></pre></pre>
+<h2 id="srcmainrs"><a class="header" href="#srcmainrs">src/main.rs</a></h2>
+<h3 id="引入librs中的内容"><a class="header" href="#引入librs中的内容">引入lib.rs中的内容</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:3:3}}
+</code></pre></pre>
+<h3 id="主函数main"><a class="header" href="#主函数main">主函数：main()</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:5:11}}
+</code></pre></pre>
+<h2 id="使用"><a class="header" href="#使用">使用</a></h2>
+<pre><code class="language-shell">cargo run --quiet -- &quot;Re[^\\s]+&quot; &quot;src/*.rs&quot;                                                                                                                                                                                            ─╯
+src/main.rs
+     1:13  use anyhow::Result;
+     5:14  fn main() -&gt; Result&lt;()&gt; {
+src/error.rs
+     7:14      #[error(&quot;Regex pattern error&quot;)]
+     8:5       RegexPatternError(#[from] regex::Error),
+src/lib.rs
+     5:12  use regex::Regex;
+     8:19      io::{self, BufRead, BufReader, Write},
+    17:45  pub type StrategyFn = fn(&amp;Path, &amp;mut dyn BufRead, &amp;Regex, &amp;mut dyn Write) -&gt; Result&lt;(), GrepError&gt;;
+    31:50      pub fn match_with_default_strategy(&amp;self) -&gt; Result&lt;(), GrepError&gt; {
+    36:55      pub fn match_with(&amp;self, strategy: StrategyFn) -&gt; Result&lt;(), GrepError&gt; {
+    37:21          let regex = Regex::new(&amp;self.pattern)?;
+    44:41                      let mut reader = BufReader::new(file);
+    60:25      reader: &amp;mut dyn BufRead,
+    61:15      pattern: &amp;Regex,
+    63:6   ) -&gt; Result&lt;(), GrepError&gt; {
+   126:29          let mut reader = BufReader::new(&amp;input[..]);
+   127:23          let pattern = Regex::new(r&quot;he\w+&quot;).unwrap();
+</code></pre>
 
             </main>
 
@@ -193,12 +298,12 @@
 
             <nav class="nav-wrapper" aria-label="Page navigation">
                 <!-- Mobile navigation buttons -->
-                    <a rel="prev" href="queryer.html" class="mobile-nav-chapters previous"
+                    <a rel="prev" href="httpie.html" class="mobile-nav-chapters previous"
                        title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="intro_gdb_lldb.html" class="mobile-nav-chapters next"
+                    <a rel="next" href="thumbor.html" class="mobile-nav-chapters next"
                        title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -209,12 +314,12 @@
     </div>
 
     <nav class="nav-wide-wrapper" aria-label="Page navigation">
-            <a rel="prev" href="queryer.html" class="nav-chapters previous" title="Previous chapter"
+            <a rel="prev" href="httpie.html" class="nav-chapters previous" title="Previous chapter"
                aria-label="Previous chapter" aria-keyshortcuts="Left">
                 <i class="fa fa-angle-left"></i>
             </a>
 
-            <a rel="next" href="intro_gdb_lldb.html" class="nav-chapters next" title="Next chapter"
+            <a rel="next" href="thumbor.html" class="nav-chapters next" title="Next chapter"
                aria-label="Next chapter" aria-keyshortcuts="Right">
                 <i class="fa fa-angle-right"></i>
             </a>
