@@ -1,35 +1,36 @@
 # SQL查询工具
 
 <!--ts-->
+
 * [SQL查询工具](#sql查询工具)
-   * [workspace: 这里使用虚拟清单(virtual manifest)方式](#workspace-这里使用虚拟清单virtual-manifest方式)
-      * [workspace使用方式](#workspace使用方式)
-   * [queryer package](#queryer-package)
-      * [cargo.toml](#cargotoml)
-      * [两个使用示例](#两个使用示例)
-         * [dialect.rs:SQL解析](#dialectrssql解析)
-         * [covid.rs: AST转换](#covidrs-ast转换)
-      * [src/convert.rs](#srcconvertrs)
-         * [结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装](#结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装)
-         * [sql的转换](#sql的转换)
-         * [对应部分结构体的转换](#对应部分结构体的转换)
-         * [单元测试](#单元测试)
-      * [src/dialect.rs](#srcdialectrs)
-         * [定义方言结构体](#定义方言结构体)
-         * [给方言结构体实现trait](#给方言结构体实现trait)
-         * [添加测试用函数](#添加测试用函数)
-         * [单元测试](#单元测试-1)
-      * [src/loader.rs](#srcloaderrs)
-         * [定义Loader与CsvLoader](#定义loader与csvloader)
-         * [定义trait并给CsvLoader实现](#定义trait并给csvloader实现)
-         * [todo: 给CsvLoader添加内容检测](#todo-给csvloader添加内容检测)
-      * [src/fetcher.rs](#srcfetcherrs)
-         * [定义UrlFetcher与FileFetcher](#定义urlfetcher与filefetcher)
-         * [定义trait并给Fetcher与FileFetcher实现](#定义trait并给fetcher与filefetcher实现)
-         * [最后定义一个获取数据的方法](#最后定义一个获取数据的方法)
-   * [queryer-js package](#queryer-js-package)
-   * [queryer-py package](#queryer-py-package)
-   * [data-viewer package](#data-viewer-package)
+    * [workspace: 这里使用虚拟清单(virtual manifest)方式](#workspace-这里使用虚拟清单virtual-manifest方式)
+        * [workspace使用方式](#workspace使用方式)
+    * [queryer package](#queryer-package)
+        * [cargo.toml](#cargotoml)
+        * [两个使用示例](#两个使用示例)
+            * [dialect.rs:SQL解析](#dialectrssql解析)
+            * [covid.rs: AST转换](#covidrs-ast转换)
+        * [src/convert.rs](#srcconvertrs)
+            * [结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装](#结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装)
+            * [sql的转换](#sql的转换)
+            * [对应部分结构体的转换](#对应部分结构体的转换)
+            * [单元测试](#单元测试)
+        * [src/dialect.rs](#srcdialectrs)
+            * [定义方言结构体](#定义方言结构体)
+            * [给方言结构体实现trait](#给方言结构体实现trait)
+            * [添加测试用函数](#添加测试用函数)
+            * [单元测试](#单元测试-1)
+        * [src/loader.rs](#srcloaderrs)
+            * [定义Loader与CsvLoader](#定义loader与csvloader)
+            * [定义trait并给CsvLoader实现](#定义trait并给csvloader实现)
+            * [todo: 给CsvLoader添加内容检测](#todo-给csvloader添加内容检测)
+        * [src/fetcher.rs](#srcfetcherrs)
+            * [定义UrlFetcher与FileFetcher](#定义urlfetcher与filefetcher)
+            * [定义trait并给Fetcher与FileFetcher实现](#定义trait并给fetcher与filefetcher实现)
+            * [最后定义一个获取数据的方法](#最后定义一个获取数据的方法)
+    * [queryer-js package](#queryer-js-package)
+    * [queryer-py package](#queryer-py-package)
+    * [data-viewer package](#data-viewer-package)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Sep 21 15:31:38 UTC 2022 -->
@@ -183,8 +184,64 @@ cargo build -p queryer
 {{#include ../geektime_rust_codes/06_queryer/queryer/src/fetcher.rs:35:45}}
 ```
 
-## queryer-js package
+## queryer-js package: 使用neon
 
-## queryer-py package
+### Cargo.toml
 
-## data-viewer package
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer-js/Cargo.toml}}
+```
+
+### build in package.json
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer-js/package.json}}
+```
+
+### src/lib.rs
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer-js/src/lib.rs}}
+```
+
+## queryer-py package: 使用pyo3
+
+> python调用查询包
+
+### Cargo.toml
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer-py/Cargo.toml}}
+```
+
+### build.rs
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer-py/build.rs}}
+```
+
+### src/lib.rs
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/queryer-py/src/lib.rs}}
+```
+
+## data-viewer package: 使用tauri
+
+### Cargo.toml
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/data-viewer/src-tauri/Cargo.toml}}
+```
+
+### build.rs
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/data-viewer/src-tauri/src/build.rs}}
+```
+
+### main.rs
+
+```rust, editable
+{{#include ../geektime_rust_codes/06_queryer/data-viewer/src-tauri/src/main.rs}}
+```
