@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 15:31:37 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 03:17:35 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -376,7 +376,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 15:31:38 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 03:17:36 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1600,14 +1600,32 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 </li>
-<li><a href="queryer.html#queryer-js-package">queryer-js package</a></li>
-<li><a href="queryer.html#queryer-py-package">queryer-py package</a></li>
-<li><a href="queryer.html#data-viewer-package">data-viewer package</a></li>
+<li><a href="queryer.html#queryer-js-package-%E4%BD%BF%E7%94%A8neon">queryer-js package: 使用neon</a>
+<ul>
+<li><a href="queryer.html#cargotoml-1">Cargo.toml</a></li>
+<li><a href="queryer.html#build-in-packagejson">build in package.json</a></li>
+<li><a href="queryer.html#srclibrs">src/lib.rs</a></li>
+</ul>
+</li>
+<li><a href="queryer.html#queryer-py-package-%E4%BD%BF%E7%94%A8pyo3">queryer-py package: 使用pyo3</a>
+<ul>
+<li><a href="queryer.html#cargotoml-2">Cargo.toml</a></li>
+<li><a href="queryer.html#buildrs">build.rs</a></li>
+<li><a href="queryer.html#srclibrs-1">src/lib.rs</a></li>
+</ul>
+</li>
+<li><a href="queryer.html#data-viewer-package-%E4%BD%BF%E7%94%A8tauri">data-viewer package: 使用tauri</a>
+<ul>
+<li><a href="queryer.html#cargotoml-3">Cargo.toml</a></li>
+<li><a href="queryer.html#buildrs-1">build.rs</a></li>
+<li><a href="queryer.html#mainrs">main.rs</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 15:31:38 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 03:17:36 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -2083,9 +2101,194 @@ pub async fn retrieve_data(source: impl AsRef&lt;str&gt;) -&gt; Result&lt;String
     }
 }
 </code></pre></pre>
-<h2 id="queryer-js-package"><a class="header" href="#queryer-js-package">queryer-js package</a></h2>
-<h2 id="queryer-py-package"><a class="header" href="#queryer-py-package">queryer-py package</a></h2>
-<h2 id="data-viewer-package"><a class="header" href="#data-viewer-package">data-viewer package</a></h2>
+<h2 id="queryer-js-package-使用neon"><a class="header" href="#queryer-js-package-使用neon">queryer-js package: 使用neon</a></h2>
+<h3 id="cargotoml-2"><a class="header" href="#cargotoml-2">Cargo.toml</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">[package]
+name = &quot;queryer-js&quot;
+version = &quot;0.1.0&quot;
+license = &quot;ISC&quot;
+edition = &quot;2021&quot;
+exclude = [&quot;index.node&quot;]
+
+[lib]
+crate-type = [&quot;cdylib&quot;]
+
+[dependencies]
+anyhow = &quot;1&quot;
+queryer = { path = &quot;../queryer&quot; }
+tokio = { version = &quot;1&quot;, features = [&quot;full&quot;] }
+
+[dependencies.neon]
+version = &quot;0.9&quot;
+default-features = false
+features = [&quot;napi-6&quot;]
+</code></pre></pre>
+<h3 id="build-in-packagejson"><a class="header" href="#build-in-packagejson">build in package.json</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">{
+  &quot;name&quot;: &quot;queryer-js&quot;,
+  &quot;version&quot;: &quot;0.1.0&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;index.node&quot;,
+  &quot;scripts&quot;: {
+    &quot;build&quot;: &quot;cargo-cp-artifact -nc index.node -- cargo build --message-format=json-render-diagnostics&quot;,
+    &quot;build-debug&quot;: &quot;npm run build --&quot;,
+    &quot;build-release&quot;: &quot;npm run build -- --release&quot;,
+    &quot;install&quot;: &quot;npm run build-release&quot;,
+    &quot;test&quot;: &quot;cargo test&quot;
+  },
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;devDependencies&quot;: {
+    &quot;cargo-cp-artifact&quot;: &quot;^0.1&quot;
+  }
+}
+</code></pre></pre>
+<h3 id="srclibrs"><a class="header" href="#srclibrs">src/lib.rs</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">use neon::prelude::*;
+
+pub fn example_sql(mut cx: FunctionContext) -&gt; JsResult&lt;JsString&gt; {
+    Ok(cx.string(queryer::example_sql()))
+}
+
+fn query(mut cx: FunctionContext) -&gt; JsResult&lt;JsString&gt; {
+    let sql = cx.argument::&lt;JsString&gt;(0)?.value(&amp;mut cx);
+    let output = match cx.argument::&lt;JsString&gt;(1) {
+        Ok(v) =&gt; v.value(&amp;mut cx),
+        Err(_) =&gt; &quot;csv&quot;.to_string(),
+    };
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    let data = rt.block_on(async { queryer::query(sql).await.unwrap() });
+
+    match output.as_str() {
+        &quot;csv&quot; =&gt; Ok(cx.string(data.to_csv().unwrap())),
+        v =&gt; cx.throw_type_error(format!(&quot;Output type {} not supported&quot;, v)),
+    }
+}
+
+#[neon::main]
+fn main(mut cx: ModuleContext) -&gt; NeonResult&lt;()&gt; {
+    cx.export_function(&quot;example_sql&quot;, example_sql)?;
+    cx.export_function(&quot;query&quot;, query)?;
+    Ok(())
+}
+</code></pre></pre>
+<h2 id="queryer-py-package-使用pyo3"><a class="header" href="#queryer-py-package-使用pyo3">queryer-py package: 使用pyo3</a></h2>
+<blockquote>
+<p>python调用查询包</p>
+</blockquote>
+<h3 id="cargotoml-3"><a class="header" href="#cargotoml-3">Cargo.toml</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">[package]
+name = &quot;queryer_py&quot; # Python 模块需要用下划线
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+
+[lib]
+crate-type = [&quot;cdylib&quot;] # 使用 cdylib 类型
+
+[dependencies]
+queryer = { path = &quot;../queryer&quot; } # 引入 queryer
+tokio = { version = &quot;1&quot;, features = [&quot;full&quot;] }
+
+[dependencies.pyo3]
+version = &quot;0.14&quot;
+features = [&quot;extension-module&quot;]
+
+[build-dependencies]
+pyo3-build-config = &quot;0.14&quot;
+</code></pre></pre>
+<h3 id="buildrs-1"><a class="header" href="#buildrs-1">build.rs</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">fn main() {
+    pyo3_build_config::add_extension_module_link_args();
+}
+</code></pre></pre>
+<h3 id="srclibrs-1"><a class="header" href="#srclibrs-1">src/lib.rs</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">#![allow(clippy::needless_option_as_deref)]
+use pyo3::{exceptions, prelude::*};
+
+#[pyfunction]
+pub fn example_sql() -&gt; PyResult&lt;String&gt; {
+    Ok(queryer::example_sql())
+}
+
+#[pyfunction]
+pub fn query(sql: &amp;str, output: Option&lt;&amp;str&gt;) -&gt; PyResult&lt;String&gt; {
+    let rt = tokio::runtime::Runtime::new().unwrap();
+    let data = rt.block_on(async { queryer::query(sql).await.unwrap() });
+    match output {
+        Some(&quot;csv&quot;) | None =&gt; Ok(data.to_csv().unwrap()),
+        Some(v) =&gt; Err(exceptions::PyTypeError::new_err(format!(
+            &quot;Output type {} not supported&quot;,
+            v
+        ))),
+    }
+}
+
+#[pymodule]
+fn queryer_py(_py: Python, m: &amp;PyModule) -&gt; PyResult&lt;()&gt; {
+    m.add_function(wrap_pyfunction!(query, m)?)?;
+    m.add_function(wrap_pyfunction!(example_sql, m)?)?;
+    Ok(())
+}
+</code></pre></pre>
+<h2 id="data-viewer-package-使用tauri"><a class="header" href="#data-viewer-package-使用tauri">data-viewer package: 使用tauri</a></h2>
+<h3 id="cargotoml-4"><a class="header" href="#cargotoml-4">Cargo.toml</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">[package]
+name = &quot;app&quot;
+version = &quot;0.1.0&quot;
+description = &quot;A Tauri App&quot;
+authors = [&quot;you&quot;]
+license = &quot;&quot;
+repository = &quot;&quot;
+default-run = &quot;app&quot;
+edition = &quot;2021&quot;
+build = &quot;src/build.rs&quot;
+
+<span class="boring">See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+</span>
+[build-dependencies]
+tauri-build = { version = &quot;1.0.0-beta.4&quot; }
+
+[dependencies]
+anyhow = &quot;1&quot;
+serde_json = &quot;1&quot;
+queryer = { path = &quot;../../queryer&quot; }
+serde = { version = &quot;1.0&quot;, features = [&quot;derive&quot;] }
+tauri = { version = &quot;1.0.0-beta.8&quot;, features = [&quot;api-all&quot;] }
+
+[features]
+default = [ &quot;custom-protocol&quot; ]
+custom-protocol = [ &quot;tauri/custom-protocol&quot; ]
+</code></pre></pre>
+<h3 id="buildrs-2"><a class="header" href="#buildrs-2">build.rs</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">fn main() {
+  tauri_build::build()
+}
+</code></pre></pre>
+<h3 id="mainrs-1"><a class="header" href="#mainrs-1">main.rs</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">#![cfg_attr(
+  all(not(debug_assertions), target_os = &quot;windows&quot;),
+  windows_subsystem = &quot;windows&quot;
+)]
+
+#[tauri::command]
+fn example_sql() -&gt; String {
+  queryer::example_sql()
+}
+
+#[tauri::command]
+async fn query(sql: String) -&gt; Result&lt;String, String&gt; {
+  let data = queryer::query(&amp;sql).await.map_err(|err| err.to_string())?;
+  Ok(data.to_csv().map_err(|err| err.to_string())?)
+}
+
+fn main() {
+  tauri::Builder::default()
+    .invoke_handler(tauri::generate_handler![example_sql, query])
+    .run(tauri::generate_context!())
+    .expect(&quot;error while running tauri application&quot;);
+}
+</code></pre></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rgrep"><a class="header" href="#rgrep">rgrep</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="gdblldb调试或查看内存结构"><a class="header" href="#gdblldb调试或查看内存结构">gdb/lldb调试或查看内存结构</a></h1>
 <!--ts-->
@@ -2127,7 +2330,7 @@ pub async fn retrieve_data(source: impl AsRef&lt;str&gt;) -&gt; Result&lt;String
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 21 15:31:38 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 22 03:17:36 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
