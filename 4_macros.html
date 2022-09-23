@@ -201,7 +201,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 13:11:36 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:12:25 UTC 2022 -->
 <!--te-->
 <h2 id="宏的分类"><a class="header" href="#宏的分类">宏的分类</a></h2>
 <h3 id="声明宏-macro_rules"><a class="header" href="#声明宏-macro_rules">声明宏: macro_rules!</a></h3>
@@ -211,10 +211,37 @@
 </blockquote>
 <h3 id="过程宏深度定制与生成代码"><a class="header" href="#过程宏深度定制与生成代码">过程宏：深度定制与生成代码</a></h3>
 <ul>
-<li><a href="https://www.bilibili.com/video/BV1Za411q7LQ">Rust 过程宏(1)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1Fu411m7W7">Rust 过程宏(2)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1dr4y1v74n">Rust 过程宏(3)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1Za411q7LQ">Rust 过程宏(1): 如何硬生生解析和手写过程宏</a></li>
 </ul>
+<blockquote>
+<p>主要以如何使用 function-like macro 在不依赖于 syn / quote 的情况下，把 Json Schema 在编译期转换成 Rust struct。主要目的是让大家熟悉基本的处理 TokenStream 的思路</p>
+</blockquote>
+<ul>
+<li><a href="https://www.bilibili.com/video/BV1Fu411m7W7">Rust 过程宏(2): 使用 syn/quote 撰写过程宏</a></li>
+</ul>
+<blockquote>
+<p>主要通过一个 derive Builder 宏，来展示使用 syn/quote 如何开发过程宏。</p>
+</blockquote>
+<ul>
+<li><a href="https://www.bilibili.com/video/BV1dr4y1v74n">Rust 过程宏(3): 使用 darling 处理 attributes</a></li>
+</ul>
+<blockquote>
+<p>做个收尾，对上一讲的 derive macro 支持 attributes。 我们可以直接解析 attributes 相关的 TokenStream，也可以使用 darling 这个很方便的库，直接把 attributes 像
+Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理。</p>
+</blockquote>
+<div id="admonition-总结" class="admonition info">
+<div class="admonition-title">
+<p>总结</p>
+<p><a class="admonition-anchor-link" href="#admonition-总结"></a></p>
+</div>
+<div>
+<p>这三讲的内容虽然简单，但足以应付大家绝大多数宏编程的需求。
+其实我们现在对 syn 库的使用还只是一个皮毛，我们还没有深入
+去撰写自己的数据结构去实现 Parse trait，像 DeriveInput 
+那样可以直接把 TokenStream 转换成我们想要的东西。</p>
+<p>大家感兴趣的话，可以自行去看 syn 库的文档。</p>
+</div>
+</div>
 <h4 id="函数宏"><a class="header" href="#函数宏">函数宏</a></h4>
 <p>看起来像函数的宏，但在编译期进行处理.</p>
 <blockquote>

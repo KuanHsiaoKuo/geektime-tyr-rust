@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 13:11:37 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:12:26 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -387,7 +387,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 13:11:37 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:12:27 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -878,7 +878,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 13:11:37 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:12:27 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1332,7 +1332,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 13:11:38 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:12:28 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/Cargo.toml}}
@@ -2233,7 +2233,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 13:11:37 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:12:28 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -2898,6 +2898,10 @@ fn main() {
 }
 </code></pre></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rust核心深入"><a class="header" href="#rust核心深入">Rust核心深入</a></h1>
+<h2 id="资料推荐"><a class="header" href="#资料推荐">资料推荐</a></h2>
+<ul>
+<li><a href="https://tyrchen.github.io/rust-training/rust-training-all-in-one-cn.html#1">陈天培训slides</a></li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="i-从栈堆所有权生命周期开始内存管理"><a class="header" href="#i-从栈堆所有权生命周期开始内存管理">I. 从栈堆、所有权、生命周期开始内存管理</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ii-类型系统"><a class="header" href="#ii-类型系统">II. 类型系统</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="iii-数据结构"><a class="header" href="#iii-数据结构">III. 数据结构</a></h1>
@@ -2933,7 +2937,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 13:11:36 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:12:25 UTC 2022 -->
 <!--te-->
 <h2 id="宏的分类"><a class="header" href="#宏的分类">宏的分类</a></h2>
 <h3 id="声明宏-macro_rules"><a class="header" href="#声明宏-macro_rules">声明宏: macro_rules!</a></h3>
@@ -2943,10 +2947,37 @@ fn main() {
 </blockquote>
 <h3 id="过程宏深度定制与生成代码"><a class="header" href="#过程宏深度定制与生成代码">过程宏：深度定制与生成代码</a></h3>
 <ul>
-<li><a href="https://www.bilibili.com/video/BV1Za411q7LQ">Rust 过程宏(1)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1Fu411m7W7">Rust 过程宏(2)</a></li>
-<li><a href="https://www.bilibili.com/video/BV1dr4y1v74n">Rust 过程宏(3)</a></li>
+<li><a href="https://www.bilibili.com/video/BV1Za411q7LQ">Rust 过程宏(1): 如何硬生生解析和手写过程宏</a></li>
 </ul>
+<blockquote>
+<p>主要以如何使用 function-like macro 在不依赖于 syn / quote 的情况下，把 Json Schema 在编译期转换成 Rust struct。主要目的是让大家熟悉基本的处理 TokenStream 的思路</p>
+</blockquote>
+<ul>
+<li><a href="https://www.bilibili.com/video/BV1Fu411m7W7">Rust 过程宏(2): 使用 syn/quote 撰写过程宏</a></li>
+</ul>
+<blockquote>
+<p>主要通过一个 derive Builder 宏，来展示使用 syn/quote 如何开发过程宏。</p>
+</blockquote>
+<ul>
+<li><a href="https://www.bilibili.com/video/BV1dr4y1v74n">Rust 过程宏(3): 使用 darling 处理 attributes</a></li>
+</ul>
+<blockquote>
+<p>做个收尾，对上一讲的 derive macro 支持 attributes。 我们可以直接解析 attributes 相关的 TokenStream，也可以使用 darling 这个很方便的库，直接把 attributes 像
+Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理。</p>
+</blockquote>
+<div id="admonition-总结" class="admonition info">
+<div class="admonition-title">
+<p>总结</p>
+<p><a class="admonition-anchor-link" href="4_macros.html#admonition-总结"></a></p>
+</div>
+<div>
+<p>这三讲的内容虽然简单，但足以应付大家绝大多数宏编程的需求。
+其实我们现在对 syn 库的使用还只是一个皮毛，我们还没有深入
+去撰写自己的数据结构去实现 Parse trait，像 DeriveInput 
+那样可以直接把 TokenStream 转换成我们想要的东西。</p>
+<p>大家感兴趣的话，可以自行去看 syn 库的文档。</p>
+</div>
+</div>
 <h4 id="函数宏"><a class="header" href="#函数宏">函数宏</a></h4>
 <p>看起来像函数的宏，但在编译期进行处理.</p>
 <blockquote>
