@@ -205,16 +205,46 @@
 <li><a href="#println">println!</a></li>
 </ul>
 </li>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a>
+<ul>
+<li><a href="#macro_rules%E5%AE%9A%E4%B9%89">macro_rules!定义</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8F%E7%94%A8%E5%88%B0%E7%9A%84%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B">声明宏用到的参数类型</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%87%E7%A8%8B%E5%AE%8F">过程宏</a>
+<ul>
+<li><a href="#cargotoml%E6%B7%BB%E5%8A%A0proc-macro%E5%A3%B0%E6%98%8E">Cargo.toml添加proc-macro声明</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8cargo%E4%B8%AD%E5%AE%9A%E4%B9%89%E7%9A%84%E5%A3%B0%E6%98%8E%E5%AE%8F">使用cargo中定义的声明宏</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-1">使用</a></li>
 </ul>
 </li>
 <li><a href="#%E5%87%BD%E6%95%B0%E5%AE%8F-1">函数宏</a></li>
 <li><a href="#%E5%B1%9E%E6%80%A7%E5%AE%8F-1">属性宏</a></li>
-<li><a href="#%E6%B4%BE%E7%94%9F%E5%AE%8F-1">派生宏</a></li>
+<li><a href="#%E6%B4%BE%E7%94%9F%E5%AE%8F-1">派生宏</a>
+<ul>
+<li><a href="#%E5%B8%B8%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F">常用派生宏</a>
+<ul>
+<li>[#[derive(Debug)]](#derivedebug)</li>
+</ul>
+</li>
+<li><a href="#%E5%AE%9A%E4%B9%89">定义</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-2">使用</a>
+<ul>
+<li><a href="#builder">builder</a></li>
+<li><a href="#builderwithattr">builderwithattr</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%8D%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F-%E5%8F%AA%E7%94%A8rust%E7%9A%84%E5%86%99%E6%B3%95">不用派生宏, 只用rust的写法</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 06:33:14 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 08:28:42 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -294,9 +324,460 @@ macro_rules! println {
 }
 <span class="boring">}
 </span></code></pre></pre>
+<h3 id="示例"><a class="header" href="#示例">示例</a></h3>
+<h4 id="macro_rules定义"><a class="header" href="#macro_rules定义">macro_rules!定义</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">#[macro_export]
+macro_rules! my_vec {
+    // 没带任何参数的 my_vec，我们创建一个空的 vec
+    // 注意，由于宏要在调用的地方展开，我们无法预测调用
+    // 者的环境是否已经 做了相关的 use，所以我们使用的
+    // 代码最好带着完整的命名空间。
+    () =&gt; {
+        std::vec::Vec::new()
+    };
+    // 处理 my_vec![1, 2, 3, 4]
+    ($($el:expr),*) =&gt; ({
+        let mut v = std::vec::Vec::new();
+        $(v.push($el);)*
+        v
+    });
+    // 处理 my_vec![0; 10]
+    ($el:expr; $n:expr) =&gt; {
+        std::vec::from_elem($el, $n)
+    }
+}
+</code></pre></pre>
+<div id="admonition-elexpr-" class="admonition info">
+<div class="admonition-title">
+<p>$($el:expr), *)</p>
+<p><a class="admonition-anchor-link" href="#admonition-elexpr-"></a></p>
+</div>
+<div>
+<ol>
+<li>在声明宏中，条件捕获的参数使用 $ 开头的标识符来声明。</li>
+<li>每个参数都需要提供类型，这里<code>expr</code>代表表达式，所以 $el:expr 是说把匹配到的表达式命名为 $el。</li>
+<li>$(…),* 告诉编译器可以匹配任意多个以逗号分隔的表达式，然后捕获到的每一个表达式可以用 $el 来访问。</li>
+<li>由于匹配的时候匹配到一个 $(…)* （我们可以不管分隔符），在执行的代码块中，我们也要相应地使用 $(…)* 展开。</li>
+<li>所以这句 $(v.push($el);)* 相当于匹配出多少个 $el就展开多少句 push 语句。</li>
+</ol>
+</div>
+</div>
+<h4 id="使用"><a class="header" href="#使用">使用</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">fn main() {
+    let mut v = my_vec![];
+    v.push(1);
+    // 调用时可以使用 [], (), {}
+    let _v = my_vec!(1, 2, 3, 4);
+    let _v = my_vec![1, 2, 3, 4];
+    let v = my_vec! {1, 2, 3, 4};
+    println!(&quot;{:?}&quot;, v);
+
+    println!(&quot;{:?}&quot;, v);
+    //
+    let v = my_vec![1; 10];
+    println!(&quot;{:?}&quot;, v);
+}
+</code></pre></pre>
+<h3 id="声明宏用到的参数类型"><a class="header" href="#声明宏用到的参数类型">声明宏用到的参数类型</a></h3>
+<div id="admonition-类型列表" class="admonition info">
+<div class="admonition-title">
+<p>类型列表</p>
+<p><a class="admonition-anchor-link" href="#admonition-类型列表"></a></p>
+</div>
+<div>
+<ol>
+<li>item，比如一个函数、结构体、模块等。 </li>
+<li>block，代码块。比如一系列由花括号包裹的表达式和语句。 </li>
+<li>stmt，语句。比如一个赋值语句。 </li>
+<li>pat，模式。 </li>
+<li>expr，表达式。刚才的例子使用过了。 </li>
+<li>ty，类型。比如 Vec。 </li>
+<li>ident，标识符。比如一个变量名。 </li>
+<li>path，路径。比如：foo、::std::mem::replace、transmute::&lt;_, int&gt;。 </li>
+<li>meta，元数据。一般是在 #[…] 和 #![…] 属性内部的数据。 </li>
+<li>tt，单个的 token 树。 </li>
+<li>vis，可能为空的一个 Visibility 修饰符。比如 pub、pub(crate)</li>
+</ol>
+</div>
+</div>
+<h2 id="过程宏"><a class="header" href="#过程宏">过程宏</a></h2>
+<blockquote>
+<p>过程宏要比声明宏要复杂很多，不过无论是哪一种过程宏，本质都是一样的，都涉及要把 <code>输入的 TokenStream</code> 处理成<code>输出的 TokenStream</code>。</p>
+</blockquote>
+<h3 id="cargotoml添加proc-macro声明"><a class="header" href="#cargotoml添加proc-macro声明">Cargo.toml添加proc-macro声明</a></h3>
+<blockquote>
+<p>这样，编译器才允许你使用 #[proc_macro] 相关的宏。</p>
+</blockquote>
+<pre><code class="language-toml  editable">[lib]
+proc-macro = true
+</code></pre>
+<h3 id="使用cargo中定义的声明宏"><a class="header" href="#使用cargo中定义的声明宏">使用cargo中定义的声明宏</a></h3>
+<blockquote>
+<p>可以看到，都是处理TokenStream</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">mod builder;
+mod builder_with_attr;
+mod raw_builder;
+
+use proc_macro::TokenStream;
+use raw_builder::BuilderContext;
+use syn::{parse_macro_input, DeriveInput};
+
+#[proc_macro]
+pub fn query(input: TokenStream) -&gt; TokenStream {
+    println!(&quot;{:#?}&quot;, input);
+    &quot;fn hello() { println!(\&quot;Hello world!\&quot;); }&quot;
+        .parse()
+        .unwrap()
+}
+
+#[proc_macro_derive(RawBuilder)]
+pub fn derive_raw_builder(input: TokenStream) -&gt; TokenStream {
+    BuilderContext::render(input).unwrap().parse().unwrap()
+}
+
+#[proc_macro_derive(Builder)]
+pub fn derive_builder(input: TokenStream) -&gt; TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    builder::BuilderContext::from(input).render().into()
+}
+
+#[proc_macro_derive(BuilderWithAttr, attributes(builder))]
+pub fn derive_builder_with_attr(input: TokenStream) -&gt; TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    builder_with_attr::BuilderContext::from(input)
+        .render()
+        .into()
+}
+</code></pre></pre>
+<div id="admonition-tokenstream" class="admonition info">
+<div class="admonition-title">
+<p>TokenStream</p>
+<p><a class="admonition-anchor-link" href="#admonition-tokenstream"></a></p>
+</div>
+<div>
+<p>使用者可以通过 query!(…) 来调用。我们打印传入的 TokenStream，
+然后把一段包含在字符串中的代码解析成 TokenStream 返回。</p>
+<p>这里可以非常方便地用字符串的 parse() 方法来获得 TokenStream，
+是因为 TokenStream 实现了  FromStr trait。</p>
+</div>
+</div>
+<h3 id="使用-1"><a class="header" href="#使用-1">使用</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">
+</code></pre></pre>
+<ol>
+<li>.parse().unwrap(): 字符串自动转为TokenStream类型</li>
+</ol>
+<pre><code class="language-shell">cargo run --example query
+TokenStream [
+    Ident {
+        ident: &quot;SELECT&quot;,
+        span: #0 bytes(43..49),
+    },
+    Punct {
+        ch: '*',
+        spacing: Alone,
+        span: #0 bytes(50..51),
+    },
+    Ident {
+        ident: &quot;FROM&quot;,
+        span: #0 bytes(52..56),
+    },
+    Ident {
+        ident: &quot;users&quot;,
+        span: #0 bytes(57..62),
+    },
+    Ident {
+        ident: &quot;WHERE&quot;,
+        span: #0 bytes(63..68),
+    },
+    Ident {
+        ident: &quot;age&quot;,
+        span: #0 bytes(69..72),
+    },
+    Punct {
+        ch: '&gt;',
+        spacing: Alone,
+        span: #0 bytes(73..74),
+    },
+    Literal {
+        kind: Integer,
+        symbol: &quot;10&quot;,
+        suffix: None,
+        span: #0 bytes(75..77),
+    },
+]
+    Finished dev [unoptimized + debuginfo] target(s) in 33.98s
+     Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/query`
+Hello world!
+</code></pre>
+<div id="admonition-tokenstream是一个iterator里面包含一系列的tokentree" class="admonition tip">
+<div class="admonition-title">
+<p>TokenStream是一个Iterator，里面包含一系列的TokenTree</p>
+<p><a class="admonition-anchor-link" href="#admonition-tokenstream是一个iterator里面包含一系列的tokentree"></a></p>
+</div>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub enum TokenTree {
+    // 组，如果代码中包含括号，比如{} [] &lt;&gt; () ，那么内部的内容会被分析成一个Group（组）
+    Group(Group), 
+    // 标识符
+    Ident(Ident),
+    // 标点符号 
+    Punct(Punct),
+    // 字面量 
+    Literal(Literal), 
+}
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</div>
+<div id="admonition-group-example" class="admonition info">
+<div class="admonition-title">
+<p>Group Example</p>
+<p><a class="admonition-anchor-link" href="#admonition-group-example"></a></p>
+</div>
+<div>
+<pre><pre class="playground"><code class="language-rust">use macros::query;
+
+fn main() {
+    // query!(SELECT * FROM users WHERE age &gt; 10);
+    query!(SELECT * FROM users u JOIN (SELECT * from profiles p) WHERE u.id = p.id);
+    hello()
+}
+</code></pre></pre>
+</div>
+</div>
 <h2 id="函数宏-1"><a class="header" href="#函数宏-1">函数宏</a></h2>
 <h2 id="属性宏-1"><a class="header" href="#属性宏-1">属性宏</a></h2>
 <h2 id="派生宏-1"><a class="header" href="#派生宏-1">派生宏</a></h2>
+<h3 id="常用派生宏"><a class="header" href="#常用派生宏">常用派生宏</a></h3>
+<h4 id="derivedebug"><a class="header" href="#derivedebug">#[derive(Debug)]</a></h4>
+<h3 id="定义"><a class="header" href="#定义">定义</a></h3>
+<blockquote>
+<p>对于 derive macro，要使用 proce_macro_derive 这个宏</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">#[proc_macro_derive(RawBuilder)]
+pub fn derive_raw_builder(input: TokenStream) -&gt; TokenStream {
+    BuilderContext::render(input).unwrap().parse().unwrap()
+}
+
+#[proc_macro_derive(Builder)]
+pub fn derive_builder(input: TokenStream) -&gt; TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    builder::BuilderContext::from(input).render().into()
+}
+
+#[proc_macro_derive(BuilderWithAttr, attributes(builder))]
+pub fn derive_builder_with_attr(input: TokenStream) -&gt; TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    builder_with_attr::BuilderContext::from(input)
+        .render()
+        .into()
+}
+</code></pre></pre>
+<h3 id="使用-2"><a class="header" href="#使用-2">使用</a></h3>
+<h4 id="builder"><a class="header" href="#builder">builder</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use macros::Builder;
+
+#[allow(dead_code)]
+#[derive(Debug, Builder)]
+pub struct Command {
+    executable: String,
+    args: Vec&lt;String&gt;,
+    env: Vec&lt;String&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+
+fn main() {
+    let command = Command::builder()
+        .executable(&quot;cargo&quot;.to_owned())
+        .args(vec![&quot;build&quot;.to_owned(), &quot;--release&quot;.to_owned()])
+        .env(vec![])
+        .build()
+        .unwrap();
+    assert!(command.current_dir.is_none());
+
+    let command = Command::builder()
+        .executable(&quot;cargo&quot;.to_owned())
+        .args(vec![&quot;build&quot;.to_owned(), &quot;--release&quot;.to_owned()])
+        .env(vec![])
+        .current_dir(&quot;..&quot;.to_owned())
+        .build()
+        .unwrap();
+    assert!(command.current_dir.is_some());
+    println!(&quot;{:?}&quot;, command);
+}
+</code></pre></pre>
+<ol>
+<li>#[derive(Debug, Builder)]</li>
+</ol>
+<h4 id="builderwithattr"><a class="header" href="#builderwithattr">builderwithattr</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use macros::BuilderWithAttr;
+
+#[allow(dead_code)]
+#[derive(Debug, BuilderWithAttr)]
+pub struct Command {
+    executable: String,
+    #[builder(each = &quot;arg&quot;)]
+    args: Vec&lt;String&gt;,
+    #[builder(each = &quot;env&quot;, default = &quot;vec![]&quot;)]
+    env: Vec&lt;String&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+
+fn main() {
+    let command = Command::builder()
+        .executable(&quot;cargo&quot;.to_owned())
+        .arg(&quot;build&quot;.to_owned())
+        .arg(&quot;--release&quot;.to_owned())
+        .build()
+        .unwrap();
+
+    assert_eq!(command.executable, &quot;cargo&quot;);
+    assert_eq!(command.args, vec![&quot;build&quot;, &quot;--release&quot;]);
+    println!(&quot;{:?}&quot;, command);
+}
+</code></pre></pre>
+<h3 id="不用派生宏-只用rust的写法"><a class="header" href="#不用派生宏-只用rust的写法">不用派生宏, 只用rust的写法</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">use anyhow::Result;
+use askama::Template;
+use proc_macro::{Ident, TokenStream, TokenTree};
+use std::collections::VecDeque;
+
+/// 处理 jinja 模板的数据结构，在模板中我们使用了 name / builder_name / fields
+#[derive(Template)]
+#[template(path = &quot;builder.j2&quot;, escape = &quot;none&quot;)]
+pub struct BuilderContext {
+    name: String,
+    builder_name: String,
+    fields: Vec&lt;Fd&gt;,
+}
+
+/// 描述 struct 的每个 field
+#[derive(Debug, Default)]
+struct Fd {
+    name: String,
+    ty: String,
+    optional: bool,
+}
+
+impl Fd {
+    /// name 和 field 都是通过冒号 Punct 切分出来的 TokenTree 切片
+    pub fn new(name: &amp;[TokenTree], ty: &amp;[TokenTree]) -&gt; Self {
+        // 把类似 Ident(&quot;Option&quot;), Punct('&lt;'), Ident(&quot;String&quot;), Punct('&gt;) 的 ty
+        // 收集成一个 String 列表，如 vec![&quot;Option&quot;, &quot;&lt;&quot;, &quot;String&quot;, &quot;&gt;&quot;]
+        let ty = ty
+            .iter()
+            .map(|v| match v {
+                TokenTree::Ident(n) =&gt; n.to_string(),
+                TokenTree::Punct(p) =&gt; p.as_char().to_string(),
+                e =&gt; panic!(&quot;Expect ident, got {:?}&quot;, e),
+            })
+            .collect::&lt;Vec&lt;_&gt;&gt;();
+        // 冒号前最后一个 TokenTree 是 field 的名字
+        // 比如：executable: String,
+        // 注意这里不应该用 name[0]，因为有可能是 pub executable: String
+        // 甚至，带 attributes 的 field，
+        // 比如：#[builder(hello = world)] pub executable: String
+        match name.last() {
+            Some(TokenTree::Ident(name)) =&gt; {
+                // 如果 ty 第 0 项是 Option，那么从第二项取到倒数第一项
+                // 取完后上面的例子中的 ty 会变成 [&quot;String&quot;]，optiona = true
+                let (ty, optional) = if ty[0].as_str() == &quot;Option&quot; {
+                    (&amp;ty[2..ty.len() - 1], true)
+                } else {
+                    (&amp;ty[..], false)
+                };
+                Self {
+                    name: name.to_string(),
+                    ty: ty.join(&quot;&quot;), // 把 ty join 成字符串
+                    optional,
+                }
+            }
+            e =&gt; panic!(&quot;Expect ident, got {:?}&quot;, e),
+        }
+    }
+}
+
+impl BuilderContext {
+    /// 从 TokenStream 中提取信息，构建 BuilderContext
+    fn new(input: TokenStream) -&gt; Self {
+        let (name, input) = split(input);
+        let fields = get_struct_fields(input);
+        Self {
+            builder_name: format!(&quot;{}Builder&quot;, name),
+            name: name.to_string(),
+            fields,
+        }
+    }
+
+    /// 把模板渲染成字符串代码
+    pub fn render(input: TokenStream) -&gt; Result&lt;String&gt; {
+        let template = Self::new(input);
+        Ok(template.render()?)
+    }
+}
+
+/// 把 TokenStream 分出 struct 的名字，和包含 fields 的 TokenStream
+fn split(input: TokenStream) -&gt; (Ident, TokenStream) {
+    let mut input = input.into_iter().collect::&lt;VecDeque&lt;_&gt;&gt;();
+    // 一直往后找，找到 struct 停下来
+    while let Some(item) = input.pop_front() {
+        if let TokenTree::Ident(v) = item {
+            if v.to_string() == &quot;struct&quot; {
+                break;
+            }
+        }
+    }
+
+    // struct 后面，应该是 struct name
+    let ident;
+    if let Some(TokenTree::Ident(v)) = input.pop_front() {
+        ident = v;
+    } else {
+        panic!(&quot;Didn't find struct name&quot;);
+    }
+
+    // struct 后面可能还有若干 TokenTree，我们不管，一路找到第一个 Group
+    let mut group = None;
+    for item in input {
+        if let TokenTree::Group(g) = item {
+            group = Some(g);
+            break;
+        }
+    }
+
+    (ident, group.expect(&quot;Didn't find field group&quot;).stream())
+}
+
+/// 从包含 fields 的 TokenStream 中切出来一个个 Fd
+fn get_struct_fields(input: TokenStream) -&gt; Vec&lt;Fd&gt; {
+    let input = input.into_iter().collect::&lt;Vec&lt;_&gt;&gt;();
+    input
+        .split(|v| match v {
+            // 先用 ',' 切出来一个个包含 field 所有信息的 &amp;[TokenTree]
+            TokenTree::Punct(p) =&gt; p.as_char() == ',',
+            _ =&gt; false,
+        })
+        .map(|tokens| {
+            tokens
+                .split(|v| match v {
+                    // 再用 ':' 把 &amp;[TokenTree] 切成 [&amp;[TokenTree], &amp;[TokenTree]]
+                    // 它们分别对应名字和类型
+                    TokenTree::Punct(p) =&gt; p.as_char() == ':',
+                    _ =&gt; false,
+                })
+                .collect::&lt;Vec&lt;_&gt;&gt;()
+        })
+        // 正常情况下，应该得到 [&amp;[TokenTree], &amp;[TokenTree]]，对于切出来长度不为 2 的统统过滤掉
+        .filter(|tokens| tokens.len() == 2)
+        // 使用 Fd::new 创建出每个 Fd
+        .map(|tokens| Fd::new(tokens[0], tokens[1]))
+        .collect()
+}
+</code></pre></pre>
 
             </main>
 
