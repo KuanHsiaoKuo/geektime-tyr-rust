@@ -185,9 +185,10 @@
 <ul>
 <li><a href="#iv-%E5%AE%8F%E7%BC%96%E7%A8%8B">IV 宏编程</a>
 <ul>
+<li><a href="#%E8%B5%84%E6%96%99">资料</a></li>
 <li><a href="#%E5%AE%8F%E7%9A%84%E5%88%86%E7%B1%BB">宏的分类</a>
 <ul>
-<li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8F-macro_rules">声明宏: macro_rules!</a></li>
+<li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8Fdeclarative-macros-macro_rulesbang">声明宏(declarative macros): macro_rules!(bang)</a></li>
 <li><a href="#%E8%BF%87%E7%A8%8B%E5%AE%8F%E6%B7%B1%E5%BA%A6%E5%AE%9A%E5%88%B6%E4%B8%8E%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81">过程宏：深度定制与生成代码</a>
 <ul>
 <li><a href="#%E5%87%BD%E6%95%B0%E5%AE%8F">函数宏</a></li>
@@ -197,14 +198,32 @@
 </li>
 </ul>
 </li>
+<li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8F">声明宏</a>
+<ul>
+<li><a href="#rust%E5%B8%B8%E7%94%A8%E5%A3%B0%E6%98%8E%E5%AE%8F">Rust常用声明宏</a>
+<ul>
+<li><a href="#println">println!</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%87%BD%E6%95%B0%E5%AE%8F-1">函数宏</a></li>
+<li><a href="#%E5%B1%9E%E6%80%A7%E5%AE%8F-1">属性宏</a></li>
+<li><a href="#%E6%B4%BE%E7%94%9F%E5%AE%8F-1">派生宏</a></li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 06:12:25 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:33:14 UTC 2022 -->
 <!--te-->
+<h2 id="资料"><a class="header" href="#资料">资料</a></h2>
+<ul>
+<li><a href="https://kaisery.github.io/trpl-zh-cn/ch19-06-macros.html">宏 - Rust 程序设计语言 简体中文版</a></li>
+<li><a href="https://doc.rust-lang.org/book/ch19-06-macros.html">Macros - The Rust Programming Language</a></li>
+<li><a href="https://doc.rust-lang.org/reference/macros-by-example.html">Macros By Example - The Rust Reference</a></li>
+</ul>
 <h2 id="宏的分类"><a class="header" href="#宏的分类">宏的分类</a></h2>
-<h3 id="声明宏-macro_rules"><a class="header" href="#声明宏-macro_rules">声明宏: macro_rules!</a></h3>
+<h3 id="声明宏declarative-macros-macro_rulesbang"><a class="header" href="#声明宏declarative-macros-macro_rulesbang">声明宏(declarative macros): macro_rules!(bang)</a></h3>
 <blockquote>
 <p>对代码模版做简单替换
 声明宏可以用 macro_rules! 来描述, 如果重复性的代码无法用函数来封装，那么声明宏就是一个好的选择</p>
@@ -256,6 +275,28 @@ Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理�
 <blockquote>
 <p>如果你定义的 trait 别人实现起来有固定的模式可循，那么可以考虑为其构建派生宏</p>
 </blockquote>
+<h2 id="声明宏"><a class="header" href="#声明宏">声明宏</a></h2>
+<h3 id="rust常用声明宏"><a class="header" href="#rust常用声明宏">Rust常用声明宏</a></h3>
+<h4 id="println"><a class="header" href="#println">println!</a></h4>
+<ul>
+<li><a href="https://blog.csdn.net/jiangjkd/article/details/120994956">Rust声明宏println剖析_一线coder的博客-CSDN博客_rust 声明宏</a></li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[macro_export]
+#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+#[allow_internal_unstable(print_internals, format_args_nl)]
+macro_rules! println {
+    () =&gt; ($crate::print!(&quot;\n&quot;));
+    ($($arg:tt)*) =&gt; ({
+        $crate::io::_print($crate::format_args_nl!($($arg)*));
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+<h2 id="函数宏-1"><a class="header" href="#函数宏-1">函数宏</a></h2>
+<h2 id="属性宏-1"><a class="header" href="#属性宏-1">属性宏</a></h2>
+<h2 id="派生宏-1"><a class="header" href="#派生宏-1">派生宏</a></h2>
 
             </main>
 
