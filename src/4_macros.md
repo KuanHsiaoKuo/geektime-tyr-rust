@@ -1,17 +1,16 @@
 # IV 宏编程
 
 <!--ts-->
-
 * [IV 宏编程](#iv-宏编程)
-    * [宏的分类](#宏的分类)
-        * [声明宏: macro_rules!](#声明宏-macro_rules)
-        * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
-            * [函数宏](#函数宏)
-            * [属性宏](#属性宏)
-            * [派生宏](#派生宏)
+   * [宏的分类](#宏的分类)
+      * [声明宏: macro_rules!](#声明宏-macro_rules)
+      * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+         * [函数宏](#函数宏)
+         * [属性宏](#属性宏)
+         * [派生宏](#派生宏)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Sep 22 13:11:36 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 06:12:25 UTC 2022 -->
 
 <!--te-->
 
