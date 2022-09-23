@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 08:28:43 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 10:08:56 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -387,7 +387,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 08:28:43 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 10:08:57 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -878,7 +878,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 08:28:43 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 10:08:57 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1332,7 +1332,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 08:28:44 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 10:08:57 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/Cargo.toml}}
@@ -2233,7 +2233,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 08:28:44 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 10:08:57 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -2966,6 +2966,7 @@ fn main() {
 <li>[#[derive(Debug)]](#derivedebug)</li>
 </ul>
 </li>
+<li><a href="4_macros.html#%E5%8E%9F%E5%A7%8B%E5%AE%9E%E7%8E%B0builder%E6%A8%A1%E5%BC%8F">原始实现builder模式</a></li>
 <li><a href="4_macros.html#%E5%AE%9A%E4%B9%89">定义</a></li>
 <li><a href="4_macros.html#%E4%BD%BF%E7%94%A8-2">使用</a>
 <ul>
@@ -2980,7 +2981,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 08:28:42 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 10:08:56 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -3290,6 +3291,81 @@ fn main() {
 <h2 id="派生宏-1"><a class="header" href="#派生宏-1">派生宏</a></h2>
 <h3 id="常用派生宏"><a class="header" href="#常用派生宏">常用派生宏</a></h3>
 <h4 id="derivedebug"><a class="header" href="#derivedebug">#[derive(Debug)]</a></h4>
+<h3 id="原始实现builder模式"><a class="header" href="#原始实现builder模式">原始实现builder模式</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">#[allow(dead_code)]
+#[derive(Debug)]
+pub struct Command {
+    executable: String,
+    args: Vec&lt;String&gt;,
+    env: Vec&lt;String&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+
+#[derive(Debug, Default)]
+pub struct CommandBuilder {
+    executable: Option&lt;String&gt;,
+    args: Option&lt;Vec&lt;String&gt;&gt;,
+    env: Option&lt;Vec&lt;String&gt;&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+
+impl Command {
+    pub fn builder() -&gt; CommandBuilder {
+        Default::default()
+    }
+}
+
+impl CommandBuilder {
+    pub fn executable(mut self, v: String) -&gt; Self {
+        self.executable = Some(v.to_owned());
+        self
+    }
+
+    pub fn args(mut self, v: Vec&lt;String&gt;) -&gt; Self {
+        self.args = Some(v.to_owned());
+        self
+    }
+
+    pub fn env(mut self, v: Vec&lt;String&gt;) -&gt; Self {
+        self.env = Some(v.to_owned());
+        self
+    }
+
+    pub fn current_dir(mut self, v: String) -&gt; Self {
+        self.current_dir = Some(v.to_owned());
+        self
+    }
+
+    pub fn build(mut self) -&gt; Result&lt;Command, &amp;'static str&gt; {
+        Ok(Command {
+            executable: self.executable.take().ok_or(&quot;executable must be set&quot;)?,
+            args: self.args.take().ok_or(&quot;args must be set&quot;)?,
+            env: self.env.take().ok_or(&quot;env must be set&quot;)?,
+            current_dir: self.current_dir.take(),
+        })
+    }
+}
+
+fn main() {
+    let command = Command::builder()
+        .executable(&quot;cargo&quot;.to_owned())
+        .args(vec![&quot;build&quot;.to_owned(), &quot;--release&quot;.to_owned()])
+        .env(vec![])
+        .build()
+        .unwrap();
+    assert!(command.current_dir.is_none());
+
+    let command = Command::builder()
+        .executable(&quot;cargo&quot;.to_owned())
+        .args(vec![&quot;build&quot;.to_owned(), &quot;--release&quot;.to_owned()])
+        .env(vec![])
+        .current_dir(&quot;..&quot;.to_owned())
+        .build()
+        .unwrap();
+    assert!(command.current_dir.is_some());
+    println!(&quot;{:?}&quot;, command);
+}
+</code></pre></pre>
 <h3 id="定义"><a class="header" href="#定义">定义</a></h3>
 <blockquote>
 <p>对于 derive macro，要使用 proce_macro_derive 这个宏</p>
