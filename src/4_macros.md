@@ -1,22 +1,29 @@
 # IV 宏编程
 
 <!--ts-->
+
 * [IV 宏编程](#iv-宏编程)
-   * [宏的分类](#宏的分类)
-      * [声明宏: macro_rules!](#声明宏-macro_rules)
-      * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
-         * [函数宏](#函数宏)
-         * [属性宏](#属性宏)
-         * [派生宏](#派生宏)
+    * [宏的分类](#宏的分类)
+        * [声明宏: macro_rules!](#声明宏-macro_rules)
+        * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+            * [函数宏](#函数宏)
+            * [属性宏](#属性宏)
+            * [派生宏](#派生宏)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri Sep 23 06:12:25 UTC 2022 -->
 
 <!--te-->
 
+## 资料
+
+- [宏 - Rust 程序设计语言 简体中文版](https://kaisery.github.io/trpl-zh-cn/ch19-06-macros.html)
+- [Macros - The Rust Programming Language](https://doc.rust-lang.org/book/ch19-06-macros.html)
+- [Macros By Example - The Rust Reference](https://doc.rust-lang.org/reference/macros-by-example.html)
+
 ## 宏的分类
 
-### 声明宏: macro_rules!
+### 声明宏(declarative macros): macro_rules!(bang)
 
 > 对代码模版做简单替换
 > 声明宏可以用 macro_rules! 来描述, 如果重复性的代码无法用函数来封装，那么声明宏就是一个好的选择
@@ -60,3 +67,29 @@
 
 为 derive属性添加新的功能。这是我们平时使用最多的宏，比如 #[derive(Debug)].
 > 如果你定义的 trait 别人实现起来有固定的模式可循，那么可以考虑为其构建派生宏
+
+## 声明宏
+
+### Rust常用声明宏
+
+#### println!
+
+- [Rust声明宏println剖析_一线coder的博客-CSDN博客_rust 声明宏](https://blog.csdn.net/jiangjkd/article/details/120994956)
+
+```rust
+#[macro_export]
+#[stable(feature = "rust1", since = "1.0.0")]
+#[allow_internal_unstable(print_internals, format_args_nl)]
+macro_rules! println {
+    () => ($crate::print!("\n"));
+    ($($arg:tt)*) => ({
+        $crate::io::_print($crate::format_args_nl!($($arg)*));
+    })
+}
+```
+
+## 函数宏
+
+## 属性宏
+
+## 派生宏
