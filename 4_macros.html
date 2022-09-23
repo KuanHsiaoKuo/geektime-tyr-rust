@@ -203,6 +203,8 @@
 <li><a href="#rust%E5%B8%B8%E7%94%A8%E5%A3%B0%E6%98%8E%E5%AE%8F">Rust常用声明宏</a>
 <ul>
 <li><a href="#println">println!</a></li>
+<li><a href="#writeln">writeln!</a></li>
+<li><a href="#eprintln">eprintln!</a></li>
 </ul>
 </li>
 <li><a href="#%E7%A4%BA%E4%BE%8B">示例</a>
@@ -223,29 +225,37 @@
 </li>
 <li><a href="#%E5%87%BD%E6%95%B0%E5%AE%8F-1">函数宏</a></li>
 <li><a href="#%E5%B1%9E%E6%80%A7%E5%AE%8F-1">属性宏</a></li>
-<li><a href="#%E6%B4%BE%E7%94%9F%E5%AE%8F-1">派生宏</a>
+<li>[派生宏: /#[proc_macro_devive(DeriveMacroName)]](#派生宏-proc_macro_devivederivemacroname)
 <ul>
 <li><a href="#%E5%B8%B8%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F">常用派生宏</a>
 <ul>
 <li>[#[derive(Debug)]](#derivedebug)</li>
 </ul>
 </li>
-<li><a href="#%E5%8E%9F%E5%A7%8B%E5%AE%9E%E7%8E%B0builder%E6%A8%A1%E5%BC%8F">原始实现builder模式</a></li>
-<li><a href="#%E5%AE%9A%E4%B9%89">定义</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8-2">使用</a>
+<li><a href="#%E5%8E%9F%E5%A7%8B%E5%AE%9E%E7%8E%B0builder%E6%A8%A1%E5%BC%8F">原始实现builder模式</a>
 <ul>
-<li><a href="#builder">builder</a></li>
-<li><a href="#builderwithattr">builderwithattr</a></li>
+<li><a href="#%E6%83%B3%E5%88%B0%E8%BE%BE%E5%88%B0%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8%E7%9A%84%E6%95%88%E6%9E%9C">想到达到链式调用的效果</a></li>
+<li><a href="#%E5%8F%AF%E4%BB%A5%E8%BF%99%E6%A0%B7%E5%AE%9A%E4%B9%89">可以这样定义</a></li>
+<li><a href="#%E4%BD%86%E6%98%AF%E6%9C%89%E7%82%B9%E7%B9%81%E7%90%90%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%B4%BE%E7%94%9F%E5%87%BA%E8%BF%99%E4%BA%9B%E4%BB%A3%E7%A0%81">但是有点繁琐，可以使用派生宏派生出这些代码</a></li>
 </ul>
 </li>
-<li><a href="#%E4%B8%8D%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F-%E5%8F%AA%E7%94%A8rust%E7%9A%84%E5%86%99%E6%B3%95">不用派生宏, 只用rust的写法</a></li>
+<li><a href="#%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%80%9D%E8%B7%AF">派生宏思路</a>
+<ul>
+<li><a href="#%E8%A6%81%E7%94%9F%E6%88%90%E7%9A%84%E4%BB%A3%E7%A0%81%E6%A8%A1%E7%89%88">要生成的代码模版</a></li>
+<li><a href="#%E6%9E%84%E5%BB%BA%E5%AF%B9%E5%BA%94%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">构建对应数据结构</a></li>
+<li><a href="#srclibrs-%E4%BD%BF%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F%E4%BB%8Etokenstream%E6%8A%BD%E5%8F%96%E5%87%BA%E6%83%B3%E8%A6%81%E7%9A%84%E4%BF%A1%E6%81%AF">src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息</a></li>
+<li><a href="#examplescommandrs-%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%8A%BD%E5%8F%96">examples/command.rs: 使用这个派生宏抽取</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C%E6%9F%A5%E7%9C%8B%E8%8E%B7%E5%8F%96%E7%9A%84tokenstream">运行，查看获取的TokenStream</a></li>
+<li><a href="#srcraw_builderrs-%E4%BD%BF%E7%94%A8anyhow%E4%B8%8Easkama%E6%8A%BD%E5%8F%96tokenstream%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF">src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 10:08:56 UTC 2022 -->
+<!-- Added by: runner, at: Fri Sep 23 13:12:15 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -310,6 +320,7 @@ Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理�
 <h3 id="rust常用声明宏"><a class="header" href="#rust常用声明宏">Rust常用声明宏</a></h3>
 <h4 id="println"><a class="header" href="#println">println!</a></h4>
 <ul>
+<li><a href="https://doc.rust-lang.org/std/macro.println.html">println in std - Rust</a></li>
 <li><a href="https://blog.csdn.net/jiangjkd/article/details/120994956">Rust声明宏println剖析_一线coder的博客-CSDN博客_rust 声明宏</a></li>
 </ul>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -325,6 +336,20 @@ macro_rules! println {
 }
 <span class="boring">}
 </span></code></pre></pre>
+<h4 id="writeln"><a class="header" href="#writeln">writeln!</a></h4>
+<blockquote>
+<p>可以将内容输入到指定文件</p>
+</blockquote>
+<ul>
+<li><a href="https://doc.rust-lang.org/std/macro.writeln.html">writeln in std - Rust</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/148945862">rust入门笔记—翻译rust write！宏 - 知乎</a></li>
+</ul>
+<pre><code class="language-shell">cargo run --example raw_command &gt; examples/raw_command_output.txt
+</code></pre>
+<h4 id="eprintln"><a class="header" href="#eprintln">eprintln!</a></h4>
+<ul>
+<li><a href="https://doc.rust-lang.org/std/macro.eprintln.html">eprintln in std - Rust</a></li>
+</ul>
 <h3 id="示例"><a class="header" href="#示例">示例</a></h3>
 <h4 id="macro_rules定义"><a class="header" href="#macro_rules定义">macro_rules!定义</a></h4>
 <pre><pre class="playground"><code class="language-rust  editable">#[macro_export]
@@ -426,6 +451,7 @@ use syn::{parse_macro_input, DeriveInput};
 
 #[proc_macro]
 pub fn query(input: TokenStream) -&gt; TokenStream {
+    // 只有修改代码之后再次编译才会执行
     println!(&quot;{:#?}&quot;, input);
     &quot;fn hello() { println!(\&quot;Hello world!\&quot;); }&quot;
         .parse()
@@ -434,6 +460,8 @@ pub fn query(input: TokenStream) -&gt; TokenStream {
 
 #[proc_macro_derive(RawBuilder)]
 pub fn derive_raw_builder(input: TokenStream) -&gt; TokenStream {
+    // 只有修改代码之后再次编译才会执行
+    println!(&quot;{:#?}&quot;, input);
     BuilderContext::render(input).unwrap().parse().unwrap()
 }
 
@@ -469,48 +497,9 @@ pub fn derive_builder_with_attr(input: TokenStream) -&gt; TokenStream {
 <ol>
 <li>.parse().unwrap(): 字符串自动转为TokenStream类型</li>
 </ol>
-<pre><code class="language-shell">cargo run --example query
-TokenStream [
-    Ident {
-        ident: &quot;SELECT&quot;,
-        span: #0 bytes(43..49),
-    },
-    Punct {
-        ch: '*',
-        spacing: Alone,
-        span: #0 bytes(50..51),
-    },
-    Ident {
-        ident: &quot;FROM&quot;,
-        span: #0 bytes(52..56),
-    },
-    Ident {
-        ident: &quot;users&quot;,
-        span: #0 bytes(57..62),
-    },
-    Ident {
-        ident: &quot;WHERE&quot;,
-        span: #0 bytes(63..68),
-    },
-    Ident {
-        ident: &quot;age&quot;,
-        span: #0 bytes(69..72),
-    },
-    Punct {
-        ch: '&gt;',
-        spacing: Alone,
-        span: #0 bytes(73..74),
-    },
-    Literal {
-        kind: Integer,
-        symbol: &quot;10&quot;,
-        suffix: None,
-        span: #0 bytes(75..77),
-    },
-]
-    Finished dev [unoptimized + debuginfo] target(s) in 33.98s
-     Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/query`
-Hello world!
+<pre><code class="language-shell">cargo run --example query &gt; examples/query_output.txt
+</code></pre>
+<pre><code class="language-shell">{{#include ../geektime_rust_codes/47_48_macros/examples/query_output.txt}}
 </code></pre>
 <div id="admonition-tokenstream是一个iterator里面包含一系列的tokentree" class="admonition tip">
 <div class="admonition-title">
@@ -552,11 +541,34 @@ fn main() {
 </div>
 <h2 id="函数宏-1"><a class="header" href="#函数宏-1">函数宏</a></h2>
 <h2 id="属性宏-1"><a class="header" href="#属性宏-1">属性宏</a></h2>
-<h2 id="派生宏-1"><a class="header" href="#派生宏-1">派生宏</a></h2>
+<h2 id="派生宏-proc_macro_devivederivemacroname"><a class="header" href="#派生宏-proc_macro_devivederivemacroname">派生宏: /#[proc_macro_devive(DeriveMacroName)]</a></h2>
 <h3 id="常用派生宏"><a class="header" href="#常用派生宏">常用派生宏</a></h3>
 <h4 id="derivedebug"><a class="header" href="#derivedebug">#[derive(Debug)]</a></h4>
 <h3 id="原始实现builder模式"><a class="header" href="#原始实现builder模式">原始实现builder模式</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">#[allow(dead_code)]
+<h4 id="想到达到链式调用的效果"><a class="header" href="#想到达到链式调用的效果">想到达到链式调用的效果</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">fn main() {
+    let command = Command::builder()
+        .executable(&quot;cargo&quot;.to_owned())
+        .args(vec![&quot;build&quot;.to_owned(), &quot;--release&quot;.to_owned()])
+        .env(vec![])
+        .build()
+        .unwrap();
+    assert!(command.current_dir.is_none());
+
+    let command = Command::builder()
+        .executable(&quot;cargo&quot;.to_owned())
+        .args(vec![&quot;build&quot;.to_owned(), &quot;--release&quot;.to_owned()])
+        .env(vec![])
+        .current_dir(&quot;..&quot;.to_owned())
+        .build()
+        .unwrap();
+    assert!(command.current_dir.is_some());
+    println!(&quot;{:?}&quot;, command);
+}
+</code></pre></pre>
+<h4 id="可以这样定义"><a class="header" href="#可以这样定义">可以这样定义</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">/// 这是command.rs的派生宏实现的代码样子
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct Command {
     executable: String,
@@ -608,53 +620,68 @@ impl CommandBuilder {
             current_dir: self.current_dir.take(),
         })
     }
+</code></pre></pre>
+<h4 id="但是有点繁琐可以使用派生宏派生出这些代码"><a class="header" href="#但是有点繁琐可以使用派生宏派生出这些代码">但是有点繁琐，可以使用派生宏派生出这些代码</a></h4>
+<h3 id="派生宏思路"><a class="header" href="#派生宏思路">派生宏思路</a></h3>
+<h4 id="要生成的代码模版"><a class="header" href="#要生成的代码模版">要生成的代码模版</a></h4>
+<p>把输入的 TokenStream 抽取出来，也就是把在 struct 的定义内部，每个域的名字及其类型都抽出来，然后生成对应的方法代码。</p>
+<pre><pre class="playground"><code class="language-rust  editable">impl {{ name }} {
+    pub fn builder() -&gt; {{ builder_name }} {
+        Default::default()
+    }
 }
 
-fn main() {
-    let command = Command::builder()
-        .executable(&quot;cargo&quot;.to_owned())
-        .args(vec![&quot;build&quot;.to_owned(), &quot;--release&quot;.to_owned()])
-        .env(vec![])
-        .build()
-        .unwrap();
-    assert!(command.current_dir.is_none());
+#[derive(Debug, Default)]
+pub struct {{ builder_name }} {
+    {% for field in fields %}
+        {{ field.name }}: Option&lt;{{ field.ty }}&gt;,
+    {% endfor %}
+}
 
-    let command = Command::builder()
-        .executable(&quot;cargo&quot;.to_owned())
-        .args(vec![&quot;build&quot;.to_owned(), &quot;--release&quot;.to_owned()])
-        .env(vec![])
-        .current_dir(&quot;..&quot;.to_owned())
-        .build()
-        .unwrap();
-    assert!(command.current_dir.is_some());
-    println!(&quot;{:?}&quot;, command);
+impl {{ builder_name }} {
+    {% for field in fields %}
+    pub fn {{ field.name }}(mut self, v: impl Into&lt;{{ field.ty }}&gt;) -&gt; {{ builder_name }} {
+        self.{{ field.name }} = Some(v.into());
+        self
+    }
+    {% endfor %}
+
+    pub fn build(self) -&gt; Result&lt;{{ name }}, &amp;'static str&gt; {
+        Ok({{ name }} {
+            {% for field in fields %}
+                {% if field.optional %}
+                {{ field.name }}: self.{{ field.name }},
+                {% else %}
+                {{ field.name }}: self.{{ field.name }}.ok_or(&quot;Build failed: missing {{ field.name }}&quot;)?,
+                {% endif %}
+            {% endfor %}
+        })
+    }
 }
 </code></pre></pre>
-<h3 id="定义"><a class="header" href="#定义">定义</a></h3>
+<ol>
+<li>7-12: 这里的 fileds / builder_name 是我们要传入的参数，每个 field 还需要 name 和 ty 两个 属性，分别对应 field 的名字和类型</li>
+<li>25-26: 对于原本是 Option<T> 类型的域，要避免生成 Option<Option>，我们需要把是否是 Option 单独抽取出来，如果是 Option<T>，那么 ty 就是 T。所以，field 还需要一个属 性
+optional。</li>
+</ol>
+<h4 id="构建对应数据结构"><a class="header" href="#构建对应数据结构">构建对应数据结构</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">struct Fd {
+    name: Ident,
+    ty: Type,
+    optional: bool,
+}
+</code></pre></pre>
+<h4 id="srclibrs-使用派生宏从tokenstream抽取出想要的信息"><a class="header" href="#srclibrs-使用派生宏从tokenstream抽取出想要的信息">src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息</a></h4>
 <blockquote>
-<p>对于 derive macro，要使用 proce_macro_derive 这个宏</p>
+<p>对于 derive macro，要使用 proce_macro_derive 这个宏。我们把这个 derive macro 命名为 Builder。</p>
 </blockquote>
-<pre><pre class="playground"><code class="language-rust  editable">#[proc_macro_derive(RawBuilder)]
-pub fn derive_raw_builder(input: TokenStream) -&gt; TokenStream {
-    BuilderContext::render(input).unwrap().parse().unwrap()
+<pre><pre class="playground"><code class="language-rust  editable">    BuilderContext::render(input).unwrap().parse().unwrap()
 }
 
 #[proc_macro_derive(Builder)]
 pub fn derive_builder(input: TokenStream) -&gt; TokenStream {
-    let input = parse_macro_input!(input as DeriveInput);
-    builder::BuilderContext::from(input).render().into()
-}
-
-#[proc_macro_derive(BuilderWithAttr, attributes(builder))]
-pub fn derive_builder_with_attr(input: TokenStream) -&gt; TokenStream {
-    let input = parse_macro_input!(input as DeriveInput);
-    builder_with_attr::BuilderContext::from(input)
-        .render()
-        .into()
-}
 </code></pre></pre>
-<h3 id="使用-2"><a class="header" href="#使用-2">使用</a></h3>
-<h4 id="builder"><a class="header" href="#builder">builder</a></h4>
+<h4 id="examplescommandrs-使用这个派生宏抽取"><a class="header" href="#examplescommandrs-使用这个派生宏抽取">examples/command.rs: 使用这个派生宏抽取</a></h4>
 <pre><pre class="playground"><code class="language-rust  editable">use macros::Builder;
 
 #[allow(dead_code)]
@@ -686,37 +713,35 @@ fn main() {
     println!(&quot;{:?}&quot;, command);
 }
 </code></pre></pre>
+<h4 id="运行查看获取的tokenstream"><a class="header" href="#运行查看获取的tokenstream">运行，查看获取的TokenStream</a></h4>
+<pre><code class="language-shell">cargo run --example raw_command &gt; examples/raw_command_output.txt
+</code></pre>
+<pre><code class="language-shell">{{#include ../geektime_rust_codes/47_48_macros/examples/raw_command_output.txt}}
+</code></pre>
+<div id="admonition-打印信息说明" class="admonition info">
+<div class="admonition-title">
+<p>打印信息说明</p>
+<p><a class="admonition-anchor-link" href="#admonition-打印信息说明"></a></p>
+</div>
+<div>
 <ol>
-<li>#[derive(Debug, Builder)]</li>
+<li>
+<p>首先有一个 Group，包含了 #[allow(dead_code)] 属性的信息。因为我们现在拿到 的 derive 下的信息，所以所有不属于 #[derive(…)] 的属性，都会被放入 TokenStream 中。</p>
+</li>
+<li>
+<p>之后是 pub / struct / Command 三个 ident。</p>
+</li>
+<li>
+<p>随后又是一个 Group，包含了每个 field 的信息。我们看到，field 之间用逗号这个 Punct 分隔，field 的名字和类型又是通过冒号这个 Punct 分隔。而类型，可能是一个 Ident，如 String，或者一系列 Ident / Punct，如 Vec / &lt; / String / &gt;。</p>
+</li>
 </ol>
-<h4 id="builderwithattr"><a class="header" href="#builderwithattr">builderwithattr</a></h4>
-<pre><pre class="playground"><code class="language-rust  editable">use macros::BuilderWithAttr;
-
-#[allow(dead_code)]
-#[derive(Debug, BuilderWithAttr)]
-pub struct Command {
-    executable: String,
-    #[builder(each = &quot;arg&quot;)]
-    args: Vec&lt;String&gt;,
-    #[builder(each = &quot;env&quot;, default = &quot;vec![]&quot;)]
-    env: Vec&lt;String&gt;,
-    current_dir: Option&lt;String&gt;,
-}
-
-fn main() {
-    let command = Command::builder()
-        .executable(&quot;cargo&quot;.to_owned())
-        .arg(&quot;build&quot;.to_owned())
-        .arg(&quot;--release&quot;.to_owned())
-        .build()
-        .unwrap();
-
-    assert_eq!(command.executable, &quot;cargo&quot;);
-    assert_eq!(command.args, vec![&quot;build&quot;, &quot;--release&quot;]);
-    println!(&quot;{:?}&quot;, command);
-}
-</code></pre></pre>
-<h3 id="不用派生宏-只用rust的写法"><a class="header" href="#不用派生宏-只用rust的写法">不用派生宏, 只用rust的写法</a></h3>
+</div>
+</div>
+<h4 id="srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息"><a class="header" href="#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息">src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息</a></h4>
+<blockquote>
+<p>我们要做的就是，把这个 TokenStream 中的 struct 名字，以及每个 field 的名字和类型拿出来。
+如果类型是 Option<T>，那么把 T 拿出来，把 optional 设置为 true。</p>
+</blockquote>
 <pre><pre class="playground"><code class="language-rust  editable">use anyhow::Result;
 use askama::Template;
 use proc_macro::{Ident, TokenStream, TokenTree};
@@ -854,6 +879,17 @@ fn get_struct_fields(input: TokenStream) -&gt; Vec&lt;Fd&gt; {
         .collect()
 }
 </code></pre></pre>
+<div id="admonition-tip" class="admonition tip">
+<div class="admonition-title">
+<p>Tip</p>
+<p><a class="admonition-anchor-link" href="#admonition-tip"></a></p>
+</div>
+<div>
+<p>可以对着打印出来的 TokenStream 和刚才的分析进行理解。
+核心的就是 get_struct_fields() 方法，如果觉得难懂，
+可以想想如果要把一个 a=1,b=2 的字符串切成 [[a, 1], [b, 2]] 该怎么做，就很容易理解了。</p>
+</div>
+</div>
 
             </main>
 
