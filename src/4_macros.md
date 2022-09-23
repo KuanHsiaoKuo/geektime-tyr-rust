@@ -1,36 +1,37 @@
 # IV 宏编程
 
 <!--ts-->
+
 * [IV 宏编程](#iv-宏编程)
-   * [资料](#资料)
-   * [宏的分类](#宏的分类)
-      * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
-      * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
-         * [函数宏](#函数宏)
-         * [属性宏](#属性宏)
-         * [派生宏](#派生宏)
-   * [声明宏](#声明宏)
-      * [Rust常用声明宏](#rust常用声明宏)
-         * [println!](#println)
-      * [示例](#示例)
-         * [macro_rules!定义](#macro_rules定义)
-         * [使用](#使用)
-      * [声明宏用到的参数类型](#声明宏用到的参数类型)
-   * [过程宏](#过程宏)
-      * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
-      * [使用cargo中定义的声明宏](#使用cargo中定义的声明宏)
-      * [使用](#使用-1)
-   * [函数宏](#函数宏-1)
-   * [属性宏](#属性宏-1)
-   * [派生宏](#派生宏-1)
-      * [常用派生宏](#常用派生宏)
-         * [#[derive(Debug)]](#derivedebug)
-      * [原始实现builder模式](#原始实现builder模式)
-      * [定义](#定义)
-      * [使用](#使用-2)
-         * [builder](#builder)
-         * [builderwithattr](#builderwithattr)
-      * [不用派生宏, 只用rust的写法](#不用派生宏-只用rust的写法)
+    * [资料](#资料)
+    * [宏的分类](#宏的分类)
+        * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
+        * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+            * [函数宏](#函数宏)
+            * [属性宏](#属性宏)
+            * [派生宏](#派生宏)
+    * [声明宏](#声明宏)
+        * [Rust常用声明宏](#rust常用声明宏)
+            * [println!](#println)
+        * [示例](#示例)
+            * [macro_rules!定义](#macro_rules定义)
+            * [使用](#使用)
+        * [声明宏用到的参数类型](#声明宏用到的参数类型)
+    * [过程宏](#过程宏)
+        * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
+        * [使用cargo中定义的声明宏](#使用cargo中定义的声明宏)
+        * [使用](#使用-1)
+    * [函数宏](#函数宏-1)
+    * [属性宏](#属性宏-1)
+    * [派生宏](#派生宏-1)
+        * [常用派生宏](#常用派生宏)
+            * [#[derive(Debug)]](#derivedebug)
+        * [原始实现builder模式](#原始实现builder模式)
+        * [定义](#定义)
+        * [使用](#使用-2)
+            * [builder](#builder)
+            * [builderwithattr](#builderwithattr)
+        * [不用派生宏, 只用rust的写法](#不用派生宏-只用rust的写法)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri Sep 23 10:08:56 UTC 2022 -->
@@ -96,6 +97,7 @@
 
 #### println!
 
+- [println in std - Rust](https://doc.rust-lang.org/std/macro.println.html)
 - [Rust声明宏println剖析_一线coder的博客-CSDN博客_rust 声明宏](https://blog.csdn.net/jiangjkd/article/details/120994956)
 
 ```rust
@@ -109,6 +111,21 @@ macro_rules! println {
     })
 }
 ```
+
+#### writeln!
+
+> 可以将内容输入到指定文件
+
+- [writeln in std - Rust](https://doc.rust-lang.org/std/macro.writeln.html)
+- [rust入门笔记---翻译rust write！宏 - 知乎](https://zhuanlan.zhihu.com/p/148945862)
+
+```shell
+cargo run --example raw_command > examples/raw_command_output.txt
+```
+
+#### eprintln!
+
+- [eprintln in std - Rust](https://doc.rust-lang.org/std/macro.eprintln.html)
 
 ### 示例
 
@@ -185,48 +202,11 @@ macro_rules! println {
 1. .parse().unwrap(): 字符串自动转为TokenStream类型
 
 ```shell
-cargo run --example query
-TokenStream [
-    Ident {
-        ident: "SELECT",
-        span: #0 bytes(43..49),
-    },
-    Punct {
-        ch: '*',
-        spacing: Alone,
-        span: #0 bytes(50..51),
-    },
-    Ident {
-        ident: "FROM",
-        span: #0 bytes(52..56),
-    },
-    Ident {
-        ident: "users",
-        span: #0 bytes(57..62),
-    },
-    Ident {
-        ident: "WHERE",
-        span: #0 bytes(63..68),
-    },
-    Ident {
-        ident: "age",
-        span: #0 bytes(69..72),
-    },
-    Punct {
-        ch: '>',
-        spacing: Alone,
-        span: #0 bytes(73..74),
-    },
-    Literal {
-        kind: Integer,
-        symbol: "10",
-        suffix: None,
-        span: #0 bytes(75..77),
-    },
-]
-    Finished dev [unoptimized + debuginfo] target(s) in 33.98s
-     Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/query`
-Hello world!
+cargo run --example query > examples/query_output.txt
+```
+
+```shell
+{{#include ../geektime_rust_codes/47_48_macros/examples/query_output.txt}}
 ```
 
 ~~~admonish tip title='TokenStream是一个Iterator，里面包含一系列的TokenTree'
@@ -260,7 +240,7 @@ fn main() {
 
 ## 属性宏
 
-## 派生宏
+## 派生宏: /#[proc_macro_devive(DeriveMacroName)]
 
 ### 常用派生宏
 
@@ -268,36 +248,84 @@ fn main() {
 
 ### 原始实现builder模式
 
-```rust, editable
-{{#include ../geektime_rust_codes/47_48_macros/examples/raw_command.rs}}
-```
-
-### 定义
-
-> 对于 derive macro，要使用 proce_macro_derive 这个宏
+#### 想到达到链式调用的效果
 
 ```rust, editable
-{{#include ../geektime_rust_codes/47_48_macros/src/lib.rs:17:34}}
+{{#include ../geektime_rust_codes/47_48_macros/examples/mannual_command.rs:56:74}}
 ```
 
-### 使用
+#### 可以这样定义
 
-#### builder
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/examples/mannual_command.rs:1:53}}
+```
+
+#### 但是有点繁琐，可以使用派生宏派生出这些代码
+
+### 派生宏思路
+
+#### 要生成的代码模版
+
+把输入的 TokenStream 抽取出来，也就是把在 struct 的定义内部，每个域的名字及其类型都抽出来，然后生成对应的方法代码。
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/templates/builder.j2}}
+```
+
+1. 7-12: 这里的 fileds / builder_name 是我们要传入的参数，每个 field 还需要 name 和 ty 两个 属性，分别对应 field 的名字和类型
+2. 25-26: 对于原本是 Option<T> 类型的域，要避免生成 Option<Option>，我们需要把是否是 Option 单独抽取出来，如果是 Option<T>，那么 ty 就是 T。所以，field 还需要一个属 性
+   optional。
+
+#### 构建对应数据结构
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/src/builder.rs:9:13}}
+```
+
+#### src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息
+
+> 对于 derive macro，要使用 proce_macro_derive 这个宏。我们把这个 derive macro 命名为 Builder。
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/src/lib.rs:22:26}}
+```
+
+#### examples/command.rs: 使用这个派生宏抽取
 
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/examples/command.rs}}
 ```
 
-1. #[derive(Debug, Builder)]
+#### 运行，查看获取的TokenStream
 
-#### builderwithattr
-
-```rust, editable
-{{#include ../geektime_rust_codes/47_48_macros/examples/command_with_attr.rs}}
+```shell
+cargo run --example raw_command > examples/raw_command_output.txt
 ```
 
-### 不用派生宏, 只用rust的写法
+```shell
+{{#include ../geektime_rust_codes/47_48_macros/examples/raw_command_output.txt}}
+```
+
+~~~admonish info title='打印信息说明'
+1. 首先有一个 Group，包含了 #[allow(dead_code)] 属性的信息。因为我们现在拿到 的 derive 下的信息，所以所有不属于 #[derive(...)] 的属性，都会被放入 TokenStream 中。
+
+2. 之后是 pub / struct / Command 三个 ident。
+
+3. 随后又是一个 Group，包含了每个 field 的信息。我们看到，field 之间用逗号这个 Punct 分隔，field 的名字和类型又是通过冒号这个 Punct 分隔。而类型，可能是一个 Ident，如 String，或者一系列 Ident / Punct，如 Vec / < / String / >。
+~~~
+
+#### src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息
+
+> 我们要做的就是，把这个 TokenStream 中的 struct 名字，以及每个 field 的名字和类型拿出来。
+> 如果类型是 Option<T>，那么把 T 拿出来，把 optional 设置为 true。
 
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/src/raw_builder.rs}}
 ```
+
+~~~admonish tip
+可以对着打印出来的 TokenStream 和刚才的分析进行理解。
+核心的就是 get_struct_fields() 方法，如果觉得难懂，
+可以想想如果要把一个 a=1,b=2 的字符串切成 [[a, 1], [b, 2]] 该怎么做，就很容易理解了。
+~~~
+

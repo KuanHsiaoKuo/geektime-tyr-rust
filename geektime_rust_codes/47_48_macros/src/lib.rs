@@ -8,6 +8,7 @@ use syn::{parse_macro_input, DeriveInput};
 
 #[proc_macro]
 pub fn query(input: TokenStream) -> TokenStream {
+    // 只有修改代码之后再次编译才会执行
     println!("{:#?}", input);
     "fn hello() { println!(\"Hello world!\"); }"
         .parse()
@@ -16,6 +17,8 @@ pub fn query(input: TokenStream) -> TokenStream {
 
 #[proc_macro_derive(RawBuilder)]
 pub fn derive_raw_builder(input: TokenStream) -> TokenStream {
+    // 只有修改代码之后再次编译才会执行
+    println!("{:#?}", input);
     BuilderContext::render(input).unwrap().parse().unwrap()
 }
 
