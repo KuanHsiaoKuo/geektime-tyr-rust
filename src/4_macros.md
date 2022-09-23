@@ -1,20 +1,21 @@
 # IV 宏编程
 
 <!--ts-->
+
 * [IV 宏编程](#iv-宏编程)
-   * [资料](#资料)
-   * [宏的分类](#宏的分类)
-      * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
-      * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
-         * [函数宏](#函数宏)
-         * [属性宏](#属性宏)
-         * [派生宏](#派生宏)
-   * [声明宏](#声明宏)
-      * [Rust常用声明宏](#rust常用声明宏)
-         * [println!](#println)
-   * [函数宏](#函数宏-1)
-   * [属性宏](#属性宏-1)
-   * [派生宏](#派生宏-1)
+    * [资料](#资料)
+    * [宏的分类](#宏的分类)
+        * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
+        * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+            * [函数宏](#函数宏)
+            * [属性宏](#属性宏)
+            * [派生宏](#派生宏)
+    * [声明宏](#声明宏)
+        * [Rust常用声明宏](#rust常用声明宏)
+            * [println!](#println)
+    * [函数宏](#函数宏-1)
+    * [属性宏](#属性宏-1)
+    * [派生宏](#派生宏-1)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri Sep 23 06:33:14 UTC 2022 -->
@@ -94,8 +95,188 @@ macro_rules! println {
 }
 ```
 
+### 示例
+
+#### macro_rules!定义
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/examples/rule.rs:1:20}}
+```
+
+~~~admonish info title="$($el:expr), *)"
+1. 在声明宏中，条件捕获的参数使用 $ 开头的标识符来声明。
+2. 每个参数都需要提供类型，这里`expr`代表表达式，所以 $el:expr 是说把匹配到的表达式命名为 $el。
+3. $(...),* 告诉编译器可以匹配任意多个以逗号分隔的表达式，然后捕获到的每一个表达式可以用 $el 来访问。
+4. 由于匹配的时候匹配到一个 $(...)* （我们可以不管分隔符），在执行的代码块中，我们也要相应地使用 $(...)* 展开。
+5. 所以这句 $(v.push($el);)* 相当于匹配出多少个 $el就展开多少句 push 语句。
+~~~
+
+#### 使用
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/examples/rule.rs:22:}}
+```
+
+### 声明宏用到的参数类型
+
+~~~admonish info title='类型列表'
+1. item，比如一个函数、结构体、模块等。 
+2. block，代码块。比如一系列由花括号包裹的表达式和语句。 
+3. stmt，语句。比如一个赋值语句。 
+4. pat，模式。 
+5. expr，表达式。刚才的例子使用过了。 
+6. ty，类型。比如 Vec。 
+7. ident，标识符。比如一个变量名。 
+8. path，路径。比如：foo、::std::mem::replace、transmute::<_, int>。 
+9. meta，元数据。一般是在 #[...] 和 #![...] 属性内部的数据。 
+10. tt，单个的 token 树。 
+11. vis，可能为空的一个 Visibility 修饰符。比如 pub、pub(crate)
+~~~
+
+## 过程宏
+
+> 过程宏要比声明宏要复杂很多，不过无论是哪一种过程宏，本质都是一样的，都涉及要把 `输入的 TokenStream` 处理成`输出的 TokenStream`。
+
+### Cargo.toml添加proc-macro声明
+
+> 这样，编译器才允许你使用 #[proc_macro] 相关的宏。
+
+```toml, editable
+{{#include ../geektime_rust_codes/47_48_macros/Cargo.toml:8:9}}
+```
+
+### 使用cargo中定义的声明宏
+
+> 可以看到，都是处理TokenStream
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/src/lib.rs}}
+```
+
+~~~admonish info title="TokenStream"
+使用者可以通过 query!(...) 来调用。我们打印传入的 TokenStream，
+然后把一段包含在字符串中的代码解析成 TokenStream 返回。
+
+这里可以非常方便地用字符串的 parse() 方法来获得 TokenStream，
+是因为 TokenStream 实现了  FromStr trait。
+~~~
+
+### 使用
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/examples/query.rs:9:15}}
+```
+
+1. .parse().unwrap(): 字符串自动转为TokenStream类型
+
+```shell
+cargo run --example query
+TokenStream [
+    Ident {
+        ident: "SELECT",
+        span: #0 bytes(43..49),
+    },
+    Punct {
+        ch: '*',
+        spacing: Alone,
+        span: #0 bytes(50..51),
+    },
+    Ident {
+        ident: "FROM",
+        span: #0 bytes(52..56),
+    },
+    Ident {
+        ident: "users",
+        span: #0 bytes(57..62),
+    },
+    Ident {
+        ident: "WHERE",
+        span: #0 bytes(63..68),
+    },
+    Ident {
+        ident: "age",
+        span: #0 bytes(69..72),
+    },
+    Punct {
+        ch: '>',
+        spacing: Alone,
+        span: #0 bytes(73..74),
+    },
+    Literal {
+        kind: Integer,
+        symbol: "10",
+        suffix: None,
+        span: #0 bytes(75..77),
+    },
+]
+    Finished dev [unoptimized + debuginfo] target(s) in 33.98s
+     Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/query`
+Hello world!
+```
+
+~~~admonish tip title='TokenStream是一个Iterator，里面包含一系列的TokenTree'
+```rust
+pub enum TokenTree {
+    // 组，如果代码中包含括号，比如{} [] <> () ，那么内部的内容会被分析成一个Group（组）
+    Group(Group), 
+    // 标识符
+    Ident(Ident),
+    // 标点符号 
+    Punct(Punct),
+    // 字面量 
+    Literal(Literal), 
+}
+```
+~~~
+
+~~~admonish info title="Group Example"
+```rust
+use macros::query;
+
+fn main() {
+    // query!(SELECT * FROM users WHERE age > 10);
+    query!(SELECT * FROM users u JOIN (SELECT * from profiles p) WHERE u.id = p.id);
+    hello()
+}
+```
+~~~
+
 ## 函数宏
 
 ## 属性宏
 
 ## 派生宏
+
+### 常用派生宏
+
+#### #[derive(Debug)]
+
+### 定义
+
+> 对于 derive macro，要使用 proce_macro_derive 这个宏
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/src/lib.rs:17:34}}
+```
+
+### 使用
+
+#### builder
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/examples/command.rs}}
+```
+
+1. #[derive(Debug, Builder)]
+
+#### builderwithattr
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/examples/command_with_attr.rs}}
+```
+
+### 不用派生宏, 只用rust的写法
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/src/raw_builder.rs}}
+```
