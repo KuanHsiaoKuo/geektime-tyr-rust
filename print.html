@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Sep 24 03:26:36 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 14:20:05 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -387,7 +387,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Sep 24 03:26:37 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 14:20:06 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -878,7 +878,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Sep 24 03:26:37 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 14:20:06 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1332,33 +1332,94 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Sep 24 03:26:39 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 14:20:06 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/Cargo.toml}}
+<pre><pre class="playground"><code class="language-rust  editable">[package]
+name = &quot;rgrep&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+<span class="boring">See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+</span>
+[dependencies]
+anyhow = &quot;1&quot;
+clap = { version = &quot;3&quot;, features = [&quot;derive&quot;] }
+colored = &quot;2&quot;
+glob = &quot;0.3&quot;
+itertools = &quot;0.10&quot;
+rayon = &quot;1&quot;
+regex = &quot;1&quot;
+thiserror = &quot;1&quot;
 </code></pre></pre>
 <h2 id="srcerrorrs-thiserror会自动转换"><a class="header" href="#srcerrorrs-thiserror会自动转换">src/error.rs: thiserror会自动转换</a></h2>
 <blockquote>
 <p>它们都是需要进行转换的错误。thiserror 能够通过宏帮我们完成错误类型的转换。</p>
 </blockquote>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/error.rs}}
+<pre><pre class="playground"><code class="language-rust  editable">use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum GrepError {
+    #[error(&quot;Glob pattern error&quot;)]
+    GlobPatternError(#[from] glob::PatternError),
+    #[error(&quot;Regex pattern error&quot;)]
+    RegexPatternError(#[from] regex::Error),
+    #[error(&quot;I/O error&quot;)]
+    IoError(#[from] std::io::Error),
+}
 </code></pre></pre>
 <h2 id="srclibrs定义结构体实现方法单元测试"><a class="header" href="#srclibrs定义结构体实现方法单元测试">src/lib.rs：定义结构体+实现方法+单元测试</a></h2>
 <h3 id="mod引入与使用"><a class="header" href="#mod引入与使用">mod引入与使用</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:13:14}}
+<pre><pre class="playground"><code class="language-rust  editable">mod error;
+pub use error::GrepError;
 </code></pre></pre>
 <h3 id="定义结构体"><a class="header" href="#定义结构体">定义结构体</a></h3>
 <h4 id="专门简化复杂类型"><a class="header" href="#专门简化复杂类型">专门简化复杂类型</a></h4>
 <blockquote>
 <p>这里其实就是传入一个指定结构的函数对象</p>
 </blockquote>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:16:17}}
+<pre><pre class="playground"><code class="language-rust  editable">/// 定义类型，这样，在使用时可以简化复杂类型的书写
+pub type StrategyFn = fn(&amp;Path, &amp;mut dyn BufRead, &amp;Regex, &amp;mut dyn Write) -&gt; Result&lt;(), GrepError&gt;;
 </code></pre></pre>
 <h4 id="专门的结合版本grep结构体"><a class="header" href="#专门的结合版本grep结构体">专门的结合版本grep结构体</a></h4>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:19:27}}
+<pre><pre class="playground"><code class="language-rust  editable">/// 简化版本的 grep，支持正则表达式和文件通配符
+#[derive(Parser, Debug)]
+#[clap(version = &quot;1.0&quot;, author = &quot;Tyr Chen &lt;tyr@chen.com&gt;&quot;)]
+pub struct GrepConfig {
+    /// 用于查找的正则表达式
+    pattern: String,
+    /// 文件通配符
+    glob: String,
+}
 </code></pre></pre>
 <h3 id="给结构体实现方法"><a class="header" href="#给结构体实现方法">给结构体实现方法</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:29:55}}
+<pre><pre class="playground"><code class="language-rust  editable">impl GrepConfig {
+    /// 使用缺省策略来查找匹配
+    pub fn match_with_default_strategy(&amp;self) -&gt; Result&lt;(), GrepError&gt; {
+        self.match_with(default_strategy)
+    }
+
+    /// 使用某个策略函数来查找匹配
+    pub fn match_with(&amp;self, strategy: StrategyFn) -&gt; Result&lt;(), GrepError&gt; {
+        let regex = Regex::new(&amp;self.pattern)?;
+        // 生成所有符合通配符的文件列表
+        let files: Vec&lt;_&gt; = glob::glob(&amp;self.glob)?.collect();
+        // 并行处理所有文件
+        files.into_par_iter().for_each(|v| {
+            if let Ok(filename) = v {
+                if let Ok(file) = File::open(&amp;filename) {
+                    let mut reader = BufReader::new(file);
+                    let mut stdout = io::stdout();
+
+                    if let Err(e) = strategy(filename.as_path(), &amp;mut reader, &amp;regex, &amp;mut stdout) {
+                        println!(&quot;Internal error: {:?}&quot;, e);
+                    }
+                }
+            }
+        });
+        Ok(())
+    }
+}
 </code></pre></pre>
 <blockquote>
 <p>主要实现两种解析策略：</p>
@@ -1368,20 +1429,104 @@ mod tests {
 <li>指定策略：match_with, 使用传入的strategy: StrategyFn</li>
 </ol>
 <h3 id="默认策略-default_strategy"><a class="header" href="#默认策略-default_strategy">默认策略: default_strategy</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:57:87}}
+<pre><pre class="playground"><code class="language-rust  editable">/// 缺省策略，从头到尾串行查找，最后输出到 writer
+pub fn default_strategy(
+    path: &amp;Path,
+    reader: &amp;mut dyn BufRead,
+    pattern: &amp;Regex,
+    writer: &amp;mut dyn Write,
+) -&gt; Result&lt;(), GrepError&gt; {
+    let matches: String = reader
+        .lines()
+        .enumerate()
+        .map(|(lineno, line)| {
+            line.ok()
+                .map(|line| {
+                    pattern
+                        .find(&amp;line)
+                        .map(|m| format_line(&amp;line, lineno + 1, m.range()))
+                })
+                .flatten()
+        })
+        .filter_map(|v| v.ok_or(()).ok())
+        .join(&quot;\n&quot;);
+
+    if !matches.is_empty() {
+        writer.write_all(path.display().to_string().green().as_bytes())?;
+        writer.write_all(b&quot;\n&quot;)?;
+        writer.write_all(matches.as_bytes())?;
+        writer.write_all(b&quot;\n&quot;)?;
+    }
+
+    Ok(())
+}
 </code></pre></pre>
 <h3 id="格式化输出"><a class="header" href="#格式化输出">格式化输出</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:89:103}}
+<pre><pre class="playground"><code class="language-rust  editable">/// 格式化输出匹配的行，包含行号，列号和带有高亮的第一个匹配项
+pub fn format_line(line: &amp;str, lineno: usize, range: Range&lt;usize&gt;) -&gt; String {
+    let Range { start, end } = range;
+    let prefix = &amp;line[..start];
+    format!(
+        &quot;{0: &gt;6}:{1: &lt;3} {2}{3}{4}&quot;,
+        lineno.to_string().blue(),
+        // 找到匹配项的起始位置，注意对汉字等非 ascii 字符，我们不能使用 prefix.len()
+        // 这是一个 O(n) 的操作，会拖累效率，这里只是为了演示的效果
+        (prefix.chars().count() + 1).to_string().cyan(),
+        prefix,
+        &amp;line[start..end].red(),
+        &amp;line[end..]
+    )
+}
 </code></pre></pre>
 <h3 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:105:139}}
+<pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
+mod tests {
+
+    use super::*;
+
+    #[test]
+    fn format_line_should_work() {
+        let result = format_line(&quot;Hello, Tyr~&quot;, 1000, 7..10);
+        let expected = format!(
+            &quot;{0: &gt;6}:{1: &lt;3} Hello, {2}~&quot;,
+            &quot;1000&quot;.blue(),
+            &quot;8&quot;.cyan(),
+            &quot;Tyr&quot;.red()
+        );
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn default_strategy_should_work() {
+        let path = Path::new(&quot;src/main.rs&quot;);
+        let input = b&quot;hello world!\nhey Tyr!&quot;;
+        let mut reader = BufReader::new(&amp;input[..]);
+        let pattern = Regex::new(r&quot;he\w+&quot;).unwrap();
+        let mut writer = Vec::new();
+        default_strategy(path, &amp;mut reader, &amp;pattern, &amp;mut writer).unwrap();
+        let result = String::from_utf8(writer).unwrap();
+        let expected = [
+            String::from(&quot;src/main.rs&quot;),
+            format_line(&quot;hello world!&quot;, 1, 0..5),
+            format_line(&quot;hey Tyr!\n&quot;, 2, 0..3),
+        ];
+
+        assert_eq!(result, expected.join(&quot;\n&quot;));
+    }
+}
 </code></pre></pre>
 <h2 id="srcmainrs"><a class="header" href="#srcmainrs">src/main.rs</a></h2>
 <h3 id="引入librs中的内容"><a class="header" href="#引入librs中的内容">引入lib.rs中的内容</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:3:3}}
+<pre><pre class="playground"><code class="language-rust  editable">use itertools::Itertools;
 </code></pre></pre>
 <h3 id="主函数main"><a class="header" href="#主函数main">主函数：main()</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:5:11}}
+<pre><pre class="playground"><code class="language-rust  editable">use regex::Regex;
+use std::{
+    fs::File,
+    io::{self, BufRead, BufReader, Write},
+    ops::Range,
+    path::Path,
+};
 </code></pre></pre>
 <h2 id="使用"><a class="header" href="#使用">使用</a></h2>
 <pre><code class="language-shell">cargo run --quiet -- &quot;Re[^\\s]+&quot; &quot;src/*.rs&quot;                                                                                                                                                                                            ─╯
@@ -2233,7 +2378,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Sep 24 03:26:38 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 14:20:06 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -2922,7 +3067,8 @@ fn main() {
 <li><a href="4_macros.html#iv-%E5%AE%8F%E7%BC%96%E7%A8%8B">IV 宏编程</a>
 <ul>
 <li><a href="4_macros.html#%E8%B5%84%E6%96%99">资料</a></li>
-<li><a href="4_macros.html#%E5%AE%8F%E7%9A%84%E5%88%86%E7%B1%BB">宏的分类</a>
+<li><a href="4_macros.html#%E5%AE%8F%E7%9A%84%E5%88%86%E7%B1%BB">宏的分类</a></li>
+<li><a href="4_macros.html#%E8%A1%A8%E6%A0%BC">表格</a>
 <ul>
 <li><a href="4_macros.html#%E5%A3%B0%E6%98%8E%E5%AE%8Fdeclarative-macros-macro_rulesbang">声明宏(declarative macros): macro_rules!(bang)</a></li>
 <li><a href="4_macros.html#%E8%BF%87%E7%A8%8B%E5%AE%8F%E6%B7%B1%E5%BA%A6%E5%AE%9A%E5%88%B6%E4%B8%8E%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81">过程宏：深度定制与生成代码</a>
@@ -2997,7 +3143,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Sep 24 03:26:34 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 14:20:00 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -3006,6 +3152,17 @@ fn main() {
 <li><a href="https://doc.rust-lang.org/reference/macros-by-example.html">Macros By Example - The Rust Reference</a></li>
 </ul>
 <h2 id="宏的分类"><a class="header" href="#宏的分类">宏的分类</a></h2>
+<h2 id="表格"><a class="header" href="#表格">表格</a></h2>
+<pre><code class="language-extended-markdown-table">| Macros                     | Define                                                         | Usage                | note   | Example    |
+|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
+| Declarative Macro          | #[macro_export]/macro_rules! macro_name{}                      | macro_name!()        |        | println!   |
+|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
+| Function Macro             | #[proc_macros]/pub fn macro_name                               | macro_name!()        |        |            |
+|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
+| Derive Macro               | #[proc_macros_derive(DeriveMacroName)]/pub  fn other_fn_name   | DeriveMacroName!()   |        |            |
+|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
+| Attritubte Macro           |                                                                |                      |        |            |
+</code></pre>
 <h3 id="声明宏declarative-macros-macro_rulesbang"><a class="header" href="#声明宏declarative-macros-macro_rulesbang">声明宏(declarative macros): macro_rules!(bang)</a></h3>
 <blockquote>
 <p>对代码模版做简单替换

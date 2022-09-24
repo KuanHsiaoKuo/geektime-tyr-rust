@@ -186,7 +186,8 @@
 <li><a href="#iv-%E5%AE%8F%E7%BC%96%E7%A8%8B">IV 宏编程</a>
 <ul>
 <li><a href="#%E8%B5%84%E6%96%99">资料</a></li>
-<li><a href="#%E5%AE%8F%E7%9A%84%E5%88%86%E7%B1%BB">宏的分类</a>
+<li><a href="#%E5%AE%8F%E7%9A%84%E5%88%86%E7%B1%BB">宏的分类</a></li>
+<li><a href="#%E8%A1%A8%E6%A0%BC">表格</a>
 <ul>
 <li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8Fdeclarative-macros-macro_rulesbang">声明宏(declarative macros): macro_rules!(bang)</a></li>
 <li><a href="#%E8%BF%87%E7%A8%8B%E5%AE%8F%E6%B7%B1%E5%BA%A6%E5%AE%9A%E5%88%B6%E4%B8%8E%E7%94%9F%E6%88%90%E4%BB%A3%E7%A0%81">过程宏：深度定制与生成代码</a>
@@ -261,7 +262,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Sep 24 03:26:34 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 14:20:00 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -270,6 +271,17 @@
 <li><a href="https://doc.rust-lang.org/reference/macros-by-example.html">Macros By Example - The Rust Reference</a></li>
 </ul>
 <h2 id="宏的分类"><a class="header" href="#宏的分类">宏的分类</a></h2>
+<h2 id="表格"><a class="header" href="#表格">表格</a></h2>
+<pre><code class="language-extended-markdown-table">| Macros                     | Define                                                         | Usage                | note   | Example    |
+|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
+| Declarative Macro          | #[macro_export]/macro_rules! macro_name{}                      | macro_name!()        |        | println!   |
+|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
+| Function Macro             | #[proc_macros]/pub fn macro_name                               | macro_name!()        |        |            |
+|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
+| Derive Macro               | #[proc_macros_derive(DeriveMacroName)]/pub  fn other_fn_name   | DeriveMacroName!()   |        |            |
+|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
+| Attritubte Macro           |                                                                |                      |        |            |
+</code></pre>
 <h3 id="声明宏declarative-macros-macro_rulesbang"><a class="header" href="#声明宏declarative-macros-macro_rulesbang">声明宏(declarative macros): macro_rules!(bang)</a></h3>
 <blockquote>
 <p>对代码模版做简单替换
