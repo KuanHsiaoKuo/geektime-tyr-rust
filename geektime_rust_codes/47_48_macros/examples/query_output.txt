@@ -1,0 +1,90 @@
+TokenStream [
+    Ident {
+        ident: "SELECT",
+        span: #0 bytes(94..100),
+    },
+    Punct {
+        ch: '*',
+        spacing: Alone,
+        span: #0 bytes(101..102),
+    },
+    Ident {
+        ident: "FROM",
+        span: #0 bytes(103..107),
+    },
+    Ident {
+        ident: "users",
+        span: #0 bytes(108..113),
+    },
+    Ident {
+        ident: "u",
+        span: #0 bytes(114..115),
+    },
+    Ident {
+        ident: "JOIN",
+        span: #0 bytes(116..120),
+    },
+    Group {
+        delimiter: Parenthesis,
+        stream: TokenStream [
+            Ident {
+                ident: "SELECT",
+                span: #0 bytes(122..128),
+            },
+            Punct {
+                ch: '*',
+                spacing: Alone,
+                span: #0 bytes(129..130),
+            },
+            Ident {
+                ident: "from",
+                span: #0 bytes(131..135),
+            },
+            Ident {
+                ident: "profiles",
+                span: #0 bytes(136..144),
+            },
+            Ident {
+                ident: "p",
+                span: #0 bytes(145..146),
+            },
+        ],
+        span: #0 bytes(121..147),
+    },
+    Ident {
+        ident: "WHERE",
+        span: #0 bytes(148..153),
+    },
+    Ident {
+        ident: "u",
+        span: #0 bytes(154..155),
+    },
+    Punct {
+        ch: '.',
+        spacing: Alone,
+        span: #0 bytes(155..156),
+    },
+    Ident {
+        ident: "id",
+        span: #0 bytes(156..158),
+    },
+    Punct {
+        ch: '=',
+        spacing: Alone,
+        span: #0 bytes(159..160),
+    },
+    Ident {
+        ident: "p",
+        span: #0 bytes(161..162),
+    },
+    Punct {
+        ch: '.',
+        spacing: Alone,
+        span: #0 bytes(162..163),
+    },
+    Ident {
+        ident: "id",
+        span: #0 bytes(163..165),
+    },
+]
+Hello world!

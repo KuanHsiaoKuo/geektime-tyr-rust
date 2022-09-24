@@ -1,43 +1,44 @@
 # IV 宏编程
 
 <!--ts-->
+
 * [IV 宏编程](#iv-宏编程)
-   * [资料](#资料)
-   * [宏的分类](#宏的分类)
-      * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
-      * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
-         * [函数宏](#函数宏)
-         * [属性宏](#属性宏)
-         * [派生宏](#派生宏)
-   * [声明宏](#声明宏)
-      * [Rust常用声明宏](#rust常用声明宏)
-         * [println!](#println)
-         * [writeln!](#writeln)
-         * [eprintln!](#eprintln)
-      * [示例](#示例)
-         * [macro_rules!定义](#macro_rules定义)
-         * [使用](#使用)
-      * [声明宏用到的参数类型](#声明宏用到的参数类型)
-   * [过程宏](#过程宏)
-      * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
-      * [使用cargo中定义的声明宏](#使用cargo中定义的声明宏)
-      * [使用](#使用-1)
-   * [函数宏](#函数宏-1)
-   * [属性宏](#属性宏-1)
-   * [派生宏: /#[proc_macro_devive(DeriveMacroName)]](#派生宏-proc_macro_devivederivemacroname)
-      * [常用派生宏](#常用派生宏)
-         * [#[derive(Debug)]](#derivedebug)
-      * [原始实现builder模式](#原始实现builder模式)
-         * [想到达到链式调用的效果](#想到达到链式调用的效果)
-         * [可以这样定义](#可以这样定义)
-         * [但是有点繁琐，可以使用派生宏派生出这些代码](#但是有点繁琐可以使用派生宏派生出这些代码)
-      * [派生宏思路](#派生宏思路)
-         * [要生成的代码模版](#要生成的代码模版)
-         * [构建对应数据结构](#构建对应数据结构)
-         * [src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息](#srclibrs-使用派生宏从tokenstream抽取出想要的信息)
-         * [examples/command.rs: 使用这个派生宏抽取](#examplescommandrs-使用这个派生宏抽取)
-         * [运行，查看获取的TokenStream](#运行查看获取的tokenstream)
-         * [src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息](#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息)
+    * [资料](#资料)
+    * [宏的分类](#宏的分类)
+        * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
+        * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+            * [函数宏](#函数宏)
+            * [属性宏](#属性宏)
+            * [派生宏](#派生宏)
+    * [声明宏](#声明宏)
+        * [Rust常用声明宏](#rust常用声明宏)
+            * [println!](#println)
+            * [writeln!](#writeln)
+            * [eprintln!](#eprintln)
+        * [示例](#示例)
+            * [macro_rules!定义](#macro_rules定义)
+            * [使用](#使用)
+        * [声明宏用到的参数类型](#声明宏用到的参数类型)
+    * [过程宏](#过程宏)
+        * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
+        * [使用cargo中定义的声明宏](#使用cargo中定义的声明宏)
+        * [使用](#使用-1)
+    * [函数宏](#函数宏-1)
+    * [属性宏](#属性宏-1)
+    * [派生宏: /#[proc_macro_devive(DeriveMacroName)]](#派生宏-proc_macro_devivederivemacroname)
+        * [常用派生宏](#常用派生宏)
+            * [#[derive(Debug)]](#derivedebug)
+        * [原始实现builder模式](#原始实现builder模式)
+            * [想到达到链式调用的效果](#想到达到链式调用的效果)
+            * [可以这样定义](#可以这样定义)
+            * [但是有点繁琐，可以使用派生宏派生出这些代码](#但是有点繁琐可以使用派生宏派生出这些代码)
+        * [派生宏思路](#派生宏思路)
+            * [要生成的代码模版](#要生成的代码模版)
+            * [构建对应数据结构](#构建对应数据结构)
+            * [src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息](#srclibrs-使用派生宏从tokenstream抽取出想要的信息)
+            * [examples/command.rs: 使用这个派生宏抽取](#examplescommandrs-使用这个派生宏抽取)
+            * [运行，查看获取的TokenStream](#运行查看获取的tokenstream)
+            * [src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息](#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri Sep 23 13:12:15 UTC 2022 -->
@@ -135,6 +136,12 @@ cargo run --example raw_command > examples/raw_command_output.txt
 
 ### 示例
 
+#### 声明宏示意图
+
+```plantuml
+{{#include ../materials/plantumls/declarative_macros.puml}}
+```
+
 #### macro_rules!定义
 
 ```rust, editable
@@ -171,9 +178,15 @@ cargo run --example raw_command > examples/raw_command_output.txt
 11. vis，可能为空的一个 Visibility 修饰符。比如 pub、pub(crate)
 ~~~
 
-## 过程宏
+## 过程宏手工定义图
 
 > 过程宏要比声明宏要复杂很多，不过无论是哪一种过程宏，本质都是一样的，都涉及要把 `输入的 TokenStream` 处理成`输出的 TokenStream`。
+
+~~~admonish info title="函数宏与派生宏定义使用区别"
+```plantuml
+{{#include ../materials/plantumls/proc_macros.puml}}
+```
+~~~
 
 ### Cargo.toml添加proc-macro声明
 
@@ -183,7 +196,11 @@ cargo run --example raw_command > examples/raw_command_output.txt
 {{#include ../geektime_rust_codes/47_48_macros/Cargo.toml:8:9}}
 ```
 
-### 使用cargo中定义的声明宏
+## 过程函数宏: #[proc_macro]
+
+> 和macro_rules! 功能类似，但更为强大。
+
+### src/lib.rs:定义过程函数宏
 
 > 可以看到，都是处理TokenStream
 
@@ -199,10 +216,10 @@ cargo run --example raw_command > examples/raw_command_output.txt
 是因为 TokenStream 实现了  FromStr trait。
 ~~~
 
-### 使用
+### examples/query.rs:使用
 
 ```rust, editable
-{{#include ../geektime_rust_codes/47_48_macros/examples/query.rs:9:15}}
+{{#include ../geektime_rust_codes/47_48_macros/examples/query.rs}}
 ```
 
 1. .parse().unwrap(): 字符串自动转为TokenStream类型
@@ -242,11 +259,13 @@ fn main() {
 ```
 ~~~
 
-## 函数宏
+## 过程属性宏: #[proc_macro_attribute]
 
-## 属性宏
+> 用于属性宏， 用在结构体、字段、函数等地方，为其指定属性等功能, 类似python的计算属性
 
-## 派生宏: /#[proc_macro_devive(DeriveMacroName)]
+## 过程派生宏: /#[proc_macro_devive(DeriveMacroName)]
+
+> 用于结构体（struct）、枚举（enum）、联合（union）类型，可为其实现函数或特征（Trait）
 
 ### 常用派生宏
 
@@ -293,7 +312,7 @@ fn main() {
 > 对于 derive macro，要使用 proce_macro_derive 这个宏。我们把这个 derive macro 命名为 Builder。
 
 ```rust, editable
-{{#include ../geektime_rust_codes/47_48_macros/src/lib.rs:22:26}}
+{{#include ../geektime_rust_codes/47_48_macros/src/lib.rs:25:29}}
 ```
 
 #### examples/command.rs: 使用这个派生宏抽取
@@ -326,7 +345,19 @@ cargo run --example raw_command > examples/raw_command_output.txt
 > 如果类型是 Option<T>，那么把 T 拿出来，把 optional 设置为 true。
 
 ```rust, editable
-{{#include ../geektime_rust_codes/47_48_macros/src/raw_builder.rs}}
+{{#include ../geektime_rust_codes/47_48_macros/src/raw_builder.rs:1:21}}
+```
+
+#### templates/builder.j2: 上面askama用到的jinja2模版
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/templates/builder.j2}}
+```
+
+#### src/raw_builder.rs: 实现对应抽取方法
+
+```rust, editable
+{{#include ../geektime_rust_codes/47_48_macros/src/raw_builder.rs:23:}}
 ```
 
 ~~~admonish tip

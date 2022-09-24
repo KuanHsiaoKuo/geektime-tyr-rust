@@ -1,0 +1,160 @@
+TokenStream [
+    Punct {
+        ch: '#',
+        spacing: Alone,
+        span: #0 bytes(25..26),
+    },
+    Group {
+        delimiter: Bracket,
+        stream: TokenStream [
+            Ident {
+                ident: "allow",
+                span: #0 bytes(27..32),
+            },
+            Group {
+                delimiter: Parenthesis,
+                stream: TokenStream [
+                    Ident {
+                        ident: "dead_code",
+                        span: #0 bytes(33..42),
+                    },
+                ],
+                span: #0 bytes(32..43),
+            },
+        ],
+        span: #0 bytes(26..44),
+    },
+    Ident {
+        ident: "pub",
+        span: #0 bytes(74..77),
+    },
+    Ident {
+        ident: "struct",
+        span: #0 bytes(78..84),
+    },
+    Ident {
+        ident: "Command",
+        span: #0 bytes(85..92),
+    },
+    Group {
+        delimiter: Brace,
+        stream: TokenStream [
+            Ident {
+                ident: "executable",
+                span: #0 bytes(99..109),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(109..110),
+            },
+            Ident {
+                ident: "String",
+                span: #0 bytes(111..117),
+            },
+            Punct {
+                ch: ',',
+                spacing: Alone,
+                span: #0 bytes(117..118),
+            },
+            Ident {
+                ident: "args",
+                span: #0 bytes(123..127),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(127..128),
+            },
+            Ident {
+                ident: "Vec",
+                span: #0 bytes(129..132),
+            },
+            Punct {
+                ch: '<',
+                spacing: Alone,
+                span: #0 bytes(132..133),
+            },
+            Ident {
+                ident: "String",
+                span: #0 bytes(133..139),
+            },
+            Punct {
+                ch: '>',
+                spacing: Joint,
+                span: #0 bytes(139..140),
+            },
+            Punct {
+                ch: ',',
+                spacing: Alone,
+                span: #0 bytes(140..141),
+            },
+            Ident {
+                ident: "env",
+                span: #0 bytes(146..149),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(149..150),
+            },
+            Ident {
+                ident: "Vec",
+                span: #0 bytes(151..154),
+            },
+            Punct {
+                ch: '<',
+                spacing: Alone,
+                span: #0 bytes(154..155),
+            },
+            Ident {
+                ident: "String",
+                span: #0 bytes(155..161),
+            },
+            Punct {
+                ch: '>',
+                spacing: Joint,
+                span: #0 bytes(161..162),
+            },
+            Punct {
+                ch: ',',
+                spacing: Alone,
+                span: #0 bytes(162..163),
+            },
+            Ident {
+                ident: "current_dir",
+                span: #0 bytes(168..179),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(179..180),
+            },
+            Ident {
+                ident: "Option",
+                span: #0 bytes(181..187),
+            },
+            Punct {
+                ch: '<',
+                spacing: Alone,
+                span: #0 bytes(187..188),
+            },
+            Ident {
+                ident: "String",
+                span: #0 bytes(188..194),
+            },
+            Punct {
+                ch: '>',
+                spacing: Joint,
+                span: #0 bytes(194..195),
+            },
+            Punct {
+                ch: ',',
+                spacing: Alone,
+                span: #0 bytes(195..196),
+            },
+        ],
+        span: #0 bytes(93..198),
+    },
+]
+Command { executable: "cargo", args: ["build", "--release"], env: [], current_dir: Some("..") }

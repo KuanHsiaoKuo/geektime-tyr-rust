@@ -11,3 +11,4 @@
 *.out
 *.idea
 book
+*/target
