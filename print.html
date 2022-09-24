@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 13:12:15 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 03:25:10 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -387,7 +387,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 13:12:16 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 03:25:11 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -878,7 +878,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 13:12:16 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 03:25:11 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1332,7 +1332,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 13:12:16 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 03:25:11 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/22_mid_rgrep/Cargo.toml}}
@@ -2233,7 +2233,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 13:12:16 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 03:25:11 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -2945,6 +2945,7 @@ fn main() {
 </li>
 <li><a href="4_macros.html#%E7%A4%BA%E4%BE%8B">示例</a>
 <ul>
+<li><a href="4_macros.html#%E5%A3%B0%E6%98%8E%E5%AE%8F%E7%A4%BA%E6%84%8F%E5%9B%BE">声明宏示意图</a></li>
 <li><a href="4_macros.html#macro_rules%E5%AE%9A%E4%B9%89">macro_rules!定义</a></li>
 <li><a href="4_macros.html#%E4%BD%BF%E7%94%A8">使用</a></li>
 </ul>
@@ -2952,16 +2953,19 @@ fn main() {
 <li><a href="4_macros.html#%E5%A3%B0%E6%98%8E%E5%AE%8F%E7%94%A8%E5%88%B0%E7%9A%84%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B">声明宏用到的参数类型</a></li>
 </ul>
 </li>
-<li><a href="4_macros.html#%E8%BF%87%E7%A8%8B%E5%AE%8F">过程宏</a>
+<li><a href="4_macros.html#%E8%BF%87%E7%A8%8B%E5%AE%8F%E6%89%8B%E5%B7%A5%E5%AE%9A%E4%B9%89%E5%9B%BE">过程宏手工定义图</a>
 <ul>
 <li><a href="4_macros.html#cargotoml%E6%B7%BB%E5%8A%A0proc-macro%E5%A3%B0%E6%98%8E">Cargo.toml添加proc-macro声明</a></li>
-<li><a href="4_macros.html#%E4%BD%BF%E7%94%A8cargo%E4%B8%AD%E5%AE%9A%E4%B9%89%E7%9A%84%E5%A3%B0%E6%98%8E%E5%AE%8F">使用cargo中定义的声明宏</a></li>
-<li><a href="4_macros.html#%E4%BD%BF%E7%94%A8-1">使用</a></li>
 </ul>
 </li>
-<li><a href="4_macros.html#%E5%87%BD%E6%95%B0%E5%AE%8F-1">函数宏</a></li>
-<li><a href="4_macros.html#%E5%B1%9E%E6%80%A7%E5%AE%8F-1">属性宏</a></li>
-<li>[派生宏: /#[proc_macro_devive(DeriveMacroName)]](#派生宏-proc_macro_devivederivemacroname)
+<li>[过程函数宏: #[proc_macro]](#过程函数宏-proc_macro)
+<ul>
+<li><a href="4_macros.html#srclibrs%E5%AE%9A%E4%B9%89%E8%BF%87%E7%A8%8B%E5%87%BD%E6%95%B0%E5%AE%8F">src/lib.rs:定义过程函数宏</a></li>
+<li><a href="4_macros.html#examplesqueryrs%E4%BD%BF%E7%94%A8">examples/query.rs:使用</a></li>
+</ul>
+</li>
+<li>[过程属性宏: #[proc_macro_attribute]](#过程属性宏-proc_macro_attribute)</li>
+<li>[过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
 <ul>
 <li><a href="4_macros.html#%E5%B8%B8%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F">常用派生宏</a>
 <ul>
@@ -2983,6 +2987,8 @@ fn main() {
 <li><a href="4_macros.html#examplescommandrs-%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%8A%BD%E5%8F%96">examples/command.rs: 使用这个派生宏抽取</a></li>
 <li><a href="4_macros.html#%E8%BF%90%E8%A1%8C%E6%9F%A5%E7%9C%8B%E8%8E%B7%E5%8F%96%E7%9A%84tokenstream">运行，查看获取的TokenStream</a></li>
 <li><a href="4_macros.html#srcraw_builderrs-%E4%BD%BF%E7%94%A8anyhow%E4%B8%8Easkama%E6%8A%BD%E5%8F%96tokenstream%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF">src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息</a></li>
+<li><a href="4_macros.html#templatesbuilderj2-%E4%B8%8A%E9%9D%A2askama%E7%94%A8%E5%88%B0%E7%9A%84jinja2%E6%A8%A1%E7%89%88">templates/builder.j2: 上面askama用到的jinja2模版</a></li>
+<li><a href="4_macros.html#srcraw_builderrs-%E5%AE%9E%E7%8E%B0%E5%AF%B9%E5%BA%94%E6%8A%BD%E5%8F%96%E6%96%B9%E6%B3%95">src/raw_builder.rs: 实现对应抽取方法</a></li>
 </ul>
 </li>
 </ul>
@@ -2991,7 +2997,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Sep 23 13:12:15 UTC 2022 -->
+<!-- Added by: runner, at: Sat Sep 24 03:25:10 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -3087,6 +3093,8 @@ macro_rules! println {
 <li><a href="https://doc.rust-lang.org/std/macro.eprintln.html">eprintln in std - Rust</a></li>
 </ul>
 <h3 id="示例"><a class="header" href="#示例">示例</a></h3>
+<h4 id="声明宏示意图"><a class="header" href="#声明宏示意图">声明宏示意图</a></h4>
+<figure><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="633px" preserveAspectRatio="none" style="width:474px;height:633px;background:#FFFFFF;" version="1.1" viewBox="0 0 474 633" width="474px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="26.2969" id="_title" style="stroke:none;stroke-width:1.0;" width="136" x="167.5" y="15"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="126" x="172.5" y="32.9951">声明宏定义使用流程</text><ellipse cx="51" cy="57.2969" fill="#222222" rx="10" ry="10" style="stroke:#222222;stroke-width:1.0;"/><path d="M101,77.2969 L101,389.9531 L462,389.9531 L462,87.2969 L452,77.2969 L101,77.2969 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M452,77.2969 L452,87.2969 L462,87.2969 L452,77.2969 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="12" x="107" y="94.3638">1.</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="99" x="123" y="94.3638">[macro_export]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="149" x="107" y="109.4966">macro_rules! my_vec {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="299" x="123" y="124.6294">// 没带任何参数的 my_vec，我们创建一个空的 vec</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="324" x="123" y="139.7622">// 注意，由于宏要在调用的地方展开，我们无法预测调用</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="316" x="123" y="154.895">// 者的环境是否已经 做了相关的 use，所以我们使用的</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="194" x="123" y="170.0278">// 代码最好带着完整的命名空间。</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="48" x="123" y="185.1606">() =&gt; {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="125" x="139" y="200.2935">std::vec::Vec::new()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="12" x="123" y="215.4263">};</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="162" x="123" y="230.5591">// 处理 my_vec![1, 2, 3, 4]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="133" x="123" y="245.6919">($($el:expr),*) =&gt; ({</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="205" x="139" y="260.8247">let mut v = std::vec::Vec::new();</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="100" x="139" y="275.9575">$(v.push($el);)*</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="139" y="291.0903">v</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="17" x="123" y="306.2231">});</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="138" x="123" y="321.356">// 处理 my_vec![0; 10]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="155" x="123" y="336.4888">($el:expr; $n:expr) =&gt; {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="180" x="139" y="351.6216">std::vec::from_elem($el, $n)</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="123" y="366.7544">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="107" y="381.8872">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="11" y="216.6406"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="21" y="237.7793">定义过程宏</text><path d="M101,399.9531 L101,621.8125 L318,621.8125 L318,409.9531 L308,399.9531 L101,399.9531 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M308,399.9531 L308,409.9531 L318,409.9531 L308,399.9531 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="107" y="417.02">fn main() {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="144" x="123" y="432.1528">let mut v = my_vec![];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="64" x="123" y="447.2856">v.push(1);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="159" x="123" y="462.4185">// 调用时可以使用 [], (), {}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="177" x="123" y="477.5513">let _v = my_vec!(1, 2, 3, 4);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="177" x="123" y="492.6841">let _v = my_vec![1, 2, 3, 4];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="180" x="123" y="507.8169">let v = my_vec! {1, 2, 3, 4};</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="522.9497">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="107" y="538.0825"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="553.2153">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="123" y="568.3481">//</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="146" x="123" y="583.481">let v = my_vec![1; 10];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="598.6138">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="107" y="613.7466">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="11" y="493.8984"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="21" y="515.0371">使用声明宏</text><line style="stroke:#181818;stroke-width:1.0;" x1="51" x2="51" y1="67.2969" y2="216.6406"/><polygon fill="#181818" points="47,206.6406,51,216.6406,55,206.6406,51,210.6406" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="51" x2="51" y1="250.6094" y2="493.8984"/><polygon fill="#181818" points="47,483.8984,51,493.8984,55,483.8984,51,487.8984" style="stroke:#181818;stroke-width:1.0;"/></g></svg></figure>
 <h4 id="macro_rules定义"><a class="header" href="#macro_rules定义">macro_rules!定义</a></h4>
 <pre><pre class="playground"><code class="language-rust  editable">#[macro_export]
 macro_rules! my_vec {
@@ -3162,10 +3170,19 @@ macro_rules! my_vec {
 </ol>
 </div>
 </div>
-<h2 id="过程宏"><a class="header" href="#过程宏">过程宏</a></h2>
+<h2 id="过程宏手工定义图"><a class="header" href="#过程宏手工定义图">过程宏手工定义图</a></h2>
 <blockquote>
 <p>过程宏要比声明宏要复杂很多，不过无论是哪一种过程宏，本质都是一样的，都涉及要把 <code>输入的 TokenStream</code> 处理成<code>输出的 TokenStream</code>。</p>
 </blockquote>
+<div id="admonition-函数宏与派生宏定义使用区别" class="admonition info">
+<div class="admonition-title">
+<p>函数宏与派生宏定义使用区别</p>
+<p><a class="admonition-anchor-link" href="4_macros.html#admonition-函数宏与派生宏定义使用区别"></a></p>
+</div>
+<div>
+<figure><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="1938px" preserveAspectRatio="none" style="width:3264px;height:1938px;background:#FFFFFF;" version="1.1" viewBox="0 0 3264 1938" width="3264px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="26.2969" id="_title" style="stroke:none;stroke-width:1.0;" width="136" x="1562.5" y="15"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="126" x="1567.5" y="32.9951">过程宏定义使用流程</text><ellipse cx="214" cy="85.9951" fill="#222222" rx="10" ry="10" style="stroke:#222222;stroke-width:1.0;"/><path d="M22,112.8467 L22,153.1123 L162,153.1123 L162,122.8467 L152,112.8467 L22,112.8467 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M152,112.8467 L152,122.8467 L162,122.8467 L152,112.8467 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="24" x="28" y="129.9136">[lib]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="119" x="28" y="145.0464">proc-macro = true</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="174" y="115.9951"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="184" y="137.1338">打开过程宏</text><ellipse cx="214" cy="536.0732" fill="#222222" rx="10" ry="10" style="stroke:#222222;stroke-width:1.0;"/><path d="M20,562.9248 L20,603.1904 L160,603.1904 L160,572.9248 L150,562.9248 L20,562.9248 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M150,562.9248 L150,572.9248 L160,572.9248 L150,562.9248 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="24" x="26" y="579.9917">[lib]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="119" x="26" y="595.1245">proc-macro = true</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="84" x="172" y="566.0732"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="186" y="587.2119">打开过程宏</text><line style="stroke:#000000;stroke-width:1.5;" x1="15" x2="15" y1="50.042" y2="1926.0889"/><path d="M378,163.1123 L378,294.1748 L737,294.1748 L737,173.1123 L727,163.1123 L378,163.1123 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M727,163.1123 L727,173.1123 L737,173.1123 L727,163.1123 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="12" x="384" y="180.1792">1.</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="86" x="400" y="180.1792">[proc_macro]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="338" x="384" y="195.312">pub fn query(input: TokenStream) -&gt; TokenStream {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="220" x="400" y="210.4448">// 只有修改代码之后再次编译才会执行</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="147" x="400" y="225.5776">println!("{:#?}", input);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="245" x="400" y="240.7104">"fn hello() { println!(\"Hello world!\"); }"</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="50" x="416" y="255.8433">.parse()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="60" x="416" y="270.9761">.unwrap()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="384" y="286.1089">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="278" y="211.6592"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="288" y="232.7979">定义过程宏</text><path d="M390,613.1904 L390,698.8545 L802,698.8545 L802,623.1904 L792,613.1904 L390,613.1904 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M792,613.1904 L792,623.1904 L802,623.1904 L792,613.1904 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="201" x="396" y="630.2573">/#[proc_macro_derive(Builder)]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="391" x="396" y="645.3901">pub fn derive_builder(input: TokenStream) -&gt; TokenStream {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="341" x="412" y="660.5229">let input = parse_macro_input!(input as DeriveInput);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="319" x="412" y="675.6558">builder::BuilderContext::from(input).render().into()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="396" y="690.7886">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="104" x="266" y="639.0381"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="84" x="276" y="660.1768">定义过程派生宏</text><line style="stroke:#000000;stroke-width:1.5;" x1="260" x2="260" y1="50.042" y2="1926.0889"/><path d="M812,304.1748 L812,420.1045 L1371,420.1045 L1371,314.1748 L1361,304.1748 L812,304.1748 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M1361,304.1748 L1361,314.1748 L1371,314.1748 L1361,304.1748 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="123" x="818" y="321.2417">use macros::query;</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="818" y="336.3745"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="818" y="351.5073">fn main() {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="317" x="834" y="366.6401">// query!(SELECT * FROM users WHERE age &gt; 10);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="522" x="834" y="381.7729">query!(SELECT * FROM users u JOIN (SELECT * from profiles p) WHERE u.id = p.id);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="40" x="834" y="396.9058">hello()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="818" y="412.0386">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="1391" y="345.1553"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="1401" y="366.2939">使用过程宏</text><path d="M962,708.8545 L962,1172.8389 L1359,1172.8389 L1359,718.8545 L1349,708.8545 L962,708.8545 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M1349,708.8545 L1349,718.8545 L1359,718.8545 L1349,708.8545 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="131" x="968" y="725.9214">use macros::Builder;</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="968" y="741.0542"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="136" x="968" y="756.187">/#[allow(dead_code)]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="168" x="968" y="771.3198">/#[derive(Debug, Builder)]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="148" x="968" y="786.4526">pub struct Command {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="120" x="984" y="801.5854">executable: String,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="124" x="984" y="816.7183">args: Vec&lt;String&gt;,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="119" x="984" y="831.8511">env: Vec&lt;String&gt;,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="183" x="984" y="846.9839">current_dir: Option&lt;String&gt;,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="968" y="862.1167">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="968" y="877.2495"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="968" y="892.3823">fn main() {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="232" x="984" y="907.5151">let command = Command::builder()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="205" x="1000" y="922.6479">.executable("cargo".to_owned())</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="344" x="1000" y="937.7808">.args(vec!["build".to_owned(), "--release".to_owned()])</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="74" x="1000" y="952.9136">.env(vec![])</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="44" x="1000" y="968.0464">.build()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="64" x="1000" y="983.1792">.unwrap();</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="260" x="984" y="998.312">assert!(command.current_dir.is_none());</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="968" y="1013.4448"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="232" x="984" y="1028.5776">let command = Command::builder()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="205" x="1000" y="1043.7104">.executable("cargo".to_owned())</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="344" x="1000" y="1058.8433">.args(vec!["build".to_owned(), "--release".to_owned()])</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="74" x="1000" y="1073.9761">.env(vec![])</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="176" x="1000" y="1089.1089">.current_dir("..".to_owned())</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="44" x="1000" y="1104.2417">.build()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="64" x="1000" y="1119.3745">.unwrap();</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="264" x="984" y="1134.5073">assert!(command.current_dir.is_some());</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="169" x="984" y="1149.6401">println!("{:?}", command);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="968" y="1164.7729">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="104" x="1379" y="923.8623"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="84" x="1389" y="945.001">使用派生宏抽取</text><line style="stroke:#000000;stroke-width:1.5;" x1="807" x2="807" y1="50.042" y2="1926.0889"/><path d="M1608,444.5225 L1608,469.6553 L1990,469.6553 L1990,454.5225 L1980,444.5225 L1608,444.5225 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M1980,444.5225 L1980,454.5225 L1990,454.5225 L1980,444.5225 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="361" x="1614" y="461.5894">cargo run --example query &gt; examples/query_output.txt</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="163" x="2000" y="440.1045"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="143" x="2010" y="461.2432">查看打印的TokenStream</text><ellipse cx="2081.5" cy="505.0732" fill="none" rx="11" ry="11" style="stroke:#222222;stroke-width:1.0;"/><ellipse cx="2081.5" cy="505.0732" fill="#222222" rx="6" ry="6" style="stroke:#111111;stroke-width:1.0;"/><path d="M1492,1197.2568 L1492,1222.3896 L1990,1222.3896 L1990,1207.2568 L1980,1197.2568 L1492,1197.2568 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M1980,1197.2568 L1980,1207.2568 L1990,1207.2568 L1980,1197.2568 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="477" x="1498" y="1214.3237">cargo run --example raw_command &gt; examples/raw_command_output.txt</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="163" x="2000" y="1192.8389"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="143" x="2010" y="1213.9775">查看打印的TokenStream</text><line style="stroke:#000000;stroke-width:1.5;" x1="1487" x2="1487" y1="50.042" y2="1926.0889"/><path d="M2172,1236.8076 L2172,1564.5967 L2674,1564.5967 L2674,1246.8076 L2664,1236.8076 L2172,1236.8076 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M2664,1236.8076 L2664,1246.8076 L2674,1246.8076 L2664,1236.8076 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="126" x="2178" y="1253.8745">use anyhow::Result;</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="150" x="2178" y="1269.0073">use askama::Template;</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="331" x="2178" y="1284.1401">use proc_macro::{Ident, TokenStream, TokenTree};</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="200" x="2178" y="1299.2729">use std::collections::VecDeque;</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="2178" y="1314.4058"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="481" x="2178" y="1329.5386">/// 处理 jinja 模板的数据结构，在模板中我们使用了 name / builder_name / fields</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="134" x="2178" y="1344.6714">/#[derive(Template)]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="324" x="2178" y="1359.8042">/#[template(path = "builder.j2", escape = "none")]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="175" x="2178" y="1374.937">pub struct BuilderContext {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="87" x="2194" y="1390.0698">name: String,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="137" x="2194" y="1405.2026">builder_name: String,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="106" x="2194" y="1420.3354">fields: Vec&lt;Fd&gt;,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2178" y="1435.4683">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="2178" y="1450.6011"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="156" x="2178" y="1465.7339">/// 描述 struct 的每个 field</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="170" x="2178" y="1480.8667">/#[derive(Debug, Default)]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="68" x="2178" y="1495.9995">struct Fd {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="87" x="2194" y="1511.1323">name: String,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="62" x="2194" y="1526.2651">ty: String,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="90" x="2194" y="1541.3979">optional: bool,</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2178" y="1556.5308">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="307" x="2694" y="1383.7178"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="287" x="2704" y="1404.8564">使用anyhow与askama抽取TokenStream中的信息</text><path d="M2323.5,1628.5654 L2323.5,1926.0889 L2769.5,1926.0889 L2769.5,1638.5654 L2759.5,1628.5654 L2323.5,1628.5654 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M2759.5,1628.5654 L2759.5,1638.5654 L2769.5,1638.5654 L2759.5,1628.5654 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="58" x="2329.5" y="1645.6323">impl Fd {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="391" x="2345.5" y="1660.7651">/// name 和 field 都是通过冒号 Punct 切分出来的 TokenTree 切片</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="386" x="2345.5" y="1675.8979">pub fn new(name: &amp;[TokenTree], ty: &amp;[TokenTree]) -&gt; Self {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2345.5" y="1691.0308">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2329.5" y="1706.1636">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="137" x="2329.5" y="1721.2964">impl BuilderContext {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="325" x="2345.5" y="1736.4292">/// 从 TokenStream 中提取信息，构建 BuilderContext</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="237" x="2345.5" y="1751.562">fn new(input: TokenStream) -&gt; Self {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2345.5" y="1766.6948">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="159" x="2345.5" y="1781.8276">/// 把模板渲染成字符串代码</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="357" x="2345.5" y="1796.9604">pub fn render(input: TokenStream) -&gt; Result&lt;String&gt; {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2345.5" y="1812.0933">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2329.5" y="1827.2261">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="425" x="2329.5" y="1842.3589">// 把 TokenStream 分出 struct 的名字，和包含 fields 的 TokenStream</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="350" x="2329.5" y="1857.4917">fn split(input: TokenStream) -&gt; (Ident, TokenStream) {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2329.5" y="1872.6245">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="313" x="2329.5" y="1887.7573">/// 从包含 fields 的 TokenStream 中切出来一个个 Fd</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="354" x="2329.5" y="1902.8901">fn get_struct_fields(input: TokenStream) -&gt; Vec&lt;Fd&gt; {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="2329.5" y="1918.0229">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="116" x="2789.5" y="1760.3428"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="96" x="2799.5" y="1781.4814">实现对应抽取方法</text><line style="stroke:#000000;stroke-width:1.5;" x1="2167" x2="2167" y1="50.042" y2="1926.0889"/><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="229" x="3011" y="1584.5967"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="209" x="3021" y="1605.7354">编写与tokenstream对应的jinja2模版</text><line style="stroke:#000000;stroke-width:1.5;" x1="3005" x2="3005" y1="50.042" y2="1926.0889"/><line style="stroke:#000000;stroke-width:1.5;" x1="3244" x2="3244" y1="50.042" y2="1926.0889"/><line style="stroke:#181818;stroke-width:1.0;" x1="214" x2="214" y1="95.9951" y2="115.9951"/><polygon fill="#181818" points="210,105.9951,214,115.9951,218,105.9951,214,109.9951" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="214" x2="214" y1="546.0732" y2="566.0732"/><polygon fill="#181818" points="210,556.0732,214,566.0732,218,556.0732,214,560.0732" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="2081.5" x2="2081.5" y1="474.0732" y2="494.0732"/><polygon fill="#181818" points="2077.5,484.0732,2081.5,494.0732,2085.5,484.0732,2081.5,488.0732" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="214" x2="214" y1="149.9639" y2="168.3115"/><line style="stroke:#181818;stroke-width:1.0;" x1="214" x2="318" y1="168.3115" y2="168.3115"/><line style="stroke:#181818;stroke-width:1.0;" x1="318" x2="318" y1="168.3115" y2="211.6592"/><polygon fill="#181818" points="314,201.6592,318,211.6592,322,201.6592,318,205.6592" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="318" x2="318" y1="245.6279" y2="299.1748"/><line style="stroke:#181818;stroke-width:1.0;" x1="318" x2="1431" y1="299.1748" y2="299.1748"/><line style="stroke:#181818;stroke-width:1.0;" x1="1431" x2="1431" y1="299.1748" y2="345.1553"/><polygon fill="#181818" points="1427,335.1553,1431,345.1553,1435,335.1553,1431,339.1553" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="1431" x2="1431" y1="379.124" y2="417.1143"/><line style="stroke:#181818;stroke-width:1.0;" x1="1431" x2="2081.5" y1="417.1143" y2="417.1143"/><line style="stroke:#181818;stroke-width:1.0;" x1="2081.5" x2="2081.5" y1="417.1143" y2="440.1045"/><polygon fill="#181818" points="2077.5,430.1045,2081.5,440.1045,2085.5,430.1045,2081.5,434.1045" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="214" x2="214" y1="600.042" y2="608.1904"/><line style="stroke:#181818;stroke-width:1.0;" x1="214" x2="318" y1="608.1904" y2="608.1904"/><line style="stroke:#181818;stroke-width:1.0;" x1="318" x2="318" y1="608.1904" y2="639.0381"/><polygon fill="#181818" points="314,629.0381,318,639.0381,322,629.0381,318,633.0381" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="318" x2="318" y1="673.0068" y2="785.9346"/><line style="stroke:#181818;stroke-width:1.0;" x1="318" x2="1431" y1="785.9346" y2="785.9346"/><line style="stroke:#181818;stroke-width:1.0;" x1="1431" x2="1431" y1="785.9346" y2="923.8623"/><polygon fill="#181818" points="1427,913.8623,1431,923.8623,1435,913.8623,1431,917.8623" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="1431" x2="1431" y1="957.8311" y2="1082.835"/><line style="stroke:#181818;stroke-width:1.0;" x1="1431" x2="2081.5" y1="1082.835" y2="1082.835"/><line style="stroke:#181818;stroke-width:1.0;" x1="2081.5" x2="2081.5" y1="1082.835" y2="1192.8389"/><polygon fill="#181818" points="2077.5,1182.8389,2081.5,1192.8389,2085.5,1182.8389,2081.5,1186.8389" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="2081.5" x2="2081.5" y1="1226.8076" y2="1292.7627"/><line style="stroke:#181818;stroke-width:1.0;" x1="2081.5" x2="2847.5" y1="1292.7627" y2="1292.7627"/><line style="stroke:#181818;stroke-width:1.0;" x1="2847.5" x2="2847.5" y1="1292.7627" y2="1383.7178"/><polygon fill="#181818" points="2843.5,1373.7178,2847.5,1383.7178,2851.5,1373.7178,2847.5,1377.7178" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="2847.5" x2="2847.5" y1="1417.6865" y2="1508.6416"/><line style="stroke:#181818;stroke-width:1.0;" x1="2847.5" x2="3125.5" y1="1508.6416" y2="1508.6416"/><line style="stroke:#181818;stroke-width:1.0;" x1="3125.5" x2="3125.5" y1="1508.6416" y2="1584.5967"/><polygon fill="#181818" points="3121.5,1574.5967,3125.5,1584.5967,3129.5,1574.5967,3125.5,1578.5967" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="3125.5" x2="3125.5" y1="1618.5654" y2="1676.9541"/><line style="stroke:#181818;stroke-width:1.0;" x1="3125.5" x2="2847.5" y1="1676.9541" y2="1676.9541"/><line style="stroke:#181818;stroke-width:1.0;" x1="2847.5" x2="2847.5" y1="1676.9541" y2="1760.3428"/><polygon fill="#181818" points="2843.5,1750.3428,2847.5,1760.3428,2851.5,1750.3428,2847.5,1754.3428" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacing" textLength="99" x="88" y="66.75">Cargo.toml</text><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacing" textLength="74" x="496.5" y="66.75">src/lib.rs</text><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacing" textLength="162" x="1066" y="66.75">examples/调用代码</text><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacing" textLength="79" x="1787.5" y="66.75">Terminal</text><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacing" textLength="158" x="2507" y="66.75">src/raw_builder.rs</text><text fill="#000000" font-family="sans-serif" font-size="18" lengthAdjust="spacing" textLength="177" x="3036" y="66.75">templates/builder.j2</text></g></svg></figure>
+</div>
+</div>
 <h3 id="cargotoml添加proc-macro声明"><a class="header" href="#cargotoml添加proc-macro声明">Cargo.toml添加proc-macro声明</a></h3>
 <blockquote>
 <p>这样，编译器才允许你使用 #[proc_macro] 相关的宏。</p>
@@ -3173,7 +3190,11 @@ macro_rules! my_vec {
 <pre><code class="language-toml  editable">[lib]
 proc-macro = true
 </code></pre>
-<h3 id="使用cargo中定义的声明宏"><a class="header" href="#使用cargo中定义的声明宏">使用cargo中定义的声明宏</a></h3>
+<h2 id="过程函数宏-proc_macro"><a class="header" href="#过程函数宏-proc_macro">过程函数宏: #[proc_macro]</a></h2>
+<blockquote>
+<p>和macro_rules! 功能类似，但更为强大。</p>
+</blockquote>
+<h3 id="srclibrs定义过程函数宏"><a class="header" href="#srclibrs定义过程函数宏">src/lib.rs:定义过程函数宏</a></h3>
 <blockquote>
 <p>可以看到，都是处理TokenStream</p>
 </blockquote>
@@ -3227,15 +3248,110 @@ pub fn derive_builder_with_attr(input: TokenStream) -&gt; TokenStream {
 是因为 TokenStream 实现了  FromStr trait。</p>
 </div>
 </div>
-<h3 id="使用-2"><a class="header" href="#使用-2">使用</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">
+<h3 id="examplesqueryrs使用"><a class="header" href="#examplesqueryrs使用">examples/query.rs:使用</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">use macros::query;
+
+fn main() {
+    // query!(SELECT * FROM users WHERE age &gt; 10);
+    query!(SELECT * FROM users u JOIN (SELECT * from profiles p) WHERE u.id = p.id);
+    hello()
+}
 </code></pre></pre>
 <ol>
 <li>.parse().unwrap(): 字符串自动转为TokenStream类型</li>
 </ol>
 <pre><code class="language-shell">cargo run --example query &gt; examples/query_output.txt
 </code></pre>
-<pre><code class="language-shell">{{#include ../geektime_rust_codes/47_48_macros/examples/query_output.txt}}
+<pre><code class="language-shell">TokenStream [
+    Ident {
+        ident: &quot;SELECT&quot;,
+        span: #0 bytes(94..100),
+    },
+    Punct {
+        ch: '*',
+        spacing: Alone,
+        span: #0 bytes(101..102),
+    },
+    Ident {
+        ident: &quot;FROM&quot;,
+        span: #0 bytes(103..107),
+    },
+    Ident {
+        ident: &quot;users&quot;,
+        span: #0 bytes(108..113),
+    },
+    Ident {
+        ident: &quot;u&quot;,
+        span: #0 bytes(114..115),
+    },
+    Ident {
+        ident: &quot;JOIN&quot;,
+        span: #0 bytes(116..120),
+    },
+    Group {
+        delimiter: Parenthesis,
+        stream: TokenStream [
+            Ident {
+                ident: &quot;SELECT&quot;,
+                span: #0 bytes(122..128),
+            },
+            Punct {
+                ch: '*',
+                spacing: Alone,
+                span: #0 bytes(129..130),
+            },
+            Ident {
+                ident: &quot;from&quot;,
+                span: #0 bytes(131..135),
+            },
+            Ident {
+                ident: &quot;profiles&quot;,
+                span: #0 bytes(136..144),
+            },
+            Ident {
+                ident: &quot;p&quot;,
+                span: #0 bytes(145..146),
+            },
+        ],
+        span: #0 bytes(121..147),
+    },
+    Ident {
+        ident: &quot;WHERE&quot;,
+        span: #0 bytes(148..153),
+    },
+    Ident {
+        ident: &quot;u&quot;,
+        span: #0 bytes(154..155),
+    },
+    Punct {
+        ch: '.',
+        spacing: Alone,
+        span: #0 bytes(155..156),
+    },
+    Ident {
+        ident: &quot;id&quot;,
+        span: #0 bytes(156..158),
+    },
+    Punct {
+        ch: '=',
+        spacing: Alone,
+        span: #0 bytes(159..160),
+    },
+    Ident {
+        ident: &quot;p&quot;,
+        span: #0 bytes(161..162),
+    },
+    Punct {
+        ch: '.',
+        spacing: Alone,
+        span: #0 bytes(162..163),
+    },
+    Ident {
+        ident: &quot;id&quot;,
+        span: #0 bytes(163..165),
+    },
+]
+Hello world!
 </code></pre>
 <div id="admonition-tokenstream是一个iterator里面包含一系列的tokentree" class="admonition tip">
 <div class="admonition-title">
@@ -3275,9 +3391,14 @@ fn main() {
 </code></pre></pre>
 </div>
 </div>
-<h2 id="函数宏-1"><a class="header" href="#函数宏-1">函数宏</a></h2>
-<h2 id="属性宏-1"><a class="header" href="#属性宏-1">属性宏</a></h2>
-<h2 id="派生宏-proc_macro_devivederivemacroname"><a class="header" href="#派生宏-proc_macro_devivederivemacroname">派生宏: /#[proc_macro_devive(DeriveMacroName)]</a></h2>
+<h2 id="过程属性宏-proc_macro_attribute"><a class="header" href="#过程属性宏-proc_macro_attribute">过程属性宏: #[proc_macro_attribute]</a></h2>
+<blockquote>
+<p>用于属性宏， 用在结构体、字段、函数等地方，为其指定属性等功能, 类似python的计算属性</p>
+</blockquote>
+<h2 id="过程派生宏-proc_macro_devivederivemacroname"><a class="header" href="#过程派生宏-proc_macro_devivederivemacroname">过程派生宏: /#[proc_macro_devive(DeriveMacroName)]</a></h2>
+<blockquote>
+<p>用于结构体（struct）、枚举（enum）、联合（union）类型，可为其实现函数或特征（Trait）</p>
+</blockquote>
 <h3 id="常用派生宏"><a class="header" href="#常用派生宏">常用派生宏</a></h3>
 <h4 id="derivedebug"><a class="header" href="#derivedebug">#[derive(Debug)]</a></h4>
 <h3 id="原始实现builder模式"><a class="header" href="#原始实现builder模式">原始实现builder模式</a></h3>
@@ -3411,11 +3532,11 @@ optional。</li>
 <blockquote>
 <p>对于 derive macro，要使用 proce_macro_derive 这个宏。我们把这个 derive macro 命名为 Builder。</p>
 </blockquote>
-<pre><pre class="playground"><code class="language-rust  editable">    BuilderContext::render(input).unwrap().parse().unwrap()
-}
-
-#[proc_macro_derive(Builder)]
+<pre><pre class="playground"><code class="language-rust  editable">#[proc_macro_derive(Builder)]
 pub fn derive_builder(input: TokenStream) -&gt; TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    builder::BuilderContext::from(input).render().into()
+}
 </code></pre></pre>
 <h4 id="examplescommandrs-使用这个派生宏抽取"><a class="header" href="#examplescommandrs-使用这个派生宏抽取">examples/command.rs: 使用这个派生宏抽取</a></h4>
 <pre><pre class="playground"><code class="language-rust  editable">use macros::Builder;
@@ -3452,7 +3573,166 @@ fn main() {
 <h4 id="运行查看获取的tokenstream"><a class="header" href="#运行查看获取的tokenstream">运行，查看获取的TokenStream</a></h4>
 <pre><code class="language-shell">cargo run --example raw_command &gt; examples/raw_command_output.txt
 </code></pre>
-<pre><code class="language-shell">{{#include ../geektime_rust_codes/47_48_macros/examples/raw_command_output.txt}}
+<pre><code class="language-shell">TokenStream [
+    Punct {
+        ch: '#',
+        spacing: Alone,
+        span: #0 bytes(25..26),
+    },
+    Group {
+        delimiter: Bracket,
+        stream: TokenStream [
+            Ident {
+                ident: &quot;allow&quot;,
+                span: #0 bytes(27..32),
+            },
+            Group {
+                delimiter: Parenthesis,
+                stream: TokenStream [
+                    Ident {
+                        ident: &quot;dead_code&quot;,
+                        span: #0 bytes(33..42),
+                    },
+                ],
+                span: #0 bytes(32..43),
+            },
+        ],
+        span: #0 bytes(26..44),
+    },
+    Ident {
+        ident: &quot;pub&quot;,
+        span: #0 bytes(74..77),
+    },
+    Ident {
+        ident: &quot;struct&quot;,
+        span: #0 bytes(78..84),
+    },
+    Ident {
+        ident: &quot;Command&quot;,
+        span: #0 bytes(85..92),
+    },
+    Group {
+        delimiter: Brace,
+        stream: TokenStream [
+            Ident {
+                ident: &quot;executable&quot;,
+                span: #0 bytes(99..109),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(109..110),
+            },
+            Ident {
+                ident: &quot;String&quot;,
+                span: #0 bytes(111..117),
+            },
+            Punct {
+                ch: ',',
+                spacing: Alone,
+                span: #0 bytes(117..118),
+            },
+            Ident {
+                ident: &quot;args&quot;,
+                span: #0 bytes(123..127),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(127..128),
+            },
+            Ident {
+                ident: &quot;Vec&quot;,
+                span: #0 bytes(129..132),
+            },
+            Punct {
+                ch: '&lt;',
+                spacing: Alone,
+                span: #0 bytes(132..133),
+            },
+            Ident {
+                ident: &quot;String&quot;,
+                span: #0 bytes(133..139),
+            },
+            Punct {
+                ch: '&gt;',
+                spacing: Joint,
+                span: #0 bytes(139..140),
+            },
+            Punct {
+                ch: ',',
+                spacing: Alone,
+                span: #0 bytes(140..141),
+            },
+            Ident {
+                ident: &quot;env&quot;,
+                span: #0 bytes(146..149),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(149..150),
+            },
+            Ident {
+                ident: &quot;Vec&quot;,
+                span: #0 bytes(151..154),
+            },
+            Punct {
+                ch: '&lt;',
+                spacing: Alone,
+                span: #0 bytes(154..155),
+            },
+            Ident {
+                ident: &quot;String&quot;,
+                span: #0 bytes(155..161),
+            },
+            Punct {
+                ch: '&gt;',
+                spacing: Joint,
+                span: #0 bytes(161..162),
+            },
+            Punct {
+                ch: ',',
+                spacing: Alone,
+                span: #0 bytes(162..163),
+            },
+            Ident {
+                ident: &quot;current_dir&quot;,
+                span: #0 bytes(168..179),
+            },
+            Punct {
+                ch: ':',
+                spacing: Alone,
+                span: #0 bytes(179..180),
+            },
+            Ident {
+                ident: &quot;Option&quot;,
+                span: #0 bytes(181..187),
+            },
+            Punct {
+                ch: '&lt;',
+                spacing: Alone,
+                span: #0 bytes(187..188),
+            },
+            Ident {
+                ident: &quot;String&quot;,
+                span: #0 bytes(188..194),
+            },
+            Punct {
+                ch: '&gt;',
+                spacing: Joint,
+                span: #0 bytes(194..195),
+            },
+            Punct {
+                ch: ',',
+                spacing: Alone,
+                span: #0 bytes(195..196),
+            },
+        ],
+        span: #0 bytes(93..198),
+    },
+]
+Command { executable: &quot;cargo&quot;, args: [&quot;build&quot;, &quot;--release&quot;], env: [], current_dir: Some(&quot;..&quot;) }
 </code></pre>
 <div id="admonition-打印信息说明" class="admonition info">
 <div class="admonition-title">
@@ -3499,8 +3779,44 @@ struct Fd {
     ty: String,
     optional: bool,
 }
+</code></pre></pre>
+<h4 id="templatesbuilderj2-上面askama用到的jinja2模版"><a class="header" href="#templatesbuilderj2-上面askama用到的jinja2模版">templates/builder.j2: 上面askama用到的jinja2模版</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">impl {{ name }} {
+    pub fn builder() -&gt; {{ builder_name }} {
+        Default::default()
+    }
+}
 
-impl Fd {
+#[derive(Debug, Default)]
+pub struct {{ builder_name }} {
+    {% for field in fields %}
+        {{ field.name }}: Option&lt;{{ field.ty }}&gt;,
+    {% endfor %}
+}
+
+impl {{ builder_name }} {
+    {% for field in fields %}
+    pub fn {{ field.name }}(mut self, v: impl Into&lt;{{ field.ty }}&gt;) -&gt; {{ builder_name }} {
+        self.{{ field.name }} = Some(v.into());
+        self
+    }
+    {% endfor %}
+
+    pub fn build(self) -&gt; Result&lt;{{ name }}, &amp;'static str&gt; {
+        Ok({{ name }} {
+            {% for field in fields %}
+                {% if field.optional %}
+                {{ field.name }}: self.{{ field.name }},
+                {% else %}
+                {{ field.name }}: self.{{ field.name }}.ok_or(&quot;Build failed: missing {{ field.name }}&quot;)?,
+                {% endif %}
+            {% endfor %}
+        })
+    }
+}
+</code></pre></pre>
+<h4 id="srcraw_builderrs-实现对应抽取方法"><a class="header" href="#srcraw_builderrs-实现对应抽取方法">src/raw_builder.rs: 实现对应抽取方法</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">impl Fd {
     /// name 和 field 都是通过冒号 Punct 切分出来的 TokenTree 切片
     pub fn new(name: &amp;[TokenTree], ty: &amp;[TokenTree]) -&gt; Self {
         // 把类似 Ident(&quot;Option&quot;), Punct('&lt;'), Ident(&quot;String&quot;), Punct('&gt;) 的 ty
