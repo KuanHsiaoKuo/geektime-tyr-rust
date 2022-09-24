@@ -25,6 +25,11 @@ line-numbers = true
 enable = true
 level = 2
 
+# 添加表格支持
+# ```extended-markdown-table
+# ```
+[preprocessor.extended-markdown-table]
+
 # Enables the `mdbook-mermaid` preprocessor
 [preprocessor.mermaid]
 command = "mdbook-mermaid"

@@ -26,7 +26,7 @@
 ## Cargo.toml
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/Cargo.toml}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/Cargo.toml}}
 ```
 
 ## src/error.rs: thiserror会自动转换
@@ -34,7 +34,7 @@
 > 它们都是需要进行转换的错误。thiserror 能够通过宏帮我们完成错误类型的转换。
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/error.rs}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/error.rs}}
 ```
 
 ## src/lib.rs：定义结构体+实现方法+单元测试
@@ -42,7 +42,7 @@
 ### mod引入与使用
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:13:14}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:13:14}}
 ```
 
 ### 定义结构体
@@ -52,19 +52,19 @@
 > 这里其实就是传入一个指定结构的函数对象
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:16:17}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:16:17}}
 ```
 
 #### 专门的结合版本grep结构体
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:19:27}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:19:27}}
 ```
 
 ### 给结构体实现方法
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:29:55}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:29:55}}
 ```
 
 > 主要实现两种解析策略：
@@ -75,19 +75,19 @@
 ### 默认策略: default_strategy
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:57:87}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:57:87}}
 ```
 
 ### 格式化输出
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:89:103}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:89:103}}
 ```
 
 ### 单元测试
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:105:139}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:105:139}}
 ```
 
 ## src/main.rs
@@ -95,13 +95,13 @@
 ### 引入lib.rs中的内容
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:3:3}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:3:3}}
 ```
 
 ### 主函数：main()
 
 ```rust, editable
-{{#include ../geektime_rust_codes/22_mid_rgrep/src/lib.rs:5:11}}
+{{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:5:11}}
 ```
 
 ## 使用
