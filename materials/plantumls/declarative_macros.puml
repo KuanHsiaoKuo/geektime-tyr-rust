@@ -2,7 +2,7 @@
 title 声明宏定义使用流程
 |example/rule.rs->macro_rules!|
 start
-:定义过程宏;
+:定义声明宏;
 floating note right
 #[macro_export]
 macro_rules! my_vec {
