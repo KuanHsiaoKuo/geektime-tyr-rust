@@ -1,47 +1,48 @@
 # IV 宏编程
 
 <!--ts-->
+
 * [IV 宏编程](#iv-宏编程)
-   * [资料](#资料)
-   * [宏的分类](#宏的分类)
-   * [表格](#表格)
-      * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
-      * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
-         * [函数宏](#函数宏)
-         * [属性宏](#属性宏)
-         * [派生宏](#派生宏)
-   * [声明宏](#声明宏)
-      * [Rust常用声明宏](#rust常用声明宏)
-         * [println!](#println)
-         * [writeln!](#writeln)
-         * [eprintln!](#eprintln)
-      * [示例](#示例)
-         * [声明宏示意图](#声明宏示意图)
-         * [macro_rules!定义](#macro_rules定义)
-         * [使用](#使用)
-      * [声明宏用到的参数类型](#声明宏用到的参数类型)
-   * [过程宏手工定义图](#过程宏手工定义图)
-      * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
-   * [过程函数宏: #[proc_macro]](#过程函数宏-proc_macro)
-      * [src/lib.rs:定义过程函数宏](#srclibrs定义过程函数宏)
-      * [examples/query.rs:使用](#examplesqueryrs使用)
-   * [过程属性宏: #[proc_macro_attribute]](#过程属性宏-proc_macro_attribute)
-   * [过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
-      * [常用派生宏](#常用派生宏)
-         * [#[derive(Debug)]](#derivedebug)
-      * [原始实现builder模式](#原始实现builder模式)
-         * [想到达到链式调用的效果](#想到达到链式调用的效果)
-         * [可以这样定义](#可以这样定义)
-         * [但是有点繁琐，可以使用派生宏派生出这些代码](#但是有点繁琐可以使用派生宏派生出这些代码)
-      * [派生宏思路](#派生宏思路)
-         * [要生成的代码模版](#要生成的代码模版)
-         * [构建对应数据结构](#构建对应数据结构)
-         * [src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息](#srclibrs-使用派生宏从tokenstream抽取出想要的信息)
-         * [examples/command.rs: 使用这个派生宏抽取](#examplescommandrs-使用这个派生宏抽取)
-         * [运行，查看获取的TokenStream](#运行查看获取的tokenstream)
-         * [src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息](#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息)
-         * [templates/builder.j2: 上面askama用到的jinja2模版](#templatesbuilderj2-上面askama用到的jinja2模版)
-         * [src/raw_builder.rs: 实现对应抽取方法](#srcraw_builderrs-实现对应抽取方法)
+    * [资料](#资料)
+    * [宏的分类](#宏的分类)
+    * [表格](#表格)
+        * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
+        * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+            * [函数宏](#函数宏)
+            * [属性宏](#属性宏)
+            * [派生宏](#派生宏)
+    * [声明宏](#声明宏)
+        * [Rust常用声明宏](#rust常用声明宏)
+            * [println!](#println)
+            * [writeln!](#writeln)
+            * [eprintln!](#eprintln)
+        * [示例](#示例)
+            * [声明宏示意图](#声明宏示意图)
+            * [macro_rules!定义](#macro_rules定义)
+            * [使用](#使用)
+        * [声明宏用到的参数类型](#声明宏用到的参数类型)
+    * [过程宏手工定义图](#过程宏手工定义图)
+        * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
+    * [过程函数宏: #[proc_macro]](#过程函数宏-proc_macro)
+        * [src/lib.rs:定义过程函数宏](#srclibrs定义过程函数宏)
+        * [examples/query.rs:使用](#examplesqueryrs使用)
+    * [过程属性宏: #[proc_macro_attribute]](#过程属性宏-proc_macro_attribute)
+    * [过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
+        * [常用派生宏](#常用派生宏)
+            * [#[derive(Debug)]](#derivedebug)
+        * [原始实现builder模式](#原始实现builder模式)
+            * [想到达到链式调用的效果](#想到达到链式调用的效果)
+            * [可以这样定义](#可以这样定义)
+            * [但是有点繁琐，可以使用派生宏派生出这些代码](#但是有点繁琐可以使用派生宏派生出这些代码)
+        * [派生宏思路](#派生宏思路)
+            * [要生成的代码模版](#要生成的代码模版)
+            * [构建对应数据结构](#构建对应数据结构)
+            * [src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息](#srclibrs-使用派生宏从tokenstream抽取出想要的信息)
+            * [examples/command.rs: 使用这个派生宏抽取](#examplescommandrs-使用这个派生宏抽取)
+            * [运行，查看获取的TokenStream](#运行查看获取的tokenstream)
+            * [src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息](#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息)
+            * [templates/builder.j2: 上面askama用到的jinja2模版](#templatesbuilderj2-上面askama用到的jinja2模版)
+            * [src/raw_builder.rs: 实现对应抽取方法](#srcraw_builderrs-实现对应抽取方法)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sat Sep 24 14:20:00 UTC 2022 -->
@@ -59,16 +60,33 @@
 ## 表格
 
 ```extended-markdown-table
-| Macros                     | Define                                                         | Usage                | note   | Example    |
-|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
-| Declarative Macro          | #[macro_export]/macro_rules! macro_name{}                      | macro_name!()        |        | println!   |
-|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
-| Function Macro             | #[proc_macros]/pub fn macro_name                               | macro_name!()        |        |            |
-|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
-| Derive Macro               | #[proc_macros_derive(DeriveMacroName)]/pub  fn other_fn_name   | DeriveMacroName!()   |        |            |
-|----------------------------|----------------------------------------------------------------|----------------------|--------|------------|
-| Attritubte Macro           |                                                                |                      |        |            |
+| Macros            | Define                                                                                 | Usage                                         | note                       | Example          |
+|-------------------|----------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------|------------------|
+| Declarative Macro | #[macro_export]/macro_rules! macro_name{}                                              | macro_name!()                                 |                            | println!         |
+|-------------------|----------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------|------------------|
+| Function Macro    | #[proc_macros]/pub fn macro_name                                                       | macro_name!()                                 | advanced declarative macro |                  |
+|-------------------|----------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------|------------------|
+| Derive Macro      | #[proc_macros_derive(DeriveMacroName)]/pub  fn other_fn_name                           | DeriveMacroName!()                            |                            | #[derive(Debug)] |
+|-------------------|----------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------|------------------|
+| Attritubte Macro  | #[proc_macros_derive(AttributeMacroName, attributes(attr_name))]/pub  fn other_fn_name | Only Diff with DeriveMacro when define struct |                            |                  |
 ```
+
+### 声明宏的缺陷，而后有了过程宏
+
+- [Macros in Rust: A tutorial with examples - LogRocket Blog](https://blog.logrocket.com/macros-in-rust-a-tutorial-with-examples/#limitationsofdeclarativemacros)
+
+~~~admonish tip title='为什么过程宏和声明宏那么像'
+> 过程宏的缺陷
+1. 缺乏对宏自动完成和扩展的支持 
+2. 调试声明性宏很困难 
+3. 修改能力有限 
+4. 较大的二进制文件 
+5. 更长的编译时间（这适用于声明性宏和过程宏）
+
+> 过程宏是语法树级别的转换
+过程宏是宏的更高级版本。过程宏允许你扩展现有的 Rust 语法。它接受任意输入并返回有效的 Rust 代码。 
+过程宏是将 TokenStream 作为输入并返回另一个 Token Stream 的函数。过程宏操作输入 TokenStream 以产生输出流。
+~~~
 
 ### 声明宏(declarative macros): macro_rules!(bang)
 
@@ -202,6 +220,10 @@ cargo run --example raw_command > examples/raw_command_output.txt
 ~~~admonish info title="函数宏与派生宏定义使用区别"
 ```plantuml
 {{#include ../materials/plantumls/proc_macros.puml}}
+```
+----
+```plantuml
+{{#include ../materials/plantumls/proc_macros_derive_attribute.puml}}
 ```
 ~~~
 

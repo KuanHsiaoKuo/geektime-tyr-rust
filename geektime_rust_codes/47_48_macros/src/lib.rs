@@ -25,12 +25,14 @@ pub fn derive_raw_builder(input: TokenStream) -> TokenStream {
 #[proc_macro_derive(Builder)]
 pub fn derive_builder(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
+    println!("{:#?}", input);
     builder::BuilderContext::from(input).render().into()
 }
 
 #[proc_macro_derive(BuilderWithAttr, attributes(builder))]
 pub fn derive_builder_with_attr(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
+    println!("{:#?}", input);
     builder_with_attr::BuilderContext::from(input)
         .render()
         .into()
