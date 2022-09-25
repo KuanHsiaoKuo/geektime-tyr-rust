@@ -1,50 +1,51 @@
 # IV 宏编程
 
 <!--ts-->
+
 * [IV 宏编程](#iv-宏编程)
-   * [资料](#资料)
-   * [宏的分类](#宏的分类)
-   * [表格](#表格)
-      * [声明宏的缺陷，而后有了过程宏](#声明宏的缺陷而后有了过程宏)
-      * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
-      * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
-         * [函数宏](#函数宏)
-         * [属性宏](#属性宏)
-         * [派生宏](#派生宏)
-   * [声明宏](#声明宏)
-      * [Rust常用声明宏](#rust常用声明宏)
-         * [println!](#println)
-         * [writeln!](#writeln)
-         * [eprintln!](#eprintln)
-      * [示例](#示例)
-         * [声明宏示意图](#声明宏示意图)
-         * [macro_rules!定义](#macro_rules定义)
-         * [使用](#使用)
-      * [声明宏用到的参数类型](#声明宏用到的参数类型)
-   * [过程宏手工定义图](#过程宏手工定义图)
-      * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
-   * [过程函数宏: #[proc_macro]](#过程函数宏-proc_macro)
-      * [src/lib.rs:定义过程函数宏](#srclibrs定义过程函数宏)
-      * [examples/query.rs:使用](#examplesqueryrs使用)
-   * [过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
-      * [常用派生宏](#常用派生宏)
-         * [#[derive(Debug)]](#derivedebug)
-      * [原始实现builder模式](#原始实现builder模式)
-         * [想到达到链式调用的效果](#想到达到链式调用的效果)
-         * [可以这样定义](#可以这样定义)
-         * [但是有点繁琐，可以使用派生宏派生出这些代码](#但是有点繁琐可以使用派生宏派生出这些代码)
-      * [派生宏思路](#派生宏思路)
-         * [要生成的代码模版](#要生成的代码模版)
-         * [构建对应数据结构](#构建对应数据结构)
-         * [src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息](#srclibrs-使用派生宏从tokenstream抽取出想要的信息)
-         * [examples/raw_command.rs: 使用这个派生宏抽取](#examplesraw_commandrs-使用这个派生宏抽取)
-         * [运行，查看获取的TokenStream](#运行查看获取的tokenstream)
-         * [src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息](#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息)
-         * [templates/builder.j2: 上面askama用到的jinja2模版](#templatesbuilderj2-上面askama用到的jinja2模版)
-         * [src/raw_builder.rs: 实现对应抽取方法](#srcraw_builderrs-实现对应抽取方法)
-      * [使用syn/quote可以不用自己定义模版](#使用synquote可以不用自己定义模版)
-   * [过程属性宏: proc_macro_derive(macro_name, attributes(attr_name))](#过程属性宏-proc_macro_derivemacro_name-attributesattr_name)
-      * [使用syn/quote定义属性宏](#使用synquote定义属性宏)
+    * [资料](#资料)
+    * [宏的分类](#宏的分类)
+    * [表格](#表格)
+        * [声明宏的缺陷，而后有了过程宏](#声明宏的缺陷而后有了过程宏)
+        * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
+        * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+            * [函数宏](#函数宏)
+            * [属性宏](#属性宏)
+            * [派生宏](#派生宏)
+    * [声明宏](#声明宏)
+        * [Rust常用声明宏](#rust常用声明宏)
+            * [println!](#println)
+            * [writeln!](#writeln)
+            * [eprintln!](#eprintln)
+        * [示例](#示例)
+            * [声明宏示意图](#声明宏示意图)
+            * [macro_rules!定义](#macro_rules定义)
+            * [使用](#使用)
+        * [声明宏用到的参数类型](#声明宏用到的参数类型)
+    * [过程宏手工定义图](#过程宏手工定义图)
+        * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
+    * [过程函数宏: #[proc_macro]](#过程函数宏-proc_macro)
+        * [src/lib.rs:定义过程函数宏](#srclibrs定义过程函数宏)
+        * [examples/query.rs:使用](#examplesqueryrs使用)
+    * [过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
+        * [常用派生宏](#常用派生宏)
+            * [#[derive(Debug)]](#derivedebug)
+        * [原始实现builder模式](#原始实现builder模式)
+            * [想到达到链式调用的效果](#想到达到链式调用的效果)
+            * [可以这样定义](#可以这样定义)
+            * [但是有点繁琐，可以使用派生宏派生出这些代码](#但是有点繁琐可以使用派生宏派生出这些代码)
+        * [派生宏思路](#派生宏思路)
+            * [要生成的代码模版](#要生成的代码模版)
+            * [构建对应数据结构](#构建对应数据结构)
+            * [src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息](#srclibrs-使用派生宏从tokenstream抽取出想要的信息)
+            * [examples/raw_command.rs: 使用这个派生宏抽取](#examplesraw_commandrs-使用这个派生宏抽取)
+            * [运行，查看获取的TokenStream](#运行查看获取的tokenstream)
+            * [src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息](#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息)
+            * [templates/builder.j2: 上面askama用到的jinja2模版](#templatesbuilderj2-上面askama用到的jinja2模版)
+            * [src/raw_builder.rs: 实现对应抽取方法](#srcraw_builderrs-实现对应抽取方法)
+        * [使用syn/quote可以不用自己定义模版](#使用synquote可以不用自己定义模版)
+    * [过程属性宏: proc_macro_derive(macro_name, attributes(attr_name))](#过程属性宏-proc_macro_derivemacro_name-attributesattr_name)
+        * [使用syn/quote定义属性宏](#使用synquote定义属性宏)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun Sep 25 13:14:01 UTC 2022 -->
@@ -59,7 +60,15 @@
 
 ## 宏的分类
 
-## 表格
+### 使用泳道图
+
+~~~admonish info title="宏定义使用区别"
+```plantuml
+{{#include ../materials/plantumls/macros_overview.puml}}
+```
+~~~
+
+### 表格
 
 ```extended-markdown-table
 | Macros            | Define                                                                                 | Usage                                         | note                       | Example          |
@@ -218,16 +227,6 @@ cargo run --example raw_command > examples/raw_command_output.txt
 ## 过程宏手工定义图
 
 > 过程宏要比声明宏要复杂很多，不过无论是哪一种过程宏，本质都是一样的，都涉及要把 `输入的 TokenStream` 处理成`输出的 TokenStream`。
-
-~~~admonish info title="函数宏与派生宏定义使用区别"
-```plantuml
-{{#include ../materials/plantumls/proc_macros.puml}}
-```
-----
-```plantuml
-{{#include ../materials/plantumls/proc_macros_derive_attribute_overview.puml}}
-```
-~~~
 
 ### Cargo.toml添加proc-macro声明
 

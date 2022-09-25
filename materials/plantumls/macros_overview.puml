@@ -1,22 +1,45 @@
 @startuml
-title 过程派生宏两种定义及属性宏对比使用流程\n（具体内容看详细版泳道图）
+title 过程函数宏、派生宏两种定义及属性宏对比使用流程\n（具体内容看详细版泳道图）
 |cargo| Cargo.toml
 |#AntiqueWhite|d| src/<对应抽取字段与方法定义>.rs
+|lib| src/lib.rs
+|call| examples/调用代码
+|lib|
+start
+:定义声明宏;
+|call|
+:使用声明宏
+====
+没有TokenStream
+难以调试;
+stop
 |cargo|
 start
-: 手工抽取TokenStream\n定义派生宏;
+: 基于TokenStream
+定义过程函数宏;
+:打开过程宏;
+|lib|
+:定义过程宏;
+|call|
+:使用过程宏;
+:Terminal
+====
+查看打印的TokenStream;
+stop
+|cargo|
+start
+: 手工抽取TokenStream定义派生宏;
 : 打开过程宏;
 |d|
-:使用anyhow与askama\n抽取TokenStream中的信息;
-note
+:使用anyhow与askama抽取TokenStream中的信息
+====
 1. 分别定义BuilderContext和Fd
 2. BuilderContext处理jinja模版数据结构
-3. Fd描述每个field
-end note
+3. Fd描述每个field;
 #AAAAAA:templates/builder.j2\n\n编写与tokenstream\n对应的jinja2模版;
 |d|
-:实现对应抽取方法;
-note
+:实现对应抽取方法
+====
 1. Fd实现new方法处理TokenTree
 2. BuilderContext实现下列方法：
 - new:
@@ -25,26 +48,26 @@ note
 - render:
         把jinja2模版渲染成字符串代码
         > render里面用到split和
-            get_struct_fields方法
-end note
-|src/lib.rs|
+            get_struct_fields方法;
+|lib|
 :定义过程派生宏;
-|examples/调用代码|
+|call|
 :使用派生宏抽取;
-|Terminal|
-:查看打印的\nTokenStream;
+:Terminal
+查看打印的
+TokenStream;
 stop
 |cargo|
 start
 : syn/quote抽取TokenStream\n为DeriveInput定义派生宏;
 : 打开过程宏;
 |d|
-:使用syn与quote抽取\nTokenStream中的信息;
-floating note
-1. 同样定义BuilderContext和Fd
-end note
-:不需要自己手动定义\n抽取模版，直接实现方法;
-floating note
+:使用syn与quote抽取 TokenStream中的信息
+====
+1. 同样定义BuilderContext和Fd;
+:不需要自己手动定义
+抽取模版，直接实现方法
+====
 1. 比起手动方式，BuilderContext
     和Fd还需要实现From Trait。
 2. 接着Fd就不需要再处理，主要在
@@ -53,35 +76,35 @@ floating note
     - render: 用到quote!
     - gen_optionized_fields(&self)
     - gen_methods(&self)
-    - gen_assigns(&self)
-end note
-|src/lib.rs|
+    - gen_assigns(&self);
+|lib|
 :定义过程派生宏;
-|examples/调用代码|
+|call|
 :使用派生宏抽取;
-|Terminal|
-:查看打印的\nDeriveInput;
+:Terminal
+查看打印的
+DeriveInput;
+stop
 |cargo|
 start
 : syn/quote抽取TokenStream\n为DeriveInput定义属性宏;
 : 打开过程宏;
 |d|
-:使用syn与quote抽取\nTokenStream中的信息;
-floating note
+:使用syn与quote抽取 TokenStream中的信息
+====
 1. 定义Opts、Fd、BuilderContext
-2. 比起派生宏，多了Opts用于捕获Fd的属性
-end note
-:不需要自己手动定义\n抽取模版，直接实现方法;
-floating note
+2. 比起派生宏，多了Opts用于捕获Fd的属性;
+:不需要自己手动定
+抽取模版，直接实现方法
+====
 1. 和派生宏一样，给Fd、BuilderContext
     和Fd还需要实现From Trait
 2. BuilderContext同样实现下列方法：
     - render: 用到quote!
     - gen_optionized_fields(&self)
     - gen_methods(&self)
-    - gen_assigns(&self)
-end note
-|src/lib.rs|
+    - gen_assigns(&self);
+|lib|
 :定义过程派生宏
 ====
 和派生宏不同的是
@@ -92,9 +115,10 @@ attributes(builder) 属性，
 请允许代码中出现的
 #[builder(...)]，
 它是我这个宏认识并要处理的;
-|examples/调用代码|
+|call|
 :使用派生宏抽取;
-|Terminal|
-:查看打印的\nDeriveInput;
+:Terminal
+查看打印的
+DeriveInput;
 stop
 @enduml
