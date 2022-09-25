@@ -1,5 +1,5 @@
 @startuml
-title 过程函数宏、派生宏两种定义及属性宏对比使用流程\n（具体内容看详细版泳道图）
+title 两类四种宏对比\n（具体内容看详细版泳道图）
 |cargo| Cargo.toml
 |#AntiqueWhite|d| src/<对应抽取字段与方法定义>.rs
 |lib| src/lib.rs
