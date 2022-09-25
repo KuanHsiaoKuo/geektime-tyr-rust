@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 05:45:13 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 25 06:10:11 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -387,7 +387,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 05:45:13 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 25 06:10:12 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -878,7 +878,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 05:45:13 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 25 06:10:12 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1332,7 +1332,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 05:45:14 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 25 06:10:14 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">[package]
@@ -2378,7 +2378,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 05:45:14 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 25 06:10:13 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -3061,7 +3061,36 @@ fn main() {
 <a href="https://www.youtube.com/watch?v=rDoqT-a6UFg">Visualizing memory layout of Rust’s data types - YouTube</a></p>
 </blockquote>
 </div>
-</div><div style="break-before: page; page-break-before: always;"></div><h1 id="iv-宏编程"><a class="header" href="#iv-宏编程">IV 宏编程</a></h1>
+</div><div style="break-before: page; page-break-before: always;"></div><style>.extended-markdown-table {
+    display: grid;
+}
+
+.extended-markdown-table > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 20px;
+    border-bottom: 1px solid var(--table-border-color);
+    border-right: 1px solid var(--table-border-color);
+}
+
+.extended-markdown-table > div.extended-markdown-left-border {
+    border-left: 1px solid var(--table-border-color);
+}
+
+.extended-markdown-table > div.extended-markdown-header {
+    text-align: center;
+    background: var(--table-header-bg);
+    border-bottom: 1px solid var(--table-header-bg);
+    border-right: 1px solid var(--table-header-bg);
+    font-weight: bold;
+}
+
+.extended-markdown-table > div.extended-markdown-header.extended-markdown-left-border {
+    border-left: 1px solid var(--table-header-bg);
+}
+</style>
+<h1 id="iv-宏编程"><a class="header" href="#iv-宏编程">IV 宏编程</a></h1>
 <!--ts-->
 <ul>
 <li><a href="4_macros.html#iv-%E5%AE%8F%E7%BC%96%E7%A8%8B">IV 宏编程</a>
@@ -3111,7 +3140,6 @@ fn main() {
 <li><a href="4_macros.html#examplesqueryrs%E4%BD%BF%E7%94%A8">examples/query.rs:使用</a></li>
 </ul>
 </li>
-<li>[过程属性宏: #[proc_macro_attribute]](#过程属性宏-proc_macro_attribute)</li>
 <li>[过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
 <ul>
 <li><a href="4_macros.html#%E5%B8%B8%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F">常用派生宏</a>
@@ -3131,20 +3159,26 @@ fn main() {
 <li><a href="4_macros.html#%E8%A6%81%E7%94%9F%E6%88%90%E7%9A%84%E4%BB%A3%E7%A0%81%E6%A8%A1%E7%89%88">要生成的代码模版</a></li>
 <li><a href="4_macros.html#%E6%9E%84%E5%BB%BA%E5%AF%B9%E5%BA%94%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">构建对应数据结构</a></li>
 <li><a href="4_macros.html#srclibrs-%E4%BD%BF%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F%E4%BB%8Etokenstream%E6%8A%BD%E5%8F%96%E5%87%BA%E6%83%B3%E8%A6%81%E7%9A%84%E4%BF%A1%E6%81%AF">src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息</a></li>
-<li><a href="4_macros.html#examplescommandrs-%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%8A%BD%E5%8F%96">examples/command.rs: 使用这个派生宏抽取</a></li>
+<li><a href="4_macros.html#examplesraw_commandrs-%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%8A%BD%E5%8F%96">examples/raw_command.rs: 使用这个派生宏抽取</a></li>
 <li><a href="4_macros.html#%E8%BF%90%E8%A1%8C%E6%9F%A5%E7%9C%8B%E8%8E%B7%E5%8F%96%E7%9A%84tokenstream">运行，查看获取的TokenStream</a></li>
 <li><a href="4_macros.html#srcraw_builderrs-%E4%BD%BF%E7%94%A8anyhow%E4%B8%8Easkama%E6%8A%BD%E5%8F%96tokenstream%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF">src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息</a></li>
 <li><a href="4_macros.html#templatesbuilderj2-%E4%B8%8A%E9%9D%A2askama%E7%94%A8%E5%88%B0%E7%9A%84jinja2%E6%A8%A1%E7%89%88">templates/builder.j2: 上面askama用到的jinja2模版</a></li>
 <li><a href="4_macros.html#srcraw_builderrs-%E5%AE%9E%E7%8E%B0%E5%AF%B9%E5%BA%94%E6%8A%BD%E5%8F%96%E6%96%B9%E6%B3%95">src/raw_builder.rs: 实现对应抽取方法</a></li>
 </ul>
 </li>
+<li><a href="4_macros.html#%E4%BD%BF%E7%94%A8synquote%E5%8F%AF%E4%BB%A5%E4%B8%8D%E7%94%A8%E8%87%AA%E5%B7%B1%E5%AE%9A%E4%B9%89%E6%A8%A1%E7%89%88">使用syn/quote可以不用自己定义模版</a></li>
+</ul>
+</li>
+<li><a href="4_macros.html#%E8%BF%87%E7%A8%8B%E5%B1%9E%E6%80%A7%E5%AE%8F-proc_macro_derivemacro_name-attributesattr_name">过程属性宏: proc_macro_derive(macro_name, attributes(attr_name))</a>
+<ul>
+<li><a href="4_macros.html#%E4%BD%BF%E7%94%A8synquote%E5%AE%9A%E4%B9%89%E5%B1%9E%E6%80%A7%E5%AE%8F">使用syn/quote定义属性宏</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 05:45:12 UTC 2022 -->
+<!-- Added by: runner, at: Sun Sep 25 06:10:09 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -3154,16 +3188,7 @@ fn main() {
 </ul>
 <h2 id="宏的分类"><a class="header" href="#宏的分类">宏的分类</a></h2>
 <h2 id="表格"><a class="header" href="#表格">表格</a></h2>
-<pre><code class="language-extended-markdown-table">| Macros            | Define                                                                                 | Usage                                         | note                       | Example          |
-|-------------------|----------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------|------------------|
-| Declarative Macro | #[macro_export]/macro_rules! macro_name{}                                              | macro_name!()                                 |                            | println!         |
-|-------------------|----------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------|------------------|
-| Function Macro    | #[proc_macros]/pub fn macro_name                                                       | macro_name!()                                 | advanced declarative macro |                  |
-|-------------------|----------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------|------------------|
-| Derive Macro      | #[proc_macros_derive(DeriveMacroName)]/pub  fn other_fn_name                           | DeriveMacroName!()                            |                            | #[derive(Debug)] |
-|-------------------|----------------------------------------------------------------------------------------|-----------------------------------------------|----------------------------|------------------|
-| Attritubte Macro  | #[proc_macros_derive(AttributeMacroName, attributes(attr_name))]/pub  fn other_fn_name | Only Diff with DeriveMacro when define struct |                            |                  |
-</code></pre>
+<div class="extended-markdown-table"><div class="extended-markdown-header extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2">Macros</div><div class="extended-markdown-header" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2">Define</div><div class="extended-markdown-header" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2">Usage</div><div class="extended-markdown-header" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 1; grid-row-end: 2">note</div><div class="extended-markdown-header" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 1; grid-row-end: 2">Example</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 2; grid-row-end: 3">Declarative Macro</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 2; grid-row-end: 3">#[macro_export]/macro_rules! macro_name{}</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3">macro_name!()</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 2; grid-row-end: 3"></div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 2; grid-row-end: 3">println!</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 3; grid-row-end: 4">Function Macro</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4">#[proc_macros]/pub fn macro_name</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4">macro_name!()</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 3; grid-row-end: 4">advanced declarative macro</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 3; grid-row-end: 4"></div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 4; grid-row-end: 5">Derive Macro</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 4; grid-row-end: 5">#[proc_macros_derive(DeriveMacroName)]/pub  fn other_fn_name</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 4; grid-row-end: 5">DeriveMacroName!()</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 4; grid-row-end: 5"></div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 4; grid-row-end: 5">#[derive(Debug)]</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 5; grid-row-end: 6">Attritubte Macro</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 5; grid-row-end: 6">#[proc_macros_derive(AttributeMacroName, attributes(attr_name))]/pub  fn other_fn_name</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 5; grid-row-end: 6">Only Diff with DeriveMacro when define struct</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 5; grid-row-end: 6"></div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 5; grid-row-end: 6"></div></div>
 <h3 id="声明宏的缺陷而后有了过程宏"><a class="header" href="#声明宏的缺陷而后有了过程宏">声明宏的缺陷，而后有了过程宏</a></h3>
 <ul>
 <li><a href="https://blog.logrocket.com/macros-in-rust-a-tutorial-with-examples/#limitationsofdeclarativemacros">Macros in Rust: A tutorial with examples - LogRocket Blog</a></li>
@@ -3580,10 +3605,6 @@ fn main() {
 </code></pre></pre>
 </div>
 </div>
-<h2 id="过程属性宏-proc_macro_attribute"><a class="header" href="#过程属性宏-proc_macro_attribute">过程属性宏: #[proc_macro_attribute]</a></h2>
-<blockquote>
-<p>用于属性宏， 用在结构体、字段、函数等地方，为其指定属性等功能, 类似python的计算属性</p>
-</blockquote>
 <h2 id="过程派生宏-proc_macro_devivederivemacroname"><a class="header" href="#过程派生宏-proc_macro_devivederivemacroname">过程派生宏: /#[proc_macro_devive(DeriveMacroName)]</a></h2>
 <blockquote>
 <p>用于结构体（struct）、枚举（enum）、联合（union）类型，可为其实现函数或特征（Trait）</p>
@@ -3711,27 +3732,31 @@ impl {{ builder_name }} {
 optional。</li>
 </ol>
 <h4 id="构建对应数据结构"><a class="header" href="#构建对应数据结构">构建对应数据结构</a></h4>
-<pre><pre class="playground"><code class="language-rust  editable">struct Fd {
-    name: Ident,
-    ty: Type,
-    optional: bool,
+<pre><pre class="playground"><code class="language-rust  editable">/// 处理 jinja 模板的数据结构，在模板中我们使用了 name / builder_name / fields
+#[derive(Template)]
+#[template(path = &quot;builder.j2&quot;, escape = &quot;none&quot;)]
+pub struct BuilderContext {
+    name: String,
+    builder_name: String,
+    fields: Vec&lt;Fd&gt;,
 }
 </code></pre></pre>
 <h4 id="srclibrs-使用派生宏从tokenstream抽取出想要的信息"><a class="header" href="#srclibrs-使用派生宏从tokenstream抽取出想要的信息">src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息</a></h4>
 <blockquote>
 <p>对于 derive macro，要使用 proce_macro_derive 这个宏。我们把这个 derive macro 命名为 Builder。</p>
 </blockquote>
-<pre><pre class="playground"><code class="language-rust  editable">#[proc_macro_derive(Builder)]
-pub fn derive_builder(input: TokenStream) -&gt; TokenStream {
-    let input = parse_macro_input!(input as DeriveInput);
+<pre><pre class="playground"><code class="language-rust  editable">#[proc_macro_derive(RawBuilder)]
+pub fn derive_raw_builder(input: TokenStream) -&gt; TokenStream {
+    // 只有修改代码之后再次编译才会执行
     println!(&quot;{:#?}&quot;, input);
-    builder::BuilderContext::from(input).render().into()
+    BuilderContext::render(input).unwrap().parse().unwrap()
+}
 </code></pre></pre>
-<h4 id="examplescommandrs-使用这个派生宏抽取"><a class="header" href="#examplescommandrs-使用这个派生宏抽取">examples/command.rs: 使用这个派生宏抽取</a></h4>
-<pre><pre class="playground"><code class="language-rust  editable">use macros::Builder;
+<h4 id="examplesraw_commandrs-使用这个派生宏抽取"><a class="header" href="#examplesraw_commandrs-使用这个派生宏抽取">examples/raw_command.rs: 使用这个派生宏抽取</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use macros::RawBuilder;
 
 #[allow(dead_code)]
-#[derive(Debug, Builder)]
+#[derive(Debug, RawBuilder)]
 pub struct Command {
     executable: String,
     args: Vec&lt;String&gt;,
@@ -4131,6 +4156,40 @@ fn get_struct_fields(input: TokenStream) -&gt; Vec&lt;Fd&gt; {
 可以想想如果要把一个 a=1,b=2 的字符串切成 [[a, 1], [b, 2]] 该怎么做，就很容易理解了。</p>
 </div>
 </div>
+<h3 id="使用synquote可以不用自己定义模版"><a class="header" href="#使用synquote可以不用自己定义模版">使用syn/quote可以不用自己定义模版</a></h3>
+<blockquote>
+<p>详见上方对比图</p>
+</blockquote>
+<h2 id="过程属性宏-proc_macro_derivemacro_name-attributesattr_name"><a class="header" href="#过程属性宏-proc_macro_derivemacro_name-attributesattr_name">过程属性宏: proc_macro_derive(macro_name, attributes(attr_name))</a></h2>
+<blockquote>
+<p>用于属性宏， 用在结构体、字段、函数等地方，为其指定属性等功能, 类似python的计算属性</p>
+</blockquote>
+<div id="admonition-定义结构体时在某个字段上方使用对应attr_name" class="admonition tip">
+<div class="admonition-title">
+<p>定义结构体时在某个字段上方使用对应attr_name</p>
+<p><a class="admonition-anchor-link" href="4_macros.html#admonition-定义结构体时在某个字段上方使用对应attr_name"></a></p>
+</div>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[allow(dead_code)]
+#[derive(Debug, BuilderWithAttr)]
+pub struct Command {
+    executable: String,
+    #[builder(each = &quot;arg&quot;)]
+    args: Vec&lt;String&gt;,
+    #[builder(each = &quot;env&quot;, default = &quot;vec![]&quot;)]
+    env: Vec&lt;String&gt;,
+    current_dir: Option&lt;String&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</div>
+<h3 id="使用synquote定义属性宏"><a class="header" href="#使用synquote定义属性宏">使用syn/quote定义属性宏</a></h3>
+<blockquote>
+<p>详见上方对比图</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="v-并发与异步"><a class="header" href="#v-并发与异步">V 并发与异步</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="vi-混合编程"><a class="header" href="#vi-混合编程">VI 混合编程</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="kv-server设计与实现"><a class="header" href="#kv-server设计与实现">KV Server设计与实现</a></h1>
