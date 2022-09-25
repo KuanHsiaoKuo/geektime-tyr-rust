@@ -225,7 +225,7 @@ cargo run --example raw_command > examples/raw_command_output.txt
 ```
 ----
 ```plantuml
-{{#include ../materials/plantumls/proc_macros_derive_attribute.puml}}
+{{#include ../materials/plantumls/proc_macros_derive_attribute_overview.puml}}
 ```
 ~~~
 
