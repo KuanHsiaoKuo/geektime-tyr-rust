@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 14:09:27 UTC 2022 -->
+<!-- Added by: runner, at: Tue Sep 27 06:12:21 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -387,7 +387,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 14:09:27 UTC 2022 -->
+<!-- Added by: runner, at: Tue Sep 27 06:12:22 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -878,7 +878,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 14:09:27 UTC 2022 -->
+<!-- Added by: runner, at: Tue Sep 27 06:12:21 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1332,7 +1332,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 14:09:28 UTC 2022 -->
+<!-- Added by: runner, at: Tue Sep 27 06:12:22 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">[package]
@@ -2378,7 +2378,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 14:09:28 UTC 2022 -->
+<!-- Added by: runner, at: Tue Sep 27 06:12:22 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -3049,6 +3049,156 @@ fn main() {
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="i-从栈堆所有权生命周期开始内存管理"><a class="header" href="#i-从栈堆所有权生命周期开始内存管理">I. 从栈堆、所有权、生命周期开始内存管理</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ii-类型系统"><a class="header" href="#ii-类型系统">II. 类型系统</a></h1>
+<!--ts-->
+<ul>
+<li><a href="2_type_system.html#ii-%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F">II. 类型系统</a>
+<ul>
+<li><a href="2_type_system.html#%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E5%88%86%E7%B1%BB%E5%9B%BE">类型系统分类图</a>
+<ul>
+<li><a href="2_type_system.html#%E4%B8%89%E4%B8%AA%E6%A0%87%E5%87%86">三个标准</a></li>
+<li><a href="2_type_system.html#rust%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E7%89%B9%E7%82%B9">Rust类型系统特点</a></li>
+</ul>
+</li>
+<li><a href="2_type_system.html#%E7%B1%BB%E5%9E%8B%E5%88%86%E7%B1%BB">类型分类</a>
+<ul>
+<li><a href="2_type_system.html#%E5%8E%9F%E7%94%9F%E7%B1%BB%E5%9E%8B">原生类型</a></li>
+<li><a href="2_type_system.html#%E7%BB%84%E5%90%88%E7%B1%BB%E5%9E%8B">组合类型</a></li>
+<li><a href="2_type_system.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E5%90%88%E7%B1%BB%E5%9E%8B">自定义组合类型</a></li>
+</ul>
+</li>
+<li><a href="2_type_system.html#%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC">类型推导</a></li>
+</ul>
+</li>
+<li><a href="2_type_system.html#%E6%B3%9B%E5%9E%8B">泛型</a>
+<ul>
+<li><a href="2_type_system.html#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F">实现方式</a></li>
+<li><a href="2_type_system.html#%E6%B3%9B%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">泛型数据结构</a>
+<ul>
+<li><a href="2_type_system.html#%E9%80%90%E6%AD%A5%E7%BA%A6%E6%9D%9F%E6%8A%8A%E5%86%B3%E7%AD%96%E4%BA%A4%E7%BB%99%E4%BD%BF%E7%94%A8%E8%80%85">逐步约束：把决策交给使用者</a></li>
+</ul>
+</li>
+<li><a href="2_type_system.html#%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0">泛型参数</a>
+<ul>
+<li><a href="2_type_system.html#%E5%8F%82%E6%95%B0%E5%A4%9A%E6%80%81">参数多态</a></li>
+<li><a href="2_type_system.html#%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">三种使用场景</a>
+<ul>
+<li><a href="2_type_system.html#%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A">延迟绑定</a></li>
+<li><a href="2_type_system.html#%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A-1">延迟绑定</a></li>
+<li><a href="2_type_system.html#%E5%A4%9A%E4%B8%AA%E5%AE%9E%E7%8E%B0">多个实现</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="2_type_system.html#%E6%B3%9B%E5%9E%8B%E5%87%BD%E6%95%B0">泛型函数</a>
+<ul>
+<li><a href="2_type_system.html#%E8%BF%94%E5%9B%9E%E5%80%BC%E6%90%BA%E5%B8%A6%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0">返回值携带泛型参数</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="2_type_system.html#trait">Trait</a>
+<ul>
+<li><a href="2_type_system.html#%E5%9F%BA%E6%9C%AC%E7%BB%83%E4%B9%A0">基本练习</a>
+<ul>
+<li><a href="2_type_system.html#%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B">关联类型</a></li>
+<li><a href="2_type_system.html#%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B">支持泛型</a></li>
+<li><a href="2_type_system.html#%E6%94%AF%E6%8C%81%E7%BB%A7%E6%89%BF">支持继承</a></li>
+<li><a href="2_type_system.html#%E5%AD%90%E7%B1%BB%E5%9E%8B%E5%A4%9A%E6%80%81">子类型多态</a></li>
+</ul>
+</li>
+<li><a href="2_type_system.html#trait-object">Trait Object</a>
+<ul>
+<li><a href="2_type_system.html#%E5%AE%9E%E7%8E%B0%E6%9C%BA%E7%90%86ptrvtable">实现机理：ptr+vtable</a></li>
+<li><a href="2_type_system.html#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">使用场景</a>
+<ul>
+<li><a href="2_type_system.html#%E5%9C%A8%E5%87%BD%E6%95%B0%E4%B8%AD%E4%BD%BF%E7%94%A8">在函数中使用</a></li>
+<li><a href="2_type_system.html#%E5%9C%A8%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%AD%E4%BD%BF%E7%94%A8">在函数返回值中使用</a>
+<ul>
+<li><a href="2_type_system.html#%E5%9C%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%AD%E4%BD%BF%E7%94%A8">在数据结构中使用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="2_type_system.html#%E5%B8%B8%E7%94%A8trait">常用trait</a>
+<ul>
+<li><a href="2_type_system.html#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3">内存相关</a></li>
+<li><a href="2_type_system.html#%E6%A0%87%E7%AD%BEtrait">标签trait</a></li>
+<li><a href="2_type_system.html#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">类型转换</a></li>
+<li><a href="2_type_system.html#%E6%93%8D%E4%BD%9C%E7%AC%A6%E7%9B%B8%E5%85%B3">操作符相关</a></li>
+</ul>
+</li>
+<li><a href="2_type_system.html#%E8%AE%BE%E8%AE%A1%E6%9E%B6%E6%9E%84">设计架构</a>
+<ul>
+<li><a href="2_type_system.html#%E9%A1%BA%E6%89%8B%E8%87%AA%E7%84%B6">顺手自然</a></li>
+<li><a href="2_type_system.html#%E6%A1%A5%E6%8E%A5">桥接</a></li>
+<li><a href="2_type_system.html#%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC">控制反转</a></li>
+<li><a href="2_type_system.html#solid%E5%8E%9F%E5%88%99">SOLID原则</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Tue Sep 27 06:12:19 UTC 2022 -->
+<!--te-->
+<h2 id="类型系统分类图"><a class="header" href="#类型系统分类图">类型系统分类图</a></h2>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.jpg" alt="类型系统分类图" /></p>
+<h3 id="三个标准"><a class="header" href="#三个标准">三个标准</a></h3>
+<ol>
+<li>隐式转换</li>
+<li>检查时机</li>
+<li>多态支持</li>
+</ol>
+<h3 id="rust类型系统特点"><a class="header" href="#rust类型系统特点">Rust类型系统特点</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257735.jpg" alt="Rust的类型系统有什么特点？" /></p>
+<h2 id="类型分类"><a class="header" href="#类型分类">类型分类</a></h2>
+<h3 id="原生类型"><a class="header" href="#原生类型">原生类型</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257523.jpg" alt="Rust原生类型" /></p>
+<h3 id="组合类型"><a class="header" href="#组合类型">组合类型</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257587.jpg" alt="Rust组合类型" /></p>
+<h3 id="自定义组合类型"><a class="header" href="#自定义组合类型">自定义组合类型</a></h3>
+<h2 id="类型推导"><a class="header" href="#类型推导">类型推导</a></h2>
+<h1 id="泛型"><a class="header" href="#泛型">泛型</a></h1>
+<h2 id="实现方式"><a class="header" href="#实现方式">实现方式</a></h2>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.png" alt="不同语言实现泛型的方式" /></p>
+<h2 id="泛型数据结构"><a class="header" href="#泛型数据结构">泛型数据结构</a></h2>
+<h3 id="逐步约束把决策交给使用者"><a class="header" href="#逐步约束把决策交给使用者">逐步约束：把决策交给使用者</a></h3>
+<h2 id="泛型参数"><a class="header" href="#泛型参数">泛型参数</a></h2>
+<h3 id="参数多态"><a class="header" href="#参数多态">参数多态</a></h3>
+<h3 id="三种使用场景"><a class="header" href="#三种使用场景">三种使用场景</a></h3>
+<h4 id="延迟绑定"><a class="header" href="#延迟绑定">延迟绑定</a></h4>
+<h4 id="延迟绑定-1"><a class="header" href="#延迟绑定-1">延迟绑定</a></h4>
+<h4 id="多个实现"><a class="header" href="#多个实现">多个实现</a></h4>
+<h2 id="泛型函数"><a class="header" href="#泛型函数">泛型函数</a></h2>
+<h3 id="返回值携带泛型参数"><a class="header" href="#返回值携带泛型参数">返回值携带泛型参数</a></h3>
+<h1 id="trait"><a class="header" href="#trait">Trait</a></h1>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F.jpg" alt="trait概览图" /></p>
+<h2 id="基本练习"><a class="header" href="#基本练习">基本练习</a></h2>
+<h3 id="关联类型"><a class="header" href="#关联类型">关联类型</a></h3>
+<h3 id="支持泛型"><a class="header" href="#支持泛型">支持泛型</a></h3>
+<h3 id="支持继承"><a class="header" href="#支持继承">支持继承</a></h3>
+<h3 id="子类型多态"><a class="header" href="#子类型多态">子类型多态</a></h3>
+<h2 id="trait-object"><a class="header" href="#trait-object">Trait Object</a></h2>
+<h3 id="实现机理ptrvtable"><a class="header" href="#实现机理ptrvtable">实现机理：ptr+vtable</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F-4258625.jpg" alt="13｜类型系统：如何使用trait来定义接口？" /></p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F-4258661.jpg" alt="13｜类型系统：如何使用trait来定义接口？" /></p>
+<h3 id="使用场景"><a class="header" href="#使用场景">使用场景</a></h3>
+<h4 id="在函数中使用"><a class="header" href="#在函数中使用">在函数中使用</a></h4>
+<h4 id="在函数返回值中使用"><a class="header" href="#在函数返回值中使用">在函数返回值中使用</a></h4>
+<h5 id="在数据结构中使用"><a class="header" href="#在数据结构中使用">在数据结构中使用</a></h5>
+<h2 id="常用trait"><a class="header" href="#常用trait">常用trait</a></h2>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/14%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1%E7%9A%84trait%EF%BC%9F.jpg" alt="14｜类型系统：有哪些必须掌握的trait？" /></p>
+<h3 id="内存相关"><a class="header" href="#内存相关">内存相关</a></h3>
+<h3 id="标签trait"><a class="header" href="#标签trait">标签trait</a></h3>
+<h3 id="类型转换-1"><a class="header" href="#类型转换-1">类型转换</a></h3>
+<h3 id="操作符相关"><a class="header" href="#操作符相关">操作符相关</a></h3>
+<h2 id="设计架构"><a class="header" href="#设计架构">设计架构</a></h2>
+<h3 id="顺手自然"><a class="header" href="#顺手自然">顺手自然</a></h3>
+<h3 id="桥接"><a class="header" href="#桥接">桥接</a></h3>
+<h3 id="控制反转"><a class="header" href="#控制反转">控制反转</a></h3>
+<h3 id="solid原则"><a class="header" href="#solid原则">SOLID原则</a></h3>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="iii-数据结构"><a class="header" href="#iii-数据结构">III. 数据结构</a></h1>
 <div id="admonition-数据结构快速一览" class="admonition tip">
 <div class="admonition-title">
@@ -3179,7 +3329,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Sep 25 14:09:26 UTC 2022 -->
+<!-- Added by: runner, at: Tue Sep 27 06:12:20 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
