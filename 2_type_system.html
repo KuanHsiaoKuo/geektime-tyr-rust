@@ -198,6 +198,11 @@
 <li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E5%90%88%E7%B1%BB%E5%9E%8B">自定义组合类型</a></li>
 </ul>
 </li>
+<li><a href="#%E5%B0%8F%E4%BE%8B%E5%AD%90">小例子</a>
+<ul>
+<li><a href="#%E5%B8%B8%E9%87%8F">常量</a></li>
+</ul>
+</li>
 <li><a href="#%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC">类型推导</a></li>
 </ul>
 </li>
@@ -223,6 +228,12 @@
 </li>
 <li><a href="#%E6%B3%9B%E5%9E%8B%E5%87%BD%E6%95%B0">泛型函数</a>
 <ul>
+<li><a href="#%E5%8D%95%E6%80%81%E5%8C%96">单态化</a>
+<ul>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a></li>
+<li><a href="#%E4%BC%98%E5%8A%A3">优劣</a></li>
+</ul>
+</li>
 <li><a href="#%E8%BF%94%E5%9B%9E%E5%80%BC%E6%90%BA%E5%B8%A6%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0">返回值携带泛型参数</a></li>
 </ul>
 </li>
@@ -232,6 +243,12 @@
 <ul>
 <li><a href="#%E5%9F%BA%E6%9C%AC%E7%BB%83%E4%B9%A0">基本练习</a>
 <ul>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E7%BA%A6%E6%9D%9F">泛型约束</a>
+<ul>
+<li><a href="#%E6%80%9D%E8%80%83%E9%A2%98">思考题</a></li>
+<li><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">解决方案</a></li>
+</ul>
+</li>
 <li><a href="#%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B">关联类型</a></li>
 <li><a href="#%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B">支持泛型</a></li>
 <li><a href="#%E6%94%AF%E6%8C%81%E7%BB%A7%E6%89%BF">支持继承</a></li>
@@ -273,7 +290,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Sep 27 06:12:19 UTC 2022 -->
+<!-- Added by: runner, at: Wed Sep 28 10:55:09 UTC 2022 -->
 <!--te-->
 <h2 id="类型系统分类图"><a class="header" href="#类型系统分类图">类型系统分类图</a></h2>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.jpg" alt="类型系统分类图" /></p>
@@ -291,12 +308,57 @@
 <h3 id="组合类型"><a class="header" href="#组合类型">组合类型</a></h3>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257587.jpg" alt="Rust组合类型" /></p>
 <h3 id="自定义组合类型"><a class="header" href="#自定义组合类型">自定义组合类型</a></h3>
+<h2 id="小例子"><a class="header" href="#小例子">小例子</a></h2>
+<h3 id="常量"><a class="header" href="#常量">常量</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">const PI: f64 = std::f64::consts::PI;
+static E: f32 = std::f32::consts::E;
+
+fn main() {
+    const V: u32 = 10;
+    static V1: &amp;str = &quot;hello&quot;;
+    println!(&quot;PI: {}, E: {}, V {}, V1: {}&quot;, PI, E, V, V1);
+}
+</code></pre></pre>
 <h2 id="类型推导"><a class="header" href="#类型推导">类型推导</a></h2>
 <h1 id="泛型"><a class="header" href="#泛型">泛型</a></h1>
 <h2 id="实现方式"><a class="header" href="#实现方式">实现方式</a></h2>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.png" alt="不同语言实现泛型的方式" /></p>
 <h2 id="泛型数据结构"><a class="header" href="#泛型数据结构">泛型数据结构</a></h2>
 <h3 id="逐步约束把决策交给使用者"><a class="header" href="#逐步约束把决策交给使用者">逐步约束：把决策交给使用者</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">use std::fs::File;
+use std::io::{BufReader, Read, Result};
+
+struct MyReader&lt;R&gt; {
+    reader: R,
+    buf: String,
+}
+
+impl&lt;R&gt; MyReader&lt;R&gt; {
+    pub fn new(reader: R) -&gt; Self {
+        Self {
+            reader,
+            buf: String::with_capacity(1024),
+        }
+    }
+}
+
+impl&lt;R&gt; MyReader&lt;R&gt;
+where
+    R: Read,
+{
+    pub fn process(&amp;mut self) -&gt; Result&lt;usize&gt; {
+        self.reader.read_to_string(&amp;mut self.buf)
+    }
+}
+
+fn main() {
+    let f = File::open(&quot;/etc/hosts&quot;).unwrap();
+    let mut reader = MyReader::new(BufReader::new(f));
+
+    let size = reader.process().unwrap();
+    println!(&quot;total size read: {}&quot;, size);
+}
+</code></pre></pre>
 <h2 id="泛型参数"><a class="header" href="#泛型参数">泛型参数</a></h2>
 <h3 id="参数多态"><a class="header" href="#参数多态">参数多态</a></h3>
 <h3 id="三种使用场景"><a class="header" href="#三种使用场景">三种使用场景</a></h3>
@@ -304,10 +366,131 @@
 <h4 id="延迟绑定-1"><a class="header" href="#延迟绑定-1">延迟绑定</a></h4>
 <h4 id="多个实现"><a class="header" href="#多个实现">多个实现</a></h4>
 <h2 id="泛型函数"><a class="header" href="#泛型函数">泛型函数</a></h2>
+<h3 id="单态化"><a class="header" href="#单态化">单态化</a></h3>
+<blockquote>
+<p>对于泛型函数，Rust 会进行单态化（Monomorphization）处理，也就是在编译时，把所有用到的泛型函数的泛型参数展开，生成若干个函数。
+所以，下方的 id() 编译后会得到 一个处理后的多个版本</p>
+</blockquote>
+<h4 id="示例"><a class="header" href="#示例">示例</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">fn id&lt;T&gt;(x: T) -&gt; T {
+    x
+}
+
+fn main() {
+    let int = id(42);
+    let string = id(&quot;Tyr&quot;);
+    println!(&quot;{}, {}&quot;, int, string);
+}
+</code></pre></pre>
+<h4 id="优劣"><a class="header" href="#优劣">优劣</a></h4>
 <h3 id="返回值携带泛型参数"><a class="header" href="#返回值携带泛型参数">返回值携带泛型参数</a></h3>
 <h1 id="trait"><a class="header" href="#trait">Trait</a></h1>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F.jpg" alt="trait概览图" /></p>
 <h2 id="基本练习"><a class="header" href="#基本练习">基本练习</a></h2>
+<h3 id="泛型约束"><a class="header" href="#泛型约束">泛型约束</a></h3>
+<h4 id="思考题"><a class="header" href="#思考题">思考题</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use std::io::{BufWriter, Write};
+use std::net::TcpStream;
+
+#[derive(Debug)]
+struct MyWriter&lt;W&gt; {
+    writer: W,
+}
+
+impl&lt;W: Write&gt; MyWriter&lt;W&gt; {
+    pub fn new(addr: &amp;str) -&gt; Self {
+        let stream = TcpStream::connect(&quot;127.0.0.1:8080&quot;).unwrap();
+        Self {
+            writer: BufWriter::new(stream),
+        }
+    }
+
+    pub fn write(&amp;mut self, buf: &amp;str) -&gt; std::io::Result&lt;()&gt; {
+        self.writer.write_all(buf.as_bytes())
+    }
+}
+
+fn main() {
+    let writer = MyWriter::new(&quot;127.0.0.1:8080&quot;);
+    writer.write(&quot;hello world!&quot;);
+}
+</code></pre></pre>
+<div id="admonition-分析编译报错原因" class="admonition tip">
+<div class="admonition-title">
+<p>分析编译报错原因</p>
+<p><a class="admonition-anchor-link" href="#admonition-分析编译报错原因"></a></p>
+</div>
+<div>
+<p>主要原因是，实现 new 方法时，对泛型的约束要求要满足 W: Write，而 new 的声明返回值是 Self，也就是说 self.wirter 必须是 W: Write 类型(泛型)，但实际返回值是一个确定的类型 BufWriter<TcpStream>，这不满足要求。</p>
+</div>
+</div>
+<h4 id="解决方案"><a class="header" href="#解决方案">解决方案</a></h4>
+<div id="admonition-解决方案梳理" class="admonition info">
+<div class="admonition-title">
+<p>解决方案梳理</p>
+<p><a class="admonition-anchor-link" href="#admonition-解决方案梳理"></a></p>
+</div>
+<div>
+<ol>
+<li>修改 new 方法的返回值</li>
+<li>对确定的类型 MyWriter&lt;BufWriter<TcpStream>&gt;实现 new 方法</li>
+<li>修改 new 方法的实现，使用依赖注入</li>
+</ol>
+</div>
+</div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::io::{BufWriter, Write};
+use std::net::TcpStream;
+
+#[derive(Debug)]
+struct MyWriter&lt;W&gt; {
+    writer: W,
+}
+
+impl&lt;W: Write&gt; MyWriter&lt;W&gt; {
+    pub fn new(writer: W) -&gt; Self {
+        Self { writer }
+    }
+
+    pub fn write(&amp;mut self, buf: &amp;str) -&gt; std::io::Result&lt;()&gt; {
+        self.writer.write_all(buf.as_bytes())
+    }
+}
+
+fn main() {
+    let stream = TcpStream::connect(&quot;127.0.0.1:8080&quot;).unwrap();
+
+    let mut writer = MyWriter::new(BufWriter::new(stream));
+    writer.write(&quot;hello world!&quot;).unwrap();
+}
+</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust  editable">impl MyWriter&lt;BufWriter&lt;TcpStream&gt;&gt; {
+    pub fn new(addr: &amp;str) -&gt; Self {
+        let stream = TcpStream::connect(addr).unwrap();
+        Self {
+            writer: BufWriter::new(stream),
+        }
+    }
+}
+
+fn main() {
+    let mut writer = MyWriter::new(&quot;127.0.0.1:8080&quot;);
+    writer.write(&quot;hello world!&quot;);
+}
+</code></pre></pre>
+<pre><pre class="playground"><code class="language-rust  editable">impl&lt;W: Write&gt; MyWriter&lt;W&gt; {
+    pub fn new(writer: W) -&gt; Self {
+        Self {
+            writer,
+        }
+    }
+}
+
+fn main() {
+    let stream = TcpStream::connect(&quot;127.0.0.1:8080&quot;).unwrap();
+    let mut writer = MyWriter::new(BufWriter::new(stream));
+    writer.write(&quot;hello world!&quot;);
+}
+</code></pre></pre>
 <h3 id="关联类型"><a class="header" href="#关联类型">关联类型</a></h3>
 <h3 id="支持泛型"><a class="header" href="#支持泛型">支持泛型</a></h3>
 <h3 id="支持继承"><a class="header" href="#支持继承">支持继承</a></h3>
