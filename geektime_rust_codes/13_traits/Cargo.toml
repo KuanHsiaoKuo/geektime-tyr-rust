@@ -20,6 +20,18 @@ name = "parse2"
 path = "src/parse2.rs"
 
 [[bin]]
+name = "add"
+path = "src/add.rs"
+
+[[bin]]
+name = "add2"
+path = "src/add2.rs"
+
+[[bin]]
+name = "add3"
+path = "src/add3.rs"
+
+[[bin]]
 name = "iterator"
 path = "src/iterator.rs"
 
