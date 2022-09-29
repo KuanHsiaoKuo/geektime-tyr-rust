@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 28 10:55:10 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 29 09:52:02 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -387,7 +387,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 28 10:55:11 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 29 09:52:04 UTC 2022 -->
 <!--te-->
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
 <h3 id="官方数据结构cheat-sheet"><a class="header" href="#官方数据结构cheat-sheet">官方数据结构cheat sheet</a></h3>
@@ -878,7 +878,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 28 10:55:11 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 29 09:52:03 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1332,7 +1332,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 28 10:55:12 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 29 09:52:05 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">[package]
@@ -2378,7 +2378,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 28 10:55:11 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 29 09:52:05 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -3048,6 +3048,114 @@ fn main() {
 <li><a href="https://tyrchen.github.io/rust-training/rust-training-all-in-one-cn.html#1">陈天培训slides</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="i-从栈堆所有权生命周期开始内存管理"><a class="header" href="#i-从栈堆所有权生命周期开始内存管理">I. 从栈堆、所有权、生命周期开始内存管理</a></h1>
+<!--ts-->
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#i-%E4%BB%8E%E6%A0%88%E5%A0%86%E6%89%80%E6%9C%89%E6%9D%83%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%BC%80%E5%A7%8B%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">I. 从栈堆、所有权、生命周期开始内存管理</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%86%85%E5%AD%98">内存</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E5%9B%BE">字符串内存使用图</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E6%A0%88">栈</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E6%A0%88%E5%B8%A7%E7%A4%BA%E6%84%8F%E5%9B%BE">栈帧示意图</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E8%80%83%E8%99%91%E6%A0%88%E6%BA%A2%E5%87%BA">考虑栈溢出</a></li>
+</ul>
+</li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%A0%86">堆</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E4%BD%BF%E7%94%A8%E5%A0%86%E5%BC%95%E7%94%A8%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE">使用堆引用共享数据</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E8%80%83%E8%99%91%E5%A0%86%E6%BA%A2%E5%87%BA">考虑堆溢出</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E7%BC%96%E7%A8%8B%E5%9B%9B%E5%A4%A7%E7%B1%BB%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5">编程四大类基本概念</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#1-%E6%95%B0%E6%8D%AE">1. 数据</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%80%BC%E5%92%8C%E7%B1%BB%E5%9E%8B">值和类型</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E6%8C%87%E9%92%88%E5%92%8C%E5%BC%95%E7%94%A8">指针和引用</a></li>
+</ul>
+</li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#2-%E4%BB%A3%E7%A0%81">2. 代码</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%87%BD%E6%95%B0---%E6%96%B9%E6%B3%95---%E9%97%AD%E5%8C%85">函数 -&gt; 方法 -&gt; 闭包</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E9%97%AD%E5%8C%85%E7%A4%BA%E6%84%8F%E5%9B%BE">闭包示意图</a></li>
+</ul>
+</li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E6%8E%A5%E5%8F%A3%E4%B8%8E%E8%99%9A%E8%A1%A8">接口与虚表</a></li>
+</ul>
+</li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#3-%E8%BF%90%E8%A1%8C%E6%96%B9%E5%BC%8F">3. 运行方式</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%B9%B6%E8%A1%8C">并发与并行</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%90%8C%E6%AD%A5%E5%92%8C%E5%BC%82%E6%AD%A5">同步和异步</a></li>
+</ul>
+</li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#4-%E7%BC%96%E7%A8%8B%E8%8C%83%E5%BC%8F">4. 编程范式</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E6%B3%9B%E5%9E%8B%E7%BC%96%E7%A8%8B">泛型编程</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B">函数式编程</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B">面向对象编程</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#rust%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%A6%82%E8%A7%88">Rust内存管理概览</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E4%B8%80%E6%89%80%E6%9C%89%E6%9D%83">一、所有权</a>
+<ul>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%8D%95%E4%B8%80%E6%89%80%E6%9C%89%E6%9D%83%E6%8E%8C%E6%8E%A7%E7%94%9F%E6%9D%80%E5%A4%A7%E6%9D%83">单一所有权：掌控生杀大权</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E6%89%80%E6%9C%89%E6%9D%83%E5%80%9F%E7%94%A8">所有权借用</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85">多个所有者</a></li>
+</ul>
+</li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E4%BA%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">二、生命周期</a></li>
+<li><a href="1_stack_heap_ownership_lifetime_memory.html#%E4%B8%89%E8%9E%8D%E4%BC%9A%E8%B4%AF%E9%80%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1">三、融会贯通，从创建到消亡</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Sep 29 09:51:58 UTC 2022 -->
+<!--te-->
+<h1 id="内存"><a class="header" href="#内存">内存</a></h1>
+<h2 id="字符串内存使用图"><a class="header" href="#字符串内存使用图">字符串内存使用图</a></h2>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/01%EF%BD%9C%E5%86%85%E5%AD%98%EF%BC%9A%E5%80%BC%E6%94%BE%E5%A0%86%E4%B8%8A%E8%BF%98%E6%98%AF%E6%94%BE%E6%A0%88%E4%B8%8A%EF%BC%8C%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98.jpg" alt="字符串内存使用图" /></p>
+<h2 id="栈"><a class="header" href="#栈">栈</a></h2>
+<h3 id="栈帧示意图"><a class="header" href="#栈帧示意图">栈帧示意图</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/01%EF%BD%9C%E5%86%85%E5%AD%98%EF%BC%9A%E5%80%BC%E6%94%BE%E5%A0%86%E4%B8%8A%E8%BF%98%E6%98%AF%E6%94%BE%E6%A0%88%E4%B8%8A%EF%BC%8C%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98-4444135.jpg" alt="栈帧示意图" /></p>
+<h3 id="考虑栈溢出"><a class="header" href="#考虑栈溢出">考虑栈溢出</a></h3>
+<h2 id="堆"><a class="header" href="#堆">堆</a></h2>
+<h3 id="使用堆引用共享数据"><a class="header" href="#使用堆引用共享数据">使用堆引用共享数据</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/01%EF%BD%9C%E5%86%85%E5%AD%98%EF%BC%9A%E5%80%BC%E6%94%BE%E5%A0%86%E4%B8%8A%E8%BF%98%E6%98%AF%E6%94%BE%E6%A0%88%E4%B8%8A%EF%BC%8C%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98-4444274.jpg" alt="使用堆引用共享数据" /></p>
+<h3 id="考虑堆溢出"><a class="header" href="#考虑堆溢出">考虑堆溢出</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/01%EF%BD%9C%E5%86%85%E5%AD%98%EF%BC%9A%E5%80%BC%E6%94%BE%E5%A0%86%E4%B8%8A%E8%BF%98%E6%98%AF%E6%94%BE%E6%A0%88%E4%B8%8A%EF%BC%8C%E8%BF%99%E6%98%AF%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98.png" alt="堆问题" /></p>
+<h1 id="编程四大类基本概念"><a class="header" href="#编程四大类基本概念">编程四大类基本概念</a></h1>
+<h2 id="1-数据"><a class="header" href="#1-数据">1. 数据</a></h2>
+<h3 id="值和类型"><a class="header" href="#值和类型">值和类型</a></h3>
+<h3 id="指针和引用"><a class="header" href="#指针和引用">指针和引用</a></h3>
+<h2 id="2-代码"><a class="header" href="#2-代码">2. 代码</a></h2>
+<h3 id="函数---方法---闭包"><a class="header" href="#函数---方法---闭包">函数 -&gt; 方法 -&gt; 闭包</a></h3>
+<h4 id="闭包示意图"><a class="header" href="#闭包示意图">闭包示意图</a></h4>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/02%EF%BD%9C%E4%B8%B2%E8%AE%B2%EF%BC%9A%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E4%B8%AD%EF%BC%8C%E9%82%A3%E4%BA%9B%E4%BD%A0%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5.jpg" alt="闭包与自由变量" /></p>
+<h3 id="接口与虚表"><a class="header" href="#接口与虚表">接口与虚表</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/02%EF%BD%9C%E4%B8%B2%E8%AE%B2%EF%BC%9A%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E4%B8%AD%EF%BC%8C%E9%82%A3%E4%BA%9B%E4%BD%A0%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5-4444557.jpg" alt="虚表" /></p>
+<h2 id="3-运行方式"><a class="header" href="#3-运行方式">3. 运行方式</a></h2>
+<h3 id="并发与并行"><a class="header" href="#并发与并行">并发与并行</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/02%EF%BD%9C%E4%B8%B2%E8%AE%B2%EF%BC%9A%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E4%B8%AD%EF%BC%8C%E9%82%A3%E4%BA%9B%E4%BD%A0%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5-4444672.jpg" alt="并发与并行" /></p>
+<h3 id="同步和异步"><a class="header" href="#同步和异步">同步和异步</a></h3>
+<h2 id="4-编程范式"><a class="header" href="#4-编程范式">4. 编程范式</a></h2>
+<h3 id="泛型编程"><a class="header" href="#泛型编程">泛型编程</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/02%EF%BD%9C%E4%B8%B2%E8%AE%B2%EF%BC%9A%E7%BC%96%E7%A8%8B%E5%BC%80%E5%8F%91%E4%B8%AD%EF%BC%8C%E9%82%A3%E4%BA%9B%E4%BD%A0%E9%9C%80%E8%A6%81%E6%8E%8C%E6%8F%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5-4444741.jpg" alt="泛型编程更抽象，更通用" /></p>
+<h3 id="函数式编程"><a class="header" href="#函数式编程">函数式编程</a></h3>
+<h3 id="面向对象编程"><a class="header" href="#面向对象编程">面向对象编程</a></h3>
+<h1 id="rust内存管理概览"><a class="header" href="#rust内存管理概览">Rust内存管理概览</a></h1>
+<h2 id="一所有权"><a class="header" href="#一所有权">一、所有权</a></h2>
+<h3 id="单一所有权掌控生杀大权"><a class="header" href="#单一所有权掌控生杀大权">单一所有权：掌控生杀大权</a></h3>
+<h3 id="所有权借用"><a class="header" href="#所有权借用">所有权借用</a></h3>
+<h3 id="多个所有者"><a class="header" href="#多个所有者">多个所有者</a></h3>
+<h2 id="二生命周期"><a class="header" href="#二生命周期">二、生命周期</a></h2>
+<h2 id="三融会贯通从创建到消亡"><a class="header" href="#三融会贯通从创建到消亡">三、融会贯通，从创建到消亡</a></h2>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="ii-类型系统"><a class="header" href="#ii-类型系统">II. 类型系统</a></h1>
 <!--ts-->
 <ul>
@@ -3111,6 +3219,14 @@ fn main() {
 <ul>
 <li><a href="2_type_system.html#%E5%9F%BA%E6%9C%AC%E7%BB%83%E4%B9%A0">基本练习</a>
 <ul>
+<li><a href="2_type_system.html#self%E5%92%8Cself">Self和self</a></li>
+<li><a href="2_type_system.html#%E9%80%92%E8%BF%9B%E7%BB%83%E4%B9%A0trait%E4%BD%BF%E7%94%A8">递进练习trait使用</a>
+<ul>
+<li><a href="2_type_system.html#%E5%9F%BA%E7%A1%80%E5%AE%9A%E4%B9%89trait">基础定义trait</a></li>
+<li><a href="2_type_system.html#%E6%B7%BB%E5%8A%A0%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0%E4%BD%9C%E4%B8%BA%E6%B3%9B%E5%9E%8B%E7%BA%A6%E6%9D%9F">添加泛型参数作为泛型约束</a></li>
+<li><a href="2_type_system.html#%E4%BD%BF%E7%94%A8%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B%E6%B7%BB%E5%8A%A0resultt-e">使用关联类型+添加Result&lt;T, E&gt;</a></li>
+</ul>
+</li>
 <li><a href="2_type_system.html#%E6%B3%9B%E5%9E%8B%E7%BA%A6%E6%9D%9F">泛型约束</a>
 <ul>
 <li><a href="2_type_system.html#%E6%80%9D%E8%80%83%E9%A2%98">思考题</a></li>
@@ -3118,7 +3234,11 @@ fn main() {
 </ul>
 </li>
 <li><a href="2_type_system.html#%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B">关联类型</a></li>
-<li><a href="2_type_system.html#%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B">支持泛型</a></li>
+<li><a href="2_type_system.html#%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B">支持泛型</a>
+<ul>
+<li><a href="2_type_system.html#%E7%89%88%E6%9C%AC%E4%B8%80%E6%94%AF%E6%8C%81%E6%95%B0%E5%AD%97%E7%9B%B8%E5%8A%A0">版本一：支持数字相加</a></li>
+</ul>
+</li>
 <li><a href="2_type_system.html#%E6%94%AF%E6%8C%81%E7%BB%A7%E6%89%BF">支持继承</a></li>
 <li><a href="2_type_system.html#%E5%AD%90%E7%B1%BB%E5%9E%8B%E5%A4%9A%E6%80%81">子类型多态</a></li>
 </ul>
@@ -3158,7 +3278,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 28 10:55:09 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 29 09:51:59 UTC 2022 -->
 <!--te-->
 <h2 id="类型系统分类图"><a class="header" href="#类型系统分类图">类型系统分类图</a></h2>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.jpg" alt="类型系统分类图" /></p>
@@ -3255,6 +3375,162 @@ fn main() {
 <h1 id="trait"><a class="header" href="#trait">Trait</a></h1>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F.jpg" alt="trait概览图" /></p>
 <h2 id="基本练习"><a class="header" href="#基本练习">基本练习</a></h2>
+<h3 id="self和self"><a class="header" href="#self和self">Self和self</a></h3>
+<pre><pre class="playground"><code class="language-rust  editable">use std::fmt;
+use std::io::Write;
+
+struct BufBuilder {
+    buf: Vec&lt;u8&gt;,
+}
+
+impl BufBuilder {
+    pub fn new() -&gt; Self {
+        Self {
+            buf: Vec::with_capacity(1024),
+        }
+    }
+}
+
+impl fmt::Debug for BufBuilder {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;{}&quot;, String::from_utf8_lossy(self.buf.as_ref()))
+    }
+}
+
+impl Write for BufBuilder {
+    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; std::io::Result&lt;usize&gt; {
+        self.buf.extend_from_slice(buf);
+        Ok(buf.len())
+    }
+
+    fn flush(&amp;mut self) -&gt; std::io::Result&lt;()&gt; {
+        Ok(())
+    }
+}
+
+fn main() {
+    let mut buf = BufBuilder::new();
+    buf.write_all(b&quot;Hello world!&quot;).unwrap();
+    println!(&quot;{:?}&quot;, buf);
+}
+</code></pre></pre>
+<h3 id="递进练习trait使用"><a class="header" href="#递进练习trait使用">递进练习trait使用</a></h3>
+<h4 id="基础定义trait"><a class="header" href="#基础定义trait">基础定义trait</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use regex::Regex;
+pub trait Parse {
+    fn parse(s: &amp;str) -&gt; Self;
+}
+
+impl Parse for u8 {
+    fn parse(s: &amp;str) -&gt; Self {
+        let re: Regex = Regex::new(r&quot;^[0-9]+&quot;).unwrap();
+        if let Some(captures) = re.captures(s) {
+            captures
+                .get(0)
+                .map_or(0, |s| s.as_str().parse().unwrap_or(0))
+        } else {
+            0
+        }
+    }
+}
+
+#[test]
+fn parse_should_work() {
+    assert_eq!(u8::parse(&quot;123abcd&quot;), 123);
+    assert_eq!(u8::parse(&quot;1234abcd&quot;), 0);
+    assert_eq!(u8::parse(&quot;abcd&quot;), 0);
+}
+
+fn main() {
+    println!(&quot;result: {}&quot;, u8::parse(&quot;255 hello world&quot;));
+}
+</code></pre></pre>
+<h4 id="添加泛型参数作为泛型约束"><a class="header" href="#添加泛型参数作为泛型约束">添加泛型参数作为泛型约束</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use std::str::FromStr;
+
+use regex::Regex;
+pub trait Parse {
+    fn parse(s: &amp;str) -&gt; Self;
+}
+
+impl&lt;T&gt; Parse for T
+where
+    T: FromStr + Default,
+{
+    fn parse(s: &amp;str) -&gt; Self {
+        let re: Regex = Regex::new(r&quot;^[0-9]+(\.[0-9]+)?&quot;).unwrap();
+        let d = || Default::default();
+        if let Some(captures) = re.captures(s) {
+            captures
+                .get(0)
+                .map_or(d(), |s| s.as_str().parse().unwrap_or_else(|_| d()))
+        } else {
+            d()
+        }
+    }
+}
+
+#[test]
+fn parse_should_work() {
+    assert_eq!(u32::parse(&quot;123abcd&quot;), 123);
+    assert_eq!(u32::parse(&quot;123.45abcd&quot;), 0);
+    assert_eq!(f64::parse(&quot;123.45abcd&quot;).to_string(), &quot;123.45&quot;);
+    assert_eq!(f64::parse(&quot;abcd&quot;).to_string(), &quot;0&quot;);
+}
+
+fn main() {
+    println!(&quot;result: {}&quot;, u8::parse(&quot;255 hello world&quot;));
+}
+</code></pre></pre>
+<h4 id="使用关联类型添加resultt-e"><a class="header" href="#使用关联类型添加resultt-e">使用关联类型+添加Result&lt;T, E&gt;</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use std::str::FromStr;
+
+use regex::Regex;
+pub trait Parse {
+    type Error;
+    fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
+    where
+        Self: Sized;
+}
+
+impl&lt;T&gt; Parse for T
+where
+    T: FromStr + Default,
+{
+    // 定义关联类型 Error 为 String
+    type Error = String;
+    fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt; {
+        let re: Regex = Regex::new(r&quot;^[0-9]+(\.[0-9]+)?&quot;).unwrap();
+        if let Some(captures) = re.captures(s) {
+            // 当出错时我们返回 Err(String)
+            captures
+                .get(0)
+                .map_or(Err(&quot;failed to capture&quot;.to_string()), |s| {
+                    s.as_str()
+                        .parse()
+                        .map_err(|_err| &quot;failed to parse captured string&quot;.to_string())
+                })
+        } else {
+            Err(&quot;failed to parse string&quot;.to_string())
+        }
+    }
+}
+
+#[test]
+fn parse_should_work() {
+    assert_eq!(u32::parse(&quot;123abcd&quot;), Ok(123));
+    assert_eq!(
+        u32::parse(&quot;123.45abcd&quot;),
+        Err(&quot;failed to parse captured string&quot;.into())
+    );
+    assert_eq!(f64::parse(&quot;123.45abcd&quot;), Ok(123.45));
+    assert!(f64::parse(&quot;abcd&quot;).is_err());
+}
+
+fn main() {
+    println!(&quot;result: {:?}&quot;, u8::parse(&quot;255 hello world&quot;));
+}
+</code></pre></pre>
 <h3 id="泛型约束"><a class="header" href="#泛型约束">泛型约束</a></h3>
 <h4 id="思考题"><a class="header" href="#思考题">思考题</a></h4>
 <pre><pre class="playground"><code class="language-rust  editable">use std::io::{BufWriter, Write};
@@ -3361,6 +3637,42 @@ fn main() {
 </code></pre></pre>
 <h3 id="关联类型"><a class="header" href="#关联类型">关联类型</a></h3>
 <h3 id="支持泛型"><a class="header" href="#支持泛型">支持泛型</a></h3>
+<h4 id="版本一支持数字相加"><a class="header" href="#版本一支持数字相加">版本一：支持数字相加</a></h4>
+<pre><pre class="playground"><code class="language-rust  editable">use std::ops::Add;
+
+#[derive(Debug)]
+struct Complex {
+    real: f64,
+    imagine: f64,
+}
+
+impl Complex {
+    pub fn new(real: f64, imagine: f64) -&gt; Self {
+        Self { real, imagine }
+    }
+}
+
+// 对 Complex 类型的实现
+impl Add for Complex {
+    type Output = Self;
+
+    // 注意 add 第一个参数是 self，会移动所有权
+    fn add(self, rhs: Self) -&gt; Self::Output {
+        let real = self.real + rhs.real;
+        let imagine = self.imagine + rhs.imagine;
+        Self::new(real, imagine)
+    }
+}
+
+
+fn main() {
+    let c1 = Complex::new(1.0, 1f64);
+    let c2 = Complex::new(2 as f64, 3.0);
+    println!(&quot;{:?}&quot;, c1 + c2);
+    // c1, c2 已经被移动，所以下面这句无法编译
+    // println!(&quot;{:?}&quot;, c1 + c2);
+}
+</code></pre></pre>
 <h3 id="支持继承"><a class="header" href="#支持继承">支持继承</a></h3>
 <h3 id="子类型多态"><a class="header" href="#子类型多态">子类型多态</a></h3>
 <h2 id="trait-object"><a class="header" href="#trait-object">Trait Object</a></h2>
@@ -3512,7 +3824,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Sep 28 10:55:09 UTC 2022 -->
+<!-- Added by: runner, at: Thu Sep 29 09:52:00 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
