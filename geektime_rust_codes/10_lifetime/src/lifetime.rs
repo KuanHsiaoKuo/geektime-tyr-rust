@@ -11,6 +11,7 @@ fn main() {
 }
 
 fn get_max(s1: &str) -> &str {
+    // 字符串字面量的生命周期是静态的，而 s1 是动态的，它们的生命周期显然不一致
     max(s1, "Cynthia")
 }
 
