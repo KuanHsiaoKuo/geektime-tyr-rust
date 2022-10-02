@@ -1,63 +1,64 @@
 # II. 类型系统
 
 <!--ts-->
+
 * [II. 类型系统](#ii-类型系统)
-   * [类型系统分类图](#类型系统分类图)
-      * [三个标准](#三个标准)
-      * [Rust类型系统特点](#rust类型系统特点)
-   * [类型分类](#类型分类)
-      * [原生类型](#原生类型)
-      * [组合类型](#组合类型)
-      * [自定义组合类型](#自定义组合类型)
-   * [小例子](#小例子)
-      * [常量](#常量)
-   * [类型推导](#类型推导)
+    * [类型系统分类图](#类型系统分类图)
+        * [三个标准](#三个标准)
+        * [Rust类型系统特点](#rust类型系统特点)
+    * [类型分类](#类型分类)
+        * [原生类型](#原生类型)
+        * [组合类型](#组合类型)
+        * [自定义组合类型](#自定义组合类型)
+    * [小例子](#小例子)
+        * [常量](#常量)
+    * [类型推导](#类型推导)
 * [泛型](#泛型)
-   * [实现方式](#实现方式)
-   * [泛型数据结构](#泛型数据结构)
-      * [逐步约束：把决策交给使用者](#逐步约束把决策交给使用者)
-   * [泛型参数](#泛型参数)
-      * [参数多态](#参数多态)
-      * [三种使用场景](#三种使用场景)
-         * [延迟绑定](#延迟绑定)
-         * [延迟绑定](#延迟绑定-1)
-         * [多个实现](#多个实现)
-   * [泛型函数](#泛型函数)
-      * [单态化](#单态化)
-         * [示例](#示例)
-         * [优劣](#优劣)
-      * [返回值携带泛型参数](#返回值携带泛型参数)
+    * [实现方式](#实现方式)
+    * [泛型数据结构](#泛型数据结构)
+        * [逐步约束：把决策交给使用者](#逐步约束把决策交给使用者)
+    * [泛型参数](#泛型参数)
+        * [参数多态](#参数多态)
+        * [三种使用场景](#三种使用场景)
+            * [延迟绑定](#延迟绑定)
+            * [延迟绑定](#延迟绑定-1)
+            * [多个实现](#多个实现)
+    * [泛型函数](#泛型函数)
+        * [单态化](#单态化)
+            * [示例](#示例)
+            * [优劣](#优劣)
+        * [返回值携带泛型参数](#返回值携带泛型参数)
 * [Trait](#trait)
-   * [基本练习](#基本练习)
-      * [Self和self](#self和self)
-      * [递进练习trait使用](#递进练习trait使用)
-         * [基础定义trait](#基础定义trait)
-         * [添加泛型参数作为泛型约束](#添加泛型参数作为泛型约束)
-         * [使用关联类型+添加Result&lt;T, E&gt;](#使用关联类型添加resultt-e)
-      * [泛型约束](#泛型约束)
-         * [思考题](#思考题)
-         * [解决方案](#解决方案)
-      * [关联类型](#关联类型)
-      * [支持泛型](#支持泛型)
-         * [版本一：支持数字相加](#版本一支持数字相加)
-      * [支持继承](#支持继承)
-      * [子类型多态](#子类型多态)
-   * [Trait Object](#trait-object)
-      * [实现机理：ptr+vtable](#实现机理ptrvtable)
-      * [使用场景](#使用场景)
-         * [在函数中使用](#在函数中使用)
-         * [在函数返回值中使用](#在函数返回值中使用)
-            * [在数据结构中使用](#在数据结构中使用)
-   * [常用trait](#常用trait)
-      * [内存相关](#内存相关)
-      * [标签trait](#标签trait)
-      * [类型转换](#类型转换)
-      * [操作符相关](#操作符相关)
-   * [设计架构](#设计架构)
-      * [顺手自然](#顺手自然)
-      * [桥接](#桥接)
-      * [控制反转](#控制反转)
-      * [SOLID原则](#solid原则)
+    * [基本练习](#基本练习)
+        * [Self和self](#self和self)
+        * [递进练习trait使用](#递进练习trait使用)
+            * [基础定义trait](#基础定义trait)
+            * [添加泛型参数作为泛型约束](#添加泛型参数作为泛型约束)
+            * [使用关联类型+添加Result&lt;T, E&gt;](#使用关联类型添加resultt-e)
+        * [泛型约束](#泛型约束)
+            * [思考题](#思考题)
+            * [解决方案](#解决方案)
+        * [关联类型](#关联类型)
+        * [支持泛型](#支持泛型)
+            * [版本一：支持数字相加](#版本一支持数字相加)
+        * [支持继承](#支持继承)
+        * [子类型多态](#子类型多态)
+    * [Trait Object](#trait-object)
+        * [实现机理：ptr+vtable](#实现机理ptrvtable)
+        * [使用场景](#使用场景)
+            * [在函数中使用](#在函数中使用)
+            * [在函数返回值中使用](#在函数返回值中使用)
+                * [在数据结构中使用](#在数据结构中使用)
+    * [常用trait](#常用trait)
+        * [内存相关](#内存相关)
+        * [标签trait](#标签trait)
+        * [类型转换](#类型转换)
+        * [操作符相关](#操作符相关)
+    * [设计架构](#设计架构)
+        * [顺手自然](#顺手自然)
+        * [桥接](#桥接)
+        * [控制反转](#控制反转)
+        * [SOLID原则](#solid原则)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sat Oct  1 16:31:37 UTC 2022 -->
@@ -66,7 +67,9 @@
 
 ## 类型系统分类图
 
+~~~admonish info title='类型系统分类图' collapsible=true
 ![类型系统分类图](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.jpg)
+~~~
 
 ### 三个标准
 
@@ -76,17 +79,23 @@
 
 ### Rust类型系统特点
 
+~~~admonish info title='Rust的类型系统有什么特点？' collapsible=true
 ![Rust的类型系统有什么特点？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257735.jpg)
+~~~
 
 ## 类型分类
 
 ### 原生类型
 
+~~~admonish info title='Rust原声类型' collapsible=true
 ![Rust原生类型](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257523.jpg)
+~~~
 
 ### 组合类型
 
+~~~admonish info title='Rust组合类型' collapsible=true
 ![Rust组合类型](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257587.jpg)
+~~~
 
 ### 自定义组合类型
 
@@ -94,9 +103,11 @@
 
 ### 常量
 
+~~~admonish info title='常量定义使用' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/12_type_system/src/constant.rs}}
 ```
+~~~
 
 ## 类型推导
 
@@ -104,15 +115,19 @@
 
 ## 实现方式
 
+~~~admonish info title='不同语言实现泛型的方式' collapsible=true
 ![不同语言实现泛型的方式](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.png)
+~~~
 
 ## 泛型数据结构
 
 ### 逐步约束：把决策交给使用者
 
+~~~admonish info title='将定义与实现分开，使用impl和where逐步根据需要进行约束实现' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/12_type_system/src/reader.rs}}
 ```
+~~~
 
 ## 泛型参数
 
@@ -130,14 +145,14 @@
 
 ### 单态化
 
+~~~admonish info title='编译时展开泛型参数单态化' collapsible=true
 > 对于泛型函数，Rust 会进行单态化（Monomorphization）处理，也就是在编译时，把所有用到的泛型函数的泛型参数展开，生成若干个函数。
 > 所以，下方的 id() 编译后会得到 一个处理后的多个版本
-
-#### 示例
-
+----
 ```rust, editable
 {{#include ../geektime_rust_codes/12_type_system/src/id.rs}}
 ```
+~~~
 
 #### 优劣
 
@@ -145,40 +160,51 @@
 
 # Trait
 
+~~~admonish info title='trait概览图' collapsible=true
 ![trait概览图](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F.jpg)
+~~~
 
 ## 基本练习
 
 ### Self和self
 
+~~~admonish info title='Self和self区别使用, Self其实就是静态方法' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/write.rs}}
 ```
+~~~
 
 ### 递进练习trait使用
 
 #### 基础定义trait
 
+~~~admonish info title='定义Parse trait并实现使用' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/parse.rs}}
 ```
+~~~
 
 #### 添加泛型参数作为泛型约束
 
+~~~admonish info title='impl<T> Parse for T' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/parse1.rs}}
 ```
+~~~
 
 #### 使用关联类型+添加Result<T, E>
 
+~~~admonish info title='关联类型自定义Error' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/parse2.rs}}
 ```
+~~~
 
 ### 泛型约束
 
 #### 思考题
 
+~~~admonish info title='泛型参数impl报错' collapsible=true
 ```rust, editable
 use std::io::{BufWriter, Write};
 use std::net::TcpStream;
@@ -206,6 +232,7 @@ fn main() {
     writer.write("hello world!");
 }
 ```
+~~~
 
 ~~~admonish tip title='分析编译报错原因'
 主要原因是，实现 new 方法时，对泛型的约束要求要满足 W: Write，而 new 的声明返回值是 Self，也就是说 self.wirter 必须是 W: Write 类型(泛型)，但实际返回值是一个确定的类型 BufWriter<TcpStream>，这不满足要求。
@@ -219,10 +246,13 @@ fn main() {
 3. 修改 new 方法的实现，使用依赖注入
 ~~~
 
+~~~admonish info title='1. 修改new方法返回值' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/12_type_system/src/writer.rs}}
 ```
+~~~
 
+~~~admonish info title='2. 针对实现new方法' collapsible=true
 ```rust, editable
 impl MyWriter<BufWriter<TcpStream>> {
     pub fn new(addr: &str) -> Self {
@@ -238,7 +268,9 @@ fn main() {
     writer.write("hello world!");
 }
 ```
+~~~
 
+~~~admonish info title='3. 使用依赖注入修改new方法实现' collapsible=true
 ```rust, editable
 impl<W: Write> MyWriter<W> {
     pub fn new(writer: W) -> Self {
@@ -254,16 +286,17 @@ fn main() {
     writer.write("hello world!");
 }
 ```
+~~~
 
 ### 关联类型
 
 ### 支持泛型
 
-#### 版本一：支持数字相加
-
+~~~admonish info title='版本一：支持数字相加' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/add.rs}}
 ```
+~~~
 
 ### 支持继承
 
@@ -273,9 +306,13 @@ fn main() {
 
 ### 实现机理：ptr+vtable
 
+~~~admonish info title='简单说明' collapsible=true
 ![13｜类型系统：如何使用trait来定义接口？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F-4258625.jpg)
+~~~
 
+~~~admonish info title='复杂点的例子' collapsible=true
 ![13｜类型系统：如何使用trait来定义接口？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F-4258661.jpg)
+~~~
 
 ### 使用场景
 
@@ -287,7 +324,9 @@ fn main() {
 
 ## 常用trait
 
+~~~admonish info title='常用trait分类整理' collapsible=true
 ![14｜类型系统：有哪些必须掌握的trait？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/14%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1%E7%9A%84trait%EF%BC%9F.jpg)
+~~~
 
 ### 内存相关
 
