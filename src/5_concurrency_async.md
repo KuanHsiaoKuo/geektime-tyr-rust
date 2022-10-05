@@ -1,5 +1,8 @@
 # V 并发与异步
 
+<!--ts-->
+<!--te-->
+
 ## 区分并发与并行
 
 ~~~admonish info title="再次区分并发与并行" collapsible=true
@@ -1562,3 +1565,1499 @@ pub fn unbounded<T>() -> (Sender<T>, Receiver<T>) {
 
 当然，重构没有引入回归问题，并不意味着重构完全没有问题，我们还需要考虑撰写新的测试，覆盖重构带来的改动。
 ~~~
+
+## 并发原语与异步的关系
+
+~~~admonish info title="区别并发原语与Future" collapsible=true
+- 并发原语是并发任务之间同步的手段
+-  Future 以及在更高层次上处理 Future 的 async/await，是产生和运行并发任务的手段。
+
+不过产生和运行并发任务的手段有很多，async/await 只是其中之一。
+
+1. 在一个分布式系统中，并发任务可以运行在系统的某个节点上；
+2. 在某个节点上，并发任务又可以运行在多个进程中；
+3. 而在某个进程中，并发任务可以运行在多个线程中；
+4. 在某个（些）线程上，并发任务可以运行在多个 Promise / Future / Goroutine / Erlang process 这样的协程上。
+
+它们的粒度从大到小如图所示：
+
+![38｜异步处理：Future是什么？它和asyncawait是什么关系？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F-4959318.jpg)
+
+~~~
+
+## Future
+
+### actor是有栈协程，Future是无栈协程
+
+~~~admonish info title="actor是有栈协程，Future是无栈协程" collapsible=true
+待补充
+~~~
+
+### Rust的Future
+
+~~~admonish info title="Rust 的 Future 跟 JavaScript 的 Promise、Python的Future非常相似" collapsible=true
+其实 Rust 的 Future 跟 JavaScript 的 Promise 非常类似。
+
+如果你熟悉 JavaScript，应该熟悉 Promise 的概念，它代表了在未来的某个时刻才能得到的结果的值，Promise 一般存在三个状态；
+1. 等待（pending）状态
+2. Promise 已运行，但还未结束；
+3. 结束状态，Promise 成功解析出一个值，或者执行失败。
+
+只不过 JavaScript 的 Promise 和线程类似，一旦创建就开始执行，对 Promise await 只是为了“等待”并获取解析出来的值；而 Rust 的 Future，只有在主动 await 后才开始执行。
+~~~
+
+### Future和async/await
+
+~~~admonish info title="一般而言，async/await和Future是什么关系" collapsible=true
+讲到这里估计你也看出来了，谈 Future 的时候，我们总会谈到 async/await。
+
+一般而言：
+1. async 定义了一个可以并发执行的任务
+2. 而 await 则触发这个任务并发执行。
+3. 大多数语言，包括 Rust，async/await 都是一个语法糖（syntactic sugar）
+4. 它们使用状态机将 Promise/Future 这样的结构包装起来进行处理。
+~~~
+
+### 为什么需要 Future？
+
+~~~admonish info title="为什么需要Future，那不用async/await有什么问题？" collapsible=true
+首先，谈一谈为什么需要 Future 这样的并发结构。
+
+在 Future 出现之前，我们的 Rust 代码都是同步的。也就是说：
+1. 当你执行一个函数，CPU 处理完函数中的每一个指令才会返回。
+2. 如果这个函数里有 IO 的操作，实际上，操作系统会把函数对应的线程挂起，放在一个等待队列中
+3. 直到 IO 操作完成，才恢复这个线程，并从挂起的位置继续执行下去。
+
+> 这个模型非常简单直观，代码是一行一行执行的，开发者并不需要考虑哪些操作会阻塞，哪些不会，只关心他的业务逻辑就好。
+
+> 然而，随着 CPU 技术的不断发展，新世纪应用软件的主要矛盾不再是 CPU 算力不足，而是过于充沛的 CPU 算力和提升缓慢的 IO 速度之间的矛盾。如果有大量的 IO 操作，你的程序大部分时间并没有在运算，而是在不断地等待 IO。
+
+```rust, editable
+
+use anyhow::Result;
+use serde_yaml::Value;
+use std::fs;
+
+fn main() -> Result<()> {
+    // 读取 Cargo.toml，IO 操作 1
+    let content1 = fs::read_to_string("./Cargo.toml")?;
+    // 读取 Cargo.lock，IO 操作 2
+    let content2 = fs::read_to_string("./Cargo.lock")?;
+
+    // 计算
+    let yaml1 = toml2yaml(&content1)?;
+    let yaml2 = toml2yaml(&content2)?;
+
+    // 写入 /tmp/Cargo.yml，IO 操作 3
+    fs::write("/tmp/Cargo.yml", &yaml1)?;
+    // 写入 /tmp/Cargo.lock，IO 操作 4
+    fs::write("/tmp/Cargo.lock", &yaml2)?;
+
+    // 打印
+    println!("{}", yaml1);
+    println!("{}", yaml2);
+
+    Ok(())
+}
+
+fn toml2yaml(content: &str) -> Result<String> {
+    let value: Value = toml::from_str(&content)?;
+    Ok(serde_yaml::to_string(&value)?)
+}
+```
+
+> 这段代码读取 Cargo.toml 和 Cargo.lock 将其转换成 yaml，再分别写入到 /tmp 下。
+
+虽然说这段代码的逻辑并没有问题，但性能有很大的问题:
+1. 在读 Cargo.toml 时，整个主线程被阻塞，直到 Cargo.toml 读完，才能继续读下一个待处理的文件。
+2. 整个主线程，只有在运行 toml2yaml 的时间片内，才真正在执行计算任务，之前的读取文件以及之后的写入文件，CPU 都在闲置。
+
+![38｜异步处理：Future是什么？它和asyncawait是什么关系？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F-4959308.jpg)
+
+当然，你会辩解，在读文件的过程中，我们不得不等待，因为 toml2yaml 函数的执行有赖于读取文件的结果。
+
+嗯没错，但是，这里还有很大的 CPU 浪费：我们读完第一个文件才开始读第二个文件，有没有可能两个文件同时读取呢？这样总共等待的时间是 max(time_for_file1, time_for_file2)，而非 time_for_file1 + time_for_file2 。
+
+这并不难，我们可以把文件读取和写入的操作放入单独的线程中执行，比如（代码）：
+
+```rust, editable
+
+use anyhow::{anyhow, Result};
+use serde_yaml::Value;
+use std::{
+    fs,
+    thread::{self, JoinHandle},
+};
+
+/// 包装一下 JoinHandle，这样可以提供额外的方法
+struct MyJoinHandle<T>(JoinHandle<Result<T>>);
+
+impl<T> MyJoinHandle<T> {
+    /// 等待 thread 执行完（类似 await）
+    pub fn thread_await(self) -> Result<T> {
+        self.0.join().map_err(|_| anyhow!("failed"))?
+    }
+}
+
+fn main() -> Result<()> {
+    // 读取 Cargo.toml，IO 操作 1
+    let t1 = thread_read("./Cargo.toml");
+    // 读取 Cargo.lock，IO 操作 2
+    let t2 = thread_read("./Cargo.lock");
+
+    let content1 = t1.thread_await()?;
+    let content2 = t2.thread_await()?;
+
+    // 计算
+    let yaml1 = toml2yaml(&content1)?;
+    let yaml2 = toml2yaml(&content2)?;
+
+    // 写入 /tmp/Cargo.yml，IO 操作 3
+    let t3 = thread_write("/tmp/Cargo.yml", yaml1);
+    // 写入 /tmp/Cargo.lock，IO 操作 4
+    let t4 = thread_write("/tmp/Cargo.lock", yaml2);
+
+    let yaml1 = t3.thread_await()?;
+    let yaml2 = t4.thread_await()?;
+
+    fs::write("/tmp/Cargo.yml", &yaml1)?;
+    fs::write("/tmp/Cargo.lock", &yaml2)?;
+
+    // 打印
+    println!("{}", yaml1);
+    println!("{}", yaml2);
+
+    Ok(())
+}
+
+fn thread_read(filename: &'static str) -> MyJoinHandle<String> {
+    let handle = thread::spawn(move || {
+        let s = fs::read_to_string(filename)?;
+        Ok::<_, anyhow::Error>(s)
+    });
+    MyJoinHandle(handle)
+}
+
+fn thread_write(filename: &'static str, content: String) -> MyJoinHandle<String> {
+    let handle = thread::spawn(move || {
+        fs::write(filename, &content)?;
+        Ok::<_, anyhow::Error>(content)
+    });
+    MyJoinHandle(handle)
+}
+
+fn toml2yaml(content: &str) -> Result<String> {
+    let value: Value = toml::from_str(&content)?;
+    Ok(serde_yaml::to_string(&value)?)
+}
+```
+> 这样，读取或者写入多个文件的过程并发执行，使等待的时间大大缩短。
+
+1. 但是，如果要同时读取 100 个文件呢？
+- 显然，创建 100 个线程来做这样的事情不是一个好主意。
+- 在操作系统中，线程的数量是有限的，创建 / 阻塞 / 唤醒 / 销毁线程，都涉及不少的动作
+- 每个线程也都会被分配一个不小的调用栈
+- 所以从 CPU 和内存的角度来看，创建过多的线程会大大增加系统的开销。
+
+2. 其实，绝大多数操作系统对 I/O 操作提供了非阻塞接口，也就是说: 
+- 你可以发起一个读取的指令
+- 自己处理类似 EWOULDBLOCK这样的错误码
+- 来更好地在同一个线程中处理多个文件的 IO
+- 而不是依赖操作系统通过调度帮你完成这件事。
+
+3. 不过这样就意味着，你需要:
+- 定义合适的数据结构来追踪每个文件的读取
+- 在用户态进行相应的调度
+- 阻塞等待 IO 的数据结构的运行
+- 让没有等待 IO 的数据结构得到机会使用 CPU
+- 以及当 IO 操作结束后，恢复等待 IO 的数据结构的运行等等。
+> 这样的操作粒度更小，可以最大程度利用 CPU 资源。
+> 这就是类似 Future 这样的并发结构的主要用途。
+
+4. 然而，如果这么处理，我们需要在用户态做很多事情,包括:
+- 处理 IO 任务的事件通知
+- 创建 Future
+- 合理地调度 Future
+
+> 这些事情，统统交给开发者做显然是不合理的。所以，Rust 提供了相应处理手段 async/await ：
+- async 来方便地生成 Future
+- await 来触发 Future 的调度和执行。
+---
+我们看看，同样的任务，如何用 async/await 更高效地处理（代码）：
+
+```rust, editable
+
+use anyhow::Result;
+use serde_yaml::Value;
+use tokio::{fs, try_join};
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    // 读取 Cargo.toml，IO 操作 1
+    let f1 = fs::read_to_string("./Cargo.toml");
+    // 读取 Cargo.lock，IO 操作 2
+    let f2 = fs::read_to_string("./Cargo.lock");
+    let (content1, content2) = try_join!(f1, f2)?;
+
+    // 计算
+    let yaml1 = toml2yaml(&content1)?;
+    let yaml2 = toml2yaml(&content2)?;
+
+    // 写入 /tmp/Cargo.yml，IO 操作 3
+    let f3 = fs::write("/tmp/Cargo.yml", &yaml1);
+    // 写入 /tmp/Cargo.lock，IO 操作 4
+    let f4 = fs::write("/tmp/Cargo.lock", &yaml2);
+    try_join!(f3, f4)?;
+
+    // 打印
+    println!("{}", yaml1);
+    println!("{}", yaml2);
+
+    Ok(())
+}
+
+fn toml2yaml(content: &str) -> Result<String> {
+    let value: Value = toml::from_str(&content)?;
+    Ok(serde_yaml::to_string(&value)?)
+}
+```
+在这段代码里:
+1. 我们使用了 tokio::fs，而不是 std::fs
+2. tokio::fs 的文件操作都会返回一个 Future，然后可以 join 这些 Future，得到它们运行后的结果。
+3. join / try_join 是用来轮询多个 Future 的宏:
+- 它会依次处理每个 Future
+- 遇到阻塞就处理下一个
+- 直到所有 Future 产生结果。
+
+> 整个等待文件读取的时间是 max(time_for_file1, time_for_file2)，性能和使用线程的版本几乎一致，但是消耗的资源（主要是线程）要少很多。
+
+建议你好好对比这三个版本的代码，写一写，运行一下，感受它们的处理逻辑。
+
+注意在最后的 async/await 的版本中，我们不能把代码写成这样：
+
+```rust, editable
+
+// 读取 Cargo.toml，IO 操作 1
+let content1 = fs::read_to_string("./Cargo.toml").await?;
+// 读取 Cargo.lock，IO 操作 2
+let content1 = fs::read_to_string("./Cargo.lock").await?;
+```
+这样写的话，和第一版同步的版本没有区别，因为 await 会运行 Future 直到 Future 执行结束，所以依旧是先读取 Cargo.toml，再读取 Cargo.lock，并没有达到并发的效果。
+~~~
+
+### 深入思路
+
+~~~admonish info title="从async fn了解到future的思路" collapsible=true
+1. 拆解 async fn 有点奇怪的返回值结构
+2. 我们学习了 Reactor pattern
+3. 大致了解了 tokio 如何通过 executor 和 reactor 共同作用，完成 Future 的调度、执行、阻塞，以及唤醒。这是一个完整的循环，直到 Future 返回 Poll::Ready(T)。
+~~~
+
+### 深入了解
+
+好，了解了 Future 在软件开发中的必要性，来深入研究一下 Future/async/await。
+
+~~~admonish info title="异步函数（async fn）其实是语法糖，它有等价函数写法。" collapsible=true
+在前面代码撰写过程中，不知道你有没有发现，异步函数（async fn）的返回值是一个奇怪的 impl Future<Output> 的结构：
+
+![38｜异步处理：Future是什么？它和asyncawait是什么关系？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F.png)
+
+> 我们知道，一般会用 impl 关键字为数据结构实现 trait，也就是说接在 impl 关键字后面的东西是一个 trait，所以，显然 Future 是一个 trait，并且还有一个关联类型 Output。
+
+来看 [Future 的定义](https://doc.rust-lang.org/std/future/trait.Future.html)：
+
+```rust, editable
+
+pub trait Future {
+    type Output;
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output>;
+}
+
+pub enum Poll<T> {
+    Ready(T),
+    Pending,
+}
+```
+
+1. 除了 Output 外，它还有一个 poll() 方法，这个方法返回 [PollSelf::Output](https://doc.rust-lang.org/std/future/trait.Future.html)。
+2. 而 Poll<T> 是个 enum，包含 Ready 和 Pending 两个状态。
+3. 显然，当 Future 返回 Pending 状态时，活还没干完，但干不下去了，需要阻塞一阵子，等某个事件将其唤醒；
+4. 当 Future 返回 Ready 状态时，Future 对应的值已经得到，此时可以返回了。
+
+> 你看，这样一个简单的数据结构，就托起了庞大的 Rust 异步 async/await 处理的生态。
+
+回到 async fn 的返回值我们接着说，显然它是一个 impl Future.
+
+> 那么如果我们给一个普通的函数返回 impl Future<Output>，它的行为和 async fn 是不是一致呢？
+
+来写个简单的实验（代码）：
+
+```rust, editable
+
+use futures::executor::block_on;
+use std::future::Future;
+
+#[tokio::main]
+async fn main() {
+    let name1 = "Tyr".to_string();
+    let name2 = "Lindsey".to_string();
+
+    say_hello1(&name1).await;
+    say_hello2(&name2).await;
+
+    // Future 除了可以用 await 来执行外，还可以直接用 executor 执行
+    block_on(say_hello1(&name1));
+    block_on(say_hello2(&name2));
+}
+
+async fn say_hello1(name: &str) -> usize {
+    println!("Hello {}", name);
+    42
+}
+
+// async fn 关键字相当于一个返回 impl Future<Output> 的语法糖
+fn say_hello2<'fut>(name: &'fut str) -> impl Future<Output = usize> + 'fut {
+    async move {
+        println!("Hello {}", name);
+        42
+    }
+}
+```
+> 运行这段代码你会发现，say_hello1 和 say_hello2 是等价的，二者都可以使用 await 来执行，也可以将其提供给一个 executor 来执行。
+~~~
+
+### executor
+
+~~~admonish info title="executor是什么-> Rust如何支持->Rust常用的executor有哪些？" collapsible=true
+这里我们见到了一个新的名词：executor。
+
+什么是 executor？
+
+1. 你可以把 executor 大致想象成一个 Future 的调度器。
+2. 对于线程来说，操作系统负责调度；
+3. 但操作系统不会去调度用户态的协程（比如 Future），所以任何使用了协程来处理并发的程序，都需要有一个 executor 来负责协程的调度。
+
+很多在语言层面支持协程的编程语言，比如 Golang / Erlang，都自带一个用户态的调度器。
+
+Rust 虽然也提供 Future 这样的协程，但它在语言层面并不提供 executor，把要不要使用 executor 和使用什么样的 executor 的自主权交给了开发者。
+- 好处是，当我的代码中不需要使用协程时，不需要引入任何运行时；
+- 而需要使用协程时，可以在生态系统中选择最合适我应用的 executor。
+
+---
+
+常见的 executor 有：
+
+1. futures 库自带的很简单的 executor，上面的代码就使用了它的 block_on 函数；
+2. tokio 提供的 executor，当使用 #[tokio::main] 时，就隐含引入了 tokio 的 executor；
+3. [async-std](https://github.com/async-rs/async-std) 提供的 executor，和 tokio 类似；
+4. [smol 提供的 async-executor](https://github.com/smol-rs/smol)，主要提供了 block_on。
+
+注意，上面的代码我们混用了 #[tokio::main] 和 futures:executor::block_on，这只是为了展示 Future 使用的不同方式，在正式代码里，不建议混用不同的 executor，会降低程序的性能，还可能引发奇怪的问题。
+~~~
+
+### reactor pattern
+
+~~~admonish info title="Reactor Pattern如何组成？" collapsible=true
+当我们谈到 executor 时，就不得不提 reactor，它俩都是 Reactor Pattern 的组成部分，作为构建高性能事件驱动系统的一个很典型模式，Reactor pattern 它包含三部分：
+
+1. task，待处理的任务
+
+任务可以被打断，并且把控制权交给 executor，等待之后的调度；
+
+2. executor，一个调度器。
+
+维护等待运行的任务（ready queue），以及被阻塞的任务（wait queue）；
+
+3. reactor，维护事件队列。
+
+当事件来临时，通知 executor 唤醒某个任务等待运行。
+
+- executor 会调度执行待处理的任务，当任务无法继续进行却又没有完成时，它会挂起任务，并设置好合适的唤醒条件。
+- 之后，如果 reactor 得到了满足条件的事件，它会唤醒之前挂起的任务，然后 executor 就有机会继续执行这个任务。
+- 这样一直循环下去，直到任务执行完毕。
+~~~
+
+### 怎么用 Future 做异步处理？
+
+~~~admonish info title="Rust如何基于Reactor pattern使用Future做异步处理" collapsible=true
+理解了 Reactor pattern 后，Rust 使用 Future 做异步处理的整个结构就清晰了，我们以 tokio 为例：
+
+1. async/await 提供语法层面的支持
+2. Future 是异步任务的数据结构
+3. 当 fut.await 时，executor 就会调度并执行它。
+---
+- tokio 的调度器（executor）会运行在多个线程上，运行线程自己的 ready queue 上的任务（Future）
+- 如果没有，就去别的线程的调度器上“偷”一些过来运行。
+- 当某个任务无法再继续取得进展，此时 Future 运行的结果是 Poll::Pending，那么调度器会挂起任务，并设置好合适的唤醒条件（Waker），等待被 reactor 唤醒。
+- 而 reactor 会利用操作系统提供的异步 I/O，比如 epoll / kqueue / IOCP，来监听操作系统提供的 IO 事件，当遇到满足条件的事件时，就会调用 Waker.wake() 唤醒被挂起的 Future。这个 Future 会回到 ready queue 等待执行。
+---
+整个流程如下：
+
+![38｜异步处理：Future是什么？它和asyncawait是什么关系？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F.jpg)
+---
+我们以一个具体的代码示例来进一步理解这个过程（代码）：
+
+```rust, editable
+
+use anyhow::Result;
+use futures::{SinkExt, StreamExt};
+use tokio::net::TcpListener;
+use tokio_util::codec::{Framed, LinesCodec};
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let addr = "0.0.0.0:8080";
+    let listener = TcpListener::bind(addr).await?;
+    println!("listen to: {}", addr);
+    loop {
+        let (stream, addr) = listener.accept().await?;
+        println!("Accepted: {:?}", addr);
+        tokio::spawn(async move {
+            // 使用 LinesCodec 把 TCP 数据切成一行行字符串处理
+            let framed = Framed::new(stream, LinesCodec::new());
+            // split 成 writer 和 reader
+            let (mut w, mut r) = framed.split();
+            for line in r.next().await {
+                // 每读到一行就加个前缀发回
+                w.send(format!("I got: {}", line?)).await?;
+            }
+            Ok::<_, anyhow::Error>(())
+        });
+    }
+}
+```
+
+这是一个简单的 TCP 服务器:
+1. 服务器每收到一个客户端的请求，就会用[ tokio::spawn ](https://docs.rs/tokio/1.13.0/tokio/fn.spawn.html)创建一个异步任务，放入 executor 中执行。
+2. 这个异步任务接受客户端发来的按行分隔（分隔符是 “\r\n”）的数据帧，服务器每收到一行，就加个前缀把内容也按行发回给客户端。
+3. 你可以用 telnet 和这个服务器交互：
+
+```shell
+❯ telnet localhost 8080
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+hello
+I got: hello
+Connection closed by foreign host.
+```
+
+- 假设我们在客户端输入了很大的一行数据，服务器在做 r.next().await 在执行的时候，收不完一行的数据，因而这个 Future 返回 Poll::Pending，此时它被挂起。
+- 当后续客户端的数据到达时，reactor 会知道这个 socket 上又有数据了，于是找到 socket 对应的 Future，将其唤醒，继续接收数据。
+- 这样反复下去，最终 r.next().await 得到 Poll::Ready(Ok(line))，于是它返回 Ok(line)，程序继续往下走，进入到 w.send() 的阶段。
+
+> 从这段代码中你可以看到，在 Rust 下使用异步处理是一件非常简单的事情
+
+1. 除了几个你可能不太熟悉的概念:
+- 比如用于创建 Future 的 async 关键字
+- 用于执行和等待 Future 执行完毕的 await 关键字
+- 以及用于调度 Future 执行的运行时 #[tokio:main] 
+
+2. 整体的代码和使用线程处理的代码完全一致。所以，它的上手难度非常低，很容易使用。
+~~~
+
+### 使用 Future 的注意事项
+
+~~~admonish info title="使用Future处理异步任务的三个注意事项" collapsible=true
+目前我们已经基本明白 Future 运行的基本原理了，也可以在程序的不同部分自如地使用 Future/async/await 来进行异步处理。
+
+但是要注意，不是所有的应用场景都适合用 async/await，在使用的时候，有一些不容易注意到的坑需要我们妥善考虑。
+
+1. 处理计算密集型任务时
+
+当你要处理的任务是 CPU 密集型，而非 IO 密集型，更适合使用线程，而非 Future。
+
+这是因为 Future 的调度是协作式多任务（Cooperative Multitasking），也就是说，除非 Future 主动放弃 CPU，不然它就会一直被执行，直到运行结束。我们看一个例子（代码）：
+
+```rust, editable
+
+use anyhow::Result;
+use std::time::Duration;
+
+// 强制 tokio 只使用一个工作线程，这样 task 2 不会跑到其它线程执行
+#[tokio::main(worker_threads = 1)]
+async fn main() -> Result<()> {
+    // 先开始执行 task 1 的话会阻塞，让 task 2 没有机会运行
+    tokio::spawn(async move {
+        eprintln!("task 1");
+        // 试试把这句注释掉看看会产生什么结果
+        // tokio::time::sleep(Duration::from_millis(1)).await;
+        loop {}
+    });
+
+    tokio::spawn(async move {
+        eprintln!("task 2");
+    });
+
+    tokio::time::sleep(Duration::from_millis(1)).await;
+    Ok(())
+}
+```
+
+task 1 里有一个死循环，你可以把它想象成是执行时间很长又不包括 IO 处理的代码。运行这段代码，你会发现，task 2 没有机会得到执行。这是因为 task 1 不执行结束，或者不让出 CPU，task 2 没有机会被调度。
+
+2. 异步代码中使用 Mutex 时
+
+大部分时候，标准库的 Mutex 可以用在异步代码中，而且，这是推荐的用法。
+
+然而，标准库的 MutexGuard 不能安全地跨越 await，所以，当我们需要获得锁之后执行异步操作，必须使用 tokio 自带的 Mutex，看下面的例子（代码）：
+
+```rust, editable
+
+use anyhow::Result;
+use std::{sync::Arc, time::Duration};
+use tokio::sync::Mutex;
+
+struct DB;
+
+impl DB {
+    // 假装在 commit 数据
+    async fn commit(&mut self) -> Result<usize> {
+        Ok(42)
+    }
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let db1 = Arc::new(Mutex::new(DB));
+    let db2 = Arc::clone(&db1);
+
+    tokio::spawn(async move {
+        let mut db = db1.lock().await;
+        // 因为拿到的 MutexGuard 要跨越 await，所以不能用 std::sync::Mutex
+        // 只能用 tokio::sync::Mutex
+        let affected = db.commit().await?;
+        println!("db1: Total affected rows: {}", affected);
+        Ok::<_, anyhow::Error>(())
+    });
+
+    tokio::spawn(async move {
+        let mut db = db2.lock().await;
+        let affected = db.commit().await?;
+        println!("db2: Total affected rows: {}", affected);
+
+        Ok::<_, anyhow::Error>(())
+    });
+
+    // 让两个 task 有机会执行完
+    tokio::time::sleep(Duration::from_millis(1)).await;
+
+    Ok(())
+}
+```
+
+> 这个例子模拟了一个数据库的异步 commit() 操作
+- 如果我们需要在多个 tokio task 中使用这个 DB，需要使用 Arc<Mutext<DB>>。
+- 然而，db1.lock() 拿到锁后，我们需要运行 db.commit().await，这是一个异步操作。
+- 前面讲过，因为 tokio 实现了 work-stealing 调度，Future 有可能在不同的线程中执行，普通的 MutexGuard 编译直接就会出错，所以需要使用 tokio 的 Mutex。[更多信息可以看文档](https://docs.rs/tokio/1.13.0/tokio/sync/struct.Mutex.html)。
+
+> 在这个例子里，我们又见识到了 Rust 编译器的伟大之处：如果一件事，它觉得你不能做，会通过编译器错误阻止你，而不是任由编译通过，然后让程序在运行过程中听天由命，让你无休止地和捉摸不定的并发 bug 斗争。
+
+3. 在线程和异步任务间做同步时
+
+在一个复杂的应用程序中，会兼有计算密集和 IO 密集的任务。
+
+前面说了，要避免在 tokio 这样的异步运行时中运行大量计算密集型的任务，一来效率不高，二来还容易饿死其它任务。
+
+所以，一般的做法是我们使用 channel 来在线程和 future 两者之间做同步。看一个例子：
+
+```rust, editable
+
+use std::thread;
+
+use anyhow::Result;
+use blake3::Hasher;
+use futures::{SinkExt, StreamExt};
+use rayon::prelude::*;
+use tokio::{
+    net::TcpListener,
+    sync::{mpsc, oneshot},
+};
+use tokio_util::codec::{Framed, LinesCodec};
+
+pub const PREFIX_ZERO: &[u8] = &[0, 0, 0];
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let addr = "0.0.0.0:8080";
+    let listener = TcpListener::bind(addr).await?;
+    println!("listen to: {}", addr);
+
+    // 创建 tokio task 和 thread 之间的 channel
+    let (sender, mut receiver) = mpsc::unbounded_channel::<(String, oneshot::Sender<String>)>();
+
+    // 使用 thread 处理计算密集型任务
+    thread::spawn(move || {
+        // 读取从 tokio task 过来的 msg，注意这里用的是 blocking_recv，而非 await
+        while let Some((line, reply)) = receiver.blocking_recv() {
+            // 计算 pow
+            let result = match pow(&line) {
+                Some((hash, nonce)) => format!("hash: {}, once: {}", hash, nonce),
+                None => "Not found".to_string(),
+            };
+            // 把计算结果从 oneshot channel 里发回
+            if let Err(e) = reply.send(result) {
+                println!("Failed to send: {}", e);
+            }
+        }
+    });
+
+    // 使用 tokio task 处理 IO 密集型任务
+    loop {
+        let (stream, addr) = listener.accept().await?;
+        println!("Accepted: {:?}", addr);
+        let sender1 = sender.clone();
+        tokio::spawn(async move {
+            // 使用 LinesCodec 把 TCP 数据切成一行行字符串处理
+            let framed = Framed::new(stream, LinesCodec::new());
+            // split 成 writer 和 reader
+            let (mut w, mut r) = framed.split();
+            for line in r.next().await {
+                // 为每个消息创建一个 oneshot channel，用于发送回复
+                let (reply, reply_receiver) = oneshot::channel();
+                sender1.send((line?, reply))?;
+
+                // 接收 pow 计算完成后的 hash 和 nonce
+                if let Ok(v) = reply_receiver.await {
+                    w.send(format!("Pow calculated: {}", v)).await?;
+                }
+            }
+            Ok::<_, anyhow::Error>(())
+        });
+    }
+}
+
+// 使用 rayon 并发计算 u32 空间下所有 nonce，直到找到有头 N 个 0 的哈希
+pub fn pow(s: &str) -> Option<(String, u32)> {
+    let hasher = blake3_base_hash(s.as_bytes());
+    let nonce = (0..u32::MAX).into_par_iter().find_any(|n| {
+        let hash = blake3_hash(hasher.clone(), n).as_bytes().to_vec();
+        &hash[..PREFIX_ZERO.len()] == PREFIX_ZERO
+    });
+    nonce.map(|n| {
+        let hash = blake3_hash(hasher, &n).to_hex().to_string();
+        (hash, n)
+    })
+}
+
+// 计算携带 nonce 后的哈希
+fn blake3_hash(mut hasher: blake3::Hasher, nonce: &u32) -> blake3::Hash {
+    hasher.update(&nonce.to_be_bytes()[..]);
+    hasher.finalize()
+}
+
+// 计算数据的哈希
+fn blake3_base_hash(data: &[u8]) -> Hasher {
+    let mut hasher = Hasher::new();
+    hasher.update(data);
+    hasher
+}
+```
+
+在这个例子里:
+1. 我们使用了之前撰写的 TCP server
+2. 只不过这次，客户端输入过来的一行文字，会被计算出一个 POW（Proof of Work）的哈希
+3. 调整 nonce，不断计算哈希，直到哈希的头三个字节全是零为止。
+4. 服务器要返回计算好的哈希和获得该哈希的 nonce。
+5. 这是一个典型的计算密集型任务，所以我们需要使用线程来处理它。
+6. 而在 tokio task 和 thread 间使用 channel 进行同步。我们使用了一个 ubounded MPSC channel 从 tokio task 侧往 thread 侧发送消息，每条消息都附带一个 oneshot channel 用于 thread 侧往 tokio task 侧发送数据。
+
+> 建议你仔细读读这段代码，最好自己写一遍，感受一下使用 channel 在计算密集型和 IO 密集型任务同步的方式。
+
+如果你用 telnet 连接，发送 “hello world!”，会得到不同的哈希和 nonce，它们都是正确的结果：
+
+```shell
+
+❯ telnet localhost 8080
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+hello world!
+Pow calculated: hash: 0000006e6e9370d0f60f06bdc288efafa203fd99b9af0480d040b2cc89c44df0, once: 403407307
+Connection closed by foreign host.
+
+❯ telnet localhost 8080
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+hello world!
+Pow calculated: hash: 000000e23f0e9b7aeba9060a17ac676f3341284800a2db843e2f0e85f77f52dd, once: 36169623
+Connection closed by foreign host.
+
+```
+~~~
+
+### 对比线程学习Future
+
+~~~admonish info title="对比线程来学习future" collapsible=true
+在学习 Future 的使用时，估计你也发现了，我们可以对比线程来学习，可以看到，下列代码的结构多么相似：
+
+```rust, editable
+
+fn thread_async() -> JoinHandle<usize> {
+    thread::spawn(move || {
+        println!("hello thread!");
+        42
+    })
+}
+
+fn task_async() -> impl Future<Output = usize> {
+    async move {
+        println!("hello async!");
+        42
+    }
+}
+```
+
+~~~
+
+### 为什么标准库的 Mutex 不能跨越 await？
+
+想想看，为什么标准库的 Mutex 不能跨越 await？
+
+你可以把文中使用 tokio::sync::Mutex 的代码改成使用 std::sync::Mutex，并对使用的接口做相应的改动（把 lock().await 改成 lock().unwrap()），看看编译器会报什么错。
+
+对着错误提示，你明白为什么了么？
+
+## async/await内部是怎么实现的？
+
+~~~admonish info title="对 Future 和 async/await 的基本概念有一个比较扎实的理解" collapsible=true
+对 Future 和 async/await 的基本概念有一个比较扎实的理解:
+1. 知道在什么情况下该使用 Future
+2. 什么情况下该使用 Thread
+3. executor 和 reactor 是怎么联动最终让 Future 得到了一个结果。
+~~~
+
+然而，我们并不清楚为什么 async fn 或者 async block 就能够产生 Future，也并不明白 Future 是怎么被 executor 处理的。继续深入下去，看看 async/await
+这两个关键词究竟施了什么样的魔法，能够让一切如此简单又如此自然地运转起来。
+
+### Context、Pin
+
+~~~admonish info title="从Future定义中的Pin和Context开始" collapsible=true
+提前说明一下，我们会继续围绕着 Future 这个简约却又并不简单的接口，来探讨一些原理性的东西，主要是 Context 和 Pin 这两个结构：
+
+```rust, editable
+
+pub trait Future {
+    type Output;
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output>;
+}
+```
+~~~
+
+### Context::waker: Waker 的调用机制
+
+~~~admonish info title="Context 就是 Waker 的一个封装" collapsible=true
+先来看这个接口的 Context 是个什么东西。
+
+1. executor 通过调用 poll 方法来让 Future 继续往下执行
+2. 如果 poll 方法返回 Poll::Pending，就阻塞 Future
+3. 直到 reactor 收到了某个事件，然后调用 Waker.wake() 把 Future 唤醒。
+4. 这个 Waker 是哪来的呢？
+
+其实，它隐含在 Context 中：
+
+```rust, editable
+
+pub struct Context<'a> {
+    waker: &'a Waker,
+    _marker: PhantomData<fn(&'a ()) -> &'a ()>,
+}
+```
+
+所以，Context 就是 Waker 的一个封装。
+
+如果你去看 Waker 的定义和相关的代码，会发现它非常抽象，内部使用了一个 vtable 来允许各种各样的 waker 的行为：
+
+```rust, editable
+
+pub struct RawWakerVTable {
+    clone: unsafe fn(*const ()) -> RawWaker,
+    wake: unsafe fn(*const ()),
+    wake_by_ref: unsafe fn(*const ()),
+    drop: unsafe fn(*const ()),
+}
+```
+
+1. 这种手工生成 vtable 的做法，可以最大程度兼顾效率和灵活性。
+2. Rust 自身并不提供异步运行时，它只在标准库里规定了一些基本的接口，至于怎么实现，可以由各个运行时（如 tokio）自行决定。
+3. 所以在标准库中，你只会看到这些接口的定义，以及“高层”接口的实现，比如 Waker 下的 wake 方法，只是调用了 vtable 里的 wake() 而已：
+
+```rust, editable
+
+impl Waker {
+    /// Wake up the task associated with this `Waker`.
+    #[inline]
+    pub fn wake(self) {
+        // The actual wakeup call is delegated through a virtual function call
+        // to the implementation which is defined by the executor.
+        let wake = self.waker.vtable.wake;
+        let data = self.waker.data;
+
+        // Don't call `drop` -- the waker will be consumed by `wake`.
+        crate::mem::forget(self);
+
+        // SAFETY: This is safe because `Waker::from_raw` is the only way
+        // to initialize `wake` and `data` requiring the user to acknowledge
+        // that the contract of `RawWaker` is upheld.
+        unsafe { (wake)(data) };
+    }
+    ...
+}
+```
+
+> 如果你想顺藤摸瓜找到 vtable 是怎么设置的，却发现一切线索都悄无声息地中断了，那是因为，具体的实现并不在标准库中，而是在第三方的异步运行时里，比如 tokio。
+
+~~~
+
+不过，虽然我们开发时会使用 tokio，但阅读、理解代码时，我建议看 futures 库，比如 waker vtable 的定义。futures 库还有一个简单的 executor，也非常适合进一步通过代码理解 executor 的原理。
+
+### async 究竟生成了什么？
+
+我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &self / &mut self，可是 poll() 却使用了 Pin<&mut self>，为什么？
+
+~~~admonish info title="Rust 在编译 async fn 或者 async block 时，就会生成类似的状态机的实现" collapsible=true
+为了讲明白 Pin，我们得往前追踪一步，看看产生 Future 的一个 async block/fn 内部究竟生成了什么样的代码？来看下面这个简单的 async 函数：
+
+```rust, editable
+
+async fn write_hello_file_async(name: &str) -> anyhow::Result<()> {
+    let mut file = fs::File::create(name).await?;
+    file.write_all(b"hello world!").await?;
+
+    Ok(())
+}
+```
+
+1. 首先它创建一个文件，然后往这个文件里写入 “hello world!”。
+2. 这个函数有两个 await，创建文件的时候会异步创建，写入文件的时候会异步写入。
+3. 最终，整个函数对外返回一个 Future。
+
+> 其它人可以这样调用：
+
+```rust, editable
+
+write_hello_file_async("/tmp/hello").await?;
+```
+
+我们知道，executor 处理 Future 时，会不断地调用它的 poll() 方法，于是，上面那句实际上相当于：
+
+```rust, editable
+
+match write_hello_file_async.poll(cx) {
+    Poll::Ready(result) => return result,
+    Poll::Pending => return Poll::Pending
+}
+```
+
+这是单个 await 的处理方法，那更加复杂的，一个函数中有若干个 await，该怎么处理呢？
+
+以前面write_hello_file_async 函数的内部实现为例，显然，我们只有在处理完 create()，才能处理 write_all()，所以，应该是类似这样的代码：
+
+```rust, editable
+
+let fut = fs::File::create(name);
+match fut.poll(cx) {
+    Poll::Ready(Ok(file)) => {
+        let fut = file.write_all(b"hello world!");
+        match fut.poll(cx) {
+            Poll::Ready(result) => return result,
+            Poll::Pending => return Poll::Pending,
+        }
+    }
+    Poll::Pending => return Poll::Pending,
+}
+```
+
+> 但是，前面说过，async 函数返回的是一个 Future，所以，还需要把这样的代码封装在一个 Future 的实现里，对外提供出去。
+
+因此，我们需要实现一个数据结构，把内部的状态保存起来，并为这个数据结构实现 Future。比如：
+
+```rust, editable
+
+enum WriteHelloFile {
+    // 初始阶段，用户提供文件名
+    Init(String),
+    // 等待文件创建，此时需要保存 Future 以便多次调用
+    // 这是伪代码，impl Future 不能用在这里
+    AwaitingCreate(impl Future<Output = Result<fs::File, std::io::Error>>),
+    // 等待文件写入，此时需要保存 Future 以便多次调用
+    AwaitingWrite(impl Future<Output = Result<(), std::io::Error>>),
+    // Future 处理完毕
+    Done,
+}
+
+impl WriteHelloFile {
+    pub fn new(name: impl Into<String>) -> Self {
+        Self::Init(name.into())
+    }
+}
+
+impl Future for WriteHelloFile {
+    type Output = Result<(), std::io::Error>;
+
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        todo!()
+    }
+}
+
+fn write_hello_file_async(name: &str) -> WriteHelloFile {
+    WriteHelloFile::new(name)
+}
+```
+
+这样，我们就把刚才的 write_hello_file_async 异步函数，转化成了一个返回 WriteHelloFile Future 的函数。
+
+来看这个 Future 如何实现（详细注释了）：
+
+```rust, editable
+
+impl Future for WriteHelloFile {
+    type Output = Result<(), std::io::Error>;
+
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+        let this = self.get_mut();
+        loop {
+            match this {
+                // 如果状态是 Init，那么就生成 create Future，把状态切换到 AwaitingCreate
+                WriteHelloFile::Init(name) => {
+                    let fut = fs::File::create(name);
+                    *self = WriteHelloFile::AwaitingCreate(fut);
+                }
+                // 如果状态是 AwaitingCreate，那么 poll create Future
+                // 如果返回 Poll::Ready(Ok(_))，那么创建 write Future
+                // 并把状态切换到 Awaiting
+                WriteHelloFile::AwaitingCreate(fut) => match fut.poll(cx) {
+                    Poll::Ready(Ok(file)) => {
+                        let fut = file.write_all(b"hello world!");
+                        *self = WriteHelloFile::AwaitingWrite(fut);
+                    }
+                    Poll::Ready(Err(e)) => return Poll::Ready(Err(e)),
+                    Poll::Pending => return Poll::Pending,
+                },
+                // 如果状态是 AwaitingWrite，那么 poll write Future
+                // 如果返回 Poll::Ready(_)，那么状态切换到 Done，整个 Future 执行成功
+                WriteHelloFile::AwaitingWrite(fut) => match fut.poll(cx) {
+                    Poll::Ready(result) => {
+                        *self = WriteHelloFile::Done;
+                        return Poll::Ready(result);
+                    }
+                    Poll::Pending => return Poll::Pending,
+                },
+                // 整个 Future 已经执行完毕
+                WriteHelloFile::Done => return Poll::Ready(Ok(())),
+            }
+        }
+    }
+}
+```
+
+> 这个 Future 完整实现的内部结构 ，其实就是一个状态机的迁移。
+
+这段（伪）代码和之前异步函数是等价的：
+
+```rust, editable
+
+async fn write_hello_file_async(name: &str) -> anyhow::Result<()> {
+    let mut file = fs::File::create(name).await?;
+    file.write_all(b"hello world!").await?;
+
+    Ok(())
+}
+```
+
+> Rust 在编译 async fn 或者 async block 时，就会生成类似的状态机的实现。你可以看到，看似简单的异步处理，内部隐藏了一套并不难理解、但是写起来很生硬很啰嗦的状态机管理代码。
+~~~
+
+好搞明白这个问题，回到 pin 。刚才我们手写状态机代码的过程，能帮你理解为什么会需要 Pin 这个问题。
+
+### 为什么需要 Pin？
+
+~~~admonish info title="什么场景下会出现自引用数据结构？有什么问题需要pin解决？" collapsible=true
+在上面实现 Future 的状态机中，我们引用了 file 这样一个局部变量：
+
+```rust, editable
+
+WriteHelloFile::AwaitingCreate(fut) => match fut.poll(cx) {
+    Poll::Ready(Ok(file)) => {
+        let fut = file.write_all(b"hello world!");
+        *self = WriteHelloFile::AwaitingWrite(fut);
+    }
+    Poll::Ready(Err(e)) => return Poll::Ready(Err(e)),
+    Poll::Pending => return Poll::Pending,
+}
+```
+
+这个代码是有问题的，file 被 fut 引用，但 file 会在这个作用域被丢弃。
+
+所以，我们需要把它保存在数据结构中：
+
+```rust, editable
+
+enum WriteHelloFile {
+    // 初始阶段，用户提供文件名
+    Init(String),
+    // 等待文件创建，此时需要保存 Future 以便多次调用
+    AwaitingCreate(impl Future<Output = Result<fs::File, std::io::Error>>),
+    // 等待文件写入，此时需要保存 Future 以便多次调用
+    AwaitingWrite(AwaitingWriteData),
+    // Future 处理完毕
+    Done,
+}
+
+struct AwaitingWriteData {
+    fut: impl Future<Output = Result<(), std::io::Error>>,
+    file: fs::File,
+}
+```
+
+1. 可以生成一个 AwaitingWriteData 数据结构，把 file 和 fut 都放进去
+2. 然后在 WriteHelloFile 中引用它。
+3. 此时，在同一个数据结构内部，fut 指向了对 file 的引用，这样的数据结构，叫自引用结构（Self-Referential Structure）。
+
+> 自引用结构有一个很大的问题是：一旦它被移动，原本的指针就会指向旧的地址。
+
+![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961729.jpg)
+
+所以需要有某种机制来保证这种情况不会发生。
+
+Pin 就是为这个目的而设计的一个数据结构: 我们可以 Pin 住指向一个 Future 的指针
+
+看文稿中 Pin 的声明：
+
+```rust, editable
+
+pub struct Pin<P> {
+    pointer: P,
+}
+
+impl<P: Deref> Deref for Pin<P> {
+    type Target = P::Target;
+    fn deref(&self) -> &P::Target {
+        Pin::get_ref(Pin::as_ref(self))
+    }
+}
+
+impl<P: DerefMut<Target: Unpin>> DerefMut for Pin<P> {
+    fn deref_mut(&mut self) -> &mut P::Target {
+        Pin::get_mut(Pin::as_mut(self))
+    }
+}
+```
+
+1. Pin 拿住的是一个可以解引用成 T 的指针类型 P，而不是直接拿原本的类型 T。
+2. 所以，对于 Pin 而言，你看到的都是 Pin<Box<T>>、Pin<&mut T>，但不会是 Pin<T>。
+3. 因为 Pin 的目的是，把 T 的内存位置锁住，从而避免移动后自引用类型带来的引用失效问题。
+
+![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961721.jpg)
+
+这样数据结构可以正常访问，但是你无法直接拿到原来的数据结构进而移动它。
+~~~
+
+### 自引用数据结构
+
+~~~admonish bug title="举例说明自引用类型存在什么潜在危害" collapsible=true
+当然，自引用数据结构并非只在异步代码里出现，只不过异步代码在内部生成用状态机表述的 Future 时，很容易产生自引用结构。我们看一个和 Future 无关的例子（代码）：
+```rust, editable
+
+#[derive(Debug)]
+struct SelfReference {
+    name: String,
+    // 在初始化后指向 name
+    name_ptr: *const String,
+}
+
+impl SelfReference {
+    pub fn new(name: impl Into<String>) -> Self {
+        SelfReference {
+            name: name.into(),
+            name_ptr: std::ptr::null(),
+        }
+    }
+
+    pub fn init(&mut self) {
+        self.name_ptr = &self.name as *const String;
+    }
+
+    pub fn print_name(&self) {
+        println!(
+            "struct {:p}: (name: {:p} name_ptr: {:p}), name: {}, name_ref: {}",
+            self,
+            &self.name,
+            self.name_ptr,
+            self.name,
+            // 在使用 ptr 是需要 unsafe
+            // SAFETY: 这里 name_ptr 潜在不安全，会指向旧的位置
+            unsafe { &*self.name_ptr },
+        );
+    }
+}
+
+fn main() {
+    let data = move_creates_issue();
+    println!("data: {:?}", data);
+    // 如果把下面这句注释掉，程序运行会直接 segment error
+    // data.print_name();
+    print!("\\n");
+    mem_swap_creates_issue();
+}
+
+fn move_creates_issue() -> SelfReference {
+    let mut data = SelfReference::new("Tyr");
+    data.init();
+
+    // 不 move，一切正常
+    data.print_name();
+
+    let data = move_it(data);
+
+    // move 之后，name_ref 指向的位置是已经失效的地址
+    // 只不过现在 move 前的地址还没被回收挪作它用
+    data.print_name();
+    data
+}
+
+fn mem_swap_creates_issue() {
+    let mut data1 = SelfReference::new("Tyr");
+    data1.init();
+
+    let mut data2 = SelfReference::new("Lindsey");
+    data2.init();
+
+    data1.print_name();
+    data2.print_name();
+
+    std::mem::swap(&mut data1, &mut data2);
+    data1.print_name();
+    data2.print_name();
+}
+
+fn move_it(data: SelfReference) -> SelfReference {
+    data
+}
+```
+
+1. 我们创建了一个自引用结构 SelfReference，它里面的 name_ref 指向了 name。
+2. 正常使用它时，没有任何问题
+3. 但一旦对这个结构做 move 操作，name_ref 指向的位置还会是 move 前 name 的地址，这就引发了问题。看下图：
+
+![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961711.jpg)
+
+同样的，如果我们使用 std::mem:swap，也会出现类似的问题，一旦 swap，两个数据的内容交换，然而，由于 name_ref 指向的地址还是旧的，所以整个指针体系都混乱了：
+
+![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961697.jpg)
+
+看代码的输出，辅助你理解：
+
+```shell
+
+struct 0x7ffeea91d6e8: (name: 0x7ffeea91d6e8 name_ptr: 0x7ffeea91d6e8), name: Tyr, name_ref: Tyr
+struct 0x7ffeea91d760: (name: 0x7ffeea91d760 name_ptr: 0x7ffeea91d6e8), name: Tyr, name_ref: Tyr
+data: SelfReference { name: "Tyr", name_ptr: 0x7ffeea91d6e8 }
+
+struct 0x7ffeea91d6f0: (name: 0x7ffeea91d6f0 name_ptr: 0x7ffeea91d6f0), name: Tyr, name_ref: Tyr
+struct 0x7ffeea91d710: (name: 0x7ffeea91d710 name_ptr: 0x7ffeea91d710), name: Lindsey, name_ref: Lindsey
+struct 0x7ffeea91d6f0: (name: 0x7ffeea91d6f0 name_ptr: 0x7ffeea91d710), name: Lindsey, name_ref: Tyr
+struct 0x7ffeea91d710: (name: 0x7ffeea91d710 name_ptr: 0x7ffeea91d6f0), name: Tyr, name_ref: Lindsey
+```
+
+> 可以看到，swap 之后，name_ref 指向的内容确实和 name 不一样了。这就是自引用结构带来的问题。
+
+你也许会奇怪，不是说 move 也会出问题么？为什么第二行打印 name_ref 还是指向了 “Tyr”？
+
+这是因为 move 后，之前的内存失效，但是内存地址还没有被挪作它用，所以还能正常显示 “Tyr”。但这样的内存访问是不安全的，如果你把 main 中这句代码注释掉，程序就会 crash：
+
+```rust, editable
+
+fn main() {
+    let data = move_creates_issue();
+    println!("data: {:?}", data);
+    // 如果把下面这句注释掉，程序运行会直接 segment error
+    // data.print_name();
+    print!("\\n");
+    mem_swap_creates_issue();
+}
+```
+
+> 现在你应该了解到在 Rust 下，自引用类型带来的潜在危害了吧。
+~~~
+
+~~~admonish info title="使用pin之后如何解决问题" collapsible=true
+所以，Pin 的出现，对解决这类问题很关键，如果你试图移动被 Pin 住的数据结构:
+- 要么，编译器会通过编译错误阻止你；
+- 要么，你强行使用 unsafe Rust，自己负责其安全性。
+
+我们来看使用 Pin 后如何避免移动带来的问题：
+
+```rust, editable
+
+use std::{marker::PhantomPinned, pin::Pin};
+
+#[derive(Debug)]
+struct SelfReference {
+    name: String,
+    // 在初始化后指向 name
+    name_ptr: *const String,
+    // PhantomPinned 占位符
+    _marker: PhantomPinned,
+}
+
+impl SelfReference {
+    pub fn new(name: impl Into<String>) -> Self {
+        SelfReference {
+            name: name.into(),
+            name_ptr: std::ptr::null(),
+            _marker: PhantomPinned,
+        }
+    }
+
+    pub fn init(self: Pin<&mut Self>) {
+        let name_ptr = &self.name as *const String;
+        // SAFETY: 这里并不会把任何数据从 &mut SelfReference 中移走
+        let this = unsafe { self.get_unchecked_mut() };
+        this.name_ptr = name_ptr;
+    }
+
+    pub fn print_name(self: Pin<&Self>) {
+        println!(
+            "struct {:p}: (name: {:p} name_ptr: {:p}), name: {}, name_ref: {}",
+            self,
+            &self.name,
+            self.name_ptr,
+            self.name,
+            // 在使用 ptr 是需要 unsafe
+            // SAFETY: 因为数据不会移动，所以这里 name_ptr 是安全的
+            unsafe { &*self.name_ptr },
+        );
+    }
+}
+
+fn main() {
+    move_creates_issue();
+}
+
+fn move_creates_issue() {
+    let mut data = SelfReference::new("Tyr");
+    let mut data = unsafe { Pin::new_unchecked(&mut data) };
+    SelfReference::init(data.as_mut());
+
+    // 不 move，一切正常
+    data.as_ref().print_name();
+
+    // 现在只能拿到 pinned 后的数据，所以 move 不了之前
+    move_pinned(data.as_mut());
+    println!("{:?} ({:p})", data, &data);
+
+    // 你无法拿回 Pin 之前的 SelfReference 结构，所以调用不了 move_it
+    // move_it(data);
+}
+
+fn move_pinned(data: Pin<&mut SelfReference>) {
+    println!("{:?} ({:p})", data, &data);
+}
+
+#[allow(dead_code)]
+fn move_it(data: SelfReference) {
+    println!("{:?} ({:p})", data, &data);
+}
+```
+
+由于数据结构被包裹在 Pin 内部，所以在函数间传递时，变化的只是指向 data 的 Pin：
+
+![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961106.jpg)
+~~~
+
+### Unpin
+
+~~~admonish info title="了解pin的作用后，Unpin有什么用？" collapsible=true
+学习了 Pin，不知道你有没有想起 Unpin 。
+
+那么，Unpin 是做什么的？
+
+Pin 是为了让某个数据结构无法合法地移动，而 Unpin 则相当于声明数据结构是可以移动的，它的作用类似于 Send / Sync，通过类型约束来告诉编译器哪些行为是合法的、哪些不是。
+
+在 Rust 中，绝大多数数据结构都是可以移动的，所以它们都自动实现了 [Unpin](https://doc.rust-lang.org/std/marker/trait.Unpin.html)。
+
+即便这些结构被 Pin 包裹，它们依旧可以进行移动，比如：
+
+```rust, editable
+
+use std::mem;
+use std::pin::Pin;
+
+let mut string = "this".to_string();
+let mut pinned_string = Pin::new(&mut string);
+
+// We need a mutable reference to call `mem::replace`.
+// We can obtain such a reference by (implicitly) invoking `Pin::deref_mut`,
+// but that is only possible because `String` implements `Unpin`.
+mem::replace(&mut *pinned_string, "other".to_string());
+```
+
+当我们不希望一个数据结构被移动，可以使用 !Unpin。在 Rust 里，实现了 !Unpin 的，除了内部结构（比如 Future），主要就是 PhantomPinned：
+
+```rust, editable
+
+pub struct PhantomPinned;
+impl !Unpin for PhantomPinned {}
+```
+
+所以，如果你希望你的数据结构不能被移动，可以为其添加 PhantomPinned 字段来隐式声明 !Unpin。
+
+当数据结构满足 Unpin 时，创建 Pin 以及使用 Pin（主要是 DerefMut）都可以使用安全接口，否则，需要使用 unsafe 接口：
+
+```rust, editable
+
+// 如果实现了 Unpin，可以通过安全接口创建和进行 DerefMut
+impl<P: Deref<Target: Unpin>> Pin<P> {
+    pub const fn new(pointer: P) -> Pin<P> {
+        // SAFETY: the value pointed to is `Unpin`, and so has no requirements
+        // around pinning.
+        unsafe { Pin::new_unchecked(pointer) }
+    }
+    pub const fn into_inner(pin: Pin<P>) -> P {
+        pin.pointer
+    }
+}
+
+impl<P: DerefMut<Target: Unpin>> DerefMut for Pin<P> {
+    fn deref_mut(&mut self) -> &mut P::Target {
+        Pin::get_mut(Pin::as_mut(self))
+    }
+}
+
+// 如果没有实现 Unpin，只能通过 unsafe 接口创建，不能使用 DerefMut
+impl<P: Deref> Pin<P> {
+    pub const unsafe fn new_unchecked(pointer: P) -> Pin<P> {
+        Pin { pointer }
+    }
+
+    pub const unsafe fn into_inner_unchecked(pin: Pin<P>) -> P {
+        pin.pointer
+    }
+}
+```
+~~~
+
+### ### Box<T>的Unpin思考
+
+~~~admonish info title="如果一个数据结构 T: !Unpin，我们为其生成 Box<T>，那么 Box<T> 是 Unpin 还是 !Unpin 的？" collapsible=true
+Box<T>是Unpin，因为Box<T>实现了Unpin trait
+~~~
+
+### async 产生的 Future 究竟是什么类型？
+
+~~~admonish info title="Rust中Future是一个trait，async返回的是一个实现了Future的GenFuture类型。这里颇似python的yield如何变成协程的过程。" collapsible=true
+现在，我们对 Future 的接口有了一个完整的认识，也知道 async 关键字的背后都发生了什么事情：
+
+```rust, editable
+
+pub trait Future {
+    type Output;
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output>;
+}
+```
+
+那么，当你写一个 async fn 或者使用了一个 async block 时，究竟得到了一个什么类型的数据呢？比如：
+
+```rust, editable
+
+let fut = async { 42 };
+```
+
+你肯定能拍着胸脯说，这个我知道，不就是 impl Future<Output = i32> 么？
+
+对，但是 impl Future 不是一个具体的类型啊，我们讲过，它相当于 T: Future，那么这个 T 究竟是什么呢？
+
+我们来写段代码探索一下（代码）：
+
+```rust, editable
+
+fn main() {
+    let fut = async { 42 };
+
+    println!("type of fut is: {}", get_type_name(&fut));
+}
+
+fn get_type_name<T>(_: &T) -> &'static str {
+    std::any::type_name::<T>()
+}
+```
+
+它的输出如下：
+
+```shell
+
+type of fut is: core::future::from_generator::GenFuture<xxx::main::{{closure}}>
+```
+
+实现 Future trait 的是一个叫 GenFuture 的结构，它内部有一个闭包。猜测这个闭包是 async { 42 } 产生的？
+
+我们看 GenFuture 的定义（感兴趣可以在 Rust 源码中搜 from_generator），可以看到它是一个泛型结构，内部数据 T 要满足 Generator trait：
+
+```rust, editable
+
+struct GenFuture<T: Generator<ResumeTy, Yield = ()>>(T);
+
+pub trait Generator<R = ()> {
+    type Yield;
+    type Return;
+    fn resume(
+        self: Pin<&mut Self>, 
+        arg: R
+    ) -> GeneratorState<Self::Yield, Self::Return>;
+}
+```
+
+[Generator](https://doc.rust-lang.org/std/ops/trait.Generator.html) 是 Rust nightly 的一个 trait，还没有进入到标准库。大致看看官网展示的例子，它是怎么用的：
+
+```rust, editable
+
+#![feature(generators, generator_trait)]
+
+use std::ops::{Generator, GeneratorState};
+use std::pin::Pin;
+
+fn main() {
+    let mut generator = || {
+        yield 1;
+        return "foo"
+    };
+
+    match Pin::new(&mut generator).resume(()) {
+        GeneratorState::Yielded(1) => {}
+        _ => panic!("unexpected return from resume"),
+    }
+    match Pin::new(&mut generator).resume(()) {
+        GeneratorState::Complete("foo") => {}
+        _ => panic!("unexpected return from resume"),
+    }
+}
+```
+
+1. 可以看到，如果你创建一个闭包，里面有 yield 关键字，就会得到一个 Generator。
+2. 如果你在 Python 中使用过 yield，二者其实非常类似。
+3. 因为 Generator 是一个还没进入到稳定版的功能，大致了解一下就行，以后等它的 API 稳定后再仔细研究。
+~~~
+
+### 回顾整理Future的Context、Pin/Unpin，以及async/await
+
+~~~admonish info title="回顾整理Future的Context、Pin/Unpin，以及async/await" collapsible=true
+![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F.jpg)
+
+
+> 并发任务运行在 Future 这样的协程上时，async/await 是产生和运行并发任务的手段，async 定义一个可以并发执行的 Future 任务，await 触发这个任务并发执行。具体来说：
+
+1. 当我们使用 async 关键字时，它会产生一个 impl Future 的结果。
+2. 对于一个 async block 或者 async fn 来说，内部的每个 await 都会被编译器捕捉，并成为返回的 Future 的 poll() 方法的内部状态机的一个状态。
+3. Rust 的 Future 需要异步运行时来运行 Future
+- 以 tokio 为例，它的 executor 会从 run queue 中取出 Future 进行 poll()
+- 当 poll() 返回 Pending 时，这个 Future 会被挂起
+- 直到 reactor 得到了某个事件，唤醒这个 Future，将其添加回 run queue 等待下次执行。
+- tokio 一般会在每个物理线程（或者 CPU core）下运行一个线程
+- 每个线程有自己的 run queue 来处理 Future。
+- 为了提供最大的吞吐量，tokio 实现了 work stealing scheduler，这样，当某个线程下没有可执行的 Future，它会从其它线程的 run queue 中“偷”一个执行。
+~~~
+
+
+
