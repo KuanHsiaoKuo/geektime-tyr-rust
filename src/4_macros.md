@@ -1,51 +1,52 @@
 # IV 宏编程
 
 <!--ts-->
+
 * [IV 宏编程](#iv-宏编程)
-   * [资料](#资料)
-   * [宏的分类](#宏的分类)
-      * [使用泳道图](#使用泳道图)
-      * [表格](#表格)
-      * [声明宏的缺陷，而后有了过程宏](#声明宏的缺陷而后有了过程宏)
-      * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
-      * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
-         * [函数宏](#函数宏)
-         * [属性宏](#属性宏)
-         * [派生宏](#派生宏)
-   * [声明宏](#声明宏)
-      * [Rust常用声明宏](#rust常用声明宏)
-         * [println!](#println)
-         * [writeln!](#writeln)
-         * [eprintln!](#eprintln)
-      * [示例](#示例)
-         * [声明宏示意图](#声明宏示意图)
-         * [macro_rules!定义](#macro_rules定义)
-         * [使用](#使用)
-      * [声明宏用到的参数类型](#声明宏用到的参数类型)
-   * [过程宏手工定义图](#过程宏手工定义图)
-      * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
-   * [过程函数宏: #[proc_macro]](#过程函数宏-proc_macro)
-      * [src/lib.rs:定义过程函数宏](#srclibrs定义过程函数宏)
-      * [examples/query.rs:使用](#examplesqueryrs使用)
-   * [过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
-      * [常用派生宏](#常用派生宏)
-         * [#[derive(Debug)]](#derivedebug)
-      * [原始实现builder模式](#原始实现builder模式)
-         * [想到达到链式调用的效果](#想到达到链式调用的效果)
-         * [可以这样定义](#可以这样定义)
-         * [但是有点繁琐，可以使用派生宏派生出这些代码](#但是有点繁琐可以使用派生宏派生出这些代码)
-      * [派生宏思路](#派生宏思路)
-         * [要生成的代码模版](#要生成的代码模版)
-         * [构建对应数据结构](#构建对应数据结构)
-         * [src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息](#srclibrs-使用派生宏从tokenstream抽取出想要的信息)
-         * [examples/raw_command.rs: 使用这个派生宏抽取](#examplesraw_commandrs-使用这个派生宏抽取)
-         * [运行，查看获取的TokenStream](#运行查看获取的tokenstream)
-         * [src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息](#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息)
-         * [templates/builder.j2: 上面askama用到的jinja2模版](#templatesbuilderj2-上面askama用到的jinja2模版)
-         * [src/raw_builder.rs: 实现对应抽取方法](#srcraw_builderrs-实现对应抽取方法)
-      * [使用syn/quote可以不用自己定义模版](#使用synquote可以不用自己定义模版)
-   * [过程属性宏: proc_macro_derive(macro_name, attributes(attr_name))](#过程属性宏-proc_macro_derivemacro_name-attributesattr_name)
-      * [使用syn/quote定义属性宏](#使用synquote定义属性宏)
+    * [资料](#资料)
+    * [宏的分类](#宏的分类)
+        * [使用泳道图](#使用泳道图)
+        * [表格](#表格)
+        * [声明宏的缺陷，而后有了过程宏](#声明宏的缺陷而后有了过程宏)
+        * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
+        * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+            * [函数宏](#函数宏)
+            * [属性宏](#属性宏)
+            * [派生宏](#派生宏)
+    * [声明宏](#声明宏)
+        * [Rust常用声明宏](#rust常用声明宏)
+            * [println!](#println)
+            * [writeln!](#writeln)
+            * [eprintln!](#eprintln)
+        * [示例](#示例)
+            * [声明宏示意图](#声明宏示意图)
+            * [macro_rules!定义](#macro_rules定义)
+            * [使用](#使用)
+        * [声明宏用到的参数类型](#声明宏用到的参数类型)
+    * [过程宏手工定义图](#过程宏手工定义图)
+        * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
+    * [过程函数宏: #[proc_macro]](#过程函数宏-proc_macro)
+        * [src/lib.rs:定义过程函数宏](#srclibrs定义过程函数宏)
+        * [examples/query.rs:使用](#examplesqueryrs使用)
+    * [过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
+        * [常用派生宏](#常用派生宏)
+            * [#[derive(Debug)]](#derivedebug)
+        * [原始实现builder模式](#原始实现builder模式)
+            * [想到达到链式调用的效果](#想到达到链式调用的效果)
+            * [可以这样定义](#可以这样定义)
+            * [但是有点繁琐，可以使用派生宏派生出这些代码](#但是有点繁琐可以使用派生宏派生出这些代码)
+        * [派生宏思路](#派生宏思路)
+            * [要生成的代码模版](#要生成的代码模版)
+            * [构建对应数据结构](#构建对应数据结构)
+            * [src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息](#srclibrs-使用派生宏从tokenstream抽取出想要的信息)
+            * [examples/raw_command.rs: 使用这个派生宏抽取](#examplesraw_commandrs-使用这个派生宏抽取)
+            * [运行，查看获取的TokenStream](#运行查看获取的tokenstream)
+            * [src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息](#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息)
+            * [templates/builder.j2: 上面askama用到的jinja2模版](#templatesbuilderj2-上面askama用到的jinja2模版)
+            * [src/raw_builder.rs: 实现对应抽取方法](#srcraw_builderrs-实现对应抽取方法)
+        * [使用syn/quote可以不用自己定义模版](#使用synquote可以不用自己定义模版)
+    * [过程属性宏: proc_macro_derive(macro_name, attributes(attr_name))](#过程属性宏-proc_macro_derivemacro_name-attributesattr_name)
+        * [使用syn/quote定义属性宏](#使用synquote定义属性宏)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Oct  5 10:43:59 UTC 2022 -->
@@ -106,6 +107,7 @@
 
 ### 过程宏：深度定制与生成代码
 
+~~~admonish info title="陈天B站视频另外提供详细演示" collapsible=true
 - [Rust 过程宏(1): 如何硬生生解析和手写过程宏](https://www.bilibili.com/video/BV1Za411q7LQ)
 
 > 主要以如何使用 function-like macro 在不依赖于 syn / quote 的情况下，把 Json Schema 在编译期转换成 Rust struct。主要目的是让大家熟悉基本的处理 TokenStream 的思路
@@ -118,6 +120,7 @@
 
 > 做个收尾，对上一讲的 derive macro 支持 attributes。 我们可以直接解析 attributes 相关的 TokenStream，也可以使用 darling 这个很方便的库，直接把 attributes 像
 > Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理。
+~~~
 
 ~~~admonish info title='总结' collapsible=true
 这三讲的内容虽然简单，但足以应付大家绝大多数宏编程的需求。
@@ -130,10 +133,12 @@
 
 #### 函数宏
 
-看起来像函数的宏，但在编译期进行处理.
+~~~admonish info title="看起来像函数的宏，但在编译期进行处理." collapsible=true
+
 > sqlx 用函数宏来处理SQL query、tokio使用属性宏 #[tokio::main] 来引入 runtime。
 > 它们可以帮助目标代码的实现逻辑变得更加简单， 但一般除非特别必要，否则并不推荐写。
 > 并没有特定的使用场景
+~~~
 
 #### 属性宏
 
@@ -153,6 +158,7 @@
 - [println in std - Rust](https://doc.rust-lang.org/std/macro.println.html)
 - [Rust声明宏println剖析_一线coder的博客-CSDN博客_rust 声明宏](https://blog.csdn.net/jiangjkd/article/details/120994956)
 
+~~~admonish info title="println!使用示例" collapsible=true
 ```rust
 #[macro_export]
 #[stable(feature = "rust1", since = "1.0.0")]
@@ -164,6 +170,7 @@ macro_rules! println {
     })
 }
 ```
+~~~
 
 #### writeln!
 
@@ -184,15 +191,19 @@ cargo run --example raw_command > examples/raw_command_output.txt
 
 #### 声明宏示意图
 
+~~~admonish info title="声明宏定义使用流程图" collapsible=true
 ```plantuml
 {{#include ../materials/plantumls/declarative_macros.puml}}
 ```
+~~~
 
-#### macro_rules!定义
+#### macro_rules!定义与使用
 
+~~~admonish info title="macro_rules!定义示例" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/examples/rule.rs:1:20}}
 ```
+~~~
 
 ~~~admonish info title="$($el:expr), *)" collapsible=true
 1. 在声明宏中，条件捕获的参数使用 $ 开头的标识符来声明。
@@ -202,11 +213,11 @@ cargo run --example raw_command > examples/raw_command_output.txt
 5. 所以这句 $(v.push($el);)* 相当于匹配出多少个 $el就展开多少句 push 语句。
 ~~~
 
-#### 使用
-
+~~~admonish info title="macro_rules!使用示例" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/examples/rule.rs:22:}}
 ```
+~~~
 
 ### 声明宏用到的参数类型
 
@@ -236,17 +247,17 @@ cargo run --example raw_command > examples/raw_command_output.txt
 {{#include ../geektime_rust_codes/47_48_macros/Cargo.toml:8:9}}
 ```
 
-## 过程函数宏: #[proc_macro]
+## 过程函数宏
+
+- #[proc_macro]
 
 > 和macro_rules! 功能类似，但更为强大。
 
-### src/lib.rs:定义过程函数宏
-
-> 可以看到，都是处理TokenStream
-
+~~~admonish info title="src/lib.rs:定义过程函数宏示例：可以看到，都是处理TokenStream" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/src/lib.rs}}
 ```
+~~~
 
 ~~~admonish info title="TokenStream" collapsible=true
 使用者可以通过 query!(...) 来调用。我们打印传入的 TokenStream，
@@ -256,11 +267,11 @@ cargo run --example raw_command > examples/raw_command_output.txt
 是因为 TokenStream 实现了  FromStr trait。
 ~~~
 
-### examples/query.rs:使用
-
+~~~admonish info title="examples/query.rs使用过冲示例" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/examples/query.rs}}
 ```
+~~~
 
 1. .parse().unwrap(): 字符串自动转为TokenStream类型
 
@@ -268,9 +279,11 @@ cargo run --example raw_command > examples/raw_command_output.txt
 cargo run --example query > examples/query_output.txt
 ```
 
+~~~admonish info title="运行结果示例：可以看到打印出来的TokenStream" collapsible=true
 ```shell
 {{#include ../geektime_rust_codes/47_48_macros/examples/query_output.txt}}
 ```
+~~~
 
 ~~~admonish tip title='TokenStream是一个Iterator，里面包含一系列的TokenTree' collapsible=true
 ```rust
@@ -299,7 +312,9 @@ fn main() {
 ```
 ~~~
 
-## 过程派生宏: /#[proc_macro_devive(DeriveMacroName)]
+## 过程派生宏:
+
+#[proc_macro_devive(DeriveMacroName)]
 
 > 用于结构体（struct）、枚举（enum）、联合（union）类型，可为其实现函数或特征（Trait）
 
@@ -309,56 +324,55 @@ fn main() {
 
 ### 原始实现builder模式
 
-#### 想到达到链式调用的效果
-
+~~~admonish info title="想到达到链式调用的效果" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/examples/mannual_command.rs:56:74}}
 ```
+~~~
 
-#### 可以这样定义
-
+~~~admonish info title="可以这样定义" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/examples/mannual_command.rs:1:53}}
 ```
+~~~
 
-#### 但是有点繁琐，可以使用派生宏派生出这些代码
+> 但是有点繁琐，可以使用派生宏派生出这些代码
 
 ### 派生宏思路
 
-#### 要生成的代码模版
-
-把输入的 TokenStream 抽取出来，也就是把在 struct 的定义内部，每个域的名字及其类型都抽出来，然后生成对应的方法代码。
-
+~~~admonish info title="要生成的代码模版: 把输入的 TokenStream 抽取出来，也就是把在 struct 的定义内部，每个域的名字及其类型都抽出来，然后生成对应的方法代码。" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/templates/builder.j2}}
 ```
-
+---
 1. 7-12: 这里的 fileds / builder_name 是我们要传入的参数，每个 field 还需要 name 和 ty 两个 属性，分别对应 field 的名字和类型
 2. 25-26: 对于原本是 Option<T> 类型的域，要避免生成 Option<Option>，我们需要把是否是 Option 单独抽取出来，如果是 Option<T>，那么 ty 就是 T。所以，field 还需要一个属 性
    optional。
+~~~
 
-#### 构建对应数据结构
-
+~~~admonish info title="构建对应数据结构" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/src/raw_builder.rs:6:13}}
 ```
+~~~
 
-#### src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息
-
+~~~admonish info title="src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息" collapsible=true
 > 对于 derive macro，要使用 proce_macro_derive 这个宏。我们把这个 derive macro 命名为 Builder。
 
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/src/lib.rs:18:23}}
 ```
+~~~
 
-#### examples/raw_command.rs: 使用这个派生宏抽取
 
+~~~admonish info title="examples/raw_command.rs: 使用这个派生宏抽取" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/examples/raw_command.rs}}
 ```
+~~~
 
-#### 运行，查看获取的TokenStream
 
+~~~admonish info title="运行，查看获取的TokenStream" collapsible=true
 ```shell
 cargo run --example raw_command > examples/raw_command_output.txt
 ```
@@ -366,8 +380,9 @@ cargo run --example raw_command > examples/raw_command_output.txt
 ```shell
 {{#include ../geektime_rust_codes/47_48_macros/examples/raw_command_output.txt}}
 ```
+~~~
 
-~~~admonish info title='打印信息说明'
+~~~admonish info title='打印信息说明' collapsible=true
 1. 首先有一个 Group，包含了 #[allow(dead_code)] 属性的信息。因为我们现在拿到 的 derive 下的信息，所以所有不属于 #[derive(...)] 的属性，都会被放入 TokenStream 中。
 
 2. 之后是 pub / struct / Command 三个 ident。
@@ -375,28 +390,29 @@ cargo run --example raw_command > examples/raw_command_output.txt
 3. 随后又是一个 Group，包含了每个 field 的信息。我们看到，field 之间用逗号这个 Punct 分隔，field 的名字和类型又是通过冒号这个 Punct 分隔。而类型，可能是一个 Ident，如 String，或者一系列 Ident / Punct，如 Vec / < / String / >。
 ~~~
 
-#### src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息
 
+~~~admonish info title="src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息" collapsible=true
 > 我们要做的就是，把这个 TokenStream 中的 struct 名字，以及每个 field 的名字和类型拿出来。
 > 如果类型是 Option<T>，那么把 T 拿出来，把 optional 设置为 true。
 
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/src/raw_builder.rs:1:21}}
 ```
+~~~
 
-#### templates/builder.j2: 上面askama用到的jinja2模版
-
+~~~admonish info title="templates/builder.j2: 上面askama用到的jinja2模版" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/templates/builder.j2}}
 ```
+~~~
 
-#### src/raw_builder.rs: 实现对应抽取方法
-
+~~~admonish info title="src/raw_builder.rs: 实现对应抽取方法" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/47_48_macros/src/raw_builder.rs:23:}}
 ```
+~~~
 
-~~~admonish tip
+~~~admonish tip title="提示：类比理解" collapsible=true
 可以对着打印出来的 TokenStream 和刚才的分析进行理解。
 核心的就是 get_struct_fields() 方法，如果觉得难懂，
 可以想想如果要把一个 a=1,b=2 的字符串切成 [[a, 1], [b, 2]] 该怎么做，就很容易理解了。
