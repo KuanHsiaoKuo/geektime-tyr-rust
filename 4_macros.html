@@ -242,8 +242,7 @@
 <li><a href="#%E7%A4%BA%E4%BE%8B">示例</a>
 <ul>
 <li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8F%E7%A4%BA%E6%84%8F%E5%9B%BE">声明宏示意图</a></li>
-<li><a href="#macro_rules%E5%AE%9A%E4%B9%89">macro_rules!定义</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li>
+<li><a href="#macro_rules%E5%AE%9A%E4%B9%89%E4%B8%8E%E4%BD%BF%E7%94%A8">macro_rules!定义与使用</a></li>
 </ul>
 </li>
 <li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8F%E7%94%A8%E5%88%B0%E7%9A%84%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B">声明宏用到的参数类型</a></li>
@@ -254,38 +253,16 @@
 <li><a href="#cargotoml%E6%B7%BB%E5%8A%A0proc-macro%E5%A3%B0%E6%98%8E">Cargo.toml添加proc-macro声明</a></li>
 </ul>
 </li>
-<li>[过程函数宏: #[proc_macro]](#过程函数宏-proc_macro)
-<ul>
-<li><a href="#srclibrs%E5%AE%9A%E4%B9%89%E8%BF%87%E7%A8%8B%E5%87%BD%E6%95%B0%E5%AE%8F">src/lib.rs:定义过程函数宏</a></li>
-<li><a href="#examplesqueryrs%E4%BD%BF%E7%94%A8">examples/query.rs:使用</a></li>
-</ul>
-</li>
-<li>[过程派生宏: /#[proc_macro_devive(DeriveMacroName)]](#过程派生宏-proc_macro_devivederivemacroname)
+<li><a href="#%E8%BF%87%E7%A8%8B%E5%87%BD%E6%95%B0%E5%AE%8F">过程函数宏</a></li>
+<li><a href="#%E8%BF%87%E7%A8%8B%E6%B4%BE%E7%94%9F%E5%AE%8F">过程派生宏:</a>
 <ul>
 <li><a href="#%E5%B8%B8%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F">常用派生宏</a>
 <ul>
 <li>[#[derive(Debug)]](#derivedebug)</li>
 </ul>
 </li>
-<li><a href="#%E5%8E%9F%E5%A7%8B%E5%AE%9E%E7%8E%B0builder%E6%A8%A1%E5%BC%8F">原始实现builder模式</a>
-<ul>
-<li><a href="#%E6%83%B3%E5%88%B0%E8%BE%BE%E5%88%B0%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8%E7%9A%84%E6%95%88%E6%9E%9C">想到达到链式调用的效果</a></li>
-<li><a href="#%E5%8F%AF%E4%BB%A5%E8%BF%99%E6%A0%B7%E5%AE%9A%E4%B9%89">可以这样定义</a></li>
-<li><a href="#%E4%BD%86%E6%98%AF%E6%9C%89%E7%82%B9%E7%B9%81%E7%90%90%E5%8F%AF%E4%BB%A5%E4%BD%BF%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%B4%BE%E7%94%9F%E5%87%BA%E8%BF%99%E4%BA%9B%E4%BB%A3%E7%A0%81">但是有点繁琐，可以使用派生宏派生出这些代码</a></li>
-</ul>
-</li>
-<li><a href="#%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%80%9D%E8%B7%AF">派生宏思路</a>
-<ul>
-<li><a href="#%E8%A6%81%E7%94%9F%E6%88%90%E7%9A%84%E4%BB%A3%E7%A0%81%E6%A8%A1%E7%89%88">要生成的代码模版</a></li>
-<li><a href="#%E6%9E%84%E5%BB%BA%E5%AF%B9%E5%BA%94%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">构建对应数据结构</a></li>
-<li><a href="#srclibrs-%E4%BD%BF%E7%94%A8%E6%B4%BE%E7%94%9F%E5%AE%8F%E4%BB%8Etokenstream%E6%8A%BD%E5%8F%96%E5%87%BA%E6%83%B3%E8%A6%81%E7%9A%84%E4%BF%A1%E6%81%AF">src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息</a></li>
-<li><a href="#examplesraw_commandrs-%E4%BD%BF%E7%94%A8%E8%BF%99%E4%B8%AA%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%8A%BD%E5%8F%96">examples/raw_command.rs: 使用这个派生宏抽取</a></li>
-<li><a href="#%E8%BF%90%E8%A1%8C%E6%9F%A5%E7%9C%8B%E8%8E%B7%E5%8F%96%E7%9A%84tokenstream">运行，查看获取的TokenStream</a></li>
-<li><a href="#srcraw_builderrs-%E4%BD%BF%E7%94%A8anyhow%E4%B8%8Easkama%E6%8A%BD%E5%8F%96tokenstream%E4%B8%AD%E7%9A%84%E4%BF%A1%E6%81%AF">src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息</a></li>
-<li><a href="#templatesbuilderj2-%E4%B8%8A%E9%9D%A2askama%E7%94%A8%E5%88%B0%E7%9A%84jinja2%E6%A8%A1%E7%89%88">templates/builder.j2: 上面askama用到的jinja2模版</a></li>
-<li><a href="#srcraw_builderrs-%E5%AE%9E%E7%8E%B0%E5%AF%B9%E5%BA%94%E6%8A%BD%E5%8F%96%E6%96%B9%E6%B3%95">src/raw_builder.rs: 实现对应抽取方法</a></li>
-</ul>
-</li>
+<li><a href="#%E5%8E%9F%E5%A7%8B%E5%AE%9E%E7%8E%B0builder%E6%A8%A1%E5%BC%8F">原始实现builder模式</a></li>
+<li><a href="#%E6%B4%BE%E7%94%9F%E5%AE%8F%E6%80%9D%E8%B7%AF">派生宏思路</a></li>
 <li><a href="#%E4%BD%BF%E7%94%A8synquote%E5%8F%AF%E4%BB%A5%E4%B8%8D%E7%94%A8%E8%87%AA%E5%B7%B1%E5%AE%9A%E4%B9%89%E6%A8%A1%E7%89%88">使用syn/quote可以不用自己定义模版</a></li>
 </ul>
 </li>
@@ -298,7 +275,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Oct  5 10:43:59 UTC 2022 -->
+<!-- Added by: runner, at: Fri Oct  7 02:23:08 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -352,6 +329,12 @@
 声明宏可以用 macro_rules! 来描述, 如果重复性的代码无法用函数来封装，那么声明宏就是一个好的选择</p>
 </blockquote>
 <h3 id="过程宏深度定制与生成代码"><a class="header" href="#过程宏深度定制与生成代码">过程宏：深度定制与生成代码</a></h3>
+<details id="admonition-陈天b站视频另外提供详细演示" class="admonition info">
+<summary class="admonition-title">
+<p>陈天B站视频另外提供详细演示</p>
+<p><a class="admonition-anchor-link" href="#admonition-陈天b站视频另外提供详细演示"></a></p>
+</summary>
+<div>
 <ul>
 <li><a href="https://www.bilibili.com/video/BV1Za411q7LQ">Rust 过程宏(1): 如何硬生生解析和手写过程宏</a></li>
 </ul>
@@ -371,6 +354,8 @@
 <p>做个收尾，对上一讲的 derive macro 支持 attributes。 我们可以直接解析 attributes 相关的 TokenStream，也可以使用 darling 这个很方便的库，直接把 attributes 像
 Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理。</p>
 </blockquote>
+</div>
+</details>
 <details id="admonition-总结" class="admonition info">
 <summary class="admonition-title">
 <p>总结</p>
@@ -385,12 +370,19 @@ Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理�
 </div>
 </details>
 <h4 id="函数宏"><a class="header" href="#函数宏">函数宏</a></h4>
+<details id="admonition-看起来像函数的宏但在编译期进行处理" class="admonition info">
+<summary class="admonition-title">
 <p>看起来像函数的宏，但在编译期进行处理.</p>
+<p><a class="admonition-anchor-link" href="#admonition-看起来像函数的宏但在编译期进行处理"></a></p>
+</summary>
+<div>
 <blockquote>
 <p>sqlx 用函数宏来处理SQL query、tokio使用属性宏 #[tokio::main] 来引入 runtime。
 它们可以帮助目标代码的实现逻辑变得更加简单， 但一般除非特别必要，否则并不推荐写。
 并没有特定的使用场景</p>
 </blockquote>
+</div>
+</details>
 <h4 id="属性宏"><a class="header" href="#属性宏">属性宏</a></h4>
 <p>可以在其他代码块上添加属性，为代码块提供更多功能。</p>
 <h4 id="派生宏"><a class="header" href="#派生宏">派生宏</a></h4>
@@ -405,6 +397,12 @@ Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理�
 <li><a href="https://doc.rust-lang.org/std/macro.println.html">println in std - Rust</a></li>
 <li><a href="https://blog.csdn.net/jiangjkd/article/details/120994956">Rust声明宏println剖析_一线coder的博客-CSDN博客_rust 声明宏</a></li>
 </ul>
+<details id="admonition-println使用示例" class="admonition info">
+<summary class="admonition-title">
+<p>println!使用示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-println使用示例"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>#[macro_export]
@@ -418,6 +416,8 @@ macro_rules! println {
 }
 <span class="boring">}
 </span></code></pre></pre>
+</div>
+</details>
 <h4 id="writeln"><a class="header" href="#writeln">writeln!</a></h4>
 <blockquote>
 <p>可以将内容输入到指定文件</p>
@@ -434,8 +434,22 @@ macro_rules! println {
 </ul>
 <h3 id="示例"><a class="header" href="#示例">示例</a></h3>
 <h4 id="声明宏示意图"><a class="header" href="#声明宏示意图">声明宏示意图</a></h4>
+<details id="admonition-声明宏定义使用流程图" class="admonition info">
+<summary class="admonition-title">
+<p>声明宏定义使用流程图</p>
+<p><a class="admonition-anchor-link" href="#admonition-声明宏定义使用流程图"></a></p>
+</summary>
+<div>
 <figure><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="633px" preserveAspectRatio="none" style="width:474px;height:633px;background:#FFFFFF;" version="1.1" viewBox="0 0 474 633" width="474px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="26.2969" id="_title" style="stroke:none;stroke-width:1.0;" width="136" x="167.5" y="15"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="126" x="172.5" y="32.9951">声明宏定义使用流程</text><ellipse cx="51" cy="57.2969" fill="#222222" rx="10" ry="10" style="stroke:#222222;stroke-width:1.0;"/><path d="M101,77.2969 L101,389.9531 L462,389.9531 L462,87.2969 L452,77.2969 L101,77.2969 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M452,77.2969 L452,87.2969 L462,87.2969 L452,77.2969 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="12" x="107" y="94.3638">1.</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="99" x="123" y="94.3638">[macro_export]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="149" x="107" y="109.4966">macro_rules! my_vec {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="299" x="123" y="124.6294">// 没带任何参数的 my_vec，我们创建一个空的 vec</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="324" x="123" y="139.7622">// 注意，由于宏要在调用的地方展开，我们无法预测调用</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="316" x="123" y="154.895">// 者的环境是否已经 做了相关的 use，所以我们使用的</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="194" x="123" y="170.0278">// 代码最好带着完整的命名空间。</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="48" x="123" y="185.1606">() =&gt; {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="125" x="139" y="200.2935">std::vec::Vec::new()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="12" x="123" y="215.4263">};</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="162" x="123" y="230.5591">// 处理 my_vec![1, 2, 3, 4]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="133" x="123" y="245.6919">($($el:expr),*) =&gt; ({</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="205" x="139" y="260.8247">let mut v = std::vec::Vec::new();</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="100" x="139" y="275.9575">$(v.push($el);)*</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="139" y="291.0903">v</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="17" x="123" y="306.2231">});</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="138" x="123" y="321.356">// 处理 my_vec![0; 10]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="155" x="123" y="336.4888">($el:expr; $n:expr) =&gt; {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="180" x="139" y="351.6216">std::vec::from_elem($el, $n)</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="123" y="366.7544">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="107" y="381.8872">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="11" y="216.6406"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="21" y="237.7793">定义声明宏</text><path d="M101,399.9531 L101,621.8125 L318,621.8125 L318,409.9531 L308,399.9531 L101,399.9531 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M308,399.9531 L308,409.9531 L318,409.9531 L308,399.9531 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="107" y="417.02">fn main() {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="144" x="123" y="432.1528">let mut v = my_vec![];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="64" x="123" y="447.2856">v.push(1);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="159" x="123" y="462.4185">// 调用时可以使用 [], (), {}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="177" x="123" y="477.5513">let _v = my_vec!(1, 2, 3, 4);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="177" x="123" y="492.6841">let _v = my_vec![1, 2, 3, 4];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="180" x="123" y="507.8169">let v = my_vec! {1, 2, 3, 4};</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="522.9497">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="107" y="538.0825"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="553.2153">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="123" y="568.3481">//</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="146" x="123" y="583.481">let v = my_vec![1; 10];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="598.6138">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="107" y="613.7466">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="11" y="493.8984"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="21" y="515.0371">使用声明宏</text><line style="stroke:#181818;stroke-width:1.0;" x1="51" x2="51" y1="67.2969" y2="216.6406"/><polygon fill="#181818" points="47,206.6406,51,216.6406,55,206.6406,51,210.6406" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="51" x2="51" y1="250.6094" y2="493.8984"/><polygon fill="#181818" points="47,483.8984,51,493.8984,55,483.8984,51,487.8984" style="stroke:#181818;stroke-width:1.0;"/></g></svg></figure>
-<h4 id="macro_rules定义"><a class="header" href="#macro_rules定义">macro_rules!定义</a></h4>
+</div>
+</details>
+<h4 id="macro_rules定义与使用"><a class="header" href="#macro_rules定义与使用">macro_rules!定义与使用</a></h4>
+<details id="admonition-macro_rules定义示例" class="admonition info">
+<summary class="admonition-title">
+<p>macro_rules!定义示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-macro_rules定义示例"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[macro_export]
 macro_rules! my_vec {
     // 没带任何参数的 my_vec，我们创建一个空的 vec
@@ -457,6 +471,8 @@ macro_rules! my_vec {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <details id="admonition-elexpr-" class="admonition info">
 <summary class="admonition-title">
 <p>$($el:expr), *)</p>
@@ -472,7 +488,12 @@ macro_rules! my_vec {
 </ol>
 </div>
 </details>
-<h4 id="使用"><a class="header" href="#使用">使用</a></h4>
+<details id="admonition-macro_rules使用示例" class="admonition info">
+<summary class="admonition-title">
+<p>macro_rules!使用示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-macro_rules使用示例"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">fn main() {
     let mut v = my_vec![];
     v.push(1);
@@ -488,6 +509,8 @@ macro_rules! my_vec {
     println!(&quot;{:?}&quot;, v);
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="声明宏用到的参数类型"><a class="header" href="#声明宏用到的参数类型">声明宏用到的参数类型</a></h3>
 <details id="admonition-类型列表" class="admonition info">
 <summary class="admonition-title">
@@ -521,14 +544,19 @@ macro_rules! my_vec {
 <pre><code class="language-toml  editable">[lib]
 proc-macro = true
 </code></pre>
-<h2 id="过程函数宏-proc_macro"><a class="header" href="#过程函数宏-proc_macro">过程函数宏: #[proc_macro]</a></h2>
+<h2 id="过程函数宏"><a class="header" href="#过程函数宏">过程函数宏</a></h2>
+<ul>
+<li>#[proc_macro]</li>
+</ul>
 <blockquote>
 <p>和macro_rules! 功能类似，但更为强大。</p>
 </blockquote>
-<h3 id="srclibrs定义过程函数宏"><a class="header" href="#srclibrs定义过程函数宏">src/lib.rs:定义过程函数宏</a></h3>
-<blockquote>
-<p>可以看到，都是处理TokenStream</p>
-</blockquote>
+<details id="admonition-srclibrs定义过程函数宏示例可以看到都是处理tokenstream" class="admonition info">
+<summary class="admonition-title">
+<p>src/lib.rs:定义过程函数宏示例：可以看到，都是处理TokenStream</p>
+<p><a class="admonition-anchor-link" href="#admonition-srclibrs定义过程函数宏示例可以看到都是处理tokenstream"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">mod builder;
 mod builder_with_attr;
 mod raw_builder;
@@ -569,6 +597,8 @@ pub fn derive_builder_with_attr(input: TokenStream) -&gt; TokenStream {
         .into()
 }
 </code></pre></pre>
+</div>
+</details>
 <details id="admonition-tokenstream" class="admonition info">
 <summary class="admonition-title">
 <p>TokenStream</p>
@@ -581,7 +611,12 @@ pub fn derive_builder_with_attr(input: TokenStream) -&gt; TokenStream {
 是因为 TokenStream 实现了  FromStr trait。</p>
 </div>
 </details>
-<h3 id="examplesqueryrs使用"><a class="header" href="#examplesqueryrs使用">examples/query.rs:使用</a></h3>
+<details id="admonition-examplesqueryrs使用过冲示例" class="admonition info">
+<summary class="admonition-title">
+<p>examples/query.rs使用过冲示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-examplesqueryrs使用过冲示例"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use macros::query;
 
 fn main() {
@@ -590,11 +625,19 @@ fn main() {
     hello()
 }
 </code></pre></pre>
+</div>
+</details>
 <ol>
 <li>.parse().unwrap(): 字符串自动转为TokenStream类型</li>
 </ol>
 <pre><code class="language-shell">cargo run --example query &gt; examples/query_output.txt
 </code></pre>
+<details id="admonition-运行结果示例可以看到打印出来的tokenstream" class="admonition info">
+<summary class="admonition-title">
+<p>运行结果示例：可以看到打印出来的TokenStream</p>
+<p><a class="admonition-anchor-link" href="#admonition-运行结果示例可以看到打印出来的tokenstream"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">TokenStream [
     Ident {
         ident: &quot;SELECT&quot;,
@@ -686,6 +729,8 @@ fn main() {
 ]
 Hello world!
 </code></pre>
+</div>
+</details>
 <details id="admonition-tokenstream是一个iterator里面包含一系列的tokentree" class="admonition tip">
 <summary class="admonition-title">
 <p>TokenStream是一个Iterator，里面包含一系列的TokenTree</p>
@@ -724,14 +769,20 @@ fn main() {
 </code></pre></pre>
 </div>
 </details>
-<h2 id="过程派生宏-proc_macro_devivederivemacroname"><a class="header" href="#过程派生宏-proc_macro_devivederivemacroname">过程派生宏: /#[proc_macro_devive(DeriveMacroName)]</a></h2>
+<h2 id="过程派生宏"><a class="header" href="#过程派生宏">过程派生宏:</a></h2>
+<p>#[proc_macro_devive(DeriveMacroName)]</p>
 <blockquote>
 <p>用于结构体（struct）、枚举（enum）、联合（union）类型，可为其实现函数或特征（Trait）</p>
 </blockquote>
 <h3 id="常用派生宏"><a class="header" href="#常用派生宏">常用派生宏</a></h3>
 <h4 id="derivedebug"><a class="header" href="#derivedebug">#[derive(Debug)]</a></h4>
 <h3 id="原始实现builder模式"><a class="header" href="#原始实现builder模式">原始实现builder模式</a></h3>
-<h4 id="想到达到链式调用的效果"><a class="header" href="#想到达到链式调用的效果">想到达到链式调用的效果</a></h4>
+<details id="admonition-想到达到链式调用的效果" class="admonition info">
+<summary class="admonition-title">
+<p>想到达到链式调用的效果</p>
+<p><a class="admonition-anchor-link" href="#admonition-想到达到链式调用的效果"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">fn main() {
     let command = Command::builder()
         .executable(&quot;cargo&quot;.to_owned())
@@ -752,7 +803,14 @@ fn main() {
     println!(&quot;{:?}&quot;, command);
 }
 </code></pre></pre>
-<h4 id="可以这样定义"><a class="header" href="#可以这样定义">可以这样定义</a></h4>
+</div>
+</details>
+<details id="admonition-可以这样定义" class="admonition info">
+<summary class="admonition-title">
+<p>可以这样定义</p>
+<p><a class="admonition-anchor-link" href="#admonition-可以这样定义"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 这是command.rs的派生宏实现的代码样子
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -807,10 +865,18 @@ impl CommandBuilder {
         })
     }
 </code></pre></pre>
-<h4 id="但是有点繁琐可以使用派生宏派生出这些代码"><a class="header" href="#但是有点繁琐可以使用派生宏派生出这些代码">但是有点繁琐，可以使用派生宏派生出这些代码</a></h4>
+</div>
+</details>
+<blockquote>
+<p>但是有点繁琐，可以使用派生宏派生出这些代码</p>
+</blockquote>
 <h3 id="派生宏思路"><a class="header" href="#派生宏思路">派生宏思路</a></h3>
-<h4 id="要生成的代码模版"><a class="header" href="#要生成的代码模版">要生成的代码模版</a></h4>
-<p>把输入的 TokenStream 抽取出来，也就是把在 struct 的定义内部，每个域的名字及其类型都抽出来，然后生成对应的方法代码。</p>
+<details id="admonition-要生成的代码模版-把输入的-tokenstream-抽取出来也就是把在-struct-的定义内部每个域的名字及其类型都抽出来然后生成对应的方法代码" class="admonition info">
+<summary class="admonition-title">
+<p>要生成的代码模版: 把输入的 TokenStream 抽取出来，也就是把在 struct 的定义内部，每个域的名字及其类型都抽出来，然后生成对应的方法代码。</p>
+<p><a class="admonition-anchor-link" href="#admonition-要生成的代码模版-把输入的-tokenstream-抽取出来也就是把在-struct-的定义内部每个域的名字及其类型都抽出来然后生成对应的方法代码"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">impl {{ name }} {
     pub fn builder() -&gt; {{ builder_name }} {
         Default::default()
@@ -845,12 +911,20 @@ impl {{ builder_name }} {
     }
 }
 </code></pre></pre>
+<hr />
 <ol>
 <li>7-12: 这里的 fileds / builder_name 是我们要传入的参数，每个 field 还需要 name 和 ty 两个 属性，分别对应 field 的名字和类型</li>
 <li>25-26: 对于原本是 Option<T> 类型的域，要避免生成 Option<Option>，我们需要把是否是 Option 单独抽取出来，如果是 Option<T>，那么 ty 就是 T。所以，field 还需要一个属 性
 optional。</li>
 </ol>
-<h4 id="构建对应数据结构"><a class="header" href="#构建对应数据结构">构建对应数据结构</a></h4>
+</div>
+</details>
+<details id="admonition-构建对应数据结构" class="admonition info">
+<summary class="admonition-title">
+<p>构建对应数据结构</p>
+<p><a class="admonition-anchor-link" href="#admonition-构建对应数据结构"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 处理 jinja 模板的数据结构，在模板中我们使用了 name / builder_name / fields
 #[derive(Template)]
 #[template(path = &quot;builder.j2&quot;, escape = &quot;none&quot;)]
@@ -860,7 +934,14 @@ pub struct BuilderContext {
     fields: Vec&lt;Fd&gt;,
 }
 </code></pre></pre>
-<h4 id="srclibrs-使用派生宏从tokenstream抽取出想要的信息"><a class="header" href="#srclibrs-使用派生宏从tokenstream抽取出想要的信息">src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息</a></h4>
+</div>
+</details>
+<details id="admonition-srclibrs-使用派生宏从tokenstream抽取出想要的信息" class="admonition info">
+<summary class="admonition-title">
+<p>src/lib.rs: 使用派生宏从TokenStream抽取出想要的信息</p>
+<p><a class="admonition-anchor-link" href="#admonition-srclibrs-使用派生宏从tokenstream抽取出想要的信息"></a></p>
+</summary>
+<div>
 <blockquote>
 <p>对于 derive macro，要使用 proce_macro_derive 这个宏。我们把这个 derive macro 命名为 Builder。</p>
 </blockquote>
@@ -871,7 +952,14 @@ pub fn derive_raw_builder(input: TokenStream) -&gt; TokenStream {
     BuilderContext::render(input).unwrap().parse().unwrap()
 }
 </code></pre></pre>
-<h4 id="examplesraw_commandrs-使用这个派生宏抽取"><a class="header" href="#examplesraw_commandrs-使用这个派生宏抽取">examples/raw_command.rs: 使用这个派生宏抽取</a></h4>
+</div>
+</details>
+<details id="admonition-examplesraw_commandrs-使用这个派生宏抽取" class="admonition info">
+<summary class="admonition-title">
+<p>examples/raw_command.rs: 使用这个派生宏抽取</p>
+<p><a class="admonition-anchor-link" href="#admonition-examplesraw_commandrs-使用这个派生宏抽取"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use macros::RawBuilder;
 
 #[allow(dead_code)]
@@ -903,7 +991,14 @@ fn main() {
     println!(&quot;{:?}&quot;, command);
 }
 </code></pre></pre>
-<h4 id="运行查看获取的tokenstream"><a class="header" href="#运行查看获取的tokenstream">运行，查看获取的TokenStream</a></h4>
+</div>
+</details>
+<details id="admonition-运行查看获取的tokenstream" class="admonition info">
+<summary class="admonition-title">
+<p>运行，查看获取的TokenStream</p>
+<p><a class="admonition-anchor-link" href="#admonition-运行查看获取的tokenstream"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo run --example raw_command &gt; examples/raw_command_output.txt
 </code></pre>
 <pre><code class="language-shell">TokenStream [
@@ -1067,11 +1162,13 @@ fn main() {
 ]
 Command { executable: &quot;cargo&quot;, args: [&quot;build&quot;, &quot;--release&quot;], env: [], current_dir: Some(&quot;..&quot;) }
 </code></pre>
-<div id="admonition-打印信息说明" class="admonition info">
-<div class="admonition-title">
+</div>
+</details>
+<details id="admonition-打印信息说明" class="admonition info">
+<summary class="admonition-title">
 <p>打印信息说明</p>
 <p><a class="admonition-anchor-link" href="#admonition-打印信息说明"></a></p>
-</div>
+</summary>
 <div>
 <ol>
 <li>
@@ -1085,8 +1182,13 @@ Command { executable: &quot;cargo&quot;, args: [&quot;build&quot;, &quot;--relea
 </li>
 </ol>
 </div>
-</div>
-<h4 id="srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息"><a class="header" href="#srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息">src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息</a></h4>
+</details>
+<details id="admonition-srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息" class="admonition info">
+<summary class="admonition-title">
+<p>src/raw_builder.rs: 使用anyhow与askama抽取TokenStream中的信息</p>
+<p><a class="admonition-anchor-link" href="#admonition-srcraw_builderrs-使用anyhow与askama抽取tokenstream中的信息"></a></p>
+</summary>
+<div>
 <blockquote>
 <p>我们要做的就是，把这个 TokenStream 中的 struct 名字，以及每个 field 的名字和类型拿出来。
 如果类型是 Option<T>，那么把 T 拿出来，把 optional 设置为 true。</p>
@@ -1113,7 +1215,14 @@ struct Fd {
     optional: bool,
 }
 </code></pre></pre>
-<h4 id="templatesbuilderj2-上面askama用到的jinja2模版"><a class="header" href="#templatesbuilderj2-上面askama用到的jinja2模版">templates/builder.j2: 上面askama用到的jinja2模版</a></h4>
+</div>
+</details>
+<details id="admonition-templatesbuilderj2-上面askama用到的jinja2模版" class="admonition info">
+<summary class="admonition-title">
+<p>templates/builder.j2: 上面askama用到的jinja2模版</p>
+<p><a class="admonition-anchor-link" href="#admonition-templatesbuilderj2-上面askama用到的jinja2模版"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">impl {{ name }} {
     pub fn builder() -&gt; {{ builder_name }} {
         Default::default()
@@ -1148,7 +1257,14 @@ impl {{ builder_name }} {
     }
 }
 </code></pre></pre>
-<h4 id="srcraw_builderrs-实现对应抽取方法"><a class="header" href="#srcraw_builderrs-实现对应抽取方法">src/raw_builder.rs: 实现对应抽取方法</a></h4>
+</div>
+</details>
+<details id="admonition-srcraw_builderrs-实现对应抽取方法" class="admonition info">
+<summary class="admonition-title">
+<p>src/raw_builder.rs: 实现对应抽取方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-srcraw_builderrs-实现对应抽取方法"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">impl Fd {
     /// name 和 field 都是通过冒号 Punct 切分出来的 TokenTree 切片
     pub fn new(name: &amp;[TokenTree], ty: &amp;[TokenTree]) -&gt; Self {
@@ -1264,17 +1380,19 @@ fn get_struct_fields(input: TokenStream) -&gt; Vec&lt;Fd&gt; {
         .collect()
 }
 </code></pre></pre>
-<div id="admonition-tip" class="admonition tip">
-<div class="admonition-title">
-<p>Tip</p>
-<p><a class="admonition-anchor-link" href="#admonition-tip"></a></p>
 </div>
+</details>
+<details id="admonition-提示类比理解" class="admonition tip">
+<summary class="admonition-title">
+<p>提示：类比理解</p>
+<p><a class="admonition-anchor-link" href="#admonition-提示类比理解"></a></p>
+</summary>
 <div>
 <p>可以对着打印出来的 TokenStream 和刚才的分析进行理解。
 核心的就是 get_struct_fields() 方法，如果觉得难懂，
 可以想想如果要把一个 a=1,b=2 的字符串切成 [[a, 1], [b, 2]] 该怎么做，就很容易理解了。</p>
 </div>
-</div>
+</details>
 <h3 id="使用synquote可以不用自己定义模版"><a class="header" href="#使用synquote可以不用自己定义模版">使用syn/quote可以不用自己定义模版</a></h3>
 <blockquote>
 <p>详见上方对比图</p>
