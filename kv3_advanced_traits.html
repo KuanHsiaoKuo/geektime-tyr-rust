@@ -1,0 +1,1154 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>高级trait改造 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html" class="active"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="三高级trait技巧"><a class="header" href="#三高级trait技巧">三、高级trait技巧</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E4%B8%89%E9%AB%98%E7%BA%A7trait%E6%8A%80%E5%B7%A7">三、高级trait技巧</a>
+<ul>
+<li><a href="#%E5%A4%84%E7%90%86-iterator">处理 Iterator</a></li>
+<li><a href="#%E6%94%AF%E6%8C%81%E4%BA%8B%E4%BB%B6%E9%80%9A%E7%9F%A5">支持事件通知</a>
+<ul>
+<li><a href="#%E5%85%88%E7%9C%8B%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86%E5%87%BD%E6%95%B0%E5%A6%82%E4%BD%95%E6%B3%A8%E5%86%8C">先看事件处理函数如何注册。</a>
+<ul>
+<li><a href="#%E6%80%9D%E8%B7%AF">思路</a></li>
+<li><a href="#%E5%85%88%E5%86%99%E6%B5%8B%E8%AF%95">先写测试</a></li>
+<li><a href="#fn_received%E7%9A%84%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8">fn_received的链式调用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E4%B8%BA%E6%8C%81%E4%B9%85%E5%8C%96%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E7%8E%B0-storage-trait">为持久化数据库实现 Storage trait</a>
+<ul>
+<li><a href="#%E6%96%B9%E6%A1%88%E9%80%89%E6%8B%A9">方案选择</a></li>
+<li><a href="#%E4%B8%BAsled%E5%AE%9E%E7%8E%B0storage-trait%E5%B9%B6%E6%B5%8B%E8%AF%95%E9%80%9A%E8%BF%87">为sled实现Storage trait，并测试通过</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9E%84%E5%BB%BA%E6%96%B0%E7%9A%84-kv-server">构建新的 KV server</a></li>
+<li><a href="#%E8%BF%9B%E4%B8%80%E6%AD%A5%E8%AE%A4%E8%AF%86trait%E7%9A%84%E5%A8%81%E5%8A%9B">进一步认识trait的威力</a></li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E7%BB%93%E6%9E%84%E5%92%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A0%87%E6%B3%A8%E6%9B%B4%E5%A4%9A%E7%94%A8%E4%BA%8E%E9%98%85%E8%AF%BB%E6%BA%90%E7%A0%81">泛型结构和生命周期标注更多用于阅读源码</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:53 UTC 2022 -->
+<!--te-->
+<p>前面已经完成了 KV store 的基本功能，但留了两个小尾巴：</p>
+<ol>
+<li>
+<p>Storage trait 的 get_iter() 方法没有实现；</p>
+</li>
+<li>
+<p>Service 的 execute() 方法里面还有一些 TODO，需要处理事件的通知。</p>
+</li>
+</ol>
+<p>我们一个个来解决。先看 get_iter() 方法。</p>
+<h2 id="处理-iterator"><a class="header" href="#处理-iterator">处理 Iterator</a></h2>
+<details id="admonition-1-在开始撰写代码之前先把之前在-srcstoragemodrs-里注掉的测试加回来" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>在开始撰写代码之前，先把之前在 src/storage/mod.rs 里注掉的测试，加回来：</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-在开始撰写代码之前先把之前在-srcstoragemodrs-里注掉的测试加回来"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">#[test]
+fn memtable_iter_should_work() {
+    let store = MemTable::new();
+    test_get_iter(store);
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-2-然后在-srcstorgememoryrs-里尝试实现它" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>然后在 src/storge/memory.rs 里尝试实现它。</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-然后在-srcstorgememoryrs-里尝试实现它"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl Storage for MemTable {
+    ...
+    fn get_iter(&amp;self, table: &amp;str) -&gt; Result&lt;Box&lt;dyn Iterator&lt;Item = Kvpair&gt;&gt;, KvError&gt; {
+        // 使用 clone() 来获取 table 的 snapshot
+        let table = self.get_or_create_table(table).clone();
+        let iter = table
+            .iter()
+            .map(|v| Kvpair::new(v.key(), v.value().clone()));
+        Ok(Box::new(iter)) // &lt;-- 编译出错
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>很不幸的，编译器提示我们 Box::new(iter) 不行，“cannot return value referencing local variable table” 。</p>
+</blockquote>
+<blockquote>
+<p>这让人很不爽，究其原因，table.iter() 使用了 table 的引用，我们返回 iter，但 iter 引用了作为局部变量的 table，所以无法编译通过。</p>
+</blockquote>
+<ol start="3">
+<li>此刻，我们需要有一个能够完全占有 table 的迭代器。</li>
+</ol>
+<details id="admonition---rust-标准库里提供了一个-trait-intoiterator它可以把数据结构的所有权转移到-iterator-中看它的声明代码" class="admonition note">
+<summary class="admonition-title">
+<ul>
+<li>Rust 标准库里提供了一个 trait IntoIterator，它可以把数据结构的所有权转移到 Iterator 中，看它的声明（代码）：</li>
+</ul>
+<p><a class="admonition-anchor-link" href="#admonition---rust-标准库里提供了一个-trait-intoiterator它可以把数据结构的所有权转移到-iterator-中看它的声明代码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait IntoIterator {
+    type Item;
+    type IntoIter: Iterator&lt;Item = Self::Item&gt;;
+
+    fn into_iter(self) -&gt; Self::IntoIter;
+}
+</code></pre></pre>
+</div>
+</details>
+<ul>
+<li>绝大多数的集合类数据结构<a href="https://doc.rust-lang.org/std/iter/trait.IntoIterator.html#implementors">都实现了它</a>。</li>
+</ul>
+<details id="admonition---dashmap-也实现了它所以我们可以用-tableinto_iter-把-table-的所有权转移给-iter" class="admonition note">
+<summary class="admonition-title">
+<ul>
+<li>DashMap 也实现了它，所以我们可以用 table.into_iter() 把 table 的所有权转移给 iter： </li>
+</ul>
+<p><a class="admonition-anchor-link" href="#admonition---dashmap-也实现了它所以我们可以用-tableinto_iter-把-table-的所有权转移给-iter"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl Storage for MemTable {
+    ...
+    fn get_iter(&amp;self, table: &amp;str) -&gt; Result&lt;Box&lt;dyn Iterator&lt;Item = Kvpair&gt;&gt;, KvError&gt; {
+        // 使用 clone() 来获取 table 的 snapshot
+        let table = self.get_or_create_table(table).clone();
+        let iter = table.into_iter().map(|data| data.into());
+        Ok(Box::new(iter))
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<ul>
+<li>这里又遇到了数据转换: 从 DashMap 中 iterate 出来的值 (String, Value) 需要转换成 Kvpair，我们依旧用 into() 来完成这件事。</li>
+</ul>
+<details id="admonition--为此需要为-kvpair-实现这个简单的-fromtrait" class="admonition note">
+<summary class="admonition-title">
+<blockquote>
+<p>为此，需要为 Kvpair 实现这个简单的 Fromtrait：</p>
+</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--为此需要为-kvpair-实现这个简单的-fromtrait"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl From&lt;(String, Value)&gt; for Kvpair {
+    fn from(data: (String, Value)) -&gt; Self {
+        Kvpair::new(data.0, data.1)
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>这两段代码都放在 src/storage/memory.rs 下。</p>
+<p>Bingo！这个代码可以编译通过。现在如果运行 cargo test 进行测试的话，对 get_iter() 接口的测试也能通过。</p>
+<ol start="3">
+<li>对get_iter()进行抽象</li>
+</ol>
+<blockquote>
+<p>虽然这个代码可以通过测试，并且本身也非常精简，我们还是有必要思考一下，如果以后想为更多的 data store 实现 Storage trait，都会怎样处理 get_iter() 方法？</p>
+</blockquote>
+<p>我们会：</p>
+<ul>
+<li>拿到一个关于某个 table 下的拥有所有权的 Iterator</li>
+<li>对 Iterator 做 map</li>
+<li>将 map 出来的每个 item 转换成 Kvpair</li>
+</ul>
+<p>这里的第 2 步对于每个 Storage trait 的 get_iter() 方法的实现来说，都是相同的。</p>
+<p>有没有可能把它封装起来呢？使得 Storage trait 的实现者只需要提供它们自己的拥有所有权的 Iterator，并对 Iterator 里的 Item 类型提供 Into<Kvpair> ？</p>
+<details id="admonition-笔记-这样我们在-srcstoragememoryrs-里对-get_iter-的实现就可以直接使用-storageiter" class="admonition note">
+<summary class="admonition-title">
+<p>笔记： 这样，我们在 src/storage/memory.rs 里对 get_iter() 的实现，就可以直接使用 StorageIter</p>
+<p><a class="admonition-anchor-link" href="#admonition-笔记-这样我们在-srcstoragememoryrs-里对-get_iter-的实现就可以直接使用-storageiter"></a></p>
+</summary>
+<div>
+<p>来尝试一下，在 src/storage/mod.rs 中，构建一个 StorageIter，并实现 Iterator trait：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 提供 Storage iterator，这样 trait 的实现者只需要
+/// 把它们的 iterator 提供给 StorageIter，然后它们保证
+/// next() 传出的类型实现了 Into&lt;Kvpair&gt; 即可
+pub struct StorageIter&lt;T&gt; {
+    data: T,
+}
+
+impl&lt;T&gt; StorageIter&lt;T&gt; {
+    pub fn new(data: T) -&gt; Self {
+        Self { data }
+    }
+}
+
+impl&lt;T&gt; Iterator for StorageIter&lt;T&gt;
+where
+    T: Iterator,
+    T::Item: Into&lt;Kvpair&gt;,
+{
+    type Item = Kvpair;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        self.data.next().map(|v| v.into())
+    }
+}
+</code></pre></pre>
+<blockquote>
+<p>这样，我们在 src/storage/memory.rs 里对 get_iter() 的实现，就可以直接使用 StorageIter 了。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition---不过还要为-dashmap-的-iterator-每次调用-next-得到的值-string-value-做个到-kvpair-的转换" class="admonition note">
+<summary class="admonition-title">
+<ul>
+<li>不过，还要为 DashMap 的 Iterator 每次调用 next() 得到的值 (String, Value) ，做个到 Kvpair 的转换：</li>
+</ul>
+<p><a class="admonition-anchor-link" href="#admonition---不过还要为-dashmap-的-iterator-每次调用-next-得到的值-string-value-做个到-kvpair-的转换"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl Storage for MemTable {
+    ...
+    fn get_iter(&amp;self, table: &amp;str) -&gt; Result&lt;Box&lt;dyn Iterator&lt;Item = Kvpair&gt;&gt;, KvError&gt; {
+        // 使用 clone() 来获取 table 的 snapshot
+          let table = self.get_or_create_table(table).clone();
+          let iter = StorageIter::new(table.into_iter()); // 这行改掉了
+          Ok(Box::new(iter))
+      }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>我们可以再次使用 cargo test 测试，同样通过！</p>
+<details id="admonition-辛辛苦苦又写了-20-行代码创建了一个新的数据结构就是为了-get_iter-方法里的一行代码改得更漂亮何苦呢" class="admonition abstract">
+<summary class="admonition-title">
+<p>辛辛苦苦又写了 20 行代码，创建了一个新的数据结构，就是为了 get_iter() 方法里的一行代码改得更漂亮？何苦呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-辛辛苦苦又写了-20-行代码创建了一个新的数据结构就是为了-get_iter-方法里的一行代码改得更漂亮何苦呢"></a></p>
+</summary>
+<div>
+<p>如果回顾刚才撰写的代码，你可能会哑然一笑：我辛辛苦苦又写了 20 行代码，创建了一个新的数据结构，就是为了 get_iter() 方法里的一行代码改得更漂亮？何苦呢？</p>
+<p>的确，在这个 KV server 的例子里，这样的抽象收益不大。</p>
+<blockquote>
+<p>但是，如果刚才那个步骤不是 3 步，而是 5 步 /10 步，其中大量的步骤都是相同的，也就是说，我们每实现一个新的 store，就要撰写相同的代码逻辑，那么，这个抽象就非常有必要了。</p>
+</blockquote>
+</div>
+</details>
+<h2 id="支持事件通知"><a class="header" href="#支持事件通知">支持事件通知</a></h2>
+<p>好，我们再来看事件通知。</p>
+<details id="admonition-在-srcservicemodrs-中以下代码如无特殊声明都是在-srcservicemodrs-中目前的-execute-方法还有很多-todo-需要解决" class="admonition info">
+<summary class="admonition-title">
+<p>在 src/service/mod.rs 中（以下代码，如无特殊声明，都是在 src/service/mod.rs 中），目前的 execute() 方法还有很多 TODO 需要解决： </p>
+<p><a class="admonition-anchor-link" href="#admonition-在-srcservicemodrs-中以下代码如无特殊声明都是在-srcservicemodrs-中目前的-execute-方法还有很多-todo-需要解决"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub fn execute(&amp;self, cmd: CommandRequest) -&gt; CommandResponse {
+    debug!(&quot;Got request: {:?}&quot;, cmd);
+    // TODO: 发送 on_received 事件
+    let res = dispatch(cmd, &amp;self.inner.store);
+    debug!(&quot;Executed response: {:?}&quot;, res);
+    // TODO: 发送 on_executed 事件
+
+    res
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition--为了解决这些-todo我们需要提供事件通知的机制" class="admonition tip">
+<summary class="admonition-title">
+<blockquote>
+<p>为了解决这些 TODO，我们需要提供事件通知的机制： </p>
+</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--为了解决这些-todo我们需要提供事件通知的机制"></a></p>
+</summary>
+<div>
+<ul>
+<li>
+<p>在创建 Service 时，注册相应的事件处理函数；</p>
+</li>
+<li>
+<p>在 execute() 方法执行时，做相应的事件通知，使得注册的事件处理函数可以得到执行。</p>
+</li>
+</ul>
+</div>
+</details>
+<h3 id="先看事件处理函数如何注册"><a class="header" href="#先看事件处理函数如何注册">先看事件处理函数如何注册。</a></h3>
+<h4 id="思路"><a class="header" href="#思路">思路</a></h4>
+<p>如果想要能够注册，那么倒推也就是，Service/ServiceInner 数据结构就需要有地方能够承载事件注册函数。</p>
+<details id="admonition-可以尝试着把它加在-serviceinner-结构里" class="admonition note">
+<summary class="admonition-title">
+<p>可以尝试着把它加在 ServiceInner 结构里： </p>
+<p><a class="admonition-anchor-link" href="#admonition-可以尝试着把它加在-serviceinner-结构里"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// Service 内部数据结构
+pub struct ServiceInner&lt;Store&gt; {
+    store: Store,
+    on_received: Vec&lt;fn(&amp;CommandRequest)&gt;,
+    on_executed: Vec&lt;fn(&amp;CommandResponse)&gt;,
+    on_before_send: Vec&lt;fn(&amp;mut CommandResponse)&gt;,
+    on_after_send: Vec&lt;fn()&gt;,
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-按照-前面的设计我们提供了四个事件" class="admonition info">
+<summary class="admonition-title">
+<p>按照 前面的设计，我们提供了四个事件： </p>
+<p><a class="admonition-anchor-link" href="#admonition-按照-前面的设计我们提供了四个事件"></a></p>
+</summary>
+<div>
+<ul>
+<li>on_received：</li>
+</ul>
+<p>当服务器收到 CommandRequest 时触发；</p>
+<ul>
+<li>on_executed:</li>
+</ul>
+<p>当服务器处理完 CommandRequest 得到 CommandResponse 时触发；</p>
+<ul>
+<li>on_before_send：</li>
+</ul>
+<p>在服务器发送 CommandResponse 之前触发。注意这个接口提供的是 &amp;mut CommandResponse，这样事件的处理者可以根据需要，在发送前，修改 CommandResponse。</p>
+<ul>
+<li>on_after_send</li>
+</ul>
+<p>在服务器发送完 CommandResponse 后触发。</p>
+</div>
+</details>
+<h4 id="先写测试"><a class="header" href="#先写测试">先写测试</a></h4>
+<details id="admonition-在撰写事件注册的代码之前还是先写个测试从使用者的角度考虑如何进行注册" class="admonition note">
+<summary class="admonition-title">
+<p>在撰写事件注册的代码之前，还是先写个测试，从使用者的角度，考虑如何进行注册： </p>
+<p><a class="admonition-anchor-link" href="#admonition-在撰写事件注册的代码之前还是先写个测试从使用者的角度考虑如何进行注册"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[test]
+fn event_registration_should_work() {
+    fn b(cmd: &amp;CommandRequest) {
+        info!(&quot;Got {:?}&quot;, cmd);
+    }
+    fn c(res: &amp;CommandResponse) {
+        info!(&quot;{:?}&quot;, res);
+    }
+    fn d(res: &amp;mut CommandResponse) {
+        res.status = StatusCode::CREATED.as_u16() as _;
+    }
+    fn e() {
+        info!(&quot;Data is sent&quot;);
+    }
+
+    let service: Service = ServiceInner::new(MemTable::default())
+        .fn_received(|_: &amp;CommandRequest| {})
+        .fn_received(b)
+        .fn_executed(c)
+        .fn_before_send(d)
+        .fn_after_send(e)
+        .into();
+
+    let res = service.execute(CommandRequest::new_hset(&quot;t1&quot;, &quot;k1&quot;, &quot;v1&quot;.into()));
+    assert_eq!(res.status, StatusCode::CREATED.as_u16() as _);
+    assert_eq!(res.message, &quot;&quot;);
+    assert_eq!(res.values, vec![Value::default()]);
+}
+</code></pre></pre>
+<hr />
+<p>从测试代码中可以看到:</p>
+<ol>
+<li>我们希望通过 ServiceInner 结构，不断调用 fn_xxx 方法，为 ServiceInner 注册相应的事件处理函数；</li>
+<li>添加完毕后，通过 into() 方法，我们再把 ServiceInner 转换成 Service。</li>
+<li>这是一个经典的构造者模式（Builder Pattern），在很多 Rust 代码中，都能看到它的身影。</li>
+</ol>
+</div>
+</details>
+<h4 id="fn_received的链式调用"><a class="header" href="#fn_received的链式调用">fn_received的链式调用</a></h4>
+<details id="admonition-那么诸如-fn_received-这样的方法有什么魔力呢它为什么可以一路做链式调用呢" class="admonition question">
+<summary class="admonition-title">
+<p>那么，诸如 fn_received() 这样的方法有什么魔力呢？它为什么可以一路做链式调用呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-那么诸如-fn_received-这样的方法有什么魔力呢它为什么可以一路做链式调用呢"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>答案很简单，它把 self 的所有权拿过来，处理完之后，再返回 self。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-所以我们继续添加如下代码" class="admonition note">
+<summary class="admonition-title">
+<p>所以，我们继续添加如下代码：</p>
+<p><a class="admonition-anchor-link" href="#admonition-所以我们继续添加如下代码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;Store: Storage&gt; ServiceInner&lt;Store&gt; {
+    pub fn new(store: Store) -&gt; Self {
+        Self {
+            store,
+            on_received: Vec::new(),
+            on_executed: Vec::new(),
+            on_before_send: Vec::new(),
+            on_after_send: Vec::new(),
+        }
+    }
+
+    pub fn fn_received(mut self, f: fn(&amp;CommandRequest)) -&gt; Self {
+        self.on_received.push(f);
+        self
+    }
+
+    pub fn fn_executed(mut self, f: fn(&amp;CommandResponse)) -&gt; Self {
+        self.on_executed.push(f);
+        self
+    }
+
+    pub fn fn_before_send(mut self, f: fn(&amp;mut CommandResponse)) -&gt; Self {
+        self.on_before_send.push(f);
+        self
+    }
+
+    pub fn fn_after_send(mut self, f: fn()) -&gt; Self {
+        self.on_after_send.push(f);
+        self
+    }
+}
+</code></pre></pre>
+<blockquote>
+<p>这样处理之后呢，Service 之前的 new() 方法就没有必要存在了，可以把它删除。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-同时我们需要为-service-类型提供一个-from-的实现" class="admonition note">
+<summary class="admonition-title">
+<p>同时，我们需要为 Service 类型提供一个 From<ServiceInner> 的实现： </p>
+<p><a class="admonition-anchor-link" href="#admonition-同时我们需要为-service-类型提供一个-from-的实现"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;Store: Storage&gt; From&lt;ServiceInner&lt;Store&gt;&gt; for Service&lt;Store&gt; {
+    fn from(inner: ServiceInner&lt;Store&gt;) -&gt; Self {
+        Self {
+            inner: Arc::new(inner),
+        }
+    }
+}
+</code></pre></pre>
+<p>目前，代码中几处使用了 Service::new() 的地方需要改成使用 ServiceInner::new()，比如：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;Store: Storage&gt; From&lt;ServiceInner&lt;Store&gt;&gt; for Service&lt;Store&gt; {
+    fn from(inner: ServiceInner&lt;Store&gt;) -&gt; Self {
+        Self {
+            inner: Arc::new(inner),
+        }
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>全部改动完成后，代码可以编译通过。</p>
+<p>然而，如果运行 cargo test，新加的测试会失败：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+test service::tests::event_registration_should_work ... FAILED
+</code></pre></pre>
+<ol>
+<li>这是因为，我们虽然完成了事件处理函数的注册，但现在还没有发事件通知。</li>
+<li>另外因为我们的事件包括不可变事件（比如 on_received）和可变事件（比如 on_before_send），所以事件通知需要把二者分开。</li>
+</ol>
+<details id="admonition-来定义两个-traitnotify-和-notifymut" class="admonition note">
+<summary class="admonition-title">
+<p>来定义两个 trait：Notify 和 NotifyMut： </p>
+<p><a class="admonition-anchor-link" href="#admonition-来定义两个-traitnotify-和-notifymut"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 事件通知（不可变事件）
+pub trait Notify&lt;Arg&gt; {
+    fn notify(&amp;self, arg: &amp;Arg);
+}
+
+/// 事件通知（可变事件）
+pub trait NotifyMut&lt;Arg&gt; {
+    fn notify(&amp;self, arg: &amp;mut Arg);
+}
+</code></pre></pre>
+<p>这两个 trait 是泛型 trait，其中的 Arg 参数，对应事件注册函数里的 arg，比如：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn(&amp;CommandRequest);
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-由此我们可以特地为-vec-和-vec-实现事件处理它们涵盖了目前支持的几种事件" class="admonition note">
+<summary class="admonition-title">
+<p>由此，我们可以特地为 Vec&lt;fn(&amp;Arg)&gt; 和 Vec&lt;fn(&amp;mut Arg)&gt; 实现事件处理，它们涵盖了目前支持的几种事件： </p>
+<p><a class="admonition-anchor-link" href="#admonition-由此我们可以特地为-vec-和-vec-实现事件处理它们涵盖了目前支持的几种事件"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;Arg&gt; Notify&lt;Arg&gt; for Vec&lt;fn(&amp;Arg)&gt; {
+    #[inline]
+    fn notify(&amp;self, arg: &amp;Arg) {
+        for f in self {
+            f(arg)
+        }
+    }
+}
+
+impl&lt;Arg&gt; NotifyMut&lt;Arg&gt; for Vec&lt;fn(&amp;mut Arg)&gt; {
+  #[inline]
+    fn notify(&amp;self, arg: &amp;mut Arg) {
+        for f in self {
+            f(arg)
+        }
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-notify--notifymut-trait-实现好之后我们就可以修改-execute-方法了" class="admonition note">
+<summary class="admonition-title">
+<p>Notify / NotifyMut trait 实现好之后，我们就可以修改 execute() 方法了： </p>
+<p><a class="admonition-anchor-link" href="#admonition-notify--notifymut-trait-实现好之后我们就可以修改-execute-方法了"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;Store: Storage&gt; Service&lt;Store&gt; {
+    pub fn execute(&amp;self, cmd: CommandRequest) -&gt; CommandResponse {
+        debug!(&quot;Got request: {:?}&quot;, cmd);
+        self.inner.on_received.notify(&amp;cmd);
+        let mut res = dispatch(cmd, &amp;self.inner.store);
+        debug!(&quot;Executed response: {:?}&quot;, res);
+        self.inner.on_executed.notify(&amp;res);
+        self.inner.on_before_send.notify(&amp;mut res);
+        if !self.inner.on_before_send.is_empty() {
+            debug!(&quot;Modified response: {:?}&quot;, res);
+        }
+
+        res
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>现在，相应的事件就可以被通知到相应的处理函数中了。</p>
+<blockquote>
+<p>这个通知机制目前还是同步的函数调用，未来如果需要，我们可以将其改成消息传递，进行异步处理。</p>
+</blockquote>
+<p>好，现在测试应该可以工作了，cargo test 所有的测试都通过。</p>
+<h2 id="为持久化数据库实现-storage-trait"><a class="header" href="#为持久化数据库实现-storage-trait">为持久化数据库实现 Storage trait</a></h2>
+<h3 id="方案选择"><a class="header" href="#方案选择">方案选择</a></h3>
+<details id="admonition-持久化的两个方案-选择-为-sled-实现-storage-trait让它能够适配我们的-kv-server" class="admonition info">
+<summary class="admonition-title">
+<p>持久化的两个方案, 选择 <strong>为 sled 实现 Storage trait</strong>，让它能够适配我们的 KV server </p>
+<p><a class="admonition-anchor-link" href="#admonition-持久化的两个方案-选择-为-sled-实现-storage-trait让它能够适配我们的-kv-server"></a></p>
+</summary>
+<div>
+<p>到目前为止，我们的 KV store 还都是一个在内存中的 KV store。一旦终止应用程序，用户存储的所有 key / value 都会消失。我们希望存储能够持久化。</p>
+<ol>
+<li>一个方案是为 MemTable 添加 WAL 和 disk snapshot 支持，让用户发送的所有涉及更新的命令都按顺序存储在磁盘上，同时定期做 snapshot，便于数据的快速恢复；</li>
+<li>另一个方案是使用已有的 KV store，比如 RocksDB，或者 <a href="https://github.com/spacejam/sled">sled</a>。</li>
+</ol>
+<ul>
+<li>RocksDB 是 Facebook 在 Google 的 levelDB 基础上开发的嵌入式 KV store，用 C++ 编写</li>
+<li>而 sled 是 Rust 社区里涌现的优秀的 KV store，对标 RocksDB。</li>
+<li>二者功能很类似，从演示的角度，sled 使用起来更简单，更加适合今天的内容</li>
+<li>如果在生产环境中使用，RocksDB 更加合适，因为它在各种复杂的生产环境中经历了千锤百炼。</li>
+</ul>
+<blockquote>
+<p>所以，我们今天就尝试<strong>为 sled 实现 Storage trait</strong>，让它能够适配我们的 KV server。</p>
+</blockquote>
+</div>
+</details>
+<h3 id="为sled实现storage-trait并测试通过"><a class="header" href="#为sled实现storage-trait并测试通过">为sled实现Storage trait，并测试通过</a></h3>
+<details id="admonition-为sled实现storage-trait并测试通过" class="admonition note">
+<summary class="admonition-title">
+<p>为sled实现Storage trait，并测试通过</p>
+<p><a class="admonition-anchor-link" href="#admonition-为sled实现storage-trait并测试通过"></a></p>
+</summary>
+<div>
+<ol>
+<li>首先在 Cargo.toml 里引入 sled：</li>
+</ol>
+<pre><code class="language-toml">sled = &quot;0.34&quot; # sled db
+</code></pre>
+<ol start="2">
+<li>然后创建 src/storage/sleddb.rs，并添加如下代码：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+use sled::{Db, IVec};
+use std::{convert::TryInto, path::Path, str};
+
+use crate::{KvError, Kvpair, Storage, StorageIter, Value};
+
+#[derive(Debug)]
+pub struct SledDb(Db);
+
+impl SledDb {
+    pub fn new(path: impl AsRef&lt;Path&gt;) -&gt; Self {
+        Self(sled::open(path).unwrap())
+    }
+
+    // 在 sleddb 里，因为它可以 scan_prefix，我们用 prefix
+    // 来模拟一个 table。当然，还可以用其它方案。
+    fn get_full_key(table: &amp;str, key: &amp;str) -&gt; String {
+        format!(&quot;{}:{}&quot;, table, key)
+    }
+
+    // 遍历 table 的 key 时，我们直接把 prefix: 当成 table
+    fn get_table_prefix(table: &amp;str) -&gt; String {
+        format!(&quot;{}:&quot;, table)
+    }
+}
+
+/// 把 Option&lt;Result&lt;T, E&gt;&gt; flip 成 Result&lt;Option&lt;T&gt;, E&gt;
+/// 从这个函数里，你可以看到函数式编程的优雅
+fn flip&lt;T, E&gt;(x: Option&lt;Result&lt;T, E&gt;&gt;) -&gt; Result&lt;Option&lt;T&gt;, E&gt; {
+    x.map_or(Ok(None), |v| v.map(Some))
+}
+
+impl Storage for SledDb {
+    fn get(&amp;self, table: &amp;str, key: &amp;str) -&gt; Result&lt;Option&lt;Value&gt;, KvError&gt; {
+        let name = SledDb::get_full_key(table, key);
+        let result = self.0.get(name.as_bytes())?.map(|v| v.as_ref().try_into());
+        flip(result)
+    }
+
+    fn set(&amp;self, table: &amp;str, key: String, value: Value) -&gt; Result&lt;Option&lt;Value&gt;, KvError&gt; {
+        let name = SledDb::get_full_key(table, &amp;key);
+        let data: Vec&lt;u8&gt; = value.try_into()?;
+
+        let result = self.0.insert(name, data)?.map(|v| v.as_ref().try_into());
+        flip(result)
+    }
+
+    fn contains(&amp;self, table: &amp;str, key: &amp;str) -&gt; Result&lt;bool, KvError&gt; {
+        let name = SledDb::get_full_key(table, &amp;key);
+
+        Ok(self.0.contains_key(name)?)
+    }
+
+    fn del(&amp;self, table: &amp;str, key: &amp;str) -&gt; Result&lt;Option&lt;Value&gt;, KvError&gt; {
+        let name = SledDb::get_full_key(table, &amp;key);
+
+        let result = self.0.remove(name)?.map(|v| v.as_ref().try_into());
+        flip(result)
+    }
+
+    fn get_all(&amp;self, table: &amp;str) -&gt; Result&lt;Vec&lt;Kvpair&gt;, KvError&gt; {
+        let prefix = SledDb::get_table_prefix(table);
+        let result = self.0.scan_prefix(prefix).map(|v| v.into()).collect();
+
+        Ok(result)
+    }
+
+    fn get_iter(&amp;self, table: &amp;str) -&gt; Result&lt;Box&lt;dyn Iterator&lt;Item = Kvpair&gt;&gt;, KvError&gt; {
+        let prefix = SledDb::get_table_prefix(table);
+        let iter = StorageIter::new(self.0.scan_prefix(prefix));
+        Ok(Box::new(iter))
+    }
+}
+
+impl From&lt;Result&lt;(IVec, IVec), sled::Error&gt;&gt; for Kvpair {
+    fn from(v: Result&lt;(IVec, IVec), sled::Error&gt;) -&gt; Self {
+        match v {
+            Ok((k, v)) =&gt; match v.as_ref().try_into() {
+                Ok(v) =&gt; Kvpair::new(ivec_to_key(k.as_ref()), v),
+                Err(_) =&gt; Kvpair::default(),
+            },
+            _ =&gt; Kvpair::default(),
+        }
+    }
+}
+
+fn ivec_to_key(ivec: &amp;[u8]) -&gt; &amp;str {
+    let s = str::from_utf8(ivec).unwrap();
+    let mut iter = s.split(&quot;:&quot;);
+    iter.next();
+    iter.next().unwrap()
+}
+</code></pre></pre>
+<p>这段代码主要就是在实现 Storage trait。每个方法都很简单，就是在 sled 提供的功能上增加了一次封装。如果你对代码中某个调用有疑虑，可以参考 sled 的文档。</p>
+<ol start="3">
+<li>在 src/storage/mod.rs 里引入 sleddb，我们就可以加上相关的测试，测试新的 Storage 实现啦：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+mod sleddb;
+
+pub use sleddb::SledDb;
+
+#[cfg(test)]
+mod tests {
+    use tempfile::tempdir;
+
+    use super::*;
+
+    ...
+
+    #[test]
+    fn sleddb_basic_interface_should_work() {
+        let dir = tempdir().unwrap();
+        let store = SledDb::new(dir);
+        test_basi_interface(store);
+    }
+
+    #[test]
+    fn sleddb_get_all_should_work() {
+        let dir = tempdir().unwrap();
+        let store = SledDb::new(dir);
+        test_get_all(store);
+    }
+
+    #[test]
+    fn sleddb_iter_should_work() {
+        let dir = tempdir().unwrap();
+        let store = SledDb::new(dir);
+        test_get_iter(store);
+    }
+}
+</code></pre></pre>
+<ol start="4">
+<li>因为 SledDb 创建时需要指定一个目录，所以要在测试中使用 <a href="https://github.com/Stebalien/tempfile">tempfile 库</a>，它能让文件资源在测试结束时被回收。</li>
+</ol>
+<p>我们在 Cargo.toml 中引入它：</p>
+<pre><code class="language-toml">
+[dev-dependencies]
+...
+Tempfile = &quot;3&quot; # 处理临时目录和临时文件
+...
+</code></pre>
+</div>
+</details>
+<p>代码目前就可以编译通过了。如果你运行 cargo test 测试，会发现所有测试都正常通过！</p>
+<h2 id="构建新的-kv-server"><a class="header" href="#构建新的-kv-server">构建新的 KV server</a></h2>
+<details id="admonition-完成-sleddb-和事件通知相关的实现之后我们可以尝试构建支持事件通知并且使用-sleddb-的-kv-server" class="admonition note">
+<summary class="admonition-title">
+<p>完成 SledDb 和事件通知相关的实现之后，我们可以尝试构建支持事件通知，并且使用 SledDb 的 KV server。</p>
+<p><a class="admonition-anchor-link" href="#admonition-完成-sleddb-和事件通知相关的实现之后我们可以尝试构建支持事件通知并且使用-sleddb-的-kv-server"></a></p>
+</summary>
+<div>
+<p>把 examples/server.rs 拷贝出 examples/server_with_sled.rs，然后修改 let service 那一行：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+// let service: Service = ServiceInner::new(MemTable::new()).into();
+let service: Service&lt;SledDb&gt; = ServiceInner::new(SledDb::new(&quot;/tmp/kvserver&quot;))
+    .fn_before_send(|res| match res.message.as_ref() {
+        &quot;&quot; =&gt; res.message = &quot;altered. Original message is empty.&quot;.into(),
+        s =&gt; res.message = format!(&quot;altered: {}&quot;, s),
+    })
+    .into();
+</code></pre></pre>
+<p>当然，需要引入 SledDb 让编译通过。</p>
+<blockquote>
+<p>你看，只需要在创建 KV server 时使用 SledDb，就可以实现 data store 的切换，未来还可以进一步通过配置文件，来选择使用什么样的 store。非常方便。</p>
+</blockquote>
+<p>新的 examples/server_with_sled.rs 的完整的代码：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use async_prost::AsyncProstStream;
+use futures::prelude::*;
+use kv1::{CommandRequest, CommandResponse, Service, ServiceInner, SledDb};
+use tokio::net::TcpListener;
+use tracing::info;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+    let service: Service&lt;SledDb&gt; = ServiceInner::new(SledDb::new(&quot;/tmp/kvserver&quot;))
+        .fn_before_send(|res| match res.message.as_ref() {
+            &quot;&quot; =&gt; res.message = &quot;altered. Original message is empty.&quot;.into(),
+            s =&gt; res.message = format!(&quot;altered: {}&quot;, s),
+        })
+        .into();
+    let addr = &quot;127.0.0.1:9527&quot;;
+    let listener = TcpListener::bind(addr).await?;
+    info!(&quot;Start listening on {}&quot;, addr);
+    loop {
+        let (stream, addr) = listener.accept().await?;
+        info!(&quot;Client {:?} connected&quot;, addr);
+        let svc = service.clone();
+        tokio::spawn(async move {
+            let mut stream =
+                AsyncProstStream::&lt;_, CommandRequest, CommandResponse, _&gt;::from(stream).for_async();
+            while let Some(Ok(cmd)) = stream.next().await {
+                info!(&quot;Got a new command: {:?}&quot;, cmd);
+                let res = svc.execute(cmd);
+                stream.send(res).await.unwrap();
+            }
+            info!(&quot;Client {:?} disconnected&quot;, addr);
+        });
+    }
+}
+</code></pre></pre>
+<p>它和之前的 server 几乎一样，只有 11 行生成 service 的代码应用了新的 storage，并且引入了事件通知。</p>
+</div>
+</details>
+<details id="admonition-测试" class="admonition success">
+<summary class="admonition-title">
+<p>测试 </p>
+<p><a class="admonition-anchor-link" href="#admonition-测试"></a></p>
+</summary>
+<div>
+<ul>
+<li>完成之后，我们可以打开一个命令行窗口，运行：</li>
+</ul>
+<pre><code class="language-shell">RUST_LOG=info cargo run --example server_with_sled --quiet
+</code></pre>
+<ul>
+<li>然后在另一个命令行窗口，运行：</li>
+</ul>
+<pre><code class="language-shell">RUST_LOG=info cargo run --example client --quiet。
+</code></pre>
+<ul>
+<li>
+<p>此时，服务器和客户端都收到了彼此的请求和响应，并且处理正常。</p>
+</li>
+<li>
+<p>如果你停掉服务器，再次运行，然后再运行客户端，会发现，客户端在尝试 HSET 时得到了服务器旧的值，我们的新版 KV server 可以对数据进行持久化了。</p>
+</li>
+<li>
+<p>此外，如果你注意看 client 的日志，会发现原本应该是空字符串的 messag 包含了 “altered. Original message is empty.”：</p>
+</li>
+</ul>
+<pre><code class="language-shell">
+❯ RUST_LOG=info cargo run --example client --quiet
+Sep 23 22:09:12.215  INFO client: Got response CommandResponse { status: 200, message: &quot;altered. Original message is empty.&quot;, values: [Value { value: Some(String(&quot;world&quot;)) }], pairs: [] }
+</code></pre>
+<p>这是因为，我们的服务器注册了 fn_before_send 的事件通知，对返回的数据做了修改。</p>
+</div>
+</details>
+<p>未来我们可以用这些事件做很多事情，比如监控数据的发送，甚至写 WAL。</p>
+<h2 id="进一步认识trait的威力"><a class="header" href="#进一步认识trait的威力">进一步认识trait的威力</a></h2>
+<details id="admonition-前面我们进一步认识到了-trait-的威力" class="admonition abstract">
+<summary class="admonition-title">
+<p>前面我们进一步认识到了 trait 的威力:</p>
+<p><a class="admonition-anchor-link" href="#admonition-前面我们进一步认识到了-trait-的威力"></a></p>
+</summary>
+<div>
+<p>前面我们进一步认识到了 trait 的威力: </p>
+<blockquote>
+<p>当为系统设计了合理的 trait ，整个系统的可扩展性就大大增强，之后在添加新的功能的时候，并不需要改动多少已有的代码。</p>
+</blockquote>
+<p>在使用 trait 做抽象时，我们要衡量：</p>
+<ol>
+<li>这么做的好处是什么</li>
+<li>它未来可以为实现者带来什么帮助</li>
+<li>就像我们撰写的 StorageIter，它实现了 Iterator trait，并封装了 map 的处理逻辑，让这个公共的步骤可以在 Storage trait 中复用。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-进一步熟悉如何为带泛型参数的数据结构实现-trait" class="admonition note">
+<summary class="admonition-title">
+<p>进一步熟悉如何为带泛型参数的数据结构实现 trait </p>
+<p><a class="admonition-anchor-link" href="#admonition-进一步熟悉如何为带泛型参数的数据结构实现-trait"></a></p>
+</summary>
+<div>
+<p>除此之外，也进一步熟悉如何为带泛型参数的数据结构实现 trait:</p>
+<blockquote>
+<p>我们不仅可以为具体的数据结构实现 trait，也可以为更笼统的泛型参数实现 trait。</p>
+</blockquote>
+<p>除了文中这个例子：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;Arg&gt; Notify&lt;Arg&gt; for Vec&lt;fn(&amp;Arg)&gt; {
+    #[inline]
+    fn notify(&amp;self, arg: &amp;Arg) {
+        for f in self {
+            f(arg)
+        }
+    }
+}
+</code></pre></pre>
+<p>其实之前还见到过：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;T, U&gt; Into&lt;U&gt; for T where U: From&lt;T&gt;,
+{
+    fn into(self) -&gt; U {
+        U::from(self)
+    }
+}
+</code></pre></pre>
+<p>也是一样的道理。</p>
+</div>
+</details>
+<h2 id="泛型结构和生命周期标注更多用于阅读源码"><a class="header" href="#泛型结构和生命周期标注更多用于阅读源码">泛型结构和生命周期标注更多用于阅读源码</a></h2>
+<p>我们目前完成了一个功能比较完整的 KV server 的核心逻辑，但是，整体的代码似乎没有太多复杂的生命周期标注，或者太过抽象的泛型结构。</p>
+<blockquote>
+<p>是的，别看我们在介绍 Rust 的基础知识时，扎的比较深，但是大多数写代码的时候，并不会用到那么深的知识。
+Rust 编译器会尽最大的努力，让你的代码简单。如果你用 clippy 这样的 linter 的话，它还会进一步给你提一些建议，让你的代码更加简单。</p>
+</blockquote>
+<details id="admonition-那么为什么我们还要讲那么深入呢" class="admonition question">
+<summary class="admonition-title">
+<p>那么，为什么我们还要讲那么深入呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-那么为什么我们还要讲那么深入呢"></a></p>
+</summary>
+<div>
+<p>这是因为我们在写代码的时候不可避免地要引入第三方库，你也看到了，在写这个项目的时候用了不少依赖。
+当你使用这些库的时候，又不可避免地要阅读一些它们的源码，而这些源码，可能有各种各样复杂的写法。
+这也是为什么在开头我会说，现阶段能看懂包含泛型的代码就可以了。</p>
+<p>深入地了解 Rust 的基础知识:</p>
+<ol>
+<li>可以帮我们更快更清晰地阅读源码</li>
+<li>而更快更清晰地读懂别人的源码，又可以更快地帮助我们用好别人的库，从而写好我们的代码。</li>
+</ol>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="kv2_protocols.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="kv4_network.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="kv2_protocols.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="kv4_network.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

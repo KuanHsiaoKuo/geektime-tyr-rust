@@ -1,0 +1,976 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>异步改造 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html" class="active"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="六异步处理"><a class="header" href="#六异步处理">六、异步处理</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E5%85%AD%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86">六、异步处理</a>
+<ul>
+<li><a href="#%E5%9B%9E%E9%A1%BE%E6%9E%84%E5%BB%BA%E8%BF%87%E7%A8%8B">回顾构建过程</a></li>
+<li><a href="#%E5%BC%80%E5%A7%8B%E5%81%9A%E5%BC%82%E6%AD%A5%E9%87%8D%E6%9E%84">开始做异步重构</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-proststream">创建 ProstStream</a>
+<ul>
+<li><a href="#%E6%B5%8B%E8%AF%95">测试！</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8-proststream">使用 ProstStream</a></li>
+<li><a href="#%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%E5%9B%9E%E9%A1%BE%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E7%9A%84%E9%87%8D%E8%A6%81%E6%80%A7">异步处理回顾：单元测试的重要性</a></li>
+<li><a href="#%E6%80%9D%E8%80%83%E9%A2%98">思考题</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:55 UTC 2022 -->
+<!--te-->
+<h2 id="回顾构建过程"><a class="header" href="#回顾构建过程">回顾构建过程</a></h2>
+<p>之前已经完成了一个相对完善的 KV server。</p>
+<details id="admonition-还记得是怎么一步步构建这个服务的么" class="admonition question">
+<summary class="admonition-title">
+<p>还记得是怎么一步步构建这个服务的么？</p>
+<p><a class="admonition-anchor-link" href="#admonition-还记得是怎么一步步构建这个服务的么"></a></p>
+</summary>
+<div>
+<ol>
+<li>搭好 KV server 的基础功能：</li>
+</ol>
+<ul>
+<li>构造了客户端和服务器间交互的 protobuf</li>
+<li>然后设计CommandService trait 和 Storage trait，分别处理客户端命令和存储。</li>
+</ul>
+<ol start="2">
+<li>进一步构造了 Service 数据结构：</li>
+</ol>
+<ul>
+<li>接收 CommandRequest</li>
+<li>根据其类型调用相应的 CommandService 处理</li>
+<li>并做合适的事件通知</li>
+<li>最后返回 CommandResponse。</li>
+</ul>
+<blockquote>
+<p>但所有这一切都发生在同步的世界：不管数据是怎么获得的，数据已经在那里，我们需要做的就是把一种数据类型转换成另一种数据类型的运算而已。</p>
+</blockquote>
+<ol start="3">
+<li>之后涉足网络的世界。</li>
+</ol>
+<ul>
+<li>为 KV server 构造了自己的 frame：一个包含长度和是否压缩的信息的 4 字节的头，以及实际的 payload；</li>
+<li>还设计了一个 FrameCoder 来对 frame 进行封包和拆包，这为接下来构造网络接口打下了坚实的基础。</li>
+</ul>
+<ol start="4">
+<li>
+<p>考虑到网络安全，提供了 TLS 的支持。</p>
+</li>
+<li>
+<p>在构建 ProstStream 的时候开始处理异步</p>
+</li>
+</ol>
+<ul>
+<li>ProstStream 内部的 stream 需要支持 AsyncRead + AsyncWrite，这可以让 ProstStream 适配包括 TcpStream 和 TlsStream 在内的一切实现了 AsyncRead 和 AsyncWrite 的异步网络接口。</li>
+</ul>
+<blockquote>
+<p>至此，我们打通了:</p>
+</blockquote>
+<ul>
+<li>从远端得到一个命令</li>
+<li>历经 TCP、TLS</li>
+<li>然后被 FrameCoder 解出来一个 CommandRequest</li>
+<li>交由 Service 来处理的过程</li>
+<li>把同步世界和异步世界连接起来的，就是 ProstServerStream 这个结构。</li>
+</ul>
+</div>
+</details>
+<div id="admonition--这个从收包处理到处理完成后发包的完整流程和系统结构可以看下图" class="admonition abstract">
+<div class="admonition-title">
+<blockquote>
+<p>这个从收包处理到处理完成后发包的完整流程和系统结构，可以看下图：</p>
+</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--这个从收包处理到处理完成后发包的完整流程和系统结构可以看下图"></a></p>
+</div>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/82da823b4eb16935fdeyy727e3b3262c.jpg" alt="img" /></p>
+</div>
+</div>
+<h2 id="开始做异步重构"><a class="header" href="#开始做异步重构">开始做异步重构</a></h2>
+<p>虽然我们很早就已经撰写了不少异步或者和异步有关的代码。但是最能体现 Rust 异步本质的 poll()、poll_read()、poll_next() 这样的处理函数还没有怎么写过，之前测试异步的 read_frame() 写过一个
+DummyStream，算是体验了一下底层的异步处理函数的复杂接口。</p>
+<details id="admonition-不过在-dummystream-里并没有做任何复杂的动作" class="admonition note">
+<summary class="admonition-title">
+<p>不过在 DummyStream 里，并没有做任何复杂的动作： </p>
+<p><a class="admonition-anchor-link" href="#admonition-不过在-dummystream-里并没有做任何复杂的动作"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+struct DummyStream {
+    buf: BytesMut,
+}
+
+impl AsyncRead for DummyStream {
+    fn poll_read(
+        self: std::pin::Pin&lt;&amp;mut Self&gt;,
+        _cx: &amp;mut std::task::Context&lt;'_&gt;,
+        buf: &amp;mut tokio::io::ReadBuf&lt;'_&gt;,
+    ) -&gt; std::task::Poll&lt;std::io::Result&lt;()&gt;&gt; {
+        // 看看 ReadBuf 需要多大的数据
+        let len = buf.capacity();
+        // split 出这么大的数据
+        let data = self.get_mut().buf.split_to(len);
+        // 拷贝给 ReadBuf
+        buf.put_slice(&amp;data);
+        // 直接完工
+        std::task::Poll::Ready(Ok(()))
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>这里对现有的代码做些重构，让核心的 ProstStream 更符合 Rust 的异步 IO 接口逻辑。</p>
+</blockquote>
+<p>具体要做点什么呢？</p>
+<details id="admonition-看之前写的-prostserverstream-的-process-函数比较一下它和-async_prost-库的-asyncprost-的调用逻辑" class="admonition info">
+<summary class="admonition-title">
+<p>看之前写的 ProstServerStream 的 process() 函数，比较一下它和 async_prost 库的 AsyncProst 的调用逻辑： </p>
+<p><a class="admonition-anchor-link" href="#admonition-看之前写的-prostserverstream-的-process-函数比较一下它和-async_prost-库的-asyncprost-的调用逻辑"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// process() 函数的内在逻辑
+while let Ok(cmd) = self.recv().await {
+    info!(&quot;Got a new command: {:?}&quot;, cmd);
+    let res = self.service.execute(cmd);
+    self.send(res).await?;
+}
+
+// async_prost 库的 AsyncProst 的调用逻辑
+while let Some(Ok(cmd)) = stream.next().await {
+    info!(&quot;Got a new command: {:?}&quot;, cmd);
+    let res = svc.execute(cmd);
+    stream.send(res).await.unwrap();
+}
+</code></pre></pre>
+<p>可以看到：</p>
+<ul>
+<li>由于 AsyncProst 实现了 <a href="https://docs.rs/futures/0.3.17/futures/stream/trait.Stream.html">Stream</a> 和 <a href="https://docs.rs/futures/0.3.17/futures/sink/trait.Sink.html">Sink</a></li>
+<li>能更加自然地调用 <a href="https://docs.rs/futures/0.3.17/futures/stream/trait.StreamExt.html">StreamExt trait </a>的 next() 方法和 SinkExt trait 的 send() 方法，来处理数据的收发</li>
+<li>而 ProstServerStream 则自己额外实现了函数 recv() 和 send()。</li>
+</ul>
+<blockquote>
+<p>虽然从代码对比的角度，这两段代码几乎一样，但未来的可扩展性，和整个异步生态的融洽性上，AsyncProst 还是更胜一筹。</p>
+</blockquote>
+</div>
+</details>
+<p>所以这里就构造一个 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait，然后让 ProstServerStream 和 ProstClientStream 使用它。</p>
+<h2 id="创建-proststream"><a class="header" href="#创建-proststream">创建 ProstStream</a></h2>
+<details id="admonition-在开始重构之前先来简单复习一下-stream-trait-和-sink-trait" class="admonition note">
+<summary class="admonition-title">
+<p>在开始重构之前，先来简单复习一下 Stream trait 和 Sink trait：</p>
+<p><a class="admonition-anchor-link" href="#admonition-在开始重构之前先来简单复习一下-stream-trait-和-sink-trait"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 可以类比 Iterator
+pub trait Stream {
+    // 从 Stream 中读取到的数据类型
+    type Item;
+
+  // 从 stream 里读取下一个数据
+    fn poll_next(
+    self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt;;
+}
+
+// 
+pub trait Sink&lt;Item&gt; {
+    type Error;
+    fn poll_ready(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt;;
+    fn start_send(self: Pin&lt;&amp;mut Self&gt;, item: Item) -&gt; Result&lt;(), Self::Error&gt;;
+    fn poll_flush(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt;;
+    fn poll_close(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        cx: &amp;mut Context&lt;'_&gt;
+    ) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt;;
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition--那么-proststream-具体需要包含什么类型呢" class="admonition question">
+<summary class="admonition-title">
+<blockquote>
+<p>那么 ProstStream 具体需要包含什么类型呢？ </p>
+</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--那么-proststream-具体需要包含什么类型呢"></a></p>
+</summary>
+<div>
+<ol>
+<li>
+<p>因为它的主要职责是从底下的 stream 中读取或者发送数据，所以一个支持 AsyncRead 和 AsyncWrite 的泛型参数 S 是必然需要的。</p>
+</li>
+<li>
+<p>另外 Stream trait 和 Sink 都各需要一个 Item 类型，对于我们的系统来说，Item 是 CommandRequest 或者 CommandResponse，但为了灵活性，我们可以用 In 和 Out 这两个泛型参数来表示。</p>
+</li>
+<li>
+<p>当然，在处理 Stream 和 Sink 时还需要 read buffer 和 write buffer。</p>
+</li>
+</ol>
+<p>综上所述，我们的 ProstStream 结构看上去是这样子的：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub struct ProstStream&lt;S, In, Out&gt; {
+    // innner stream
+    stream: S,
+    // 写缓存
+    wbuf: BytesMut,
+    // 读缓存
+    rbuf: BytesMut,
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-然而rust-不允许数据结构有超出需要的泛型参数怎么办" class="admonition question">
+<summary class="admonition-title">
+<p>然而，Rust 不允许数据结构有超出需要的泛型参数。怎么办？</p>
+<p><a class="admonition-anchor-link" href="#admonition-然而rust-不允许数据结构有超出需要的泛型参数怎么办"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>别急，可以用<a href="https://doc.rust-lang.org/std/marker/struct.PhantomData.html"> PhantomData，它是一个零字节大小的占位符</a>，可以让我们的数据结构携带未使用的泛型参数。</p>
+</blockquote>
+</div>
+</details>
+<p>好，现在有足够的思路了，我们创建 src/network/stream.rs，添加如下代码（记得在 src/network/mod.rs 添加对 stream.rs 的引用）：</p>
+<details id="admonition-这段代码包含了为-proststream-实现-stream-和-sink-的骨架代码" class="admonition note">
+<summary class="admonition-title">
+<p>这段代码包含了为 ProstStream 实现 Stream 和 Sink 的骨架代码。 </p>
+<p><a class="admonition-anchor-link" href="#admonition-这段代码包含了为-proststream-实现-stream-和-sink-的骨架代码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use bytes::BytesMut;
+use futures::{Sink, Stream};
+use std::{
+    marker::PhantomData,
+    pin::Pin,
+    task::{Context, Poll},
+};
+use tokio::io::{AsyncRead, AsyncWrite};
+
+use crate::{FrameCoder, KvError};
+
+/// 处理 KV server prost frame 的 stream
+pub struct ProstStream&lt;S, In, Out&gt; where {
+    // innner stream
+    stream: S,
+    // 写缓存
+    wbuf: BytesMut,
+    // 读缓存
+    rbuf: BytesMut,
+
+    // 类型占位符
+    _in: PhantomData&lt;In&gt;,
+    _out: PhantomData&lt;Out&gt;,
+}
+
+impl&lt;S, In, Out&gt; Stream for ProstStream&lt;S, In, Out&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send,
+    In: Unpin + Send + FrameCoder,
+    Out: Unpin + Send,
+{
+    /// 当调用 next() 时，得到 Result&lt;In, KvError&gt;
+    type Item = Result&lt;In, KvError&gt;;
+
+    fn poll_next(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt; {
+        todo!()
+    }
+}
+
+/// 当调用 send() 时，会把 Out 发出去
+impl&lt;S, In, Out&gt; Sink&lt;Out&gt; for ProstStream&lt;S, In, Out&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin,
+    In: Unpin + Send,
+    Out: Unpin + Send + FrameCoder,
+{
+    /// 如果发送出错，会返回 KvError
+    type Error = KvError;
+
+    fn poll_ready(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt; {
+        todo!()
+    }
+
+    fn start_send(self: Pin&lt;&amp;mut Self&gt;, item: Out) -&gt; Result&lt;(), Self::Error&gt; {
+        todo!()
+    }
+
+    fn poll_flush(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt; {
+        todo!()
+    }
+
+    fn poll_close(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt; {
+        todo!()
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>接下来我们就一个个处理。</p>
+<blockquote>
+<p>注意对于 In 和 Out 参数，还为其约束了 FrameCoder，这样，在实现里我们可以使用 decode_frame() 和 encode_frame() 来获取一个 Item 或者 encode 一个 Item。</p>
+</blockquote>
+<details id="admonition-1-stream-的实现-主要是stream-的-poll_next-方法" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>Stream 的实现, 主要是Stream 的 poll_next() 方法。</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-stream-的实现-主要是stream-的-poll_next-方法"></a></p>
+</summary>
+<div>
+<p>poll_next() 可以直接调用之前写好的 read_frame()，然后再用 decode_frame() 来解包：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn poll_next(mut self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt; {
+    // 上一次调用结束后 rbuf 应该为空
+    assert!(self.rbuf.len() == 0);
+
+    // 从 rbuf 中分离出 rest（摆脱对 self 的引用）
+    let mut rest = self.rbuf.split_off(0);
+
+    // 使用 read_frame 来获取数据
+    let fut = read_frame(&amp;mut self.stream, &amp;mut rest);
+    ready!(Box::pin(fut).poll_unpin(cx))?;
+
+    // 拿到一个 frame 的数据，把 buffer 合并回去
+    self.rbuf.unsplit(rest);
+
+    // 调用 decode_frame 获取解包后的数据
+    Poll::Ready(Some(In::decode_frame(&amp;mut self.rbuf)))
+}
+</code></pre></pre>
+<blockquote>
+<p>这个不难理解，但中间这段需要稍微解释一下：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+ // 使用 read_frame 来获取数据
+let fut = read_frame(&amp;mut self.stream, &amp;mut rest);
+ready!(Box::pin(fut).poll_unpin(cx))?;
+</code></pre></pre>
+<ol>
+<li>因为 poll_xxx() 方法已经是 async/await 的底层 API 实现，所以我们在 poll_xxx() 方法中，是不能直接使用异步函数的，需要把它看作一个 future，然后调用 future 的 poll 函数。</li>
+<li>因为 future 是一个 trait，所以需要 Box 将其处理成一个在堆上的 trait object，这样就可以调用 <a href="https://docs.rs/futures/0.3.17/futures/future/trait.FutureExt.html#method.poll_unpin">FutureExt 的 poll_unpin() 方法</a>。Box::pin 会生成 Pin<Box>。</li>
+<li>至于 ready! 宏，它会在 Pending 时直接 return Pending，而在 Ready 时，返回 Ready 的值：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+macro_rules! ready {
+    ($e:expr $(,)?) =&gt; {
+        match $e {
+            $crate::task::Poll::Ready(t) =&gt; t,
+            $crate::task::Poll::Pending =&gt; return $crate::task::Poll::Pending,
+        }
+    };
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>Stream 我们就实现好了，是不是也没有那么复杂？</p>
+</blockquote>
+<details id="admonition-2-sink的实现主要是四个方法" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>Sink的实现：主要是四个方法</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-sink的实现主要是四个方法"></a></p>
+</summary>
+<div>
+<p>再写 Sink，看上去要实现好几个方法，其实也不算复杂的四个方法 ：</p>
+<ul>
+<li>poll_ready</li>
+<li>start_send()</li>
+<li>poll_flush </li>
+<li>poll_close </li>
+</ul>
+<p>我们再回顾一下：</p>
+<ol>
+<li><a href="https://docs.rs/futures/0.3.17/futures/prelude/trait.Sink.html#tymethod.poll_ready">poll_ready() </a>是做背压的</li>
+</ol>
+<p>你可以根据负载来决定要不要返回 Poll::Ready。对于我们的网络层来说，可以先不关心背压，依靠操作系统的 TCP 协议栈提供背压处理即可，所以这里直接返回 Poll::Ready(Ok(()))，也就是说，上层想写数据，可以随时写。</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn poll_ready(self: Pin&lt;&amp;mut Self&gt;, _cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt; {
+    Poll::Ready(Ok(()))
+}
+</code></pre></pre>
+<ol start="2">
+<li>当 poll_ready() 返回 Ready 后，Sink 就走到<a href="https://docs.rs/futures/0.3.17/futures/prelude/trait.Sink.html#tymethod.start_send"> start_send()</a>。我们在 start_send() 里就把必要的数据准备好。这里把 item 封包成字节流，存入 wbuf 中：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn start_send(self: Pin&lt;&amp;mut Self&gt;, item: Out) -&gt; Result&lt;(), Self::Error&gt; {
+    let this = self.get_mut();
+    item.encode_frame(&amp;mut this.wbuf)?;
+
+    Ok(())
+}
+</code></pre></pre>
+<ol start="3">
+<li>然后在 <a href="https://docs.rs/futures/0.3.17/futures/prelude/trait.Sink.html#tymethod.poll_flush">poll_flush()</a> 中，我们开始写数据。这里需要记录当前写到哪里，所以需要在 ProstStream 里加一个字段 written，记录写入了多少字节：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 处理 KV server prost frame 的 stream
+pub struct ProstStream&lt;S, In, Out&gt; {
+    // innner stream
+    stream: S,
+    // 写缓存
+    wbuf: BytesMut,
+    // 写入了多少字节
+    written: usize,
+    // 读缓存
+    rbuf: BytesMut,
+
+    // 类型占位符
+    _in: PhantomData&lt;In&gt;,
+    _out: PhantomData&lt;Out&gt;,
+}
+</code></pre></pre>
+<p>有了这个 written 字段， 就可以循环写入：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn poll_flush(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt; {
+    let this = self.get_mut();
+
+    // 循环写入 stream 中
+    while this.written != this.wbuf.len() {
+        let n = ready!(Pin::new(&amp;mut this.stream).poll_write(cx, &amp;this.wbuf[this.written..]))?;
+        this.written += n;
+    }
+
+    // 清除 wbuf
+    this.wbuf.clear();
+    this.written = 0;
+
+    // 调用 stream 的 poll_flush 确保写入
+    ready!(Pin::new(&amp;mut this.stream).poll_flush(cx)?);
+    Poll::Ready(Ok(()))
+}
+</code></pre></pre>
+<ol start="4">
+<li>最后是 <a href="https://docs.rs/futures/0.3.17/futures/prelude/trait.Sink.html#tymethod.poll_close">poll_close()</a>，我们只需要调用 stream 的 flush 和 shutdown 方法，确保数据写完并且 stream 关闭：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn poll_close(mut self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Result&lt;(), Self::Error&gt;&gt; {
+    // 调用 stream 的 poll_flush 确保写入
+    ready!(self.as_mut().poll_flush(cx))?;
+
+    // 调用 stream 的 poll_shutdown 确保 stream 关闭
+    ready!(Pin::new(&amp;mut self.stream).poll_shutdown(cx))?;
+    Poll::Ready(Ok(()))
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-3-我们的-proststream-目前已经实现了-stream-和-sink为了方便使用再构建一些辅助方法比如-new" class="admonition note">
+<summary class="admonition-title">
+<ol start="3">
+<li>我们的 ProstStream 目前已经实现了 Stream 和 Sink，为了方便使用，再构建一些辅助方法，比如 new()： </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-3-我们的-proststream-目前已经实现了-stream-和-sink为了方便使用再构建一些辅助方法比如-new"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;S, In, Out&gt; ProstStream&lt;S, In, Out&gt;
+where
+    S: AsyncRead + AsyncWrite + Send + Unpin,
+{
+    /// 创建一个 ProstStream
+    pub fn new(stream: S) -&gt; Self {
+        Self {
+            stream,
+            written: 0,
+            wbuf: BytesMut::new(),
+            rbuf: BytesMut::new(),
+            _in: PhantomData::default(),
+            _out: PhantomData::default(),
+        }
+    }
+}
+
+// 一般来说，如果我们的 Stream 是 Unpin，最好实现一下
+impl&lt;S, Req, Res&gt; Unpin for ProstStream&lt;S, Req, Res&gt; where S: Unpin {}
+</code></pre></pre>
+<hr />
+<p>此外，我们还为其实现 Unpin trait，这会给别人在使用你的代码时带来很多方便。</p>
+<p>一般来说，为异步操作而创建的数据结构，如果使用了泛型参数，那么只要内部没有自引用数据，就应该实现 Unpin。</p>
+</div>
+</details>
+<h3 id="测试"><a class="header" href="#测试">测试！</a></h3>
+<p>又到了重要的测试环节。我们需要写点测试来确保 ProstStream 能正常工作。因为之前在 src/network/frame.rs 中写了个 DummyStream，实现了 AsyncRead，我们只需要扩展它，让它再实现
+AsyncWrite。</p>
+<details id="admonition-1-为了让它可以被复用我们将其从-framers-中移出来放在-srcnetworkmodrs-中并修改成下面的样子记得在-framers-的测试里-use-新的-dummystream" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>为了让它可以被复用，我们将其从 frame.rs 中移出来，放在 src/network/mod.rs 中，并修改成下面的样子（记得在 frame.rs 的测试里 use 新的 DummyStream）： </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-为了让它可以被复用我们将其从-framers-中移出来放在-srcnetworkmodrs-中并修改成下面的样子记得在-framers-的测试里-use-新的-dummystream"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[cfg(test)]
+pub mod utils {
+    use bytes::{BufMut, BytesMut};
+    use std::task::Poll;
+    use tokio::io::{AsyncRead, AsyncWrite};
+
+    pub struct DummyStream {
+        pub buf: BytesMut,
+    }
+
+    impl AsyncRead for DummyStream {
+        fn poll_read(
+            self: std::pin::Pin&lt;&amp;mut Self&gt;,
+            _cx: &amp;mut std::task::Context&lt;'_&gt;,
+            buf: &amp;mut tokio::io::ReadBuf&lt;'_&gt;,
+        ) -&gt; Poll&lt;std::io::Result&lt;()&gt;&gt; {
+            let len = buf.capacity();
+            let data = self.get_mut().buf.split_to(len);
+            buf.put_slice(&amp;data);
+            Poll::Ready(Ok(()))
+        }
+    }
+
+    impl AsyncWrite for DummyStream {
+        fn poll_write(
+            self: std::pin::Pin&lt;&amp;mut Self&gt;,
+            _cx: &amp;mut std::task::Context&lt;'_&gt;,
+            buf: &amp;[u8],
+        ) -&gt; Poll&lt;Result&lt;usize, std::io::Error&gt;&gt; {
+            self.get_mut().buf.put_slice(buf);
+            Poll::Ready(Ok(buf.len()))
+        }
+
+        fn poll_flush(
+            self: std::pin::Pin&lt;&amp;mut Self&gt;,
+            _cx: &amp;mut std::task::Context&lt;'_&gt;,
+        ) -&gt; Poll&lt;Result&lt;(), std::io::Error&gt;&gt; {
+            Poll::Ready(Ok(()))
+        }
+
+        fn poll_shutdown(
+            self: std::pin::Pin&lt;&amp;mut Self&gt;,
+            _cx: &amp;mut std::task::Context&lt;'_&gt;,
+        ) -&gt; Poll&lt;Result&lt;(), std::io::Error&gt;&gt; {
+            Poll::Ready(Ok(()))
+        }
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-2-好这样我们就可以在-srcnetworkstreamrs-下写个测试了" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>好，这样我们就可以在 src/network/stream.rs 下写个测试了： </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-好这样我们就可以在-srcnetworkstreamrs-下写个测试了"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{utils::DummyStream, CommandRequest};
+    use anyhow::Result;
+    use futures::prelude::*;
+
+    #[tokio::test]
+    async fn prost_stream_should_work() -&gt; Result&lt;()&gt; {
+        let buf = BytesMut::new();
+        let stream = DummyStream { buf };
+        let mut stream = ProstStream::&lt;_, CommandRequest, CommandRequest&gt;::new(stream);
+        let cmd = CommandRequest::new_hdel(&quot;t1&quot;, &quot;k1&quot;);
+        stream.send(cmd.clone()).await?;
+        if let Some(Ok(s)) = stream.next().await {
+            assert_eq!(s, cmd);
+        } else {
+            assert!(false);
+        }
+        Ok(())
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<ol start="3">
+<li>运行 cargo test ，一切测试通过！（如果你编译错误，可能缺少 use 的问题，可以自行修改，或者参考 GitHub 上的完整代码）。</li>
+</ol>
+<h2 id="使用-proststream"><a class="header" href="#使用-proststream">使用 ProstStream</a></h2>
+<details id="admonition-接下来我们可以让-prostserverstream-和-prostclientstream-使用新定义的-proststream-了你可以参考下面的对比看看二者的区别" class="admonition note">
+<summary class="admonition-title">
+<p>接下来，我们可以让 ProstServerStream 和 ProstClientStream 使用新定义的 ProstStream 了，你可以参考下面的对比，看看二者的区别：</p>
+<p><a class="admonition-anchor-link" href="#admonition-接下来我们可以让-prostserverstream-和-prostclientstream-使用新定义的-proststream-了你可以参考下面的对比看看二者的区别"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 旧的接口
+// pub struct ProstServerStream&lt;S&gt; {
+//     inner: S,
+//     service: Service,
+// }
+
+pub struct ProstServerStream&lt;S&gt; {
+    inner: ProstStream&lt;S, CommandRequest, CommandResponse&gt;,
+    service: Service,
+}
+
+// 旧的接口
+// pub struct ProstClientStream&lt;S&gt; {
+//     inner: S,
+// }
+
+pub struct ProstClientStream&lt;S&gt; {
+    inner: ProstStream&lt;S, CommandResponse, CommandRequest&gt;,
+}
+</code></pre></pre>
+<blockquote>
+<p>然后删除 send() / recv() 函数，并修改 process() / execute() 函数使其使用 next() 方法和 send() 方法。主要的改动如下：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 处理服务器端的某个 accept 下来的 socket 的读写
+pub struct ProstServerStream&lt;S&gt; {
+    inner: ProstStream&lt;S, CommandRequest, CommandResponse&gt;,
+    service: Service,
+}
+
+/// 处理客户端 socket 的读写
+pub struct ProstClientStream&lt;S&gt; {
+    inner: ProstStream&lt;S, CommandResponse, CommandRequest&gt;,
+}
+
+impl&lt;S&gt; ProstServerStream&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send,
+{
+    pub fn new(stream: S, service: Service) -&gt; Self {
+        Self {
+            inner: ProstStream::new(stream),
+            service,
+        }
+    }
+
+    pub async fn process(mut self) -&gt; Result&lt;(), KvError&gt; {
+        let stream = &amp;mut self.inner;
+        while let Some(Ok(cmd)) = stream.next().await {
+            info!(&quot;Got a new command: {:?}&quot;, cmd);
+            let res = self.service.execute(cmd);
+            stream.send(res).await.unwrap();
+        }
+
+        Ok(())
+    }
+}
+
+impl&lt;S&gt; ProstClientStream&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send,
+{
+    pub fn new(stream: S) -&gt; Self {
+        Self {
+            inner: ProstStream::new(stream),
+        }
+    }
+
+    pub async fn execute(&amp;mut self, cmd: CommandRequest) -&gt; Result&lt;CommandResponse, KvError&gt; {
+        let stream = &amp;mut self.inner;
+        stream.send(cmd).await?;
+
+        match stream.next().await {
+            Some(v) =&gt; v,
+            None =&gt; Err(KvError::Internal(&quot;Didn't get any response&quot;.into())),
+        }
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-测试" class="admonition success">
+<summary class="admonition-title">
+<p>测试</p>
+<p><a class="admonition-anchor-link" href="#admonition-测试"></a></p>
+</summary>
+<div>
+<p>再次运行 cargo test ，所有的测试应该都能通过。同样如果有编译错误，可能是缺少了引用。</p>
+<p>我们也可以打开一个命令行窗口，运行：</p>
+<pre><code class="language-shell">RUST_LOG=info cargo run --bin kvs --quiet
+</code></pre>
+<p>然后在另一个命令行窗口，运行：</p>
+<pre><code class="language-shell">RUST_LOG=info cargo run --bin kvc --quiet
+</code></pre>
+<p>此时，服务器和客户端都收到了彼此的请求和响应，并且处理正常！</p>
+</div>
+</details>
+<blockquote>
+<p>我们重构了 ProstServerStream 和 ProstClientStream 的代码，使其内部使用更符合 futures 库里 Stream / Sink trait
+的用法，整体代码改动不小，但是内部实现的变更并不影响系统的其它部分！这简直太棒了！</p>
+</blockquote>
+<h2 id="异步处理回顾单元测试的重要性"><a class="header" href="#异步处理回顾单元测试的重要性">异步处理回顾：单元测试的重要性</a></h2>
+<p>在实际开发中，进行重构来改善既有代码的质量是必不可少的。之前在开发 KV server 的过程中，我们在不断地进行一些小的重构。</p>
+<p>本节我们做了个稍微大一些的重构，为已有的代码提供更加符合异步 IO 接口的功能。</p>
+<blockquote>
+<p>从对外使用的角度来说，它并没有提供或者满足任何额外的需求，但是从代码结构和质量的角度，它使得我们的 ProstStream 可以更方便和更直观地被其它接口调用，也更容易跟整个 Rust 的现有生态结合起来。</p>
+</blockquote>
+<p>你可能会好奇，为什么可以这么自然地进行代码重构？这是因为我们有足够的单元测试覆盖来打底。</p>
+<p>就像生物的进化一样，好的代码是在良性的重构中不断演进出来的，而良性的重构，是在优秀的单元测试的监管下，使代码朝着正确方向迈出的步伐。在这里，单元测试扮演着生物进化中自然环境的角色，把重构过程中的错误一一扼杀。</p>
+<h2 id="思考题"><a class="header" href="#思考题">思考题</a></h2>
+<p>为什么在创建 ProstStream 时，要在数据结构中放 wbuf / rbuf 和 written 字段？为什么不能用局部变量？</p>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="kv5_network_security.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="kv7_big_refactor.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="kv5_network_security.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="kv7_big_refactor.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

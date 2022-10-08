@@ -1,0 +1,1326 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>网络处理 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html" class="active"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="四网络处理"><a class="header" href="#四网络处理">四、网络处理</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E5%9B%9B%E7%BD%91%E7%BB%9C%E5%A4%84%E7%90%86">四、网络处理</a>
+<ul>
+<li><a href="#async-prost">async-prost</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E5%AE%9A%E4%B9%89%E5%8D%8F%E8%AE%AE%E7%9A%84-frame">如何定义协议的 Frame？</a></li>
+<li><a href="#%E5%A6%82%E4%BD%95%E6%92%B0%E5%86%99%E5%A4%84%E7%90%86-frame-%E7%9A%84%E4%BB%A3%E7%A0%81">如何撰写处理 Frame 的代码？</a></li>
+<li><a href="#%E8%AE%A9%E7%BD%91%E7%BB%9C%E5%B1%82%E5%8F%AF%E4%BB%A5%E5%83%8F-asyncprost-%E9%82%A3%E6%A0%B7%E6%96%B9%E4%BE%BF%E4%BD%BF%E7%94%A8">让网络层可以像 AsyncProst 那样方便使用</a></li>
+<li><a href="#%E6%AD%A3%E5%BC%8F%E5%88%9B%E5%BB%BA-kv-server-%E5%92%8C-kv-client">正式创建 kv-server 和 kv-client</a></li>
+<li><a href="#%E5%9B%9E%E9%A1%BE%E7%BD%91%E7%BB%9C%E5%BC%80%E5%8F%91">回顾网络开发</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:54 UTC 2022 -->
+<!--te-->
+<h2 id="async-prost"><a class="header" href="#async-prost">async-prost</a></h2>
+<p>之前一直在使用一个神秘的 <a href="https://github.com/tyrchen/async-prost">async-prost 库</a>，我们神奇地完成了 TCP frame 的封包和解包。</p>
+<details id="admonition-是怎么完成的呢" class="admonition question">
+<summary class="admonition-title">
+<p>是怎么完成的呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-是怎么完成的呢"></a></p>
+</summary>
+<div>
+<p>async-prost 是<a href="https://github.com/jonhoo/async-bincode">仿照 Jonhoo 的 async-bincode</a> 做的一个处理 protobuf frame 的库，它可以和各种网络协议适配，包括 TCP / WebSocket / HTTP2 等。</p>
+<blockquote>
+<p>由于考虑通用性，它的抽象级别比较高，用了大量的泛型参数</p>
+</blockquote>
+<hr />
+<p>主流程如下图所示：</p>
+<h2 id=""><a class="header" href="#"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/5afafe8646ee8b05b69a463ab5f5554f.png" alt="img" /></a></h2>
+<p>主要的思路:</p>
+<ol>
+<li>在序列化数据的时候，添加一个头部来提供 frame 的长度</li>
+<li>反序列化的时候，先读出头部，获得长度，再读取相应的数据。</li>
+</ol>
+</div>
+</details>
+<blockquote>
+<p>这里试着不依赖 async-prost，自己处理封包和解包的逻辑。
+如果你掌握了这个能力，配合 protobuf，就可以设计出任何可以承载实际业务的协议了。</p>
+</blockquote>
+<h2 id="如何定义协议的-frame"><a class="header" href="#如何定义协议的-frame">如何定义协议的 Frame？</a></h2>
+<p>protobuf 帮我们解决了协议消息如何定义的问题，然而一个消息和另一个消息之间如何区分，是个伤脑筋的事情。</p>
+<details id="admonition-我们需要定义合适的分隔符" class="admonition info">
+<summary class="admonition-title">
+<p>我们需要定义合适的分隔符。 </p>
+<p><a class="admonition-anchor-link" href="#admonition-我们需要定义合适的分隔符"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>分隔符 + 消息数据，就是一个 Frame。</p>
+</blockquote>
+<ol>
+<li>很多基于 TCP 的协议会使用 \r\n 做分隔符，比如 FTP；</li>
+<li>也有使用消息长度做分隔符的，比如 gRPC；</li>
+<li>还有混用两者的，比如 Redis 的 RESP；</li>
+<li>更复杂的如 HTTP，header 之间使用 \r\n 分隔，header / body 之间使用 \r\n\r\n，header 中会提供 body 的长度等等。</li>
+</ol>
+<ul>
+<li>“\r\n” 这样的分隔符，适合协议报文是 ASCII 数据；</li>
+<li>而通过长度进行分隔，适合协议报文是二进制数据</li>
+<li>我们的 KV Server 承载的 protobuf 是二进制，所以就在 payload 之前放一个长度，来作为 frame 的分隔。</li>
+</ul>
+<p>这个长度取什么大小呢？</p>
+<ul>
+<li>如果使用 2 个字节，那么 payload 最大是 64k；</li>
+<li>如果使用 4 个字节，payload 可以到 4G。</li>
+<li>一般的应用取 4 个字节就足够了。</li>
+<li>如果你想要更灵活些，也可以使用 <a href="https://en.wikipedia.org/wiki/Variable-length_quantity">varint</a>。</li>
+</ul>
+</div>
+</details>
+<p>tokio 有个 tokio-util 库，已经帮我们处理了和 frame 相关的封包解包的主要需求，包括 LinesDelimited（处理 \r\n 分隔符）和 LengthDelimited（处理长度分隔符）。</p>
+<details id="admonition-我们可以使用它的-lengthdelimitedcodec-尝试一下" class="admonition note">
+<summary class="admonition-title">
+<p>我们可以使用它的 LengthDelimitedCodec 尝试一下。 </p>
+<p><a class="admonition-anchor-link" href="#admonition-我们可以使用它的-lengthdelimitedcodec-尝试一下"></a></p>
+</summary>
+<div>
+<ol>
+<li>首先在 Cargo.toml 里添加依赖：</li>
+</ol>
+<pre><code class="language-toml">
+[dev-dependencies]
+...
+tokio-util = { version = &quot;0.6&quot;, features = [&quot;codec&quot;]}
+...
+</code></pre>
+<ol start="2">
+<li>然后创建 examples/server_with_codec.rs 文件，添入如下代码：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use futures::prelude::*;
+use kv2::{CommandRequest, MemTable, Service, ServiceInner};
+use prost::Message;
+use tokio::net::TcpListener;
+use tokio_util::codec::{Framed, LengthDelimitedCodec};
+use tracing::info;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+    let service: Service = ServiceInner::new(MemTable::new()).into();
+    let addr = &quot;127.0.0.1:9527&quot;;
+    let listener = TcpListener::bind(addr).await?;
+    info!(&quot;Start listening on {}&quot;, addr);
+    loop {
+        let (stream, addr) = listener.accept().await?;
+        info!(&quot;Client {:?} connected&quot;, addr);
+        let svc = service.clone();
+        tokio::spawn(async move {
+            let mut stream = Framed::new(stream, LengthDelimitedCodec::new());
+            while let Some(Ok(mut buf)) = stream.next().await {
+                let cmd = CommandRequest::decode(&amp;buf[..]).unwrap();
+                info!(&quot;Got a new command: {:?}&quot;, cmd);
+                let res = svc.execute(cmd);
+                buf.clear();
+                res.encode(&amp;mut buf).unwrap();
+                stream.send(buf.freeze()).await.unwrap();
+            }
+            info!(&quot;Client {:?} disconnected&quot;, addr);
+        });
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>你可以对比一下它和之前的 examples/server.rs 的差别，主要改动了这一行：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+// let mut stream = AsyncProstStream::&lt;_, CommandRequest, CommandResponse, _&gt;::from(stream).for_async();
+let mut stream = Framed::new(stream, LengthDelimitedCodec::new());
+</code></pre></pre>
+<details id="admonition-测试" class="admonition success">
+<summary class="admonition-title">
+<p>测试 </p>
+<p><a class="admonition-anchor-link" href="#admonition-测试"></a></p>
+</summary>
+<div>
+<ul>
+<li>完成之后，我们打开一个命令行窗口，运行：</li>
+</ul>
+<pre><code class="language-shell">RUST_LOG=info cargo run --example server_with_codec --quiet
+</code></pre>
+<ul>
+<li>然后在另一个命令行窗口，运行：</li>
+</ul>
+<pre><code class="language-shell">RUST_LOG=info cargo run --example client --quiet
+</code></pre>
+<ul>
+<li>此时，服务器和客户端都收到了彼此的请求和响应，并且处理正常</li>
+</ul>
+</div>
+</details>
+<details id="admonition-你这会是不是有点疑惑为什么客户端没做任何修改也能和服务器通信" class="admonition question">
+<summary class="admonition-title">
+<p>你这会是不是有点疑惑，为什么客户端没做任何修改也能和服务器通信？ </p>
+<p><a class="admonition-anchor-link" href="#admonition-你这会是不是有点疑惑为什么客户端没做任何修改也能和服务器通信"></a></p>
+</summary>
+<div>
+<p>那是因为在目前的使用场景下，使用 AsyncProst 的客户端兼容 LengthDelimitedCodec。</p>
+</div>
+</details>
+<h2 id="如何撰写处理-frame-的代码"><a class="header" href="#如何撰写处理-frame-的代码">如何撰写处理 Frame 的代码？</a></h2>
+<details id="admonition-按照前面分析我们在-protobuf-payload-前加一个-4-字节的长度" class="admonition info">
+<summary class="admonition-title">
+<p>按照前面分析，我们在 protobuf payload 前加一个 4 字节的长度。 </p>
+<p><a class="admonition-anchor-link" href="#admonition-按照前面分析我们在-protobuf-payload-前加一个-4-字节的长度"></a></p>
+</summary>
+<div>
+<p>这样对端读取数据时，可以先读 4 字节，然后根据读到的长度，进一步读取满足这个长度的数据，之后就可以用相应的数据结构解包了。</p>
+<blockquote>
+<p>为了更贴近实际，我们把 4 字节长度的最高位拿出来作为是否压缩的信号.
+如果设置了，代表后续的 payload 是 gzip 压缩过的 protobuf，否则直接是 protobuf：</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/712735ae12d0cdf39b3dcf5bb242f103.jpg" alt="img" /></p>
+</div>
+</details>
+<details id="admonition-实现处理-frame-的代码-commandrequest--commandresponse-做-frame-级别的处理" class="admonition note">
+<summary class="admonition-title">
+<p>实现处理 Frame 的代码: CommandRequest / CommandResponse 做 frame 级别的处理</p>
+<p><a class="admonition-anchor-link" href="#admonition-实现处理-frame-的代码-commandrequest--commandresponse-做-frame-级别的处理"></a></p>
+</summary>
+<div>
+<ol>
+<li>按照惯例，还是先来定义处理这个逻辑的 trait：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait FrameCoder
+where
+    Self: Message + Sized + Default,
+{
+    /// 把一个 Message encode 成一个 frame
+    fn encode_frame(&amp;self, buf: &amp;mut BytesMut) -&gt; Result&lt;(), KvError&gt;;
+    /// 把一个完整的 frame decode 成一个 Message
+    fn decode_frame(buf: &amp;mut BytesMut) -&gt; Result&lt;Self, KvError&gt;;
+}
+</code></pre></pre>
+<p>定义了两个方法：</p>
+<ul>
+<li>
+<p>encode_frame() 可以把诸如 CommandRequest 这样的消息封装成一个 frame，写入传进来的 BytesMut；</p>
+</li>
+<li>
+<p>decode_frame() 可以把收到的一个完整的、放在 BytesMut 中的数据，解封装成诸如 CommandRequest 这样的消息。</p>
+</li>
+<li>
+<p>如果要实现这个 trait，Self 需要实现了 prost::Message，大小是固定的，并且实现了 Default（prost 的需求）。</p>
+</li>
+</ul>
+<hr />
+<ol start="2">
+<li>好，我们再写实现代码。</li>
+</ol>
+<ul>
+<li>
+<p>首先创建 src/network 目录，并在其下添加两个文件mod.rs和 frame.rs。</p>
+</li>
+<li>
+<p>然后在 src/network/mod.rs 里引入 src/network/frame.rs：</p>
+</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">
+mod frame;
+pub use frame::FrameCoder;
+</code></pre></pre>
+<ul>
+<li>同时在 lib.rs 里引入 network：</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">
+mod network;
+pub use network::*;
+</code></pre></pre>
+<ul>
+<li>
+<p>因为要处理 gzip 压缩，还需要在 Cargo.toml 中引入 <a href="https://github.com/rust-lang/flate2-rs">flate2</a></p>
+</li>
+<li>
+<p>同时，因为今天这一讲引入了网络相关的操作和数据结构，我们需要把 tokio 从 dev-dependencies 移到 dependencies 里，为简单起见，就用 full features：</p>
+</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">
+[dependencies]
+...
+flate2 = &quot;1&quot; # gzip 压缩
+...
+tokio = { version = &quot;1&quot;, features = [&quot;full&quot;] } # 异步网络库
+...
+</code></pre></pre>
+<ul>
+<li>然后，在 src/network/frame.rs 里添加 trait 和实现 trait 的代码：</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::io::{Read, Write};
+
+use crate::{CommandRequest, CommandResponse, KvError};
+use bytes::{Buf, BufMut, BytesMut};
+use flate2::{read::GzDecoder, write::GzEncoder, Compression};
+use prost::Message;
+use tokio::io::{AsyncRead, AsyncReadExt};
+use tracing::debug;
+
+/// 长度整个占用 4 个字节
+pub const LEN_LEN: usize = 4;
+/// 长度占 31 bit，所以最大的 frame 是 2G
+const MAX_FRAME: usize = 2 * 1024 * 1024 * 1024;
+/// 如果 payload 超过了 1436 字节，就做压缩
+const COMPRESSION_LIMIT: usize = 1436;
+/// 代表压缩的 bit（整个长度 4 字节的最高位）
+const COMPRESSION_BIT: usize = 1 &lt;&lt; 31;
+
+/// 处理 Frame 的 encode/decode
+pub trait FrameCoder
+where
+    Self: Message + Sized + Default,
+{
+    /// 把一个 Message encode 成一个 frame
+    fn encode_frame(&amp;self, buf: &amp;mut BytesMut) -&gt; Result&lt;(), KvError&gt; {
+        let size = self.encoded_len();
+
+        if size &gt;= MAX_FRAME {
+            return Err(KvError::FrameError);
+        }
+
+        // 我们先写入长度，如果需要压缩，再重写压缩后的长度
+        buf.put_u32(size as _);
+
+        if size &gt; COMPRESSION_LIMIT {
+            let mut buf1 = Vec::with_capacity(size);
+            self.encode(&amp;mut buf1)?;
+
+            // BytesMut 支持逻辑上的 split（之后还能 unsplit）
+            // 所以我们先把长度这 4 字节拿走，清除
+            let payload = buf.split_off(LEN_LEN);
+            buf.clear();
+
+            // 处理 gzip 压缩，具体可以参考 flate2 文档
+            let mut encoder = GzEncoder::new(payload.writer(), Compression::default());
+            encoder.write_all(&amp;buf1[..])?;
+
+            // 压缩完成后，从 gzip encoder 中把 BytesMut 再拿回来
+            let payload = encoder.finish()?.into_inner();
+            debug!(&quot;Encode a frame: size {}({})&quot;, size, payload.len());
+
+            // 写入压缩后的长度
+            buf.put_u32((payload.len() | COMPRESSION_BIT) as _);
+
+            // 把 BytesMut 再合并回来
+            buf.unsplit(payload);
+
+            Ok(())
+        } else {
+            self.encode(buf)?;
+            Ok(())
+        }
+    }
+
+    /// 把一个完整的 frame decode 成一个 Message
+    fn decode_frame(buf: &amp;mut BytesMut) -&gt; Result&lt;Self, KvError&gt; {
+        // 先取 4 字节，从中拿出长度和 compression bit
+        let header = buf.get_u32() as usize;
+        let (len, compressed) = decode_header(header);
+        debug!(&quot;Got a frame: msg len {}, compressed {}&quot;, len, compressed);
+
+        if compressed {
+            // 解压缩
+            let mut decoder = GzDecoder::new(&amp;buf[..len]);
+            let mut buf1 = Vec::with_capacity(len * 2);
+            decoder.read_to_end(&amp;mut buf1)?;
+            buf.advance(len);
+
+            // decode 成相应的消息
+            Ok(Self::decode(&amp;buf1[..buf1.len()])?)
+        } else {
+            let msg = Self::decode(&amp;buf[..len])?;
+            buf.advance(len);
+            Ok(msg)
+        }
+    }
+}
+
+impl FrameCoder for CommandRequest {}
+impl FrameCoder for CommandResponse {}
+
+fn decode_header(header: usize) -&gt; (usize, bool) {
+    let len = header &amp; !COMPRESSION_BIT;
+    let compressed = header &amp; COMPRESSION_BIT == COMPRESSION_BIT;
+    (len, compressed)
+}
+</code></pre></pre>
+<p>这段代码本身并不难理解。</p>
+<ul>
+<li>我们直接为 FrameCoder 提供了缺省实现</li>
+<li>然后 CommandRequest / CommandResponse 做了空实现</li>
+<li>其中使用了之前介绍过的 bytes 库里的 BytesMut，以及新引入的 GzEncoder / GzDecoder。</li>
+<li>你可以按照阅读源码的方式，了解这几个数据类型的用法。</li>
+<li>最后还写了个辅助函数 decode_header()，让 decode_frame() 的代码更直观一些。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-为什么-compression_limit-设成-1436" class="admonition question">
+<summary class="admonition-title">
+<p>为什么 COMPRESSION_LIMIT 设成 1436？ </p>
+<p><a class="admonition-anchor-link" href="#admonition-为什么-compression_limit-设成-1436"></a></p>
+</summary>
+<div>
+<ul>
+<li>这是因为以太网的 MTU 是 1500，除去 IP 头 20 字节、TCP 头 20 字节，还剩 1460；</li>
+<li>一般 TCP 包会包含一些 Option（比如 timestamp），IP 包也可能包含，所以我们预留 20 字节；</li>
+<li>再减去 4 字节的长度，就是 1436，不用分片的最大消息长度。</li>
+<li>如果大于这个，很可能会导致分片，我们就干脆压缩一下。</li>
+</ul>
+</div>
+</details>
+<blockquote>
+<p>现在，CommandRequest / CommandResponse 就可以做 frame 级别的处理了，我们写一些测试验证是否工作。</p>
+</blockquote>
+<details id="admonition-成功测试代码涉及from和into" class="admonition success">
+<summary class="admonition-title">
+<p>成功：测试代码，涉及From和Into</p>
+<p><a class="admonition-anchor-link" href="#admonition-成功测试代码涉及from和into"></a></p>
+</summary>
+<div>
+<p>还是在 src/network/frame.rs 里，添加测试代码：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::Value;
+    use bytes::Bytes;
+
+    #[test]
+    fn command_request_encode_decode_should_work() {
+        let mut buf = BytesMut::new();
+
+        let cmd = CommandRequest::new_hdel(&quot;t1&quot;, &quot;k1&quot;);
+        cmd.encode_frame(&amp;mut buf).unwrap();
+
+        // 最高位没设置
+        assert_eq!(is_compressed(&amp;buf), false);
+
+        let cmd1 = CommandRequest::decode_frame(&amp;mut buf).unwrap();
+        assert_eq!(cmd, cmd1);
+    }
+
+    #[test]
+    fn command_response_encode_decode_should_work() {
+        let mut buf = BytesMut::new();
+
+        let values: Vec&lt;Value&gt; = vec![1.into(), &quot;hello&quot;.into(), b&quot;data&quot;.into()];
+        let res: CommandResponse = values.into();
+        res.encode_frame(&amp;mut buf).unwrap();
+
+        // 最高位没设置
+        assert_eq!(is_compressed(&amp;buf), false);
+
+        let res1 = CommandResponse::decode_frame(&amp;mut buf).unwrap();
+        assert_eq!(res, res1);
+    }
+
+    #[test]
+    fn command_response_compressed_encode_decode_should_work() {
+        let mut buf = BytesMut::new();
+
+        let value: Value = Bytes::from(vec![0u8; COMPRESSION_LIMIT + 1]).into();
+        let res: CommandResponse = value.into();
+        res.encode_frame(&amp;mut buf).unwrap();
+
+        // 最高位设置了
+        assert_eq!(is_compressed(&amp;buf), true);
+
+        let res1 = CommandResponse::decode_frame(&amp;mut buf).unwrap();
+        assert_eq!(res, res1);
+    }
+
+    fn is_compressed(data: &amp;[u8]) -&gt; bool {
+        if let &amp;[v] = &amp;data[..1] {
+            v &gt;&gt; 7 == 1
+        } else {
+            false
+        }
+    }
+}
+</code></pre></pre>
+<blockquote>
+<p>这个测试代码里面有从 [u8; N] 到 Value（b“data“.into()） 以及从 Bytes 到 Value 的转换</p>
+</blockquote>
+<ul>
+<li>所以我们需要在 src/pb/mod.rs 里添加 From trait 的相应实现：</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;const N: usize&gt; From&lt;&amp;[u8; N]&gt; for Value {
+    fn from(buf: &amp;[u8; N]) -&gt; Self {
+        Bytes::copy_from_slice(&amp;buf[..]).into()
+    }
+}
+
+impl From&lt;Bytes&gt; for Value {
+    fn from(buf: Bytes) -&gt; Self {
+        Self {
+            value: Some(value::Value::Binary(buf)),
+        }
+    }
+}
+</code></pre></pre>
+<p>运行 cargo test ，所有测试都可以通过。</p>
+</div>
+</details>
+<p>到这里，我们就完成了 Frame 的序列化（encode_frame）和反序列化（decode_frame），并且用测试确保它的正确性。</p>
+<blockquote>
+<p>做网络开发的时候，要尽可能把实现逻辑和 IO 分离，这样有助于可测性以及应对未来 IO 层的变更。</p>
+</blockquote>
+<p>目前，这个代码没有触及任何和 socket IO 相关的内容，只是纯逻辑，接下来我们要将它和我们用于处理服务器客户端的 TcpStream 联系起来。</p>
+<p>在进一步写网络相关的代码前，还有一个问题需要解决：</p>
+<details id="admonition-decode_frame-函数使用的-bytesmut是如何从-socket-里拿出来的" class="admonition question">
+<summary class="admonition-title">
+<p>decode_frame() 函数使用的 BytesMut，是如何从 socket 里拿出来的？</p>
+<p><a class="admonition-anchor-link" href="#admonition-decode_frame-函数使用的-bytesmut是如何从-socket-里拿出来的"></a></p>
+</summary>
+<div>
+<p>显然，先读 4 个字节，取出长度 N，然后再读 N 个字节。</p>
+<p>这个细节和 frame 关系很大，所以还需要在 src/network/frame.rs 里写个辅助函数 read_frame()：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 从 stream 中读取一个完整的 frame
+pub async fn read_frame&lt;S&gt;(stream: &amp;mut S, buf: &amp;mut BytesMut) -&gt; Result&lt;(), KvError&gt;
+where
+    S: AsyncRead + Unpin + Send,
+{
+    let header = stream.read_u32().await? as usize;
+    let (len, _compressed) = decode_header(header);
+    // 如果没有这么大的内存，就分配至少一个 frame 的内存，保证它可用
+    buf.reserve(LEN_LEN + len);
+    buf.put_u32(header as _);
+    // advance_mut 是 unsafe 的原因是，从当前位置 pos 到 pos + len，
+    // 这段内存目前没有初始化。我们就是为了 reserve 这段内存，然后从 stream
+    // 里读取，读取完，它就是初始化的。所以，我们这么用是安全的
+    unsafe { buf.advance_mut(len) };
+    stream.read_exact(&amp;mut buf[LEN_LEN..]).await?;
+    Ok(())
+}
+</code></pre></pre>
+<ul>
+<li>在写 read_frame() 时，我们不希望它只能被用于 TcpStream，这样太不灵活，所以用了泛型参数 S</li>
+<li>要求传入的 S 必须满足 AsyncRead + Unpin + Send。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-要求传入的-s-必须满足-asyncread--unpin--send-我们来看看这-3-个约束" class="admonition info">
+<summary class="admonition-title">
+<p>要求传入的 S 必须满足 AsyncRead + Unpin + Send, 我们来看看这 3 个约束: </p>
+<p><a class="admonition-anchor-link" href="#admonition-要求传入的-s-必须满足-asyncread--unpin--send-我们来看看这-3-个约束"></a></p>
+</summary>
+<div>
+<ol>
+<li><a href="https://docs.rs/tokio/1.12.0/tokio/io/trait.AsyncRead.html">AsyncRead 是 tokio 下的一个 trait</a>，用于做异步读取，它有一个方法 poll_read()：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait AsyncRead {
+    fn poll_read(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        cx: &amp;mut Context&lt;'_&gt;, 
+        buf: &amp;mut ReadBuf&lt;'_&gt;
+    ) -&gt; Poll&lt;Result&lt;()&gt;&gt;;
+}
+</code></pre></pre>
+<p>一旦某个数据结构实现了 AsyncRead，它就可以使用 AsyncReadExt 提供的多达 29 个辅助方法。这是因为任何实现了 AsyncRead 的数据结构，都自动实现了 AsyncReadExt：</p>
+<pre><pre class="playground"><code class="language-rust  editable">impl&lt;R: AsyncRead + ?Sized&gt; AsyncReadExt for R {}
+</code></pre></pre>
+<p>我们虽然还没有正式学怎么做异步处理，但是之前已经看到了很多 async/await 的代码。</p>
+<blockquote>
+<p>异步处理，目前你可以把它想象成一个<strong>内部有个状态机的数据结构</strong>:</p>
+</blockquote>
+<ul>
+<li>异步运行时根据需要不断地对其做 poll 操作，直到它返回 Poll::Ready，说明得到了处理结果；</li>
+<li>如果它返回 Poll::Pending，说明目前还无法继续，异步运行时会将其挂起，等下次某个事件将这个任务唤醒。</li>
+</ul>
+<p>对于 Socket 来说，读取 socket 就是一个不断 poll_read() 的过程，直到读到了满足 ReadBuf 需要的内容。</p>
+<ol start="2">
+<li>
+<p>至于 Send 约束，很好理解， 需要能在不同线程间移动所有权。</p>
+</li>
+<li>
+<p>对于 Unpin 约束</p>
+</li>
+</ol>
+<p>如果编译器抱怨一个泛型参数 “cannot be unpinned” ，一般来说，这个泛型参数需要加 Unpin 的约束。你可以试着把 Unpin 去掉，看看编译器的报错。</p>
+</div>
+</details>
+<p>好，既然又写了一些代码，自然需为其撰写相应的测试。</p>
+<p>但是，要测 read_frame() 函数，需要一个支持 AsyncRead 的数据结构，虽然 TcpStream 支持它，但是我们不应该在单元测试中引入太过复杂的行为。</p>
+<details id="admonition-为了测试-read_frame-而建立-tcp-连接显然没有必要怎么办" class="admonition question">
+<summary class="admonition-title">
+<p>为了测试 read_frame() 而建立 TCP 连接，显然没有必要。怎么办？ </p>
+<p><a class="admonition-anchor-link" href="#admonition-为了测试-read_frame-而建立-tcp-连接显然没有必要怎么办"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>我们聊过测试代码和产品代码同等的重要性，所以，在开发中，也要为测试代码创建合适的生态环境，让测试简洁、可读性强。</p>
+</blockquote>
+<p>那这里，我们就创建一个简单的数据结构，使其实现 AsyncRead，这样就可以“单元”测试 read_frame() 了。</p>
+<p>在 src/network/frame.rs 里的 mod tests 下加入：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[cfg(test)]
+mod tests {
+    struct DummyStream {
+        buf: BytesMut,
+    }
+
+    impl AsyncRead for DummyStream {
+        fn poll_read(
+            self: std::pin::Pin&lt;&amp;mut Self&gt;,
+            _cx: &amp;mut std::task::Context&lt;'_&gt;,
+            buf: &amp;mut tokio::io::ReadBuf&lt;'_&gt;,
+        ) -&gt; std::task::Poll&lt;std::io::Result&lt;()&gt;&gt; {
+            // 看看 ReadBuf 需要多大的数据
+            let len = buf.capacity();
+
+            // split 出这么大的数据
+            let data = self.get_mut().buf.split_to(len);
+
+            // 拷贝给 ReadBuf
+            buf.put_slice(&amp;data);
+
+            // 直接完工
+            std::task::Poll::Ready(Ok(()))
+        }
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>因为只需要保证 AsyncRead 接口的正确性，所以不需要太复杂的逻辑. 我们就放一个 buffer，poll_read() 需要读多大的数据，我们就给多大的数据。</p>
+<details id="admonition-有了这个-dummystream就可以测试-read_frame-了" class="admonition note">
+<summary class="admonition-title">
+<p>有了这个 DummyStream，就可以测试 read_frame() 了： </p>
+<p><a class="admonition-anchor-link" href="#admonition-有了这个-dummystream就可以测试-read_frame-了"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[tokio::test]
+async fn read_frame_should_work() {
+    let mut buf = BytesMut::new();
+    let cmd = CommandRequest::new_hdel(&quot;t1&quot;, &quot;k1&quot;);
+    cmd.encode_frame(&amp;mut buf).unwrap();
+    let mut stream = DummyStream { buf };
+
+    let mut data = BytesMut::new();
+    read_frame(&amp;mut stream, &amp;mut data).await.unwrap();
+
+    let cmd1 = CommandRequest::decode_frame(&amp;mut data).unwrap();
+    assert_eq!(cmd, cmd1);
+}
+</code></pre></pre>
+</div>
+</details>
+<p>运行 “cargo test”，测试通过。</p>
+<blockquote>
+<p>如果你的代码无法编译，可以看看编译错误，是不是缺了一些 use 语句来把某些数据结构和 trait 引入。</p>
+</blockquote>
+<h2 id="让网络层可以像-asyncprost-那样方便使用"><a class="header" href="#让网络层可以像-asyncprost-那样方便使用">让网络层可以像 AsyncProst 那样方便使用</a></h2>
+<p>现在，我们的 frame 已经可以正常工作了。</p>
+<blockquote>
+<p>接下来要构思一下，服务端和客户端该如何封装。</p>
+</blockquote>
+<details id="admonition-1-对于服务器我们期望可以对-accept-下来的-tcpstream-提供一个-process-方法处理协议的细节" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>对于服务器，我们期望可以对 accept 下来的 TcpStream 提供一个 process() 方法，处理协议的细节：</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-对于服务器我们期望可以对-accept-下来的-tcpstream-提供一个-process-方法处理协议的细节"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+    let addr = &quot;127.0.0.1:9527&quot;;
+    let service: Service = ServiceInner::new(MemTable::new()).into();
+    let listener = TcpListener::bind(addr).await?;
+    info!(&quot;Start listening on {}&quot;, addr);
+    loop {
+        let (stream, addr) = listener.accept().await?;
+        info!(&quot;Client {:?} connected&quot;, addr);
+        let stream = ProstServerStream::new(stream, service.clone());
+        tokio::spawn(async move { stream.process().await });
+    }
+}
+</code></pre></pre>
+<p>这个 process() 方法，实际上就是对 examples/server.rs 中 tokio::spawn 里的 while loop 的封装：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+while let Some(Ok(cmd)) = stream.next().await {
+    info!(&quot;Got a new command: {:?}&quot;, cmd);
+    let res = svc.execute(cmd);
+    stream.send(res).await.unwrap();
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-2-对客户端我们也希望可以直接-execute-一个命令就能得到结果" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>对客户端，我们也希望可以直接 execute() 一个命令，就能得到结果：</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-对客户端我们也希望可以直接-execute-一个命令就能得到结果"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+
+    let addr = &quot;127.0.0.1:9527&quot;;
+    // 连接服务器
+    let stream = TcpStream::connect(addr).await?;
+
+    let mut client = ProstClientStream::new(stream);
+
+    // 生成一个 HSET 命令
+    let cmd = CommandRequest::new_hset(&quot;table1&quot;, &quot;hello&quot;, &quot;world&quot;.to_string().into());
+
+    // 发送 HSET 命令
+    let data = client.execute(cmd).await?;
+    info!(&quot;Got response {:?}&quot;, data);
+
+    Ok(())
+}
+</code></pre></pre>
+<p>这个 execute()，实际上就是对 examples/client.rs 中发送和接收代码的封装：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+client.send(cmd).await?;
+if let Some(Ok(data)) = client.next().await {
+    info!(&quot;Got response {:?}&quot;, data);
+}
+</code></pre></pre>
+<p>这样的代码，看起来很简洁，维护起来也很方便。</p>
+</div>
+</details>
+<ol start="3">
+<li>好，先看服务器处理一个 TcpStream 的数据结构，它需要包含 TcpStream，还有我们之前创建的用于处理客户端命令的 Service。</li>
+</ol>
+<details id="admonition-所以让服务器处理-tcpstream-的结构包含这两部分" class="admonition note">
+<summary class="admonition-title">
+<p>所以，让服务器处理 TcpStream 的结构包含这两部分： </p>
+<p><a class="admonition-anchor-link" href="#admonition-所以让服务器处理-tcpstream-的结构包含这两部分"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub struct ProstServerStream&lt;S&gt; {
+    inner: S,
+    service: Service,
+}
+</code></pre></pre>
+<ul>
+<li>这里，依旧使用了泛型参数 S。</li>
+<li>未来，如果要支持 WebSocket，或者在 TCP 之上支持 TLS，它都可以让我们无需改变这一层的代码。</li>
+</ul>
+</div>
+</details>
+<ol start="4">
+<li>接下来就是具体的实现。</li>
+</ol>
+<p>有了 frame 的封装，服务器的 process() 方法和客户端的 execute() 方法都很容易实现。</p>
+<details id="admonition-我们直接在-srcnetworkmodrs-里添加完整代码" class="admonition note">
+<summary class="admonition-title">
+<p>我们直接在 src/network/mod.rs 里添加完整代码： </p>
+<p><a class="admonition-anchor-link" href="#admonition-我们直接在-srcnetworkmodrs-里添加完整代码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+mod frame;
+use bytes::BytesMut;
+pub use frame::{read_frame, FrameCoder};
+use tokio::io::{AsyncRead, AsyncWrite, AsyncWriteExt};
+use tracing::info;
+
+use crate::{CommandRequest, CommandResponse, KvError, Service};
+
+/// 处理服务器端的某个 accept 下来的 socket 的读写
+pub struct ProstServerStream&lt;S&gt; {
+    inner: S,
+    service: Service,
+}
+
+/// 处理客户端 socket 的读写
+pub struct ProstClientStream&lt;S&gt; {
+    inner: S,
+}
+
+impl&lt;S&gt; ProstServerStream&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send,
+{
+    pub fn new(stream: S, service: Service) -&gt; Self {
+        Self {
+            inner: stream,
+            service,
+        }
+    }
+
+    pub async fn process(mut self) -&gt; Result&lt;(), KvError&gt; {
+        while let Ok(cmd) = self.recv().await {
+            info!(&quot;Got a new command: {:?}&quot;, cmd);
+            let res = self.service.execute(cmd);
+            self.send(res).await?;
+        }
+        // info!(&quot;Client {:?} disconnected&quot;, self.addr);
+        Ok(())
+    }
+
+    async fn send(&amp;mut self, msg: CommandResponse) -&gt; Result&lt;(), KvError&gt; {
+        let mut buf = BytesMut::new();
+        msg.encode_frame(&amp;mut buf)?;
+        let encoded = buf.freeze();
+        self.inner.write_all(&amp;encoded[..]).await?;
+        Ok(())
+    }
+
+    async fn recv(&amp;mut self) -&gt; Result&lt;CommandRequest, KvError&gt; {
+        let mut buf = BytesMut::new();
+        let stream = &amp;mut self.inner;
+        read_frame(stream, &amp;mut buf).await?;
+        CommandRequest::decode_frame(&amp;mut buf)
+    }
+}
+
+impl&lt;S&gt; ProstClientStream&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send,
+{
+    pub fn new(stream: S) -&gt; Self {
+        Self { inner: stream }
+    }
+
+    pub async fn execute(&amp;mut self, cmd: CommandRequest) -&gt; Result&lt;CommandResponse, KvError&gt; {
+        self.send(cmd).await?;
+        Ok(self.recv().await?)
+    }
+
+    async fn send(&amp;mut self, msg: CommandRequest) -&gt; Result&lt;(), KvError&gt; {
+        let mut buf = BytesMut::new();
+        msg.encode_frame(&amp;mut buf)?;
+        let encoded = buf.freeze();
+        self.inner.write_all(&amp;encoded[..]).await?;
+        Ok(())
+    }
+
+    async fn recv(&amp;mut self) -&gt; Result&lt;CommandResponse, KvError&gt; {
+        let mut buf = BytesMut::new();
+        let stream = &amp;mut self.inner;
+        read_frame(stream, &amp;mut buf).await?;
+        CommandResponse::decode_frame(&amp;mut buf)
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>这段代码不难阅读，基本上和 frame 的测试代码大同小异。</p>
+<details id="admonition-5-当然了我们还是需要写段代码来测试客户端和服务器交互的整个流程" class="admonition note">
+<summary class="admonition-title">
+<ol start="5">
+<li>当然了，我们还是需要写段代码来测试客户端和服务器交互的整个流程： </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-5-当然了我们还是需要写段代码来测试客户端和服务器交互的整个流程"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[cfg(test)]
+mod tests {
+    use anyhow::Result;
+    use bytes::Bytes;
+    use std::net::SocketAddr;
+    use tokio::net::{TcpListener, TcpStream};
+
+    use crate::{assert_res_ok, MemTable, ServiceInner, Value};
+
+    use super::*;
+
+    #[tokio::test]
+    async fn client_server_basic_communication_should_work() -&gt; anyhow::Result&lt;()&gt; {
+        let addr = start_server().await?;
+
+        let stream = TcpStream::connect(addr).await?;
+        let mut client = ProstClientStream::new(stream);
+
+        // 发送 HSET，等待回应
+
+        let cmd = CommandRequest::new_hset(&quot;t1&quot;, &quot;k1&quot;, &quot;v1&quot;.into());
+        let res = client.execute(cmd).await.unwrap();
+
+        // 第一次 HSET 服务器应该返回 None
+        assert_res_ok(res, &amp;[Value::default()], &amp;[]);
+
+        // 再发一个 HSET
+        let cmd = CommandRequest::new_hget(&quot;t1&quot;, &quot;k1&quot;);
+        let res = client.execute(cmd).await?;
+
+        // 服务器应该返回上一次的结果
+        assert_res_ok(res, &amp;[&quot;v1&quot;.into()], &amp;[]);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn client_server_compression_should_work() -&gt; anyhow::Result&lt;()&gt; {
+        let addr = start_server().await?;
+
+        let stream = TcpStream::connect(addr).await?;
+        let mut client = ProstClientStream::new(stream);
+
+        let v: Value = Bytes::from(vec![0u8; 16384]).into();
+        let cmd = CommandRequest::new_hset(&quot;t2&quot;, &quot;k2&quot;, v.clone().into());
+        let res = client.execute(cmd).await?;
+
+        assert_res_ok(res, &amp;[Value::default()], &amp;[]);
+
+        let cmd = CommandRequest::new_hget(&quot;t2&quot;, &quot;k2&quot;);
+        let res = client.execute(cmd).await?;
+
+        assert_res_ok(res, &amp;[v.into()], &amp;[]);
+
+        Ok(())
+    }
+
+    async fn start_server() -&gt; Result&lt;SocketAddr&gt; {
+        let listener = TcpListener::bind(&quot;127.0.0.1:0&quot;).await.unwrap();
+        let addr = listener.local_addr().unwrap();
+
+        tokio::spawn(async move {
+            loop {
+                let (stream, _) = listener.accept().await.unwrap();
+                let service: Service = ServiceInner::new(MemTable::new()).into();
+                let server = ProstServerStream::new(stream, service);
+                tokio::spawn(server.process());
+            }
+        });
+
+        Ok(addr)
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<h2 id="正式创建-kv-server-和-kv-client"><a class="header" href="#正式创建-kv-server-和-kv-client">正式创建 kv-server 和 kv-client</a></h2>
+<p>我们之前写了很多代码，真正可运行的 server/client 都是 examples 下的代码。</p>
+<p>现在我们终于要正式创建 kv-server / kv-client 了。</p>
+<ol>
+<li>首先在 Cargo.toml 中，加入两个可执行文件：kvs（kv-server）和 kvc（kv-client）。还需要把一些依赖移动到 dependencies 下。</li>
+</ol>
+<details id="admonition-2-修改之后cargotoml-长这个样子" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>修改之后，Cargo.toml 长这个样子：</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-修改之后cargotoml-长这个样子"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">
+[package]
+name = &quot;kv2&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2018&quot;
+
+[[bin]]
+name = &quot;kvs&quot;
+path = &quot;src/server.rs&quot;
+
+[[bin]]
+name = &quot;kvc&quot;
+path = &quot;src/client.rs&quot;
+
+[dependencies]
+anyhow = &quot;1&quot; # 错误处理
+bytes = &quot;1&quot; # 高效处理网络 buffer 的库
+dashmap = &quot;4&quot; # 并发 HashMap
+flate2 = &quot;1&quot; # gzip 压缩
+http = &quot;0.2&quot; # 我们使用 HTTP status code 所以引入这个类型库
+prost = &quot;0.8&quot; # 处理 protobuf 的代码
+sled = &quot;0.34&quot; # sled db
+thiserror = &quot;1&quot; # 错误定义和处理
+tokio = { version = &quot;1&quot;, features = [&quot;full&quot; ] } # 异步网络库
+tracing = &quot;0.1&quot; # 日志处理
+tracing-subscriber = &quot;0.2&quot; # 日志处理
+
+[dev-dependencies]
+async-prost = &quot;0.2.1&quot; # 支持把 protobuf 封装成 TCP frame
+futures = &quot;0.3&quot; # 提供 Stream trait
+tempfile = &quot;3&quot; # 处理临时目录和临时文件
+tokio-util = { version = &quot;0.6&quot;, features = [&quot;codec&quot;]}
+
+[build-dependencies]
+prost-build = &quot;0.8&quot; # 编译 protobuf
+</code></pre>
+</div>
+</details>
+<ol start="3">
+<li>然后，创建 src/client.rs 和 src/server.rs，分别写入下面的代码。</li>
+</ol>
+<details id="admonition-srcclientrs" class="admonition note">
+<summary class="admonition-title">
+<p>src/client.rs：</p>
+<p><a class="admonition-anchor-link" href="#admonition-srcclientrs"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use kv2::{CommandRequest, ProstClientStream};
+use tokio::net::TcpStream;
+use tracing::info;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+
+    let addr = &quot;127.0.0.1:9527&quot;;
+    // 连接服务器
+    let stream = TcpStream::connect(addr).await?;
+
+    let mut client = ProstClientStream::new(stream);
+
+    // 生成一个 HSET 命令
+    let cmd = CommandRequest::new_hset(&quot;table1&quot;, &quot;hello&quot;, &quot;world&quot;.to_string().into());
+
+    // 发送 HSET 命令
+    let data = client.execute(cmd).await?;
+    info!(&quot;Got response {:?}&quot;, data);
+
+    Ok(())
+}
+</code></pre></pre>
+</div>
+</details>
+<p>这和之前的 client / server 的代码几乎一致，不同的是，我们使用了自己撰写的 frame 处理方法。</p>
+<details id="admonition-测试成功" class="admonition success">
+<summary class="admonition-title">
+<p>测试成功：</p>
+<p><a class="admonition-anchor-link" href="#admonition-测试成功"></a></p>
+</summary>
+<div>
+<ul>
+<li>完成之后，我们可以打开一个命令行窗口，运行：</li>
+</ul>
+<pre><code class="language-shell">RUST_LOG=info cargo run --bin kvs --quiet
+</code></pre>
+<ul>
+<li>然后在另一个命令行窗口，运行：</li>
+</ul>
+<pre><code class="language-shell">RUST_LOG=info cargo run --bin kvc --quiet
+</code></pre>
+</div>
+</details>
+<ul>
+<li>此时，服务器和客户端都收到了彼此的请求和响应，并且处理正常。现在，我们的 KV server 越来越像回事了！</li>
+</ul>
+<h2 id="回顾网络开发"><a class="header" href="#回顾网络开发">回顾网络开发</a></h2>
+<p>网络开发是 Rust 下一个很重要的应用场景。tokio 为我们提供了很棒的异步网络开发的支持。</p>
+<details id="admonition-网络开发的提示1-frame如何封装2-自定义测试数据结构3-单元测试覆盖率" class="admonition tip">
+<summary class="admonition-title">
+<p>网络开发的提示：1. frame如何封装；2. 自定义测试数据结构；3. 单元测试覆盖率 </p>
+<p><a class="admonition-anchor-link" href="#admonition-网络开发的提示1-frame如何封装2-自定义测试数据结构3-单元测试覆盖率"></a></p>
+</summary>
+<div>
+<p>在开发网络协议时，你要确定你的 frame 如何封装：</p>
+<ul>
+<li>一般来说，长度 + protobuf 足以应付绝大多数复杂的协议需求。</li>
+<li>我们虽然详细介绍了自己该如何处理用长度封装 frame 的方法，其实 tokio-util 提供了 <a href="https://docs.rs/tokio-util/0.6.8/tokio_util/codec/length_delimited/index.html">LengthDelimitedCodec</a>，可以完成今天关于 frame 部分的处理。如果你自己撰写网络程序，可以直接使用它。</li>
+</ul>
+<p>在网络开发的时候，如何做单元测试是一大痛点，我们可以根据其实现的接口，围绕着接口来构建测试数据结构，比如 TcpStream 实现了 AsycnRead / AsyncWrite。</p>
+<p>考虑简洁和可读，为了测试 read_frame() ，我们构建了 DummyStream 来协助测试。你也可以用类似的方式处理你所做项目的测试需求。</p>
+<p>结构良好架构清晰的代码，一定是容易测试的代码，纵观整个项目，从 CommandService trait 和 Storage trait 的测试，一路到现在网络层的测试。如果使用 <a href="https://github.com/xd009642/tarpaulin">tarpaulin </a>来看测试覆盖率，你会发现，这个项目目前已经有 89% 了，如果不算 src/server.rs 和 src/client.rs 的话，有接近 92% 的测试覆盖率。即便在生产环境的代码里，这也算是很高质量的测试覆盖率了。</p>
+<pre><code class="language-shell">INFO cargo_tarpaulin::report: Coverage Results:
+|| Tested/Total Lines:
+|| src/client.rs: 0/9 +0.00%
+|| src/network/frame.rs: 80/82 +0.00%
+|| src/network/mod.rs: 65/66 +4.66%
+|| src/pb/mod.rs: 54/75 +0.00%
+|| src/server.rs: 0/11 +0.00%
+|| src/service/command_service.rs: 120/129 +0.00%
+|| src/service/mod.rs: 79/84 +0.00%
+|| src/storage/memory.rs: 34/37 +0.00%
+|| src/storage/mod.rs: 58/58 +0.00%
+|| src/storage/sleddb.rs: 40/43 +0.00%
+||
+89.23% coverage, 530/594 lines covered
+</code></pre>
+</div>
+</details>
+<details id="admonition-考虑支持gziplz4和zstd" class="admonition question">
+<summary class="admonition-title">
+<p>考虑支持gzip、lz4和zstd</p>
+<p><a class="admonition-anchor-link" href="#admonition-考虑支持gziplz4和zstd"></a></p>
+</summary>
+<div>
+<p>在设计 frame 的时候，如果我们的压缩方法不止 gzip 一种，而是服务器或客户端都会根据各自的情况，在需要的时候做某种算法的压缩。假设服务器和客户端都支持 gzip、lz4 和 zstd 这三种压缩算法。那么 frame 该如何设计呢？需要用几个 bit 来存放压缩算法的信息？</p>
+<p>目前我们的 client 只适合测试，你可以将其修改成一个完整的命令行程序么？小提示，可以使用 clap 或 structopt，用户可以输入不同的命令；或者做一个交互式的命令行，使用 shellfish 或 rustyline，就像 redis-cli 那样。</p>
+<p>试着使用 LengthDelimitedCodec 来重写 frame 这一层。</p>
+</div>
+</details>
+<details id="admonition-关于tarpaulin" class="admonition info">
+<summary class="admonition-title">
+<p>关于tarpaulin </p>
+<p><a class="admonition-anchor-link" href="#admonition-关于tarpaulin"></a></p>
+</summary>
+<div>
+<p>arpaulin 是 Rust 下做测试覆盖率的工具。因为使用了操作系统和 CPU 的特殊指令追踪代码的执行，所以它目前只支持 x86_64 / Linux。测试覆盖率一般在 CI 中使用，所以有 Linux 的支持也足够了。</p>
+<p>一般来说，我们在生产环境中运行的代码，都要求至少有 80% 以上的测试覆盖率。为项目构建足够好的测试覆盖率并不容易，因为这首先意味着写出来的代码要容易测试。所以，对于新的项目，最好一开始就在 CI 中为测试覆盖率设置一个门槛，这样可以倒逼着大家保证单元测试的数量。同时，单元测试又会倒逼代码要有良好的结构和良好的接口，否则不容易测试。</p>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="kv3_advanced_traits.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="kv5_network_security.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="kv3_advanced_traits.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="kv5_network_security.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1561 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>配置、测试、监控、CI/CD - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html" class="active"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="八配置测试监控cicd"><a class="header" href="#八配置测试监控cicd">八、配置/测试/监控/CI/CD</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E5%85%AB%E9%85%8D%E7%BD%AE%E6%B5%8B%E8%AF%95%E7%9B%91%E6%8E%A7cicd">八、配置/测试/监控/CI/CD</a>
+<ul>
+<li><a href="#%E9%85%8D%E7%BD%AE">配置</a></li>
+<li><a href="#%E9%9B%86%E6%88%90%E6%B5%8B%E8%AF%95">集成测试</a></li>
+<li><a href="#%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95">性能测试</a></li>
+<li><a href="#%E6%B5%8B%E9%87%8F%E5%92%8C%E7%9B%91%E6%8E%A7">测量和监控</a></li>
+<li><a href="#cicd">CI/CD</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:56 UTC 2022 -->
+<!--te-->
+<p>虽然这是一个“简单”的 KV server：</p>
+<ul>
+<li>它没有复杂的性能优化：只用了一句 unsafe；</li>
+<li>也没有复杂的生命周期处理：只有零星 ’static 标注；</li>
+<li>更没有支持集群的处理。</li>
+</ul>
+<blockquote>
+<p>然而，如果你能够理解到目前为止的代码，甚至能独立写出这样的代码，那么，你已经具备足够的、能在一线大厂开发的实力了，国内我不是特别清楚，但在北美这边，保守一些地说，300k+ USD 的 package 应该可以轻松拿到。</p>
+</blockquote>
+<p>今天我们就给 KV server 项目收个尾，结合之前梳理的实战中 Rust 项目应该考虑的问题，来聊聊和生产环境有关的一些处理，按开发流程，主要讲五个方面：</p>
+<ul>
+<li>配置</li>
+<li>集成测试</li>
+<li>性能测试</li>
+<li>测量和监控</li>
+<li>CI/CD</li>
+</ul>
+<h2 id="配置"><a class="header" href="#配置">配置</a></h2>
+<ol>
+<li>首先在 Cargo.toml 里添加 <a href="https://github.com/serde-rs/serde">serde</a> 和<a href="https://github.com/toml-rs/toml-rs"> toml</a>。我们计划：</li>
+</ol>
+<ul>
+<li>使用 toml 做配置文件</li>
+<li>serde 用来处理配置的序列化和反序列化</li>
+</ul>
+<details id="admonition-cargotoml" class="admonition note">
+<summary class="admonition-title">
+<p>Cargo.toml</p>
+<p><a class="admonition-anchor-link" href="#admonition-cargotoml"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">
+[dependencies]
+...
+serde = { version = &quot;1&quot;, features = [&quot;derive&quot;] } # 序列化/反序列化
+...
+toml = &quot;0.5&quot; # toml 支持
+...
+</code></pre>
+</div>
+</details>
+<details id="admonition-2-然后来创建一个-srcconfigrs构建-kv-server-的配置" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>然后来创建一个 src/config.rs，构建 KV server 的配置：</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-然后来创建一个-srcconfigrs构建-kv-server-的配置"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use crate::KvError;
+use serde::{Deserialize, Serialize};
+use std::fs;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ServerConfig {
+    pub general: GeneralConfig,
+    pub storage: StorageConfig,
+    pub tls: ServerTlsConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ClientConfig {
+    pub general: GeneralConfig,
+    pub tls: ClientTlsConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct GeneralConfig {
+    pub addr: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[serde(tag = &quot;type&quot;, content = &quot;args&quot;)]
+pub enum StorageConfig {
+    MemTable,
+    SledDb(String),
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ServerTlsConfig {
+    pub cert: String,
+    pub key: String,
+    pub ca: Option&lt;String&gt;,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ClientTlsConfig {
+    pub domain: String,
+    pub identity: Option&lt;(String, String)&gt;,
+    pub ca: Option&lt;String&gt;,
+}
+
+impl ServerConfig {
+    pub fn load(path: &amp;str) -&gt; Result&lt;Self, KvError&gt; {
+        let config = fs::read_to_string(path)?;
+        let config: Self = toml::from_str(&amp;config)?;
+        Ok(config)
+    }
+}
+
+impl ClientConfig {
+    pub fn load(path: &amp;str) -&gt; Result&lt;Self, KvError&gt; {
+        let config = fs::read_to_string(path)?;
+        let config: Self = toml::from_str(&amp;config)?;
+        Ok(config)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn server_config_should_be_loaded() {
+        let result: Result&lt;ServerConfig, toml::de::Error&gt; =
+            toml::from_str(include_str!(&quot;../fixtures/server.conf&quot;));
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn client_config_should_be_loaded() {
+        let result: Result&lt;ClientConfig, toml::de::Error&gt; =
+            toml::from_str(include_str!(&quot;../fixtures/client.conf&quot;));
+        assert!(result.is_ok());
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>你可以看到:</p>
+<ul>
+<li>在 Rust 下，有了 serde 的帮助，处理任何已知格式的配置文件，是多么容易的一件事情。</li>
+<li>我们只需要定义数据结构，并为数据结构使用 Serialize/Deserialize 派生宏，就可以处理任何支持 serde 的数据结构。</li>
+</ul>
+<details id="admonition-3-examplesgen_configrs-用来生成toml配置文件" class="admonition info">
+<summary class="admonition-title">
+<ol start="3">
+<li>examples/gen_config.rs, 用来生成toml配置文件</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-3-examplesgen_configrs-用来生成toml配置文件"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use crate::KvError;
+use serde::{Deserialize, Serialize};
+use std::fs;
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ServerConfig {
+    pub general: GeneralConfig,
+    pub storage: StorageConfig,
+    pub tls: ServerTlsConfig,
+    pub log: LogConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ClientConfig {
+    pub general: GeneralConfig,
+    pub tls: ClientTlsConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct GeneralConfig {
+    pub addr: String,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct LogConfig {
+    pub path: String,
+    pub rotation: RotationConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub enum RotationConfig {
+    Hourly,
+    Daily,
+    Never,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+#[serde(tag = &quot;type&quot;, content = &quot;args&quot;)]
+pub enum StorageConfig {
+    MemTable,
+    SledDb(String),
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ServerTlsConfig {
+    pub cert: String,
+    pub key: String,
+    pub ca: Option&lt;String&gt;,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ClientTlsConfig {
+    pub domain: String,
+    pub identity: Option&lt;(String, String)&gt;,
+    pub ca: Option&lt;String&gt;,
+}
+
+impl ServerConfig {
+    pub fn load(path: &amp;str) -&gt; Result&lt;Self, KvError&gt; {
+        let config = fs::read_to_string(path)?;
+        let config: Self = toml::from_str(&amp;config)?;
+        Ok(config)
+    }
+}
+
+impl ClientConfig {
+    pub fn load(path: &amp;str) -&gt; Result&lt;Self, KvError&gt; {
+        let config = fs::read_to_string(path)?;
+        let config: Self = toml::from_str(&amp;config)?;
+        Ok(config)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn server_config_should_be_loaded() {
+        let result: Result&lt;ServerConfig, toml::de::Error&gt; =
+            toml::from_str(include_str!(&quot;../fixtures/server.conf&quot;));
+        assert!(result.is_ok());
+    }
+
+    #[test]
+    fn client_config_should_be_loaded() {
+        let result: Result&lt;ClientConfig, toml::de::Error&gt; =
+            toml::from_str(include_str!(&quot;../fixtures/client.conf&quot;));
+        assert!(result.is_ok());
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-下面是生成的服务端的配置" class="admonition note">
+<summary class="admonition-title">
+<p>下面是生成的服务端的配置： </p>
+<p><a class="admonition-anchor-link" href="#admonition-下面是生成的服务端的配置"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">
+[general]
+addr = '127.0.0.1:9527'
+
+[storage]
+type = 'SledDb'
+args = '/tmp/kv_server'
+
+[tls]
+cert = &quot;&quot;&quot;
+-----BEGIN CERTIFICATE-----\r
+MIIBdzCCASmgAwIBAgIICpy02U2yuPowBQYDK2VwMDMxCzAJBgNVBAYMAkNOMRIw\r
+EAYDVQQKDAlBY21lIEluYy4xEDAOBgNVBAMMB0FjbWUgQ0EwHhcNMjEwOTI2MDEy\r
+NTU5WhcNMjYwOTI1MDEyNTU5WjA6MQswCQYDVQQGDAJDTjESMBAGA1UECgwJQWNt\r
+ZSBJbmMuMRcwFQYDVQQDDA5BY21lIEtWIHNlcnZlcjAqMAUGAytlcAMhAK2Z2AjF\r
+A0uiltNuCvl6EVFl6tpaS/wJYB5IdWT2IISdo1QwUjAcBgNVHREEFTATghFrdnNl\r
+cnZlci5hY21lLmluYzATBgNVHSUEDDAKBggrBgEFBQcDATAMBgNVHRMEBTADAQEA\r
+MA8GA1UdDwEB/wQFAwMH4AAwBQYDK2VwA0EASGOmOWFPjbGhXNOmYNCa3lInbgRy\r
+iTNtB/5kElnbKkhKhRU7yQ8HTHWWkyU5WGWbOOIXEtYp+5ERUJC+mzP9Bw==\r
+-----END CERTIFICATE-----\r
+&quot;&quot;&quot;
+key = &quot;&quot;&quot;
+-----BEGIN PRIVATE KEY-----\r
+MFMCAQEwBQYDK2VwBCIEIPMyINaewhXwuTPUufFO2mMt/MvQMHrGDGxgdgfy/kUu\r
+oSMDIQCtmdgIxQNLopbTbgr5ehFRZeraWkv8CWAeSHVk9iCEnQ==\r
+-----END PRIVATE KEY-----\r
+&quot;&quot;&quot;
+</code></pre>
+</div>
+</details>
+<p>有了配置文件的支持，就可以在 lib.rs 下写一些辅助函数，让我们创建服务端和客户端更加简单：</p>
+<details id="admonition-examplesgen_configrs" class="admonition info">
+<summary class="admonition-title">
+<p>examples/gen_config.rs</p>
+<p><a class="admonition-anchor-link" href="#admonition-examplesgen_configrs"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">mod config;
+mod error;
+mod network;
+mod pb;
+mod service;
+mod storage;
+
+pub use config::*;
+pub use error::KvError;
+pub use network::*;
+pub use pb::abi::*;
+pub use service::*;
+pub use storage::*;
+
+use anyhow::Result;
+use tokio::net::{TcpListener, TcpStream};
+use tokio_rustls::client;
+use tokio_util::compat::FuturesAsyncReadCompatExt;
+use tracing::{info, instrument, span};
+
+/// 通过配置创建 KV 服务器
+#[instrument(skip_all)]
+pub async fn start_server_with_config(config: &amp;ServerConfig) -&gt; Result&lt;()&gt; {
+    let acceptor =
+        TlsServerAcceptor::new(&amp;config.tls.cert, &amp;config.tls.key, config.tls.ca.as_deref())?;
+
+    let addr = &amp;config.general.addr;
+    match &amp;config.storage {
+        StorageConfig::MemTable =&gt; start_tls_server(addr, MemTable::new(), acceptor).await?,
+        StorageConfig::SledDb(path) =&gt; start_tls_server(addr, SledDb::new(path), acceptor).await?,
+    };
+
+    Ok(())
+}
+
+/// 通过配置创建 KV 客户端
+#[instrument(skip_all)]
+pub async fn start_client_with_config(
+    config: &amp;ClientConfig,
+) -&gt; Result&lt;YamuxCtrl&lt;client::TlsStream&lt;TcpStream&gt;&gt;&gt; {
+    let addr = &amp;config.general.addr;
+    let tls = &amp;config.tls;
+
+    let identity = tls.identity.as_ref().map(|(c, k)| (c.as_str(), k.as_str()));
+    let connector = TlsClientConnector::new(&amp;tls.domain, identity, tls.ca.as_deref())?;
+    let stream = TcpStream::connect(addr).await?;
+    let stream = connector.connect(stream).await?;
+
+    // 打开一个 stream
+    Ok(YamuxCtrl::new_client(stream, None))
+}
+
+async fn start_tls_server&lt;Store: Storage&gt;(
+    addr: &amp;str,
+    store: Store,
+    acceptor: TlsServerAcceptor,
+) -&gt; Result&lt;()&gt; {
+    let service: Service&lt;Store&gt; = ServiceInner::new(store).into();
+    let listener = TcpListener::bind(addr).await?;
+    info!(&quot;Start listening on {}&quot;, addr);
+    loop {
+        let root = span!(tracing::Level::INFO, &quot;server_process&quot;);
+        let _enter = root.enter();
+        let tls = acceptor.clone();
+        let (stream, addr) = listener.accept().await?;
+        info!(&quot;Client {:?} connected&quot;, addr);
+
+        let svc = service.clone();
+        tokio::spawn(async move {
+            let stream = tls.accept(stream).await.unwrap();
+            YamuxCtrl::new_server(stream, None, move |stream| {
+                let svc1 = svc.clone();
+                async move {
+                    let stream = ProstServerStream::new(stream.compat(), svc1.clone());
+                    stream.process().await.unwrap();
+                    Ok(())
+                }
+            });
+        });
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>有了 start_server_with_config 和 start_client_with_config 这两个辅助函数，我们就可以简化 src/server.rs 和 src/client.rs 了。</p>
+<details id="admonition-下面是-srcserverrs-的新代码" class="admonition note">
+<summary class="admonition-title">
+<p>下面是 src/server.rs 的新代码： </p>
+<p><a class="admonition-anchor-link" href="#admonition-下面是-srcserverrs-的新代码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use kv6::{start_server_with_config, ServerConfig};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+    let config: ServerConfig = toml::from_str(include_str!(&quot;../fixtures/server.conf&quot;))?;
+
+    start_server_with_config(&amp;config).await?;
+
+    Ok(())
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-examplesgen_configrs-1" class="admonition info">
+<summary class="admonition-title">
+<p>examples/gen_config.rs</p>
+<p><a class="admonition-anchor-link" href="#admonition-examplesgen_configrs-1"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::env;
+
+use anyhow::Result;
+use kv6::{start_server_with_config, RotationConfig, ServerConfig};
+use tokio::fs;
+use tracing::span;
+use tracing_subscriber::{
+    fmt::{self, format},
+    layer::SubscriberExt,
+    prelude::*,
+    EnvFilter,
+};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    let config = match env::var(&quot;KV_SERVER_CONFIG&quot;) {
+        Ok(path) =&gt; fs::read_to_string(&amp;path).await?,
+        Err(_) =&gt; include_str!(&quot;../fixtures/server.conf&quot;).to_string(),
+    };
+    let config: ServerConfig = toml::from_str(&amp;config)?;
+
+    let tracer = opentelemetry_jaeger::new_pipeline()
+        .with_service_name(&quot;kv-server&quot;)
+        .install_simple()?;
+    let opentelemetry = tracing_opentelemetry::layer().with_tracer(tracer);
+
+    // 添加
+    let log = &amp;config.log;
+    let file_appender = match log.rotation {
+        RotationConfig::Hourly =&gt; tracing_appender::rolling::hourly(&amp;log.path, &quot;server.log&quot;),
+        RotationConfig::Daily =&gt; tracing_appender::rolling::daily(&amp;log.path, &quot;server.log&quot;),
+        RotationConfig::Never =&gt; tracing_appender::rolling::never(&amp;log.path, &quot;server.log&quot;),
+    };
+
+    let (non_blocking, _guard1) = tracing_appender::non_blocking(file_appender);
+    let fmt_layer = fmt::layer()
+        .event_format(format().compact())
+        .with_writer(non_blocking);
+
+    tracing_subscriber::registry()
+        .with(EnvFilter::from_default_env())
+        .with(fmt_layer)
+        .with(opentelemetry)
+        .init();
+
+    let root = span!(tracing::Level::INFO, &quot;app_start&quot;, work_units = 2);
+    let _enter = root.enter();
+
+    start_server_with_config(&amp;config).await?;
+
+    Ok(())
+}
+</code></pre></pre>
+</div>
+</details>
+<p>可以看到，整个代码简洁了很多。在这个重构的过程中，还有一些其它改动，你可以看 GitHub repo 下 45 讲的 diff_config。</p>
+<h2 id="集成测试"><a class="header" href="#集成测试">集成测试</a></h2>
+<p>之前我们写了很多单元测试，但还没有写过一行集成测试。今天就来写一个简单的集成测试，确保客户端和服务器完整的交互工作正常。</p>
+<p>之前提到在 Rust 里，集成测试放在 tests 目录下，每个测试编成单独的二进制。</p>
+<ol>
+<li>所以首先，我们创建和 src 平行的 tests 目录。</li>
+<li>然后再创建 tests/server.rs，填入以下代码：</li>
+</ol>
+<details id="admonition-examplesgen_configrs-2" class="admonition info">
+<summary class="admonition-title">
+<p>examples/gen_config.rs</p>
+<p><a class="admonition-anchor-link" href="#admonition-examplesgen_configrs-2"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use anyhow::Result;
+use kv6::{
+    start_client_with_config, start_server_with_config, ClientConfig, CommandRequest, ServerConfig,
+    StorageConfig,
+};
+use std::time::Duration;
+use tokio::time;
+
+#[tokio::test]
+async fn yamux_server_client_full_tests() -&gt; Result&lt;()&gt; {
+    let addr = &quot;127.0.0.1:10086&quot;;
+
+    let mut config: ServerConfig = toml::from_str(include_str!(&quot;../fixtures/server.conf&quot;))?;
+    config.general.addr = addr.into();
+    config.storage = StorageConfig::MemTable;
+
+    // 启动服务器
+    tokio::spawn(async move {
+        start_server_with_config(&amp;config).await.unwrap();
+    });
+
+    time::sleep(Duration::from_millis(10)).await;
+    let mut config: ClientConfig = toml::from_str(include_str!(&quot;../fixtures/client.conf&quot;))?;
+    config.general.addr = addr.into();
+
+    let mut ctrl = start_client_with_config(&amp;config).await.unwrap();
+    let mut stream = ctrl.open_stream().await?;
+
+    // 生成一个 HSET 命令
+    let cmd = CommandRequest::new_hset(&quot;table1&quot;, &quot;hello&quot;, &quot;world&quot;.to_string().into());
+    stream.execute_unary(&amp;cmd).await?;
+
+    // 生成一个 HGET 命令
+    let cmd = CommandRequest::new_hget(&quot;table1&quot;, &quot;hello&quot;);
+    let data = stream.execute_unary(&amp;cmd).await?;
+
+    assert_eq!(data.status, 200);
+    assert_eq!(data.values, &amp;[&quot;world&quot;.into()]);
+
+    Ok(())
+}
+</code></pre></pre>
+<blockquote>
+<p>可以看到，集成测试的写法和单元测试其实很类似，只不过我们不需要再使用 #[cfg(test)] 来做条件编译。</p>
+</blockquote>
+<pre><code class="language-admonish note title=&quot;如果你的集成测试比较复杂，需要比较多的辅助代码，那么你还可以:&quot; collapsible=true">1. 在 tests 下 cargo new 出一个项目
+2. 然后在那个项目里撰写辅助代码和测试代码
+3. 如果你对此感兴趣，可以看[ tonic 的集成测试](https://github.com/hyperium/tonic/tree/master/tests)。
+4. 不过注意了,集成测试和你的 crate 用同样的条件编译，所以在集成测试里，无法使用单元测试中构建的辅助代码。
+
+&lt;/div&gt;
+&lt;/details&gt;
+
+## 性能测试
+
+在之前不断完善 KV server 的过程中，你一定会好奇：我们的 KV server 性能究竟如何呢？那来写一个关于 Pub/Sub 的性能测试吧。
+
+基本的想法是我们连上 100 个 subscriber 作为背景，然后看 publisher publish 的速度。
+
+因为 BROADCAST_CAPACITY 有限，是 128，当 publisher 速度太快，而导致 server 不能及时往 subscriber 发送时，server 接收 client 数据的速度就会降下来，无法接收新的
+client，整体的 publish 的速度也会降下来，所以这个测试能够了解 server 处理 publish 的速度。
+
+
+&lt;details id=&quot;admonition-为了确认这一点我们在-start_tls_server-函数中在-process-之前再加个-100ms-的延时人为减缓系统的处理速度&quot; class=&quot;admonition note&quot;&gt;
+&lt;summary class=&quot;admonition-title&quot;&gt;
+
+为了确认这一点，我们在 start_tls_server() 函数中，在 process() 之前，再加个 100ms 的延时，人为减缓系统的处理速度：
+
+&lt;a class=&quot;admonition-anchor-link&quot; href=&quot;#admonition-为了确认这一点我们在-start_tls_server-函数中在-process-之前再加个-100ms-的延时人为减缓系统的处理速度&quot;&gt;&lt;/a&gt;
+&lt;/summary&gt;
+&lt;div&gt;
+
+```rust, editable
+
+async move {
+    let stream = ProstServerStream::new(stream.compat(), svc1.clone());
+    // 延迟 100ms 处理
+    time::sleep(Duration::from_millis(100)).await;
+    stream.process().await.unwrap();
+    Ok(())
+}
+```
+
+&lt;/div&gt;
+&lt;/details&gt;
+
+好，现在可以写性能测试了。
+
+
+&lt;details id=&quot;admonition-在-rust-下我们可以用-criterion-库httpsgithubcombheislercriterionrs它可以处理基本的性能测试并生成漂亮的报告&quot; class=&quot;admonition note&quot;&gt;
+&lt;summary class=&quot;admonition-title&quot;&gt;
+
+在 Rust 下，我们可以用 [criterion 库](https://github.com/bheisler/criterion.rs)。它可以处理基本的性能测试，并生成漂亮的报告 
+
+&lt;a class=&quot;admonition-anchor-link&quot; href=&quot;#admonition-在-rust-下我们可以用-criterion-库httpsgithubcombheislercriterionrs它可以处理基本的性能测试并生成漂亮的报告&quot;&gt;&lt;/a&gt;
+&lt;/summary&gt;
+&lt;div&gt;
+
+所以在 Cargo.toml 中加入：
+
+```toml
+
+[dev-dependencies]
+...
+criterion = { version = &quot;0.3&quot;, features = [&quot;async_futures&quot;, &quot;async_tokio&quot;, &quot;html_reports&quot;] } # benchmark
+...
+rand = &quot;0.8&quot; # 随机数处理
+...
+
+[[bench]]
+name = &quot;pubsub&quot;
+harness = false
+```
+
+&gt; 最后这个 bench section，描述了性能测试的名字，它对应 benches 目录下的同名文件。
+
+我们创建和 src 平级的 benches，然后再创建 benches/pubsub.rs，添入如下代码：
+
+~~~admonish info title=&quot;examples/gen_config.rs&quot; collapsible=true
+```rust, editable
+use anyhow::Result;
+use criterion::{criterion_group, criterion_main, Criterion};
+use futures::StreamExt;
+use kv6::{
+    start_client_with_config, start_server_with_config, ClientConfig, CommandRequest, ServerConfig,
+    StorageConfig, YamuxCtrl,
+};
+use rand::prelude::SliceRandom;
+use std::time::Duration;
+use tokio::net::TcpStream;
+use tokio::runtime::Builder;
+use tokio::time;
+use tokio_rustls::client::TlsStream;
+use tracing::{info, span};
+use tracing_subscriber::{layer::SubscriberExt, prelude::*, EnvFilter};
+
+async fn start_server() -&gt; Result&lt;()&gt; {
+    let addr = &quot;127.0.0.1:9999&quot;;
+    let mut config: ServerConfig = toml::from_str(include_str!(&quot;../fixtures/server.conf&quot;))?;
+    config.general.addr = addr.into();
+    config.storage = StorageConfig::MemTable;
+
+    tokio::spawn(async move {
+        start_server_with_config(&amp;config).await.unwrap();
+    });
+
+    Ok(())
+}
+
+async fn connect() -&gt; Result&lt;YamuxCtrl&lt;TlsStream&lt;TcpStream&gt;&gt;&gt; {
+    let addr = &quot;127.0.0.1:9999&quot;;
+    let mut config: ClientConfig = toml::from_str(include_str!(&quot;../fixtures/client.conf&quot;))?;
+    config.general.addr = addr.into();
+
+    Ok(start_client_with_config(&amp;config).await?)
+}
+
+async fn start_subscribers(topic: &amp;'static str) -&gt; Result&lt;()&gt; {
+    let mut ctrl = connect().await?;
+    let stream = ctrl.open_stream().await?;
+    info!(&quot;C(subscriber): stream opened&quot;);
+    let cmd = CommandRequest::new_subscribe(topic.to_string());
+    tokio::spawn(async move {
+        let mut stream = stream.execute_streaming(&amp;cmd).await.unwrap();
+        while let Some(Ok(data)) = stream.next().await {
+            drop(data);
+        }
+    });
+
+    Ok(())
+}
+
+async fn start_publishers(topic: &amp;'static str, values: &amp;'static [&amp;'static str]) -&gt; Result&lt;()&gt; {
+    let mut rng = rand::thread_rng();
+    let v = values.choose(&amp;mut rng).unwrap();
+
+    let mut ctrl = connect().await.unwrap();
+    let mut stream = ctrl.open_stream().await.unwrap();
+    info!(&quot;C(publisher): stream opened&quot;);
+
+    let cmd = CommandRequest::new_publish(topic.to_string(), vec![(*v).into()]);
+    stream.execute_unary(&amp;cmd).await.unwrap();
+
+    Ok(())
+}
+
+fn pubsub(c: &amp;mut Criterion) {
+    let tracer = opentelemetry_jaeger::new_pipeline()
+        .with_service_name(&quot;kv-bench&quot;)
+        .install_simple()
+        .unwrap();
+    let opentelemetry = tracing_opentelemetry::layer().with_tracer(tracer);
+
+    tracing_subscriber::registry()
+        .with(EnvFilter::from_default_env())
+        .with(opentelemetry)
+        .init();
+
+    let root = span!(tracing::Level::INFO, &quot;app_start&quot;, work_units = 2);
+    let _enter = root.enter();
+    // 创建 Tokio runtime
+    let runtime = Builder::new_multi_thread()
+        .worker_threads(4)
+        .thread_name(&quot;pubsub&quot;)
+        .enable_all()
+        .build()
+        .unwrap();
+
+    let base_str = include_str!(&quot;../fixtures/server.conf&quot;); // 891 bytes
+
+    let values: &amp;'static [&amp;'static str] = Box::leak(
+        vec![
+            &amp;base_str[..64],
+            &amp;base_str[..128],
+            &amp;base_str[..256],
+            &amp;base_str[..512],
+        ]
+        .into_boxed_slice(),
+    );
+    let topic = &quot;lobby&quot;;
+
+    // 运行服务器和 100 个 subscriber，为测试准备
+    runtime.block_on(async {
+        eprint!(&quot;preparing server and subscribers&quot;);
+        start_server().await.unwrap();
+        time::sleep(Duration::from_millis(50)).await;
+        for _ in 0..1000 {
+            start_subscribers(topic).await.unwrap();
+            eprint!(&quot;.&quot;);
+        }
+        eprintln!(&quot;Done!&quot;);
+    });
+
+    // 进行 benchmark
+    c.bench_function(&quot;publishing&quot;, move |b| {
+        b.to_async(&amp;runtime)
+            .iter(|| async { start_publishers(topic, values).await })
+    });
+}
+
+criterion_group! {
+    name = benches;
+    config = Criterion::default().sample_size(10);
+    targets = pubsub
+}
+criterion_main!(benches);
+```
+
+&lt;/div&gt;
+&lt;/details&gt;
+
+大部分的代码都很好理解，就是创建服务器和客户端，为测试做准备。
+
+说一下这里面核心的 benchmark 代码：
+
+```rust, editable
+
+c.bench_function(&quot;publishing&quot;, move |b| {
+    b.to_async(&amp;runtime)
+        .iter(|| async { start_publishers(topic, values).await })
+});
+```
+
+对于要测试的代码，我们可以封装成一个函数进行测试。
+
+- 这里因为要做 async 函数的测试，需要使用 runtime。
+- 普通的函数不需要调用 to_async。对于更多有关 criterion 的用法，可以参考它的文档。
+
+</code></pre>
+<p>````admonish success title=&quot;运行 <code>cargo bench</code> 后，会见到如下打印（如果你的代码无法通过，可以参考 repo 里的 diff_benchmark，我顺便做了一点小重构）： &quot; collapsible=true</p>
+<pre><code class="language-shell">
+preparing server and subscribers....................................................................................................Done!
+publishing              time:   [419.73 ms 426.84 ms 434.20 ms]                     
+                        change: [-1.6712% +1.0499% +3.6586%] (p = 0.48 &gt; 0.05)
+                        No change in performance detected.
+</code></pre>
+<p>可以看到，单个 publish 的处理速度要 426ms，好慢！我们把之前在 start_tls_server() 里加的延迟去掉，再次测试：</p>
+<pre><code class="language-shell">
+preparing server and subscribers....................................................................................................Done!
+publishing              time:   [318.61 ms 324.48 ms 329.81 ms]                     
+                        change: [-25.854% -23.980% -22.144%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+</code></pre>
+<pre><code>
+ &gt; 
+ &gt; 嗯，这下 324ms，正好是减去刚才加的 100ms。可是这个速度依旧不合理，凭直觉我们感觉一下这个速度，是 Python 这样的语言还正常，如果是 Rust 也太慢了吧？
+
+## 测量和监控
+
+ &gt; 
+ &gt; 工业界有句名言：如果你无法测量，那你就无法改进（If you can’t measure it, you can’t improve it）。
+
+现在知道了 KV server 性能有问题，但并不知道问题出在哪里。我们需要使用合适的测量方式。
+
+目前，比较好的端对端的性能监控和测量工具是 jaeger，我们可以在 KV server/client 侧收集监控信息，发送给 jaeger 来查看在服务器和客户端的整个处理流程中，时间都花费到哪里去了。
+
+之前我们在 KV server 里使用的日志工具是
+tracing，不过日志只是它的诸多功能之一，它还能做[ instrument](https://docs.rs/tracing/0.1.28/tracing/attr.instrument.html)
+，然后配合 [opentelemetry 库](https://github.com/open-telemetry/opentelemetry-rust)，我们就可以把 instrument 的结果发送给 jaeger 了。
+
+&lt;details id=&quot;admonition-1-加入jaeger&quot; class=&quot;admonition note&quot;&gt;
+&lt;summary class=&quot;admonition-title&quot;&gt;
+
+1. 加入jaeger 
+
+&lt;a class=&quot;admonition-anchor-link&quot; href=&quot;#admonition-1-加入jaeger&quot;&gt;&lt;/a&gt;
+
+&lt;/summary&gt;
+&lt;div&gt;
+
+好，在 Cargo.toml 里添加新的依赖：
+
+````toml
+
+[dependencies]
+...
+opentelemetry-jaeger = &quot;0.15&quot; # opentelemetry jaeger 支持
+...
+tracing-appender = &quot;0.1&quot; # 文件日志
+tracing-opentelemetry = &quot;0.15&quot; # opentelemetry 支持
+tracing-subscriber = { version = &quot;0.2&quot;, features = [&quot;json&quot;, &quot;chrono&quot;] } # 日志处理
+</code></pre>
+<p>有了这些依赖后，在 benches/pubsub.rs 里，我们可以在初始化 tracing_subscriber 时，使用 jaeger 和 opentelemetry tracer：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn pubsub(c: &amp;mut Criterion) {
+    let tracer = opentelemetry_jaeger::new_pipeline()
+        .with_service_name(&quot;kv-bench&quot;)
+        .install_simple()
+        .unwrap();
+    let opentelemetry = tracing_opentelemetry::layer().with_tracer(tracer);
+
+    tracing_subscriber::registry()
+        .with(EnvFilter::from_default_env())
+        .with(opentelemetry)
+        .init();
+
+    let root = span!(tracing::Level::INFO, &quot;app_start&quot;, work_units = 2);
+    let _enter = root.enter();
+    // 创建 Tokio runtime
+    ...
+}
+</code></pre></pre>
+<p>设置好 tracing 后，就在系统的主流程上添加相应的 instrument：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/f1680244d5c7901ec26181c01bfea8a1.jpg" alt="img" /></p>
+<h2 id="新添加的代码你可以看-repo-中的-diff_telemetry"><a class="header" href="#新添加的代码你可以看-repo-中的-diff_telemetry">新添加的代码你可以看 repo 中的 diff_telemetry。</a></h2>
+<p>注意 instrument 可以用不同的名称:</p>
+<blockquote>
+<p>比如，对于 TlsConnector::new() 函数，可以用 #[instrument(name = “tls_connector_new”)]，这样它的名字辨识度高一些。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-2-运行jaeger" class="admonition success">
+<summary class="admonition-title">
+<ol start="2">
+<li>运行jaeger </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-运行jaeger"></a></p>
+</summary>
+<div>
+<p>为主流程中的函数添加完 instrument 后，你需要先打开一个窗口，运行 jaeger（需要 docker）：</p>
+<pre><code class="language-shell">docker run -d -p6831:6831/udp -p6832:6832/udp -p16686:16686 -p14268:14268 jaegertracing/all-in-one:latest
+</code></pre>
+<p>然后带着 RUST_LOG=info 运行 benchmark：</p>
+<pre><code class="language-shell">RUST_LOG=info cargo bench
+</code></pre>
+<pre><code class="language-shell">
+preparing server and subscribers....................................................................................................Done!
+publishing              time:   [1.7464 ms 1.9556 ms 2.2343 ms]                       
+Found 2 outliers among 10 measurements (20.00%)
+  1 (10.00%) high mild
+  1 (10.00%) high severe
+</code></pre>
+</div>
+</details>
+<p>并没有做任何事情，似乎只是换了个系统，性能就提升了很多，这给我们一个 tip：也许问题出在 OS X 和 Linux 系统相关的部分。</p>
+<p>不管怎样，已经发送了不少数据给 jaeger，我们到 jaeger 上看看问题出在哪里。</p>
+<details id="admonition-第一次检查" class="admonition bug">
+<summary class="admonition-title">
+<p>第一次检查</p>
+<p><a class="admonition-anchor-link" href="#admonition-第一次检查"></a></p>
+</summary>
+<div>
+<ul>
+<li>打开 http://localhost:16686/</li>
+<li>service 选 kv-bench</li>
+<li>Operation 选 app_start</li>
+<li>点击 “Find Traces”</li>
+<li>我们可以看到捕获的 trace。因为运行了两次 benchmark，所以有两个 app_start 的查询结果：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/ecd9b1d06debe7fb3fe507befd803877.png" alt="img" /></p>
+<p>可以看到，每次 start_client_with_config 都要花 1.6-2.5ms，其中有差不多一小半时间花在了 TlsClientConnector::new() 上：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/fe574ccac09ce5434027fce2afebaeb6.png" alt="img" /></p>
+</div>
+</details>
+<details id="admonition-第一次修改" class="admonition info">
+<summary class="admonition-title">
+<p>第一次修改 </p>
+<p><a class="admonition-anchor-link" href="#admonition-第一次修改"></a></p>
+</summary>
+<div>
+<p>如果说 TlsClientConnector::connect() 花不少时间还情有可原，因为这是整个 TLS 协议的握手过程，涉及到网络调用、包的加解密等。</p>
+<p>但 TlsClientConnector::new() 就是加载一些证书、创建 TlsConnector 这个数据结构而已，为何这么慢？</p>
+<p>仔细阅读 TlsClientConnector::new() 的代码，你可以对照注释看：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[instrument(name = &quot;tls_connector_new&quot;, skip_all)]
+pub fn new(
+    domain: impl Into&lt;String&gt; + std::fmt::Debug,
+    identity: Option&lt;(&amp;str, &amp;str)&gt;,
+    server_ca: Option&lt;&amp;str&gt;,
+) -&gt; Result&lt;Self, KvError&gt; {
+    let mut config = ClientConfig::new();
+
+    // 如果有客户端证书，加载之
+    if let Some((cert, key)) = identity {
+        let certs = load_certs(cert)?;
+        let key = load_key(key)?;
+        config.set_single_client_cert(certs, key)?;
+    }
+
+    // 加载本地信任的根证书链
+    config.root_store = match rustls_native_certs::load_native_certs() {
+        Ok(store) | Err((Some(store), _)) =&gt; store,
+        Err((None, error)) =&gt; return Err(error.into()),
+    };
+
+    // 如果有签署服务器的 CA 证书，则加载它，这样服务器证书不在根证书链
+    // 但是这个 CA 证书能验证它，也可以
+    if let Some(cert) = server_ca {
+        let mut buf = Cursor::new(cert);
+        config.root_store.add_pem_file(&amp;mut buf).unwrap();
+    }
+
+    Ok(Self {
+        config: Arc::new(config),
+        domain: Arc::new(domain.into()),
+    })
+}
+</code></pre></pre>
+<p>可以发现，它的代码唯一可能影响性能的就是加载本地信任的根证书链的部分。这个代码会和操作系统交互，获取信任的根证书链。也许，这就是影响性能的原因之一？</p>
+<p>那我们将其简单重构一下。因为根证书链，只有在客户端没有提供用于验证服务器证书的 CA 证书时，才需要，所以可以在没有 CA 证书时，才加载本地的根证书链：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[instrument(name = &quot;tls_connector_new&quot;, skip_all)]
+pub fn new(
+    domain: impl Into&lt;String&gt; + std::fmt::Debug,
+    identity: Option&lt;(&amp;str, &amp;str)&gt;,
+    server_ca: Option&lt;&amp;str&gt;,
+) -&gt; Result&lt;Self, KvError&gt; {
+    let mut config = ClientConfig::new();
+
+    // 如果有客户端证书，加载之
+    if let Some((cert, key)) = identity {
+        let certs = load_certs(cert)?;
+        let key = load_key(key)?;
+        config.set_single_client_cert(certs, key)?;
+    }
+
+    // 如果有签署服务器的 CA 证书，则加载它，这样服务器证书不在根证书链
+    // 但是这个 CA 证书能验证它，也可以
+    if let Some(cert) = server_ca {
+        let mut buf = Cursor::new(cert);
+        config.root_store.add_pem_file(&amp;mut buf).unwrap();
+    } else {
+        // 加载本地信任的根证书链
+        config.root_store = match rustls_native_certs::load_native_certs() {
+            Ok(store) | Err((Some(store), _)) =&gt; store,
+            Err((None, error)) =&gt; return Err(error.into()),
+        };
+    }
+
+    Ok(Self {
+        config: Arc::new(config),
+        domain: Arc::new(domain.into()),
+    })
+}
+</code></pre></pre>
+<p>完成这个修改后，我们再运行 RUST_LOG=info cargo bench，现在的性能达到了 1.64ms，相比之前的 1.95ms，提升了 16%。</p>
+</div>
+</details>
+<details id="admonition-第二次检查" class="admonition bug">
+<summary class="admonition-title">
+<p>第二次检查 </p>
+<p><a class="admonition-anchor-link" href="#admonition-第二次检查"></a></p>
+</summary>
+<div>
+<p>打开 jaeger，看最新的 app_start 结果，发现 TlsClientConnector::new() 所花时间降到了 ~12us 左右。嗯，虽然没有抓到服务器本身的 bug，但客户端的 bug 倒是解决了一个。</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/3cfde740dbe0d4a897e2d4c3684b530b.png" alt="img" /></p>
+<p>至于服务器，如果我们看 Service::execute 的主流程，执行速度在 40-60us，问题不大：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/7be6139668c82fb8b79fb66f3ed06d31.png" alt="img" /></p>
+<p>再看服务器的主流程 server_process：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/076402ac25b507295d022b980378e363.png" alt="img" /></p>
+<p>这是我们在 start_tls_server() 里额外添加的 tracing span：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+loop {
+    let root = span!(tracing::Level::INFO, &quot;server_process&quot;);
+    let _enter = root.enter();
+    ...
+}
+</code></pre></pre>
+<p>把右上角的 trace timeline 改成 trace graph，然后点右侧的 time：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/1499657924a241e43c9d1be467793041.png" alt="img" /></p>
+<p>可以看到，主要的服务器时间都花在了 TLS accept 上，所以，目前服务器没有太多值得优化的地方。</p>
+<p>由于 tracing 本身也占用不少 CPU，所以我们直接 cargo bench 看看目前的结果：</p>
+<pre><code class="language-shell">preparing server and subscribers....................................................................................................Done!
+publishing              time:   [1.3986 ms 1.4140 ms 1.4474 ms]                       
+                        change: [-26.647% -19.977% -10.798%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+Found 2 outliers among 10 measurements (20.00%)
+  2 (20.00%) high severe
+</code></pre>
+<p>不加 RUST_LOG=info 后，整体性能到了 1.4ms。这是我在 Ubuntu 虚拟机下的结果。</p>
+<p>我们再回到 OS X 下测试，看看 TlsClientConnector::new() 的修改，对 OS X 是否有效：</p>
+<pre><code class="language-shell">preparing server and subscribers....................................................................................................Done!
+publishing              time:   [1.4086 ms 1.4229 ms 1.4315 ms]                       
+                        change: [-99.570% -99.563% -99.554%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+</code></pre>
+<p>嗯，在我的 OS X 下，现在整体性能也到了 1.4ms 的水平。这也意味着，在有 100 个 subscribers 的情况下，我们的 KV server 每秒钟可以处理 714k publish 请求；而在 1000 个 subscribers 的情况下，性能在 11.1ms 的水平，也就是每秒可以处理 90k publish 请求：</p>
+<pre><code class="language-shell">
+publishing              time:   [11.007 ms 11.095 ms 11.253 ms]                      
+                        change: [-96.618% -96.556% -96.486%] (p = 0.00 &lt; 0.05)
+                        Performance has improved.
+</code></pre>
+<p>你也许会觉得目前 publish 的 value 太小，那换一些更加贴近实际的字符串大小：</p>
+<pre><code class="language-shell">
+// let values = &amp;[&quot;Hello&quot;, &quot;Tyr&quot;, &quot;Goodbye&quot;, &quot;World&quot;];
+let base_str = include_str!(&quot;../fixtures/server.conf&quot;); // 891 bytes
+
+let values: &amp;'static [&amp;'static str] = Box::leak(
+    vec![
+        &amp;base_str[..64],
+        &amp;base_str[..128],
+        &amp;base_str[..256],
+        &amp;base_str[..512],
+    ]
+    .into_boxed_slice(),
+);
+</code></pre>
+<p>测试结果差不太多：</p>
+<pre><code class="language-shell">
+publishing              time:   [10.917 ms 11.098 ms 11.428 ms]                      
+                        change: [-0.4822% +2.3311% +4.9631%] (p = 0.12 &gt; 0.05)
+                        No change in performance detected.
+</code></pre>
+</div>
+</details>
+<details id="admonition-criterion-还会生成漂亮的-report" class="admonition info">
+<summary class="admonition-title">
+<p>criterion 还会生成漂亮的 report </p>
+<p><a class="admonition-anchor-link" href="#admonition-criterion-还会生成漂亮的-report"></a></p>
+</summary>
+<div>
+<p>你可以用浏览器打开 ./target/criterion/publishing/report/index.html 查看（名字是 publishing ，因为 benchmark ID 是 publishing）：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/d3cebd8e3c164171febbe34e43916885.png" alt="img" /></p>
+</div>
+</details>
+<details id="admonition-好处理完性能相关的问题我们来为-server-添加日志和性能监测的支持" class="admonition note">
+<summary class="admonition-title">
+<p>好，处理完性能相关的问题，我们来为 server 添加日志和性能监测的支持： </p>
+<p><a class="admonition-anchor-link" href="#admonition-好处理完性能相关的问题我们来为-server-添加日志和性能监测的支持"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::env;
+
+use anyhow::Result;
+use kv6::{start_server_with_config, RotationConfig, ServerConfig};
+use tokio::fs;
+use tracing::span;
+use tracing_subscriber::{
+    fmt::{self, format},
+    layer::SubscriberExt,
+    prelude::*,
+    EnvFilter,
+};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    // 如果有环境变量，使用环境变量中的 config
+    let config = match env::var(&quot;KV_SERVER_CONFIG&quot;) {
+        Ok(path) =&gt; fs::read_to_string(&amp;path).await?,
+        Err(_) =&gt; include_str!(&quot;../fixtures/server.conf&quot;).to_string(),
+    };
+    let config: ServerConfig = toml::from_str(&amp;config)?;
+
+    let tracer = opentelemetry_jaeger::new_pipeline()
+        .with_service_name(&quot;kv-server&quot;)
+        .install_simple()?;
+    let opentelemetry = tracing_opentelemetry::layer().with_tracer(tracer);
+
+    // 添加
+    let log = &amp;config.log;
+    let file_appender = match log.rotation {
+        RotationConfig::Hourly =&gt; tracing_appender::rolling::hourly(&amp;log.path, &quot;server.log&quot;),
+        RotationConfig::Daily =&gt; tracing_appender::rolling::daily(&amp;log.path, &quot;server.log&quot;),
+        RotationConfig::Never =&gt; tracing_appender::rolling::never(&amp;log.path, &quot;server.log&quot;),
+    };
+
+    let (non_blocking, _guard1) = tracing_appender::non_blocking(file_appender);
+    let fmt_layer = fmt::layer()
+        .event_format(format().compact())
+        .with_writer(non_blocking);
+
+    tracing_subscriber::registry()
+        .with(EnvFilter::from_default_env())
+        .with(fmt_layer)
+        .with(opentelemetry)
+        .init();
+
+    let root = span!(tracing::Level::INFO, &quot;app_start&quot;, work_units = 2);
+    let _enter = root.enter();
+
+    start_server_with_config(&amp;config).await?;
+
+    Ok(())
+}
+</code></pre></pre>
+<p>为了让日志能在配置文件中配置，需要更新一下 src/config.rs：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct ServerConfig {
+    pub general: GeneralConfig,
+    pub storage: StorageConfig,
+    pub tls: ServerTlsConfig,
+    pub log: LogConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub struct LogConfig {
+    pub path: String,
+    pub rotation: RotationConfig,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
+pub enum RotationConfig {
+    Hourly,
+    Daily,
+    Never,
+}
+</code></pre></pre>
+<p>你还需要更新 examples/gen_config.rs。相关的改变可以看 repo 下的 diff_logging。</p>
+</div>
+</details>
+<h2 id="cicd"><a class="header" href="#cicd">CI/CD</a></h2>
+<p>为了讲述方便，我把 CI/CD 放在最后，但 CI/CD 应该是在一开始的时候就妥善设置的。</p>
+<details id="admonition-使用github-action实现ci" class="admonition note">
+<summary class="admonition-title">
+<p>使用github action实现CI</p>
+<p><a class="admonition-anchor-link" href="#admonition-使用github-action实现ci"></a></p>
+</summary>
+<div>
+<p>先说 CI 吧, repo tyrchen/geektime-rust 在一开始就设置了 github action，每次 commit 都会运行：</p>
+<ul>
+<li>
+<p>代码格式检查：cargo fmt</p>
+</li>
+<li>
+<p>依赖 license 检查：cargo deny</p>
+</li>
+<li>
+<p>linting：cargo check 和 cargo clippy</p>
+</li>
+<li>
+<p>单元测试和集成测试：cargo test</p>
+</li>
+<li>
+<p>生成文档：cargo doc</p>
+</li>
+</ul>
+<blockquote>
+<p>github action 配置如下，供你参考：</p>
+</blockquote>
+<pre><code class="language-yaml">
+name: build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-rust:
+    strategy:
+      matrix:
+        platform: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry
+      - name: Cache cargo index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target
+      - name: Install stable
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Check code format
+        run: cargo fmt -- --check
+      - name: Check the package for errors
+        run: cargo check --all
+      - name: Lint rust sources
+        run: cargo clippy --all-targets --all-features --tests --benches -- -D warnings
+      - name: Run tests
+        run: cargo test --all-features -- --test-threads=1 --nocapture
+      - name: Generate docs
+        run: cargo doc --all-features --no-deps
+      - name: Deploy docs to gh-page
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/doc
+</code></pre>
+<p>除此之外，我们还可以在每次 push tag 时做 release：</p>
+<pre><code class="language-yaml">
+name: release
+
+on:
+  push:
+    tags:
+      - &quot;v*&quot; # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  build:
+    name: Upload Release Asset
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry
+      - name: Cache cargo index
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/git
+          key: ${{ runner.os }}-cargo-index
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-build-target
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          submodules: recursive
+      - name: Build project
+        run: |
+          make build-release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload asset
+        id: upload-kv-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./target/release/kvs
+          asset_name: kvs
+          asset_content_type: application/octet-stream
+      - name: Set env
+        run: echo &quot;RELEASE_VERSION=${GITHUB_REF#refs/*/}&quot; &gt;&gt; $GITHUB_ENV
+      - name: Deploy docs to gh-page
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/doc/simple_kv
+          destination_dir: ${{ env.RELEASE_VERSION }}
+</code></pre>
+<p>这样，每次 push tag 时，都可以打包出来 Linux 的 kvs 版本：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/1c61b7f58dd176bd25a565577d75af19.png" alt="img" /></p>
+<p>如果你不希望直接使用编译出来的二进制，也可以打包成 docker，在 Kubernetes 下使用。</p>
+</div>
+</details>
+<details id="admonition--在做-ci-的过程中我们也可以触发-cd比如" class="admonition info">
+<summary class="admonition-title">
+<blockquote>
+<p>在做 CI 的过程中，我们也可以触发 CD，比如： </p>
+</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--在做-ci-的过程中我们也可以触发-cd比如"></a></p>
+</summary>
+<div>
+<ul>
+<li>
+<p>PR merge 到 master，在 build 完成后，触发 dev 服务器的部署，团队内部可以尝试；</p>
+</li>
+<li>
+<p>如果 release tag 包含 alpha，在 build 完成后，触发 staging 服务器的部署，公司内部可以使用；</p>
+</li>
+<li>
+<p>如果 release tag 包含 beta，在 build 完成后，触发 beta 服务器的部署，beta 用户可以使用；</p>
+</li>
+<li>
+<p>正式的 release tag 会触发生产环境的滚动升级，升级覆盖到的用户可以使用。</p>
+</li>
+</ul>
+</div>
+</details>
+<p>一般来说，每家企业都有自己的 CI/CD 的工具链，这里为了展示方便，我们演示了如何使用 github action 对 Rust 代码做 CI，你可以按照自己的需要来处理。</p>
+<p>在刚才的 action 代码中，还编译并上传了文档，所以我们可以通过 github pages 很方便地访问文档：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/885d092273f8cacda1a65867a2489ea7.png" alt="img" /></p>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="kv7_big_refactor.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="custom_axum_async_web_framework.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="kv7_big_refactor.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="custom_axum_async_web_framework.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

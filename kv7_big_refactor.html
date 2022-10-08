@@ -1,0 +1,1354 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>重大重构 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html" class="active"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="七如何做大的重构"><a class="header" href="#七如何做大的重构">七、如何做大的重构？</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E4%B8%83%E5%A6%82%E4%BD%95%E5%81%9A%E5%A4%A7%E7%9A%84%E9%87%8D%E6%9E%84">七、如何做大的重构？</a>
+<ul>
+<li><a href="#%E7%8E%B0%E6%9C%89%E6%9E%B6%E6%9E%84%E5%88%86%E6%9E%90">现有架构分析</a></li>
+<li><a href="#%E8%A6%81%E6%94%AF%E6%8C%81-pubsub%E7%8E%B0%E6%9C%89%E6%9E%B6%E6%9E%84%E6%9C%89%E4%B8%A4%E4%B8%AA%E5%BE%88%E5%A4%A7%E7%9A%84%E9%97%AE%E9%A2%98">要支持 Pub/Sub，现有架构有两个很大的问题。</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-yamux-%E5%81%9A%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8">使用 yamux 做多路复用</a></li>
+<li><a href="#%E6%94%AF%E6%8C%81-pubsub">支持 pub/sub</a>
+<ul>
+<li><a href="#pubsub-%E5%A6%82%E4%BD%95%E8%AE%BE%E8%AE%A1">Pub/Sub 如何设计？</a></li>
+<li><a href="#pubsub-%E7%9A%84%E5%AE%9E%E7%8E%B0">Pub/Sub 的实现</a></li>
+<li><a href="#%E5%9C%A8%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B%E4%B8%AD%E5%BC%95%E5%85%A5-pubsub">在处理流程中引入 Pub/Sub</a></li>
+<li><a href="#%E7%BB%A7%E7%BB%AD%E9%87%8D%E6%9E%84%E5%BC%A5%E8%A1%A5%E8%AE%BE%E8%AE%A1%E4%B8%8A%E7%9A%84%E5%B0%8F%E9%97%AE%E9%A2%98">继续重构：弥补设计上的小问题</a></li>
+<li><a href="#%E8%AE%A9%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%83%BD%E6%9B%B4%E5%A5%BD%E5%9C%B0%E4%BD%BF%E7%94%A8%E6%96%B0%E7%9A%84%E6%8E%A5%E5%8F%A3">让客户端能更好地使用新的接口</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%A0%E5%8F%AF%E4%BB%A5%E4%BB%94%E7%BB%86%E9%98%85%E8%AF%BB%E8%BF%99%E4%B8%80%E8%8A%82%E4%B8%AD%E7%9A%84%E4%BB%A3%E7%A0%81%E5%A5%BD%E5%A5%BD%E5%93%81%E5%91%B3%E8%BF%99%E4%BA%9B%E6%8E%A5%E5%8F%A3%E7%9A%84%E8%AE%BE%E8%AE%A1">你可以仔细阅读这一节中的代码，好好品味这些接口的设计。</a></li>
+<li><a href="#%E4%B8%80%E4%BA%9B%E7%9B%B8%E5%85%B3%E8%80%83%E8%99%91">一些相关考虑</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:55 UTC 2022 -->
+<!--te-->
+<h2 id="现有架构分析"><a class="header" href="#现有架构分析">现有架构分析</a></h2>
+<details id="admonition-先简单回顾一下-redis-对-pubsub-的支持" class="admonition info">
+<summary class="admonition-title">
+<p>先简单回顾一下 Redis 对 Pub/Sub 的支持 </p>
+<p><a class="admonition-anchor-link" href="#admonition-先简单回顾一下-redis-对-pubsub-的支持"></a></p>
+</summary>
+<div>
+<ol>
+<li>客户端可以随时发起 SUBSCRIBE、PUBLISH 和 UNSUBSCRIBE。</li>
+<li>如果客户端 A 和 B SUBSCRIBE 了一个叫 lobby 的主题，客户端 C 往 lobby 里发了 “hello”，A 和 B 都将立即收到这个信息。</li>
+<li>使用起来是这个样子的：</li>
+</ol>
+<pre><code class="language-shell">A: SUBSCRIBE &quot;lobby&quot;
+A: SUBSCRIBE &quot;王者荣耀&quot;
+B: SUBSCRIBE &quot;lobby&quot;
+C: PUBLISH &quot;lobby&quot; &quot;hello&quot;
+// A/B 都收到 &quot;hello&quot;
+B: UNSUBSCRIBE &quot;lobby&quot;
+B: SUBSCRIBE &quot;王者荣耀&quot;
+D: PUBLISH &quot;lobby&quot; &quot;goodbye&quot;
+// 只有 A 收到 &quot;goodbye&quot;
+C: PUBLISH &quot;王者荣耀&quot; &quot;good game&quot;
+// A/B 都收到 &quot;good game&quot;
+</code></pre>
+</div>
+</details>
+<details id="admonition--带着这个需求我们重新审视目前的架构" class="admonition abstract">
+<summary class="admonition-title">
+<blockquote>
+<p>带着这个需求，我们重新审视目前的架构：</p>
+</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--带着这个需求我们重新审视目前的架构"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/82da823b4eb16935fdeyy727e3b3262c-20221005230003663.jpg" alt="img" /></p>
+</div>
+</details>
+<h2 id="要支持-pubsub现有架构有两个很大的问题"><a class="header" href="#要支持-pubsub现有架构有两个很大的问题">要支持 Pub/Sub，现有架构有两个很大的问题。</a></h2>
+<details id="admonition-1-commandservice是同步处理" class="admonition info">
+<summary class="admonition-title">
+<ol>
+<li>CommandService是同步处理 </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-commandservice是同步处理"></a></p>
+</summary>
+<div>
+<p>首先，CommandService 是一个同步的处理，来一个命令，立刻就能计算出一个值返回。但现在来一个 SUBSCRIBE 命令，它期待的不是一个值，而是未来可能产生的若干个值。而 Stream 代表未来可能产生的一系列值，所以这里需要返回一个异步的 Stream。</p>
+<p>因此，这里有两个思路：</p>
+<ol>
+<li>要么需要牺牲 CommandService 这个 trait 来适应新的需求</li>
+<li>要么构建一个新的、和 CommandService trait 并列的 trait，来处理和 Pub/Sub 有关的命令。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-其次如果直接在-tcptls-之上构建-pubsub-的支持我们需要在-request-和-response-之间建立流的概念为什么呢" class="admonition info">
+<summary class="admonition-title">
+<p>其次，如果直接在 TCP/TLS 之上构建 Pub/Sub 的支持，我们需要在 Request 和 Response 之间建立“流”的概念，为什么呢？ </p>
+<p><a class="admonition-anchor-link" href="#admonition-其次如果直接在-tcptls-之上构建-pubsub-的支持我们需要在-request-和-response-之间建立流的概念为什么呢"></a></p>
+</summary>
+<div>
+<p>之前我们的协议运行模式是同步的，一来一回：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/7byy9cdb2c3651e4cd77bdda89a52968.jpg" alt="img" /></p>
+<p>但是，如果继续采用这样的方式，就会有应用层的 <a href="https://en.wikipedia.org/wiki/Head-of-line_blocking">head of line blocking（队头阻塞）问题</a>：</p>
+<ul>
+<li>
+<p>一个 SUBSCRIBE 命令，因为其返回结果不知道什么时候才结束，会阻塞后续的所有命令。</p>
+</li>
+<li>
+<p>所以，我们需要在一个连接里，划分出很多彼此独立的“流”，让它们的收发不受影响：</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/67659457626d12eba6e26b37ayy08edb.jpg" alt="img" /></p>
+</div>
+</details>
+<details id="admonition-流式处理的的典型协议使用了多路复用的http2有两个方案选择" class="admonition tip">
+<summary class="admonition-title">
+<p>流式处理的的典型协议使用了多路复用的HTTP/2，有两个方案选择 </p>
+<p><a class="admonition-anchor-link" href="#admonition-流式处理的的典型协议使用了多路复用的http2有两个方案选择"></a></p>
+</summary>
+<div>
+<p>这种流式处理的典型协议是使用了多路复用（multiplex）的 HTTP/2。所以：</p>
+<ol>
+<li>
+<p>一种方案是我们可以把 KV server 构建在使用 HTTP/2 的 gRPC 上。不过，HTTP 是个太过庞杂的协议，对于 KV server 这种性能非常重要的服务来说，不必要的额外开销太多，所以它不太适合。</p>
+</li>
+<li>
+<p>另一种方式是使用 <a href="https://github.com/hashicorp/yamux/blob/master/spec.md">Yamux 协议</a>，它是一个简单的、和 HTTP/2 内部多路复用机制非常类似的协议。如果使用它，整个协议的交互看上去是这个样子的：</p>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/31f3efcd510ff6a3yy0caf32dbfd8667.jpg" alt="img" /></p>
+<blockquote>
+<p>Yamux 适合不希望引入 HTTP 的繁文缛节（大量的头信息），在 TCP 层做多路复用的场景，这里就用它来支持我们所要实现的 Pub/Sub。</p>
+</blockquote>
+</div>
+</details>
+<h2 id="使用-yamux-做多路复用"><a class="header" href="#使用-yamux-做多路复用">使用 yamux 做多路复用</a></h2>
+<p>Rust 下有lip2p出品的 <a href="https://github.com/libp2p/rust-yamux">rust-yamux</a> 这个库，来支持 yamux。</p>
+<details id="admonition-除此之外我们还需要-tokio-util它提供了-tokio-下的-trait-和-futures-下的-trait-的兼容能力" class="admonition note">
+<summary class="admonition-title">
+<p>除此之外，我们还需要 tokio-util，它提供了 tokio 下的 trait 和 futures 下的 trait 的兼容能力。 </p>
+<p><a class="admonition-anchor-link" href="#admonition-除此之外我们还需要-tokio-util它提供了-tokio-下的-trait-和-futures-下的-trait-的兼容能力"></a></p>
+</summary>
+<div>
+<ol>
+<li>在 Cargo.toml 中引入它们：</li>
+</ol>
+<pre><code class="language-toml">
+[dependencies]
+...
+tokio-util = { version = &quot;0.6&quot;, features = [&quot;compat&quot;]} # tokio 和 futures 的兼容性库
+...
+yamux = &quot;0.9&quot; # yamux 多路复用支持
+...
+</code></pre>
+<ol start="2">
+<li>然后创建 src/network/multiplex.rs（记得在 mod.rs 里引用），添入如下代码：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+use futures::{future, Future, TryStreamExt};
+use std::marker::PhantomData;
+use tokio::io::{AsyncRead, AsyncWrite};
+use tokio_util::compat::{Compat, FuturesAsyncReadCompatExt, TokioAsyncReadCompatExt};
+use yamux::{Config, Connection, ConnectionError, Control, Mode, WindowUpdateMode};
+
+/// Yamux 控制结构
+pub struct YamuxCtrl&lt;S&gt; {
+    /// yamux control，用于创建新的 stream
+    ctrl: Control,
+    _conn: PhantomData&lt;S&gt;,
+}
+
+impl&lt;S&gt; YamuxCtrl&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send + 'static,
+{
+    /// 创建 yamux 客户端
+    pub fn new_client(stream: S, config: Option&lt;Config&gt;) -&gt; Self {
+        Self::new(stream, config, true, |_stream| future::ready(Ok(())))
+    }
+
+    /// 创建 yamux 服务端，服务端我们需要具体处理 stream
+    pub fn new_server&lt;F, Fut&gt;(stream: S, config: Option&lt;Config&gt;, f: F) -&gt; Self
+    where
+        F: FnMut(yamux::Stream) -&gt; Fut,
+        F: Send + 'static,
+        Fut: Future&lt;Output = Result&lt;(), ConnectionError&gt;&gt; + Send + 'static,
+    {
+        Self::new(stream, config, false, f)
+    }
+
+    // 创建 YamuxCtrl
+    fn new&lt;F, Fut&gt;(stream: S, config: Option&lt;Config&gt;, is_client: bool, f: F) -&gt; Self
+    where
+        F: FnMut(yamux::Stream) -&gt; Fut,
+        F: Send + 'static,
+        Fut: Future&lt;Output = Result&lt;(), ConnectionError&gt;&gt; + Send + 'static,
+    {
+        let mode = if is_client {
+            Mode::Client
+        } else {
+            Mode::Server
+        };
+
+        // 创建 config
+        let mut config = config.unwrap_or_default();
+        config.set_window_update_mode(WindowUpdateMode::OnRead);
+
+        // 创建 config，yamux::Stream 使用的是 futures 的 trait 所以需要 compat() 到 tokio 的 trait
+        let conn = Connection::new(stream.compat(), config, mode);
+
+        // 创建 yamux ctrl
+        let ctrl = conn.control();
+
+        // pull 所有 stream 下的数据
+        tokio::spawn(yamux::into_stream(conn).try_for_each_concurrent(None, f));
+
+        Self {
+            ctrl,
+            _conn: PhantomData::default(),
+        }
+    }
+
+    /// 打开一个新的 stream
+    pub async fn open_stream(&amp;mut self) -&gt; Result&lt;Compat&lt;yamux::Stream&gt;, ConnectionError&gt; {
+        let stream = self.ctrl.open_stream().await?;
+        Ok(stream.compat())
+    }
+}
+</code></pre></pre>
+<p>这段代码提供了 Yamux 的基本处理。如果有些地方你看不明白，比如 WindowUpdateMode，yamux::into_stream() 等，很正常，需要看看 <a href="https://github.com/libp2p/rust-yamux">yamux crate 的文档和例子</a>(由于这个库没有发布，所以只能clone本地运行cargo doc查看)。</p>
+</div>
+</details>
+<details id="admonition--这里有一个复杂的接口我们稍微解释一下" class="admonition example">
+<summary class="admonition-title">
+<blockquote>
+<p>这里有一个复杂的接口，我们稍微解释一下：</p>
+</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--这里有一个复杂的接口我们稍微解释一下"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub fn new_server&lt;F, Fut&gt;(stream: S, config: Option&lt;Config&gt;, f: F) -&gt; Self
+where
+    F: FnMut(yamux::Stream) -&gt; Fut,
+    F: Send + 'static,
+    Fut: Future&lt;Output = Result&lt;(), ConnectionError&gt;&gt; + Send + 'static,
+{
+    Self::new(stream, config, false, f)
+}
+</code></pre></pre>
+<p>它的意思是:</p>
+<ul>
+<li>参数 f 是一个 FnMut 闭包</li>
+<li>接受一个 yamux::Stream 参数</li>
+<li>返回 Future</li>
+</ul>
+<p>这样的结构我们之前见过，之所以接口这么复杂，是因为 Rust 还没有把 async 闭包稳定下来。所以，如果要想写一个 async || {}，这是最佳的方式。</p>
+</div>
+</details>
+<details id="admonition-测试通过" class="admonition success">
+<summary class="admonition-title">
+<p>测试通过 </p>
+<p><a class="admonition-anchor-link" href="#admonition-测试通过"></a></p>
+</summary>
+<div>
+<p>还是写一段测试测一下（篇幅关系，完整的代码就不放了，你可以到 GitHub repo 下对照 diff_yamux 看修改）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[tokio::test]
+async fn yamux_ctrl_client_server_should_work() -&gt; Result&lt;()&gt; {
+    // 创建使用了 TLS 的 yamux server
+    let acceptor = tls_acceptor(false)?;
+    let addr = start_yamux_server(&quot;127.0.0.1:0&quot;, acceptor, MemTable::new()).await?;
+
+    let connector = tls_connector(false)?;
+    let stream = TcpStream::connect(addr).await?;
+    let stream = connector.connect(stream).await?;
+    // 创建使用了 TLS 的 yamux client
+    let mut ctrl = YamuxCtrl::new_client(stream, None);
+
+    // 从 client ctrl 中打开一个新的 yamux stream
+    let stream = ctrl.open_stream().await?;
+    // 封装成 ProstClientStream
+    let mut client = ProstClientStream::new(stream);
+
+    let cmd = CommandRequest::new_hset(&quot;t1&quot;, &quot;k1&quot;, &quot;v1&quot;.into());
+    client.execute(cmd).await.unwrap();
+
+    let cmd = CommandRequest::new_hget(&quot;t1&quot;, &quot;k1&quot;);
+    let res = client.execute(cmd).await.unwrap();
+    assert_res_ok(res, &amp;[&quot;v1&quot;.into()], &amp;[]);
+
+    Ok(())
+}
+</code></pre></pre>
+<p>可以看到:</p>
+<ul>
+<li>经过简单的封装，yamux 就很自然地融入到我们现有的架构中</li>
+<li>因为 open_stream() 得到的是符合 tokio AsyncRead / AsyncWrite 的 stream，所以它可以直接配合 ProstClientStream 使用。</li>
+<li>也就是说，我们网络层又改动了一下，但后面逻辑依然不用变。</li>
+</ul>
+<p>运行 cargo test ，所有测试都能通过。</p>
+</div>
+</details>
+<h2 id="支持-pubsub"><a class="header" href="#支持-pubsub">支持 pub/sub</a></h2>
+<p>好，现在网络层已经支持了 yamux，为多路复用打下了基础。我们来看 pub/sub 具体怎么实现。</p>
+<details id="admonition-首先修改-abiproto加入新的几个命令" class="admonition note">
+<summary class="admonition-title">
+<p>首先修改 abi.proto，加入新的几个命令： </p>
+<p><a class="admonition-anchor-link" href="#admonition-首先修改-abiproto加入新的几个命令"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 来自客户端的命令请求
+message CommandRequest {
+  oneof request_data {
+    ...
+    Subscribe subscribe = 10;
+    Unsubscribe unsubscribe = 11;
+    Publish publish = 12;
+  }
+}
+
+// subscribe 到某个主题，任何发布到这个主题的数据都会被收到
+// 成功后，第一个返回的 CommandResponse，我们返回一个唯一的 subscription id
+message Subscribe { string topic = 1; }
+
+// 取消对某个主题的订阅
+message Unsubscribe {
+  string topic = 1;
+  uint32 id = 2;
+}
+
+// 发布数据到某个主题
+message Publish {
+  string topic = 1;
+  repeated Value data = 2;
+}
+</code></pre></pre>
+</div>
+</details>
+<p>命令的响应我们不用改变。当客户端 Subscribe 时，返回的 stream 里的第一个值包含订阅 ID，这是一个全局唯一的 ID，这样，客户端后续可以用 Unsubscribe 取消。</p>
+<h3 id="pubsub-如何设计"><a class="header" href="#pubsub-如何设计">Pub/Sub 如何设计？</a></h3>
+<details id="admonition-那么pubsub-该如何实现呢" class="admonition question">
+<summary class="admonition-title">
+<p>那么，Pub/Sub 该如何实现呢？ </p>
+<p><a class="admonition-anchor-link" href="#admonition-那么pubsub-该如何实现呢"></a></p>
+</summary>
+<div>
+<p>我们可以用两张表：</p>
+<ul>
+<li>一张 Topic Table，存放主题和对应的订阅列表；</li>
+<li>一张 Subscription Table，存放订阅 ID 和 channel 的发送端。</li>
+</ul>
+<ol>
+<li>当 SUBSCRIBE 时，我们获取一个订阅 ID，插入到 Topic Table</li>
+<li>然后再创建一个 MPSC channel，把 channel 的发送端和订阅 ID 存入 subscription table。</li>
+</ol>
+<p>这样：</p>
+<ul>
+<li>当有人 PUBLISH 时，可以从 Topic table 中找到对应的订阅 ID 的列表</li>
+<li>然后循环从 subscription table 中找到对应的 Sender，往里面写入数据。</li>
+<li>此时，channel 的 Receiver 端会得到数据，这个数据会被 yamux stream poll 到，然后发给客户端。</li>
+</ul>
+</div>
+</details>
+<div id="admonition-整个流程如下图所示" class="admonition abstract">
+<div class="admonition-title">
+<p>整个流程如下图所示： </p>
+<p><a class="admonition-anchor-link" href="#admonition-整个流程如下图所示"></a></p>
+</div>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/7ce3046af823dbbdaa7b47d12d04ce30.jpg" alt="img" /></p>
+</div>
+</div>
+<details id="admonition-有了这个基本设计我们可以着手接口和数据结构的构建了" class="admonition note">
+<summary class="admonition-title">
+<p>有了这个基本设计，我们可以着手接口和数据结构的构建了：</p>
+<p><a class="admonition-anchor-link" href="#admonition-有了这个基本设计我们可以着手接口和数据结构的构建了"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 下一个 subscription id
+static NEXT_ID: AtomicU32 = AtomicU32::new(1);
+
+/// 获取下一个 subscription id
+fn get_next_subscription_id() -&gt; u32 {
+    NEXT_ID.fetch_add(1, Ordering::Relaxed)
+}
+
+pub trait Topic: Send + Sync + 'static {
+    /// 订阅某个主题
+    fn subscribe(self, name: String) -&gt; mpsc::Receiver&lt;Arc&lt;CommandResponse&gt;&gt;;
+    /// 取消对主题的订阅
+    fn unsubscribe(self, name: String, id: u32);
+    /// 往主题里发布一个数据
+    fn publish(self, name: String, value: Arc&lt;CommandResponse&gt;);
+}
+
+/// 用于主题发布和订阅的数据结构
+#[derive(Default)]
+pub struct Broadcaster {
+    /// 所有的主题列表
+    topics: DashMap&lt;String, DashSet&lt;u32&gt;&gt;,
+    /// 所有的订阅列表
+    subscriptions: DashMap&lt;u32, mpsc::Sender&lt;Arc&lt;CommandResponse&gt;&gt;&gt;,
+}
+</code></pre></pre>
+<blockquote>
+<p>这里，subscription_id 我们用一个 AtomicU32 来表述。</p>
+</blockquote>
+<ul>
+<li>对于这样一个全局唯一的 ID，很多同学喜欢用 UUID4 来表述。</li>
+<li>注意使用 UUID 的话，存储时一定不要存它的字符串表现形式，太浪费内存且每次都有额外的堆分配，应该用它 u128 的表现形式。</li>
+<li>不过即便 u128，也比 u32 浪费很多空间</li>
+</ul>
+<p>假设某个主题 M 下有一万个订阅，要往这个 M 里发送一条消息，就意味着整个 DashSet<u32> 的一次拷贝，乘上一万，u32 的话做 40k 内存的拷贝，而 u128 要做 160k 内存的拷贝。这个性能上的差距就很明显了。</p>
+<ul>
+<li>另外，我们把 CommandResponse 封装进了一个 Arc。</li>
+</ul>
+<p>如果一条消息要发送给一万个客户端，那么我们不希望这条消息被复制后，再被发送，而是直接发送同一份数据。</p>
+</div>
+</details>
+<blockquote>
+<p>这里对 Pub/Sub 的接口，构建了一个 Topic trait。虽然目前我们只有 Broadcaster 会实现 Topic trait，但未来也许会换不同的实现方式，所以，抽象出 Topic trait 很有意义。</p>
+</blockquote>
+<h3 id="pubsub-的实现"><a class="header" href="#pubsub-的实现">Pub/Sub 的实现</a></h3>
+<details id="admonition-创建-srcservicetopicrs记得在-modrs-里引用并添入" class="admonition note">
+<summary class="admonition-title">
+<p>创建 src/service/topic.rs（记得在 mod.rs 里引用），并添入：</p>
+<p><a class="admonition-anchor-link" href="#admonition-创建-srcservicetopicrs记得在-modrs-里引用并添入"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use dashmap::{DashMap, DashSet};
+use std::sync::{
+    atomic::{AtomicU32, Ordering},
+    Arc,
+};
+use tokio::sync::mpsc;
+use tracing::{debug, info, warn};
+
+use crate::{CommandResponse, Value};
+
+/// topic 里最大存放的数据
+const BROADCAST_CAPACITY: usize = 128;
+
+/// 下一个 subscription id
+static NEXT_ID: AtomicU32 = AtomicU32::new(1);
+
+/// 获取下一个 subscription id
+fn get_next_subscription_id() -&gt; u32 {
+    NEXT_ID.fetch_add(1, Ordering::Relaxed)
+}
+
+pub trait Topic: Send + Sync + 'static {
+    /// 订阅某个主题
+    fn subscribe(self, name: String) -&gt; mpsc::Receiver&lt;Arc&lt;CommandResponse&gt;&gt;;
+    /// 取消对主题的订阅
+    fn unsubscribe(self, name: String, id: u32);
+    /// 往主题里发布一个数据
+    fn publish(self, name: String, value: Arc&lt;CommandResponse&gt;);
+}
+
+/// 用于主题发布和订阅的数据结构
+#[derive(Default)]
+pub struct Broadcaster {
+    /// 所有的主题列表
+    topics: DashMap&lt;String, DashSet&lt;u32&gt;&gt;,
+    /// 所有的订阅列表
+    subscriptions: DashMap&lt;u32, mpsc::Sender&lt;Arc&lt;CommandResponse&gt;&gt;&gt;,
+}
+
+impl Topic for Arc&lt;Broadcaster&gt; {
+    fn subscribe(self, name: String) -&gt; mpsc::Receiver&lt;Arc&lt;CommandResponse&gt;&gt; {
+        let id = {
+            let entry = self.topics.entry(name).or_default();
+            let id = get_next_subscription_id();
+            entry.value().insert(id);
+            id
+        };
+
+        // 生成一个 mpsc channel
+        let (tx, rx) = mpsc::channel(BROADCAST_CAPACITY);
+
+        let v: Value = (id as i64).into();
+
+        // 立刻发送 subscription id 到 rx
+        let tx1 = tx.clone();
+        tokio::spawn(async move {
+            if let Err(e) = tx1.send(Arc::new(v.into())).await {
+                // TODO: 这个很小概率发生，但目前我们没有善后
+                warn!(&quot;Failed to send subscription id: {}. Error: {:?}&quot;, id, e);
+            }
+        });
+
+        // 把 tx 存入 subscription table
+        self.subscriptions.insert(id, tx);
+        debug!(&quot;Subscription {} is added&quot;, id);
+
+        // 返回 rx 给网络处理的上下文
+        rx
+    }
+
+    fn unsubscribe(self, name: String, id: u32) {
+        if let Some(v) = self.topics.get_mut(&amp;name) {
+            // 在 topics 表里找到 topic 的 subscription id，删除
+            v.remove(&amp;id);
+
+            // 如果这个 topic 为空，则也删除 topic
+            if v.is_empty() {
+                info!(&quot;Topic: {:?} is deleted&quot;, &amp;name);
+                drop(v);
+                self.topics.remove(&amp;name);
+            }
+        }
+
+        debug!(&quot;Subscription {} is removed!&quot;, id);
+        // 在 subscription 表中同样删除
+        self.subscriptions.remove(&amp;id);
+    }
+
+    fn publish(self, name: String, value: Arc&lt;CommandResponse&gt;) {
+        tokio::spawn(async move {
+            match self.topics.get(&amp;name) {
+                Some(chan) =&gt; {
+                    // 复制整个 topic 下所有的 subscription id
+                    // 这里我们每个 id 是 u32，如果一个 topic 下有 10k 订阅，复制的成本
+                    // 也就是 40k 堆内存（外加一些控制结构），所以效率不算差
+                    // 这也是为什么我们用 NEXT_ID 来控制 subscription id 的生成
+                    let chan = chan.value().clone();
+
+                    // 循环发送
+                    for id in chan.into_iter() {
+                        if let Some(tx) = self.subscriptions.get(&amp;id) {
+                            if let Err(e) = tx.send(value.clone()).await {
+                                warn!(&quot;Publish to {} failed! error: {:?}&quot;, id, e);
+                            }
+                        }
+                    }
+                }
+                None =&gt; {}
+            }
+        });
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>这段代码就是 Pub/Sub 的核心功能了。你可以对照着上面的设计图和代码中的详细注释去理解。</p>
+<details id="admonition-我们来写一个测试确保它正常工作" class="admonition success">
+<summary class="admonition-title">
+<p>我们来写一个测试确保它正常工作： </p>
+<p><a class="admonition-anchor-link" href="#admonition-我们来写一个测试确保它正常工作"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[cfg(test)]
+mod tests {
+    use std::convert::TryInto;
+
+    use crate::assert_res_ok;
+
+    use super::*;
+
+    #[tokio::test]
+    async fn pub_sub_should_work() {
+        let b = Arc::new(Broadcaster::default());
+        let lobby = &quot;lobby&quot;.to_string();
+
+        // subscribe
+        let mut stream1 = b.clone().subscribe(lobby.clone());
+        let mut stream2 = b.clone().subscribe(lobby.clone());
+
+        // publish
+        let v: Value = &quot;hello&quot;.into();
+        b.clone().publish(lobby.clone(), Arc::new(v.clone().into()));
+
+        // subscribers 应该能收到 publish 的数据
+        let id1: i64 = stream1.recv().await.unwrap().as_ref().try_into().unwrap();
+        let id2: i64 = stream2.recv().await.unwrap().as_ref().try_into().unwrap();
+
+        assert!(id1 != id2);
+
+        let res1 = stream1.recv().await.unwrap();
+        let res2 = stream2.recv().await.unwrap();
+
+        assert_eq!(res1, res2);
+        assert_res_ok(&amp;res1, &amp;[v.clone()], &amp;[]);
+
+        // 如果 subscriber 取消订阅，则收不到新数据
+        b.clone().unsubscribe(lobby.clone(), id1 as _);
+
+        // publish
+        let v: Value = &quot;world&quot;.into();
+        b.clone().publish(lobby.clone(), Arc::new(v.clone().into()));
+
+        assert!(stream1.recv().await.is_none());
+        let res2 = stream2.recv().await.unwrap();
+        assert_res_ok(&amp;res2, &amp;[v.clone()], &amp;[]);
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>这个测试需要一系列新的改动，比如 assert_res_ok() 的接口变化了，我们需要在 src/pb/mod.rs 里添加新的 TryFrom 支持等等，详细代码你可以看 repo 里的 diff_topic。</p>
+<h3 id="在处理流程中引入-pubsub"><a class="header" href="#在处理流程中引入-pubsub">在处理流程中引入 Pub/Sub</a></h3>
+<p>好，再来看它和用户传入的 CommandRequest 如何发生关系。</p>
+<details id="admonition-我们之前设计了-commandservice-trait它虽然可以处理其它命令但对-pubsub-相关的几个新命令无法处理因为接口没有任何和-topic-有关的参数" class="admonition note">
+<summary class="admonition-title">
+<p>我们之前设计了 CommandService trait，它虽然可以处理其它命令，但对 Pub/Sub 相关的几个新命令无法处理，因为接口没有任何和 Topic 有关的参数： </p>
+<p><a class="admonition-anchor-link" href="#admonition-我们之前设计了-commandservice-trait它虽然可以处理其它命令但对-pubsub-相关的几个新命令无法处理因为接口没有任何和-topic-有关的参数"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 对 Command 的处理的抽象
+pub trait CommandService {
+    /// 处理 Command，返回 Response
+    fn execute(self, store: &amp;impl Storage) -&gt; CommandResponse;
+}
+</code></pre></pre>
+<p>但是如果直接修改这个接口，对已有的代码就非常不友好。所以我们还是对比着创建一个新的 trait：</p>
+<pre><pre class="playground"><code class="language-rust  editable">pub type StreamingResponse = Pin&lt;Box&lt;dyn Stream&lt;Item = Arc&lt;CommandResponse&gt;&gt; + Send&gt;&gt;;
+pub trait TopicService {
+    /// 处理 Command，返回 Response
+    fn execute&lt;T&gt;(self, chan: impl Topic) -&gt; StreamingResponse;
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>因为 Stream 是一个 trait，在 trait 的方法里我们无法返回一个 impl Stream，所以用 trait object：Pin&lt;Box&lt;dyn Stream&gt;&gt;。</p>
+</blockquote>
+<details id="admonition-实现它很简单我们创建-srcservicetopic_servicers记得在-modrs-引用然后添加" class="admonition note">
+<summary class="admonition-title">
+<p>实现它很简单，我们创建 src/service/topic_service.rs（记得在 mod.rs 引用），然后添加： </p>
+<p><a class="admonition-anchor-link" href="#admonition-实现它很简单我们创建-srcservicetopic_servicers记得在-modrs-引用然后添加"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use futures::{stream, Stream};
+use std::{pin::Pin, sync::Arc};
+use tokio_stream::wrappers::ReceiverStream;
+
+use crate::{CommandResponse, Publish, Subscribe, Topic, Unsubscribe};
+
+pub type StreamingResponse = Pin&lt;Box&lt;dyn Stream&lt;Item = Arc&lt;CommandResponse&gt;&gt; + Send&gt;&gt;;
+
+pub trait TopicService {
+    /// 处理 Command，返回 Response
+    fn execute&lt;T, S&gt;(self, topic: impl Topic) -&gt; StreamingResponse;
+}
+
+impl TopicService for Subscribe {
+    fn execute&lt;T, S&gt;(self, topic: impl Topic) -&gt; StreamingResponse {
+        let rx = topic.subscribe(self.topic);
+        Box::pin(ReceiverStream::new(rx))
+    }
+}
+
+impl TopicService for Unsubscribe {
+    fn execute&lt;T, S&gt;(self, topic: impl Topic) -&gt; StreamingResponse {
+        topic.unsubscribe(self.topic, self.id);
+        Box::pin(stream::once(async { Arc::new(CommandResponse::ok()) }))
+    }
+}
+
+impl TopicService for Publish {
+    fn execute&lt;T, S&gt;(self, topic: impl Topic) -&gt; StreamingResponse {
+        topic.publish(self.topic, Arc::new(self.data.into()));
+        Box::pin(stream::once(async { Arc::new(CommandResponse::ok()) }))
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<ul>
+<li>我们使用了 <a href="https://docs.rs/tokio-stream/0.1.7/tokio_stream/">tokio-stream</a> 的 wrapper 把一个 mpsc::Receiver 转换成
+ReceiverStream, 这样 Subscribe 的处理就能返回一个 Stream。</li>
+<li>对于 Unsubscribe 和 Publish，它们都返回单个值，我们使用 stream::once 将其统一起来。</li>
+</ul>
+<details id="admonition-同样地要在-srcpbmodrs-里添加一些新的方法比如-commandresponseok它返回一个状态码是-ok-的-response" class="admonition note">
+<summary class="admonition-title">
+<p>同样地，要在 src/pb/mod.rs 里添加一些新的方法，比如 CommandResponse::ok()，它返回一个状态码是 OK 的 response： </p>
+<p><a class="admonition-anchor-link" href="#admonition-同样地要在-srcpbmodrs-里添加一些新的方法比如-commandresponseok它返回一个状态码是-ok-的-response"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl CommandResponse {
+    pub fn ok() -&gt; Self {
+        let mut result = CommandResponse::default();
+        result.status = StatusCode::OK.as_u16() as _;
+        result
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>好，接下来看 src/service/mod.rs，我们可以对应着原来的 dispatch 做一个 dispatch_stream。</p>
+<details id="admonition-同样地已有的接口应该少动我们平行添加一个新的" class="admonition note">
+<summary class="admonition-title">
+<p>同样地，已有的接口应该少动，我们平行添加一个新的： </p>
+<p><a class="admonition-anchor-link" href="#admonition-同样地已有的接口应该少动我们平行添加一个新的"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 从 Request 中得到 Response，目前处理所有 HGET/HSET/HDEL/HEXIST
+pub fn dispatch(cmd: CommandRequest, store: &amp;impl Storage) -&gt; CommandResponse {
+    match cmd.request_data {
+        Some(RequestData::Hget(param)) =&gt; param.execute(store),
+        Some(RequestData::Hgetall(param)) =&gt; param.execute(store),
+        Some(RequestData::Hmget(param)) =&gt; param.execute(store),
+        Some(RequestData::Hset(param)) =&gt; param.execute(store),
+        Some(RequestData::Hmset(param)) =&gt; param.execute(store),
+        Some(RequestData::Hdel(param)) =&gt; param.execute(store),
+        Some(RequestData::Hmdel(param)) =&gt; param.execute(store),
+        Some(RequestData::Hexist(param)) =&gt; param.execute(store),
+        Some(RequestData::Hmexist(param)) =&gt; param.execute(store),
+        None =&gt; KvError::InvalidCommand(&quot;Request has no data&quot;.into()).into(),
+        // 处理不了的返回一个啥都不包括的 Response，这样后续可以用 dispatch_stream 处理
+        _ =&gt; CommandResponse::default(),
+    }
+}
+
+/// 从 Request 中得到 Response，目前处理所有 PUBLISH/SUBSCRIBE/UNSUBSCRIBE
+pub fn dispatch_stream(cmd: CommandRequest, topic: impl Topic) -&gt; StreamingResponse {
+    match cmd.request_data {
+        Some(RequestData::Publish(param)) =&gt; param.execute(topic),
+        Some(RequestData::Subscribe(param)) =&gt; param.execute(topic),
+        Some(RequestData::Unsubscribe(param)) =&gt; param.execute(topic),
+        // 如果走到这里，就是代码逻辑的问题，直接 crash 出来
+        _ =&gt; unreachable!(),
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-为了使用这个新的接口service-结构也需要相应改动" class="admonition note">
+<summary class="admonition-title">
+<p>为了使用这个新的接口，Service 结构也需要相应改动： </p>
+<p><a class="admonition-anchor-link" href="#admonition-为了使用这个新的接口service-结构也需要相应改动"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// Service 数据结构
+pub struct Service&lt;Store = MemTable&gt; {
+    inner: Arc&lt;ServiceInner&lt;Store&gt;&gt;,
+    broadcaster: Arc&lt;Broadcaster&gt;,
+}
+
+impl&lt;Store&gt; Clone for Service&lt;Store&gt; {
+    fn clone(&amp;self) -&gt; Self {
+        Self {
+            inner: Arc::clone(&amp;self.inner),
+            broadcaster: Arc::clone(&amp;self.broadcaster),
+        }
+    }
+}
+
+impl&lt;Store: Storage&gt; From&lt;ServiceInner&lt;Store&gt;&gt; for Service&lt;Store&gt; {
+    fn from(inner: ServiceInner&lt;Store&gt;) -&gt; Self {
+        Self {
+            inner: Arc::new(inner),
+            broadcaster: Default::default(),
+        }
+    }
+}
+
+impl&lt;Store: Storage&gt; Service&lt;Store&gt; {
+    pub fn execute(&amp;self, cmd: CommandRequest) -&gt; StreamingResponse {
+        debug!(&quot;Got request: {:?}&quot;, cmd);
+        self.inner.on_received.notify(&amp;cmd);
+        let mut res = dispatch(cmd, &amp;self.inner.store);
+
+        if res == CommandResponse::default() {
+            dispatch_stream(cmd, Arc::clone(&amp;self.broadcaster))
+        } else {
+            debug!(&quot;Executed response: {:?}&quot;, res);
+            self.inner.on_executed.notify(&amp;res);
+            self.inner.on_before_send.notify(&amp;mut res);
+            if !self.inner.on_before_send.is_empty() {
+                debug!(&quot;Modified response: {:?}&quot;, res);
+            }
+
+            Box::pin(stream::once(async { Arc::new(res) }))
+        }
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>这里，为了处理 Pub/Sub，我们引入了一个破坏性的更新:</p>
+<ul>
+<li>execute() 方法的返回值变成了 StreamingResponse</li>
+<li>这就意味着所有围绕着这个方法的调用，包括测试，都需要相应更新。</li>
+<li>这是迫不得已的，不过通过构建和 CommandService / dispatch 平行的 TopicService / dispatch_stream，我们已经让这个破坏性更新尽可能地在比较高层，否则，改动会更大。</li>
+</ul>
+<p>目前，代码无法编译通过，这是因为如下的代码，res 现在是个 stream，</p>
+<details id="admonition-我们需要处理一下" class="admonition note">
+<summary class="admonition-title">
+<p>我们需要处理一下： </p>
+<p><a class="admonition-anchor-link" href="#admonition-我们需要处理一下"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;S&gt; ProstServerStream&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send + 'static,
+{
+    ...
+
+    pub async fn process(mut self) -&gt; Result&lt;(), KvError&gt; {
+        let stream = &amp;mut self.inner;
+        while let Some(Ok(cmd)) = stream.next().await {
+            info!(&quot;Got a new command: {:?}&quot;, cmd);
+            let mut res = self.service.execute(cmd);
+            while let Some(data) = res.next().await {
+                // 目前 data 是 Arc&lt;CommandResponse&gt;，
+                // 所以我们 send 最好用 &amp;CommandResponse
+                stream.send(&amp;data).await.unwrap();
+            }
+        }
+        // info!(&quot;Client {:?} disconnected&quot;, self.addr);
+        Ok(())
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>当然，这样的改动也意味着，原本的函数需要变成 async。</p>
+</blockquote>
+<p>如果是个 test，需要使用 #[tokio::test]。你可以自己试着把所有相关的代码都改一下。</p>
+<div id="admonition-error-rendering-admonishment" class="admonition bug">
+<div class="admonition-title">
+<p>Error rendering admonishment</p>
+<p><a class="admonition-anchor-link" href="#admonition-error-rendering-admonishment"></a></p>
+</div>
+<div>
+<p>Failed with: TOML parsing error: expected an equals, found a newline at line 1 column 6</p>
+<p>Original markdown input:</p>
+<pre><code>~~~admonish note title=&quot;当你改到 src/network/mod.rs 里 ProstServerStream 的 process 方法里面的stream.send(data) 时，我们目前的 data 是 Arc&lt;CommandResponse&gt;：
+ &quot; collapsible=true
+```rust, editable
+
+impl&lt;S&gt; ProstServerStream&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send + 'static,
+{
+    ...
+
+    pub async fn process(mut self) -&gt; Result&lt;(), KvError&gt; {
+        let stream = &amp;mut self.inner;
+        while let Some(Ok(cmd)) = stream.next().await {
+            info!(&quot;Got a new command: {:?}&quot;, cmd);
+            let mut res = self.service.execute(cmd);
+            while let Some(data) = res.next().await {
+                // 目前 data 是 Arc&lt;CommandResponse&gt;，
+                // 所以我们 send 最好用 &amp;CommandResponse
+                stream.send(&amp;data).await.unwrap();
+            }
+        }
+        // info!(&quot;Client {:?} disconnected&quot;, self.addr);
+        Ok(())
+    }
+}
+```
+~~~
+</code></pre>
+</div>
+</div>
+<p>所以我们还需要稍微改动一下 src/network/stream.rs：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+// impl&lt;S, In, Out&gt; Sink&lt;Out&gt; for ProstStream&lt;S, In, Out&gt;
+impl&lt;S, In, Out&gt; Sink&lt;&amp;Out&gt; for ProstStream&lt;S, In, Out&gt;
+</code></pre></pre>
+<p>这会引发一系列的变动，你可以试着自己改一下。</p>
+<p>如果你把所有编译错误都改正，cargo test 会全部通过。你也可以看 repo 里的 diff_service，看看所有改动的代码。</p>
+<h3 id="继续重构弥补设计上的小问题"><a class="header" href="#继续重构弥补设计上的小问题">继续重构：弥补设计上的小问题</a></h3>
+<p>现在看上去大功告成，但你有没有注意，我们在撰写 src/service/topic_service.rs 时，没有写测试。你也许会说：这段代码如此简单，还有必要测试么？</p>
+<blockquote>
+<p>还是那句话，测试是体验和感受接口完备性的一种手段。测试并不是为了测试实现本身，而是看接口是否好用，是否遗漏了某些产品需求。</p>
+</blockquote>
+<details id="admonition-测试" class="admonition success">
+<summary class="admonition-title">
+<p>测试</p>
+<p><a class="admonition-anchor-link" href="#admonition-测试"></a></p>
+</summary>
+<div>
+<p>当开始写测试的时候，我们就会思考：</p>
+<ul>
+<li>unsubscribe 接口如果遇到不存在的 subscription，要不要返回一个 404？</li>
+<li>publish 的时候遇到错误，是不是意味着客户端非正常退出了？</li>
+<li>我们要不要把它从 subscription 中移除掉？</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::{assert_res_error, assert_res_ok, dispatch_stream, Broadcaster, CommandRequest};
+    use futures::StreamExt;
+    use std::{convert::TryInto, time::Duration};
+    use tokio::time;
+
+    #[tokio::test]
+    async fn dispatch_publish_should_work() {
+        let topic = Arc::new(Broadcaster::default());
+        let cmd = CommandRequest::new_publish(&quot;lobby&quot;, vec![&quot;hello&quot;.into()]);
+        let mut res = dispatch_stream(cmd, topic);
+        let data = res.next().await.unwrap();
+        assert_res_ok(&amp;data, &amp;[], &amp;[]);
+    }
+
+    #[tokio::test]
+    async fn dispatch_subscribe_should_work() {
+        let topic = Arc::new(Broadcaster::default());
+        let cmd = CommandRequest::new_subscribe(&quot;lobby&quot;);
+        let mut res = dispatch_stream(cmd, topic);
+        let id: i64 = res.next().await.unwrap().as_ref().try_into().unwrap();
+        assert!(id &gt; 0);
+    }
+
+    #[tokio::test]
+    async fn dispatch_subscribe_abnormal_quit_should_be_removed_on_next_publish() {
+        let topic = Arc::new(Broadcaster::default());
+        let id = {
+            let cmd = CommandRequest::new_subscribe(&quot;lobby&quot;);
+            let mut res = dispatch_stream(cmd, topic.clone());
+            let id: i64 = res.next().await.unwrap().as_ref().try_into().unwrap();
+            drop(res);
+            id as u32
+        };
+
+        // publish 时，这个 subscription 已经失效，所以会被删除
+        let cmd = CommandRequest::new_publish(&quot;lobby&quot;, vec![&quot;hello&quot;.into()]);
+        dispatch_stream(cmd, topic.clone());
+        time::sleep(Duration::from_millis(10)).await;
+
+        // 如果再尝试删除，应该返回 KvError
+        let result = topic.unsubscribe(&quot;lobby&quot;.into(), id);
+        assert!(result.is_err());
+    }
+
+    #[tokio::test]
+    async fn dispatch_unsubscribe_should_work() {
+        let topic = Arc::new(Broadcaster::default());
+        let cmd = CommandRequest::new_subscribe(&quot;lobby&quot;);
+        let mut res = dispatch_stream(cmd, topic.clone());
+        let id: i64 = res.next().await.unwrap().as_ref().try_into().unwrap();
+
+        let cmd = CommandRequest::new_unsubscribe(&quot;lobby&quot;, id as _);
+        let mut res = dispatch_stream(cmd, topic);
+        let data = res.next().await.unwrap();
+
+        assert_res_ok(&amp;data, &amp;[], &amp;[]);
+    }
+
+    #[tokio::test]
+    async fn dispatch_unsubscribe_random_id_should_error() {
+        let topic = Arc::new(Broadcaster::default());
+
+        let cmd = CommandRequest::new_unsubscribe(&quot;lobby&quot;, 9527);
+        let mut res = dispatch_stream(cmd, topic);
+        let data = res.next().await.unwrap();
+
+        assert_res_error(&amp;data, 404, &quot;Not found: subscription 9527&quot;);
+    }
+}
+</code></pre></pre>
+<p>在撰写这些测试，并试图使测试通过的过程中，我们又进一步重构了代码。具体的代码变更，你可以参考 repo 里的 diff_refactor。</p>
+</div>
+</details>
+<h3 id="让客户端能更好地使用新的接口"><a class="header" href="#让客户端能更好地使用新的接口">让客户端能更好地使用新的接口</a></h3>
+<details id="admonition-目前我们-prostclientstream-还是一个统一的-execute-方法" class="admonition note">
+<summary class="admonition-title">
+<p>目前，我们 ProstClientStream 还是一个统一的 execute() 方法： </p>
+<p><a class="admonition-anchor-link" href="#admonition-目前我们-prostclientstream-还是一个统一的-execute-方法"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;S&gt; ProstClientStream&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send,
+{
+    ...
+
+    pub async fn execute(&amp;mut self, cmd: CommandRequest) -&gt; Result&lt;CommandResponse, KvError&gt; {
+        let stream = &amp;mut self.inner;
+        stream.send(&amp;cmd).await?;
+
+        match stream.next().await {
+            Some(v) =&gt; v,
+            None =&gt; Err(KvError::Internal(&quot;Didn't get any response&quot;.into())),
+        }
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>它并没有妥善处理 SUBSCRIBE。</p>
+<p>为了支持 SUBSCRIBE，我们需要两个接口：</p>
+<ul>
+<li>execute_unary</li>
+<li>execute_streaming。</li>
+</ul>
+<details id="admonition-在-srcnetworkmodrs-修改这个代码" class="admonition note">
+<summary class="admonition-title">
+<p>在 src/network/mod.rs 修改这个代码： </p>
+<p><a class="admonition-anchor-link" href="#admonition-在-srcnetworkmodrs-修改这个代码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;S&gt; ProstClientStream&lt;S&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send + 'static,
+{
+    ...
+
+    pub async fn execute_unary(
+        &amp;mut self,
+        cmd: &amp;CommandRequest,
+    ) -&gt; Result&lt;CommandResponse, KvError&gt; {
+        let stream = &amp;mut self.inner;
+        stream.send(cmd).await?;
+
+        match stream.next().await {
+            Some(v) =&gt; v,
+            None =&gt; Err(KvError::Internal(&quot;Didn't get any response&quot;.into())),
+        }
+    }
+
+    pub async fn execute_streaming(self, cmd: &amp;CommandRequest) -&gt; Result&lt;StreamResult, KvError&gt; {
+        let mut stream = self.inner;
+
+        stream.send(cmd).await?;
+        stream.close().await?;
+
+        StreamResult::new(stream).await
+    }
+}
+</code></pre></pre>
+<p>注意:</p>
+<ul>
+<li>因为 execute_streaming 里返回 Box:pin(stream)</li>
+<li>我们需要对 ProstClientStream 的 S 限制是 ’static，否则编译器会抱怨</li>
+<li>这个改动会导致使用 execute() 方法的测试都无法编译，你可以试着修改掉它们。</li>
+</ul>
+</div>
+</details>
+<p>此外我们还创建了一个新的文件 src/network/stream_result.rs，用来帮助客户端更好地使用 execute_streaming() 接口。所有改动的具体代码可以看 repo 中的 diff_client。</p>
+<details id="admonition-测试-1" class="admonition note">
+<summary class="admonition-title">
+<p>测试 </p>
+<p><a class="admonition-anchor-link" href="#admonition-测试-1"></a></p>
+</summary>
+<div>
+<p>现在，代码一切就绪:</p>
+<ol>
+<li>打开一个命令行窗口，运行：</li>
+</ol>
+<pre><code class="language-shell">RUST_LOG=info cargo run --bin kvs --quiet
+</code></pre>
+<ol start="2">
+<li>然后在另一个命令行窗口，运行：</li>
+</ol>
+<pre><code class="language-shell">RUST_LOG=info cargo run --bin kvc --quiet
+</code></pre>
+</div>
+</details>
+<blockquote>
+<p>此时，服务器和客户端都收到了彼此的请求和响应，即便混合 HSET/HGET 和 PUBLISH/SUBSCRIBE 命令，一切都依旧处理正常！今天我们做了一个比较大的重构，但比预想中对原有代码的改动要小，这简直太棒了！</p>
+</blockquote>
+<h2 id="你可以仔细阅读这一节中的代码好好品味这些接口的设计"><a class="header" href="#你可以仔细阅读这一节中的代码好好品味这些接口的设计">你可以仔细阅读这一节中的代码，好好品味这些接口的设计。</a></h2>
+<details id="admonition-你可以仔细阅读这一节中的代码好好品味这些接口的设计" class="admonition abstract">
+<summary class="admonition-title">
+<p>你可以仔细阅读这一节中的代码，好好品味这些接口的设计。</p>
+<p><a class="admonition-anchor-link" href="#admonition-你可以仔细阅读这一节中的代码好好品味这些接口的设计"></a></p>
+</summary>
+<div>
+<p>当一个项目越来越复杂，且新加的功能并不能很好地融入已有的系统时，大的重构是不可避免的。在重构的时候，我们一定要首先要弄清楚现有的流程和架构，然后再思考如何重构，这样对系统的侵入才是最小的。</p>
+<p>重构一般会带来对现有测试的破坏，在修复被破坏的测试时，我们要注意不要变动原有测试的逻辑。在做因为新功能添加导致的重构时，如果伴随着大量测试的删除和大量新测试的添加，那么，说明要么原来的测试写得很有问题，要么重构对原有系统的侵入性太强。我们要尽量避免这种事情发生。</p>
+<p>在架构和设计都相对不错的情况下，撰写代码的终极目标是对使用者友好的抽象。所谓对使用者友好的抽象，是指让别人调用我们写的接口时，不用想太多，接口本身就是自解释的。</p>
+<p>如果你仔细阅读 diff_client，可以看到类似 StreamResult 这样的抽象。它避免了调用者需要了解如何手工从 Stream 中取第一个值作为 subscription_id 这样的实现细节，直接替调用者完成了这个工作，并以一个优雅的 ID 暴露给调用者。</p>
+<p>你可以仔细阅读这一节中的代码，好好品味这些接口的设计。它们并非完美，世上没有完美的代码，只有不断完善的代码。如果把一行行代码比作一段段文字，起码它们都需要努力地推敲和不断地迭代。</p>
+</div>
+</details>
+<h2 id="一些相关考虑"><a class="header" href="#一些相关考虑">一些相关考虑</a></h2>
+<details id="admonition-思考用gc处理客户端意外终止" class="admonition question">
+<summary class="admonition-title">
+<p>思考用GC处理客户端意外终止</p>
+<p><a class="admonition-anchor-link" href="#admonition-思考用gc处理客户端意外终止"></a></p>
+</summary>
+<div>
+<p>现在我们的系统对 Pub/Sub 已经有比较完整的支持，但你有没有注意到，有一个潜在的内存泄漏的 bug。如果客户端 A subscribe 了 Topic M，但客户端意外终止，且随后也没有任何人往 Topic M publish 消息。这样，A 的 subscription 就一直放在表中。你能做一个 GC 来处理这种情况么？</p>
+<p>Redis 还支持 PSUBSCRIBE，也就是说除了可以 subscribe “chat” 这样固定的 topic，还可以是 “chat.*”，一并订阅所有 “chat”、“chat.rust”、“chat.elixir” 。想想看，如果要支持 PSUBSCRIBE，你该怎么设计 Broadcaster 里的两张表？</p>
+</div>
+</details>
+<details id="admonition-tokio-本身不就是-支持了多路复用吗用-yamux来整合多路复用的意义是什么" class="admonition question">
+<summary class="admonition-title">
+<p>tokio 本身不就是 支持了多路复用吗？用 yamux来整合多路复用的意义是什么? </p>
+<p><a class="admonition-anchor-link" href="#admonition-tokio-本身不就是-支持了多路复用吗用-yamux来整合多路复用的意义是什么"></a></p>
+</summary>
+<div>
+<p>yamux 是一个具体的网络协议，它在 TCP 之上可以运行多个互不干扰的 stream（就像 HTTP/2）；tokio 是一个异步运行时，可以在 N 个线程上跑 M 个 tokio task。我们利用 tokio 的异步能力来承载 Yamux 协议。</p>
+</div>
+</details>
+<details id="admonition-非rust写的客户端可否进行通信" class="admonition note">
+<summary class="admonition-title">
+<p>非rust写的客户端可否进行通信？ </p>
+<p><a class="admonition-anchor-link" href="#admonition-非rust写的客户端可否进行通信"></a></p>
+</summary>
+<div>
+<p>yamux 是个协议，比如你可以用 nodejs client, python client 访问。你当然需要使用支持 yamux 协议的库，比如 <a href="https://www.npmjs.com/package/yamux-js">yamux-js</a>。这就跟你要访问 http server，需要符合协议规范的 http client 一样。</p>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="kv6_async_refactor.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="kv8_config_ci_cd.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="kv6_async_refactor.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="kv8_config_ci_cd.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>网络安全 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html" class="active"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="五网络安全生成-x509-证书"><a class="header" href="#五网络安全生成-x509-证书">五、网络安全：生成 x509 证书</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E4%BA%94%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E7%94%9F%E6%88%90-x509-%E8%AF%81%E4%B9%A6">五、网络安全：生成 x509 证书</a>
+<ul>
+<li><a href="#%E5%9C%A8-kv-server-%E4%B8%AD%E4%BD%BF%E7%94%A8-tls">在 KV server 中使用 TLS</a>
+<ul>
+<li><a href="#%E5%AE%9E%E7%8E%B0tls">实现TLS</a></li>
+</ul>
+</li>
+<li><a href="#%E8%AE%A9-kv-clientserver-%E6%94%AF%E6%8C%81-tls">让 KV client/server 支持 TLS</a></li>
+<li><a href="#%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9B%9E%E9%A1%BE">网络安全开发回顾</a></li>
+<li><a href="#%E8%80%83%E8%99%91%E5%8F%8C%E5%90%91%E9%AA%8C%E8%AF%81">考虑双向验证</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:54 UTC 2022 -->
+<!--te-->
+<details id="admonition-那么当我们的应用架构在-tcp-上时如何使用-tls-来保证客户端和服务器间的安全性呢" class="admonition question">
+<summary class="admonition-title">
+<p>那么，当我们的应用架构在 TCP 上时，如何使用 TLS 来保证客户端和服务器间的安全性呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-那么当我们的应用架构在-tcp-上时如何使用-tls-来保证客户端和服务器间的安全性呢"></a></p>
+</summary>
+<div>
+<p>想要使用 TLS，我们首先需要 <a href="https://en.wikipedia.org/wiki/X.509">x509 证书</a>。TLS 需要 x509 证书让客户端验证服务器是否是一个受信的服务器，甚至服务器验证客户端，确认对方是一个受信的客户端。</p>
+<p>为了测试方便，我们要有能力生成自己的 CA 证书、服务端证书，甚至客户端证书。证书生成的细节今天就不详细介绍了，我之前做了<a href="https://github.com/tyrchen/certify">一个叫 certify 的库</a>，可以用来生成各种证书。</p>
+</div>
+</details>
+<details id="admonition-使用与测试生成证书" class="admonition note">
+<summary class="admonition-title">
+<p>使用与测试：生成证书</p>
+<p><a class="admonition-anchor-link" href="#admonition-使用与测试生成证书"></a></p>
+</summary>
+<div>
+<ol>
+<li>我们可以在 Cargo.toml 里加入这个库：</li>
+</ol>
+<pre><code class="language-toml">
+[dev-dependencies]
+...
+certify = &quot;0.3&quot;
+...
+</code></pre>
+<ol start="2">
+<li>然后在根目录下创建 fixtures 目录存放证书</li>
+<li>再创建 examples/gen_cert.rs 文件，添入如下代码：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use certify::{generate_ca, generate_cert, load_ca, CertType, CA};
+use tokio::fs;
+
+struct CertPem {
+    cert_type: CertType,
+    cert: String,
+    key: String,
+}
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    let pem = create_ca()?;
+    gen_files(&amp;pem).await?;
+    let ca = load_ca(&amp;pem.cert, &amp;pem.key)?;
+    let pem = create_cert(&amp;ca, &amp;[&quot;kvserver.acme.inc&quot;], &quot;Acme KV server&quot;, false)?;
+    gen_files(&amp;pem).await?;
+    let pem = create_cert(&amp;ca, &amp;[], &quot;awesome-device-id&quot;, true)?;
+    gen_files(&amp;pem).await?;
+    Ok(())
+}
+
+fn create_ca() -&gt; Result&lt;CertPem&gt; {
+    let (cert, key) = generate_ca(
+        &amp;[&quot;acme.inc&quot;],
+        &quot;CN&quot;,
+        &quot;Acme Inc.&quot;,
+        &quot;Acme CA&quot;,
+        None,
+        Some(10 * 365),
+    )?;
+    Ok(CertPem {
+        cert_type: CertType::CA,
+        cert,
+        key,
+    })
+}
+
+fn create_cert(ca: &amp;CA, domains: &amp;[&amp;str], cn: &amp;str, is_client: bool) -&gt; Result&lt;CertPem&gt; {
+    let (days, cert_type) = if is_client {
+        (Some(365), CertType::Client)
+    } else {
+        (Some(5 * 365), CertType::Server)
+    };
+    let (cert, key) = generate_cert(ca, domains, &quot;CN&quot;, &quot;Acme Inc.&quot;, cn, None, is_client, days)?;
+
+    Ok(CertPem {
+        cert_type,
+        cert,
+        key,
+    })
+}
+
+async fn gen_files(pem: &amp;CertPem) -&gt; Result&lt;()&gt; {
+    let name = match pem.cert_type {
+        CertType::Client =&gt; &quot;client&quot;,
+        CertType::Server =&gt; &quot;server&quot;,
+        CertType::CA =&gt; &quot;ca&quot;,
+    };
+    fs::write(format!(&quot;fixtures/{}.cert&quot;, name), pem.cert.as_bytes()).await?;
+    fs::write(format!(&quot;fixtures/{}.key&quot;, name), pem.key.as_bytes()).await?;
+    Ok(())
+}
+</code></pre></pre>
+<p>这个代码很简单:</p>
+<ul>
+<li>它先生成了一个 CA 证书</li>
+<li>然后再生成服务器和客户端证书，全部存入刚创建的 fixtures 目录下。</li>
+<li>你需要 <code>cargo run --examples gen_cert</code> 运行一下这个命令，待会我们会在测试中用到这些证书和密钥。</li>
+</ul>
+</div>
+</details>
+<h2 id="在-kv-server-中使用-tls"><a class="header" href="#在-kv-server-中使用-tls">在 KV server 中使用 TLS</a></h2>
+<details id="admonition-tls-是目前最主要的应用层安全协议" class="admonition info">
+<summary class="admonition-title">
+<p>TLS 是目前最主要的应用层安全协议 </p>
+<p><a class="admonition-anchor-link" href="#admonition-tls-是目前最主要的应用层安全协议"></a></p>
+</summary>
+<div>
+<p>TLS 是目前最主要的应用层安全协议，被广泛用于保护架构在 TCP 之上的，比如 MySQL、HTTP 等各种协议。一个网络应用，即便是在内网使用，如果没有安全协议来保护，都是很危险的。</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/71befa0bbf5225582dd01a7330c641f7.png" alt="img" /></p>
+<p>对于 KV server 来说，使用 TLS 之后，整个协议的数据封装如下图所示：</p>
+<p><img src="/Users/kuanhsiaokuo/Migrations/writing_materials/077659d231dd45b1617ed3707c74cf13.jpg" alt="img" /></p>
+</div>
+</details>
+<p>所以今天要做的就是在上一讲的网络处理的基础上，添加 TLS 支持，使得 KV server 的客户端服务器之间的通讯被严格保护起来，确保最大程度的安全，免遭第三方的偷窥、篡改以及仿造。</p>
+<h3 id="实现tls"><a class="header" href="#实现tls">实现TLS</a></h3>
+<p>好，接下来我们看看 TLS 怎么实现。</p>
+<p>估计很多人一听 TLS 或者 SSL，就头皮发麻，因为之前跟 <a href="https://www.openssl.org">openssl</a> 打交道有过很多不好的经历。openssl 的代码库太庞杂，API 不友好，编译链接都很费劲。</p>
+<details id="admonition-不过在-rust-下使用-tls-的体验还是很不错的" class="admonition info">
+<summary class="admonition-title">
+<p>不过，在 Rust 下使用 TLS 的体验还是很不错的： </p>
+<p><a class="admonition-anchor-link" href="#admonition-不过在-rust-下使用-tls-的体验还是很不错的"></a></p>
+</summary>
+<div>
+<ul>
+<li>Rust 对 openssl 有很不错的封装: <a href="https://github.com/sfackler/rust-openssl">rust-openssl</a></li>
+<li>也有不依赖 openssl 用 Rust 撰写的 <a href="https://github.com/rustls/rustls">rustls</a></li>
+<li>tokio 进一步提供了<a href="https://github.com/tokio-rs/tls">符合 tokio 生态圈的 tls 支持</a>，有 openssl 版本和 rustls 版本可选。</li>
+</ul>
+</div>
+</details>
+<p>我们今天就用 <a href="https://github.com/tokio-rs/tls/tree/master/tokio-rustls">tokio-rustls</a> 来撰写 TLS 的支持。</p>
+<blockquote>
+<p>相信你在实现过程中可以看到，在应用程序中加入 TLS 协议来保护网络层，是多么轻松的一件事情。</p>
+</blockquote>
+<details id="admonition-1-先在-cargotoml-中添加-tokio-rustls" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>先在 Cargo.toml 中添加 tokio-rustls：</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-先在-cargotoml-中添加-tokio-rustls"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">
+[dev-dependencies]
+...
+certify = &quot;0.3&quot;
+...
+</code></pre>
+</div>
+</details>
+<details id="admonition-2-然后创建-srcnetworktlsrs撰写如下代码-记得在-srcnetworkmodrs-中引入这个文件" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>然后创建 src/network/tls.rs，撰写如下代码, 记得在 src/network/mod.rs 中引入这个文件 </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-然后创建-srcnetworktlsrs撰写如下代码-记得在-srcnetworkmodrs-中引入这个文件"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::io::Cursor;
+use std::sync::Arc;
+
+use tokio::io::{AsyncRead, AsyncWrite};
+use tokio_rustls::rustls::{internal::pemfile, Certificate, ClientConfig, ServerConfig};
+use tokio_rustls::rustls::{AllowAnyAuthenticatedClient, NoClientAuth, PrivateKey, RootCertStore};
+use tokio_rustls::webpki::DNSNameRef;
+use tokio_rustls::TlsConnector;
+use tokio_rustls::{
+    client::TlsStream as ClientTlsStream, server::TlsStream as ServerTlsStream, TlsAcceptor,
+};
+
+use crate::KvError;
+
+/// KV Server 自己的 ALPN (Application-Layer Protocol Negotiation)
+const ALPN_KV: &amp;str = &quot;kv&quot;;
+
+/// 存放 TLS ServerConfig 并提供方法 accept 把底层的协议转换成 TLS
+#[derive(Clone)]
+pub struct TlsServerAcceptor {
+    inner: Arc&lt;ServerConfig&gt;,
+}
+
+/// 存放 TLS Client 并提供方法 connect 把底层的协议转换成 TLS
+#[derive(Clone)]
+pub struct TlsClientConnector {
+    pub config: Arc&lt;ClientConfig&gt;,
+    pub domain: Arc&lt;String&gt;,
+}
+
+impl TlsClientConnector {
+    /// 加载 client cert / CA cert，生成 ClientConfig
+    pub fn new(
+        domain: impl Into&lt;String&gt;,
+        identity: Option&lt;(&amp;str, &amp;str)&gt;,
+        server_ca: Option&lt;&amp;str&gt;,
+    ) -&gt; Result&lt;Self, KvError&gt; {
+        let mut config = ClientConfig::new();
+
+        // 如果有客户端证书，加载之
+        if let Some((cert, key)) = identity {
+            let certs = load_certs(cert)?;
+            let key = load_key(key)?;
+            config.set_single_client_cert(certs, key)?;
+        }
+
+        // 加载本地信任的根证书链
+        config.root_store = match rustls_native_certs::load_native_certs() {
+            Ok(store) | Err((Some(store), _)) =&gt; store,
+            Err((None, error)) =&gt; return Err(error.into()),
+        };
+
+        // 如果有签署服务器的 CA 证书，则加载它，这样服务器证书不在根证书链
+        // 但是这个 CA 证书能验证它，也可以
+        if let Some(cert) = server_ca {
+            let mut buf = Cursor::new(cert);
+            config.root_store.add_pem_file(&amp;mut buf).unwrap();
+        }
+
+        Ok(Self {
+            config: Arc::new(config),
+            domain: Arc::new(domain.into()),
+        })
+    }
+
+    /// 触发 TLS 协议，把底层的 stream 转换成 TLS stream
+    pub async fn connect&lt;S&gt;(&amp;self, stream: S) -&gt; Result&lt;ClientTlsStream&lt;S&gt;, KvError&gt;
+    where
+        S: AsyncRead + AsyncWrite + Unpin + Send,
+    {
+        let dns = DNSNameRef::try_from_ascii_str(self.domain.as_str())
+            .map_err(|_| KvError::Internal(&quot;Invalid DNS name&quot;.into()))?;
+
+        let stream = TlsConnector::from(self.config.clone())
+            .connect(dns, stream)
+            .await?;
+
+        Ok(stream)
+    }
+}
+
+impl TlsServerAcceptor {
+    /// 加载 server cert / CA cert，生成 ServerConfig
+    pub fn new(cert: &amp;str, key: &amp;str, client_ca: Option&lt;&amp;str&gt;) -&gt; Result&lt;Self, KvError&gt; {
+        let certs = load_certs(cert)?;
+        let key = load_key(key)?;
+
+        let mut config = match client_ca {
+            None =&gt; ServerConfig::new(NoClientAuth::new()),
+            Some(cert) =&gt; {
+                // 如果客户端证书是某个 CA 证书签发的，则把这个 CA 证书加载到信任链中
+                let mut cert = Cursor::new(cert);
+                let mut client_root_cert_store = RootCertStore::empty();
+                client_root_cert_store
+                    .add_pem_file(&amp;mut cert)
+                    .map_err(|_| KvError::CertifcateParseError(&quot;CA&quot;, &quot;cert&quot;))?;
+
+                let client_auth = AllowAnyAuthenticatedClient::new(client_root_cert_store);
+                ServerConfig::new(client_auth)
+            }
+        };
+
+        // 加载服务器证书
+        config
+            .set_single_cert(certs, key)
+            .map_err(|_| KvError::CertifcateParseError(&quot;server&quot;, &quot;cert&quot;))?;
+        config.set_protocols(&amp;[Vec::from(&amp;ALPN_KV[..])]);
+
+        Ok(Self {
+            inner: Arc::new(config),
+        })
+    }
+
+    /// 触发 TLS 协议，把底层的 stream 转换成 TLS stream
+    pub async fn accept&lt;S&gt;(&amp;self, stream: S) -&gt; Result&lt;ServerTlsStream&lt;S&gt;, KvError&gt;
+    where
+        S: AsyncRead + AsyncWrite + Unpin + Send,
+    {
+        let acceptor = TlsAcceptor::from(self.inner.clone());
+        Ok(acceptor.accept(stream).await?)
+    }
+}
+
+fn load_certs(cert: &amp;str) -&gt; Result&lt;Vec&lt;Certificate&gt;, KvError&gt; {
+    let mut cert = Cursor::new(cert);
+    pemfile::certs(&amp;mut cert).map_err(|_| KvError::CertifcateParseError(&quot;server&quot;, &quot;cert&quot;))
+}
+
+fn load_key(key: &amp;str) -&gt; Result&lt;PrivateKey, KvError&gt; {
+    let mut cursor = Cursor::new(key);
+
+    // 先尝试用 PKCS8 加载私钥
+    if let Ok(mut keys) = pemfile::pkcs8_private_keys(&amp;mut cursor) {
+        if !keys.is_empty() {
+            return Ok(keys.remove(0));
+        }
+    }
+
+    // 再尝试加载 RSA key
+    cursor.set_position(0);
+    if let Ok(mut keys) = pemfile::rsa_private_keys(&amp;mut cursor) {
+        if !keys.is_empty() {
+            return Ok(keys.remove(0));
+        }
+    }
+
+    // 不支持的私钥类型
+    Err(KvError::CertifcateParseError(&quot;private&quot;, &quot;key&quot;))
+}
+</code></pre></pre>
+<ul>
+<li>这个代码创建了两个数据结构 TlsServerAcceptor / TlsClientConnector。</li>
+<li>虽然它有 100 多行，但主要的工作其实就是根据提供的证书，来生成 tokio-tls 需要的 ServerConfig / ClientConfig。</li>
+<li>因为 TLS 需要验证证书的 CA，所以还需要加载 CA 证书。虽然平时在做 Web 开发时，我们都只使用服务器证书，但其实 TLS 支持双向验证，服务器也可以验证客户端的证书是否是它认识的 CA 签发的。</li>
+</ul>
+</div>
+</details>
+<blockquote>
+<p>处理完 config 后，这段代码的核心逻辑其实就是客户端的 connect() 方法和服务器的 accept() 方法，它们都接受一个满足 AsyncRead + AsyncWrite + Unpin + Send 的 stream。</p>
+</blockquote>
+<details id="admonition-3-考虑到通用性我们不希望-tls-代码只能接受-tcpstream所以这里提供了一个泛型参数-s" class="admonition note">
+<summary class="admonition-title">
+<ol start="3">
+<li>考虑到通用性，我们不希望 TLS 代码只能接受 TcpStream，所以这里提供了一个泛型参数 S：</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-3-考虑到通用性我们不希望-tls-代码只能接受-tcpstream所以这里提供了一个泛型参数-s"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// 触发 TLS 协议，把底层的 stream 转换成 TLS stream
+pub async fn connect&lt;S&gt;(&amp;self, stream: S) -&gt; Result&lt;ClientTlsStream&lt;S&gt;, KvError&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send,
+{
+    let dns = DNSNameRef::try_from_ascii_str(self.domain.as_str())
+        .map_err(|_| KvError::Internal(&quot;Invalid DNS name&quot;.into()))?;
+
+    let stream = TlsConnector::from(self.config.clone())
+        .connect(dns, stream)
+        .await?;
+
+    Ok(stream)
+}
+
+/// 触发 TLS 协议，把底层的 stream 转换成 TLS stream
+pub async fn accept&lt;S&gt;(&amp;self, stream: S) -&gt; Result&lt;ServerTlsStream&lt;S&gt;, KvError&gt;
+where
+    S: AsyncRead + AsyncWrite + Unpin + Send,
+{
+    let acceptor = TlsAcceptor::from(self.inner.clone());
+    Ok(acceptor.accept(stream).await?)
+}
+</code></pre></pre>
+<ul>
+<li>在使用 TlsConnector 或者 TlsAcceptor 处理完 connect/accept 后，我们得到了一个 TlsStream</li>
+<li>它也满足 AsyncRead + AsyncWrite + Unpin + Send</li>
+<li>后续的操作就可以在其上完成了。</li>
+<li>百来行代码就搞定了 TLS，是不是很轻松？</li>
+</ul>
+</div>
+</details>
+<details id="admonition-4-我们来顺着往下写段测试" class="admonition note">
+<summary class="admonition-title">
+<ol start="4">
+<li>我们来顺着往下写段测试： </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-4-我们来顺着往下写段测试"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[cfg(test)]
+mod tests {
+
+    use std::net::SocketAddr;
+
+    use super::*;
+    use anyhow::Result;
+    use tokio::{
+        io::{AsyncReadExt, AsyncWriteExt},
+        net::{TcpListener, TcpStream},
+    };
+
+    const CA_CERT: &amp;str = include_str!(&quot;../../fixtures/ca.cert&quot;);
+    const CLIENT_CERT: &amp;str = include_str!(&quot;../../fixtures/client.cert&quot;);
+    const CLIENT_KEY: &amp;str = include_str!(&quot;../../fixtures/client.key&quot;);
+    const SERVER_CERT: &amp;str = include_str!(&quot;../../fixtures/server.cert&quot;);
+    const SERVER_KEY: &amp;str = include_str!(&quot;../../fixtures/server.key&quot;);
+
+    #[tokio::test]
+    async fn tls_should_work() -&gt; Result&lt;()&gt; {
+        let ca = Some(CA_CERT);
+
+        let addr = start_server(None).await?;
+
+        let connector = TlsClientConnector::new(&quot;kvserver.acme.inc&quot;, None, ca)?;
+        let stream = TcpStream::connect(addr).await?;
+        let mut stream = connector.connect(stream).await?;
+        stream.write_all(b&quot;hello world!&quot;).await?;
+        let mut buf = [0; 12];
+        stream.read_exact(&amp;mut buf).await?;
+        assert_eq!(&amp;buf, b&quot;hello world!&quot;);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn tls_with_client_cert_should_work() -&gt; Result&lt;()&gt; {
+        let client_identity = Some((CLIENT_CERT, CLIENT_KEY));
+        let ca = Some(CA_CERT);
+
+        let addr = start_server(ca.clone()).await?;
+
+        let connector = TlsClientConnector::new(&quot;kvserver.acme.inc&quot;, client_identity, ca)?;
+        let stream = TcpStream::connect(addr).await?;
+        let mut stream = connector.connect(stream).await?;
+        stream.write_all(b&quot;hello world!&quot;).await?;
+        let mut buf = [0; 12];
+        stream.read_exact(&amp;mut buf).await?;
+        assert_eq!(&amp;buf, b&quot;hello world!&quot;);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn tls_with_bad_domain_should_not_work() -&gt; Result&lt;()&gt; {
+        let addr = start_server(None).await?;
+
+        let connector = TlsClientConnector::new(&quot;kvserver1.acme.inc&quot;, None, Some(CA_CERT))?;
+        let stream = TcpStream::connect(addr).await?;
+        let result = connector.connect(stream).await;
+
+        assert!(result.is_err());
+
+        Ok(())
+    }
+
+    async fn start_server(ca: Option&lt;&amp;str&gt;) -&gt; Result&lt;SocketAddr&gt; {
+        let acceptor = TlsServerAcceptor::new(SERVER_CERT, SERVER_KEY, ca)?;
+
+        let echo = TcpListener::bind(&quot;127.0.0.1:0&quot;).await.unwrap();
+        let addr = echo.local_addr().unwrap();
+
+        tokio::spawn(async move {
+            let (stream, _) = echo.accept().await.unwrap();
+            let mut stream = acceptor.accept(stream).await.unwrap();
+            let mut buf = [0; 12];
+            stream.read_exact(&amp;mut buf).await.unwrap();
+            stream.write_all(&amp;buf).await.unwrap();
+        });
+
+        Ok(addr)
+    }
+}
+</code></pre></pre>
+<ul>
+<li>这段测试代码使用了 include_str! 宏，在编译期把文件加载成字符串放在 RODATA 段。</li>
+<li>我们测试了三种情况：标准的 TLS 连接、带有客户端证书的 TLS 连接，以及客户端提供了错的域名的情况。</li>
+<li>运行 cargo test ，所有测试都能通过。</li>
+</ul>
+</div>
+</details>
+<h2 id="让-kv-clientserver-支持-tls"><a class="header" href="#让-kv-clientserver-支持-tls">让 KV client/server 支持 TLS</a></h2>
+<p>在 TLS 的测试都通过后，就可以添加 kvs 和 kvc 对 TLS 的支持了。</p>
+<p>由于我们一路以来良好的接口设计，尤其是 ProstClientStream / ProstServerStream 都接受泛型参数，使得 TLS 的代码可以无缝嵌入。</p>
+<details id="admonition-和上一版项目相比更新后的客户端和服务器代码各自仅仅多了一行就把-tcpstream-封装成了-tlsstream" class="admonition note">
+<summary class="admonition-title">
+<p>和上一版项目相比，更新后的客户端和服务器代码，各自仅仅多了一行，就把 TcpStream 封装成了 TlsStream。 </p>
+<p><a class="admonition-anchor-link" href="#admonition-和上一版项目相比更新后的客户端和服务器代码各自仅仅多了一行就把-tcpstream-封装成了-tlsstream"></a></p>
+</summary>
+<div>
+<ol>
+<li>比如客户端：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 新加的代码
+let connector = TlsClientConnector::new(&quot;kvserver.acme.inc&quot;, None, Some(ca_cert))?;
+
+let stream = TcpStream::connect(addr).await?;
+
+// 新加的代码
+let stream = connector.connect(stream).await?;
+
+let mut client = ProstClientStream::new(stream);
+</code></pre></pre>
+<p>仅仅需要把传给 ProstClientStream 的 stream，从 TcpStream 换成生成的 TlsStream，就无缝支持了 TLS。</p>
+<ol start="2">
+<li>我们看完整的代码，src/server.rs：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use kv3::{MemTable, ProstServerStream, Service, ServiceInner, TlsServerAcceptor};
+use tokio::net::TcpListener;
+use tracing::info;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+    let addr = &quot;127.0.0.1:9527&quot;;
+
+    // 以后从配置文件取
+    let server_cert = include_str!(&quot;../fixtures/server.cert&quot;);
+    let server_key = include_str!(&quot;../fixtures/server.key&quot;);
+
+    let acceptor = TlsServerAcceptor::new(server_cert, server_key, None)?;
+    let service: Service = ServiceInner::new(MemTable::new()).into();
+    let listener = TcpListener::bind(addr).await?;
+    info!(&quot;Start listening on {}&quot;, addr);
+    loop {
+        let tls = acceptor.clone();
+        let (stream, addr) = listener.accept().await?;
+        info!(&quot;Client {:?} connected&quot;, addr);
+        let stream = tls.accept(stream).await?;
+        let stream = ProstServerStream::new(stream, service.clone());
+        tokio::spawn(async move { stream.process().await });
+    }
+}
+</code></pre></pre>
+<ol start="3">
+<li>src/client.rs：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use kv3::{CommandRequest, ProstClientStream, TlsClientConnector};
+use tokio::net::TcpStream;
+use tracing::info;
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    tracing_subscriber::fmt::init();
+
+    // 以后用配置替换
+    let ca_cert = include_str!(&quot;../fixtures/ca.cert&quot;);
+
+    let addr = &quot;127.0.0.1:9527&quot;;
+    // 连接服务器
+    let connector = TlsClientConnector::new(&quot;kvserver.acme.inc&quot;, None, Some(ca_cert))?;
+    let stream = TcpStream::connect(addr).await?;
+    let stream = connector.connect(stream).await?;
+
+    let mut client = ProstClientStream::new(stream);
+
+    // 生成一个 HSET 命令
+    let cmd = CommandRequest::new_hset(&quot;table1&quot;, &quot;hello&quot;, &quot;world&quot;.to_string().into());
+
+    // 发送 HSET 命令
+    let data = client.execute(cmd).await?;
+    info!(&quot;Got response {:?}&quot;, data);
+
+    Ok(())
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>这就是使用 trait 做面向接口编程的巨大威力，系统的各个组件可以来自不同的 crates，但只要其接口一致（或者我们创建 adapter 使其接口一致），就可以无缝插入。</p>
+</blockquote>
+<details id="admonition-测试通过" class="admonition success">
+<summary class="admonition-title">
+<p>测试通过 </p>
+<p><a class="admonition-anchor-link" href="#admonition-测试通过"></a></p>
+</summary>
+<div>
+<ul>
+<li>完成之后，打开一个命令行窗口，运行：</li>
+</ul>
+<pre><code class="language-shell">RUST_LOG=info cargo run --bin kvs --quiet
+</code></pre>
+<ul>
+<li>然后在另一个命令行窗口，运行：</li>
+</ul>
+<pre><code class="language-shell">RUST_LOG=info cargo run --bin kvc --quie
+</code></pre>
+</div>
+</details>
+<p>此时，服务器和客户端都收到了彼此的请求和响应，并且处理正常。</p>
+<p>现在，我们的 KV server 已经具备足够的安全性了！</p>
+<p>以后，等我们使用配置文件，就可以根据配置文件读取证书和私钥。这样可以在部署的时候，才从 vault 中获取私钥，既保证灵活性，又能保证系统自身的安全。</p>
+<h2 id="网络安全开发回顾"><a class="header" href="#网络安全开发回顾">网络安全开发回顾</a></h2>
+<p>网络安全是开发网络相关的应用程序中非常重要的一个环节。虽然 KV Server 这样的服务基本上会运行在云端受控的网络环境中，不会对 internet 提供服务，然而云端内部的安全性也不容忽视。你不希望数据在流动的过程中被篡改。</p>
+<p>TLS 很好地解决了安全性的问题，可以保证整个传输过程中数据的机密性和完整性。如果使用客户端证书的话，还可以做一定程度的客户端合法性的验证。比如你可以在云端为所有有权访问 KV server
+的客户端签发客户端证书，这样，只要客户端的私钥不泄露，就只有拥有证书的客户端才能访问 KV server。</p>
+<p>不知道你现在有没有觉得，在 Rust 下使用 TLS 是非常方便的一件事情。并且，我们构建的 ProstServerStream / ProstClientStream，因为有足够好的抽象，可以在 TcpStream 和 TlsStream
+之间游刃有余地切换。当你构建好相关的代码，只需要把 TcpStream 换成 TlsStream，KV server 就可以无缝切换到一个安全的网络协议栈。</p>
+<h2 id="考虑双向验证"><a class="header" href="#考虑双向验证">考虑双向验证</a></h2>
+<p>目前我们的 kvc / kvs 只做了单向的验证，如果服务器要验证客户端的证书，该怎么做？如果你没有头绪，可以再仔细看看测试 TLS 的代码，然后改动 kvc/kvs 使得双向验证也能通过吧。</p>
+<p>除了 TLS，另外一个被广泛使用的处理应用层安全的协议是 <a href="https://noiseprotocol.org">noise protocol</a>
+。你可以阅读<a href="https://zhuanlan.zhihu.com/p/96944134">陈天的这篇文章</a>了解 noise protocol。Rust 下有<a href="https://github.com/mcginty/snow"> snow </a>
+这个很优秀的库处理 noise
+protocol。对于有余力的同学，你们可以看看它的文档，尝试着写段<a href="https://github.com/seanmonstar/reqwest/blob/master/src/tls.rs">类似reqwest的 tls.rs 的代码</a>
+，让我们的 kvs / kvc 可以使用 noise protocol。</p>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="kv4_network.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="kv6_async_refactor.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="kv4_network.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="kv6_async_refactor.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
