@@ -1,6 +1,18 @@
 # 六、异步处理
 
 <!--ts-->
+* [六、异步处理](#六异步处理)
+   * [回顾构建过程](#回顾构建过程)
+   * [开始做异步重构](#开始做异步重构)
+   * [创建 ProstStream](#创建-proststream)
+      * [测试！](#测试)
+   * [使用 ProstStream](#使用-proststream)
+   * [异步处理回顾：单元测试的重要性](#异步处理回顾单元测试的重要性)
+   * [思考题](#思考题)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:55 UTC 2022 -->
+
 <!--te-->
 
 ## 回顾构建过程

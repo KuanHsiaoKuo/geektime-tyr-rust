@@ -1,6 +1,19 @@
 # 一、基本流程
 
 <!--ts-->
+* [一、基本流程](#一基本流程)
+   * [为什么选 KV server 来实操呢？](#为什么选-kv-server-来实操呢)
+   * [先来一个短平糙的实现](#先来一个短平糙的实现)
+   * [架构和设计](#架构和设计)
+      * [主体交互接口](#主体交互接口)
+      * [客户端和服务器间的协议](#客户端和服务器间的协议)
+         * [CommandService trait](#commandservice-trait)
+      * [Storage trait](#storage-trait)
+      * [trait的好处](#trait的好处)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:52 UTC 2022 -->
+
 <!--te-->
 
 ## 为什么选 KV server 来实操呢？

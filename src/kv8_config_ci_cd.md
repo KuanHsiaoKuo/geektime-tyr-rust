@@ -1,6 +1,16 @@
 # 八、配置/测试/监控/CI/CD
 
 <!--ts-->
+* [八、配置/测试/监控/CI/CD](#八配置测试监控cicd)
+   * [配置](#配置)
+   * [集成测试](#集成测试)
+   * [性能测试](#性能测试)
+   * [测量和监控](#测量和监控)
+   * [CI/CD](#cicd)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:56 UTC 2022 -->
+
 <!--te-->
 
 虽然这是一个“简单”的 KV server：

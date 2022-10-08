@@ -1,6 +1,27 @@
 # 二、实现并验证协议层
 
 <!--ts-->
+* [二、实现并验证协议层](#二实现并验证协议层)
+   * [创建项目，添加依赖](#创建项目添加依赖)
+   * [protobuf处理](#protobuf处理)
+   * [实现并验证 Storage trait](#实现并验证-storage-trait)
+      * [构建MemTable](#构建memtable)
+      * [测试](#测试)
+   * [实现并验证 CommandService trait](#实现并验证-commandservice-trait)
+      * [为什么要这么写？](#为什么要这么写)
+      * [在 src/pb/mod.rs 中添加相关的外围逻辑](#在-srcpbmodrs-中添加相关的外围逻辑)
+   * [最后的拼图：Service 结构的实现](#最后的拼图service-结构的实现)
+      * [围绕接口测试](#围绕接口测试)
+      * [继续写代码](#继续写代码)
+   * [新的 server](#新的-server)
+   * [运行](#运行)
+   * [初步感受Rust撰写代码最佳实践](#初步感受rust撰写代码最佳实践)
+   * [为剩下6个命令构建测试并实现](#为剩下6个命令构建测试并实现)
+   * [考虑用线程池处理并发](#考虑用线程池处理并发)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct  8 10:17:52 UTC 2022 -->
+
 <!--te-->
 
 还是按照上一讲定义接口的顺序来一个一个测试：首先我们来构建协议层。
