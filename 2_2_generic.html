@@ -1,0 +1,507 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>泛型 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item expanded "><a href="2_2_generic.html" class="active"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="泛型"><a class="header" href="#泛型">泛型</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E6%B3%9B%E5%9E%8B">泛型</a>
+<ul>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%B0%B1%E5%83%8F%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0">泛型就像定义函数</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F">实现方式</a></li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">泛型数据结构</a>
+<ul>
+<li><a href="#%E9%80%90%E6%AD%A5%E7%BA%A6%E6%9D%9F%E6%8A%8A%E5%86%B3%E7%AD%96%E4%BA%A4%E7%BB%99%E4%BD%BF%E7%94%A8%E8%80%85">逐步约束：把决策交给使用者</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0">泛型参数</a>
+<ul>
+<li><a href="#%E5%8F%82%E6%95%B0%E5%A4%9A%E6%80%81">参数多态</a></li>
+<li><a href="#%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">三种使用场景</a>
+<ul>
+<li><a href="#%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A">延迟绑定</a></li>
+<li><a href="#%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A-1">延迟绑定</a></li>
+<li><a href="#%E5%A4%9A%E4%B8%AA%E5%AE%9E%E7%8E%B0">多个实现</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%87%BD%E6%95%B0">泛型函数</a>
+<ul>
+<li><a href="#%E5%8D%95%E6%80%81%E5%8C%96">单态化</a>
+<ul>
+<li><a href="#%E4%BC%98%E5%8A%A3">优劣</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%94%E5%9B%9E%E5%80%BC%E6%90%BA%E5%B8%A6%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0">返回值携带泛型参数</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 02:33:18 UTC 2022 -->
+<!--te-->
+<h2 id="泛型就像定义函数"><a class="header" href="#泛型就像定义函数">泛型就像定义函数</a></h2>
+<ol>
+<li>函数，是把重复代码中的参数抽取出来，使其更加通用，调用函数的时候，根据参数的不同，我们得到不同的结果；</li>
+<li>而泛型，是把重复数据结构中的参数抽取出来，在使用泛型类型时，根据不同的参数，我们会得到不同的具体类型。</li>
+</ol>
+<details id="admonition-泛型结构vec例子" class="admonition info">
+<summary class="admonition-title">
+<p>泛型结构Vec<T>例子</p>
+<p><a class="admonition-anchor-link" href="#admonition-泛型结构vec例子"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub struct Vec&lt;T, A: Allocator = Global&gt; {
+    buf: RawVec&lt;T, A&gt;,
+    len: usize,
+}
+
+pub struct RawVec&lt;T, A: Allocator = Global&gt; {
+    ptr: Unique&lt;T&gt;,
+    cap: usize,
+    alloc: A,
+}
+</code></pre></pre>
+<hr />
+<p>Vec有两个参数:</p>
+<ol>
+<li>一个是 T，是列表里的每个数据的类型</li>
+<li>另一个是 A，它有进一步的限制 A: Allocator </li>
+</ol>
+<blockquote>
+<p>也就是说 A 需要满足 Allocator trait。
+A 这个参数有默认值 Global，它是 Rust 默认的全局分配器</p>
+</blockquote>
+<ol start="3">
+<li>这也是为什么 Vec 虽然有两个参数，使用时都只需要用 T。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-枚举类型cow例子" class="admonition info">
+<summary class="admonition-title">
+<p>枚举类型Cow<T>例子</p>
+<p><a class="admonition-anchor-link" href="#admonition-枚举类型cow例子"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub enum Cow&lt;'a, B: ?Sized + 'a&gt; where B: ToOwned,
+{
+    // 借用的数据
+    Borrowed(&amp;'a B),
+    // 拥有的数据
+    Owned(&lt;B as ToOwned&gt;::Owned),
+}
+</code></pre></pre>
+<p>这里对 B 的三个约束分别是：</p>
+<ol>
+<li>生命周期 ’a</li>
+<li>长度可变 ?Sized</li>
+<li>符合 ToOwned trait</li>
+</ol>
+</div>
+</details>
+<details id="admonition-cow" class="admonition info">
+<summary class="admonition-title">
+<p>Cow</p>
+<p><a class="admonition-anchor-link" href="#admonition-cow"></a></p>
+</summary>
+<div>
+<p>Cow（Clone-on-Write）是 Rust 中一个很有意思且很重要的数据结构。它就像 Option 一样，在返回数据的时候，提供了一种可能：要么返回一个借用的数据（只读），要么返回一个拥有所有权的数据（可写）。</p>
+</div>
+</details>
+<details id="admonition-sized代表可变大小" class="admonition info">
+<summary class="admonition-title">
+<p>?Sized代表可变大小</p>
+<p><a class="admonition-anchor-link" href="#admonition-sized代表可变大小"></a></p>
+</summary>
+<div>
+<p>?Sized 是一种特殊的约束写法，? 代表可以放松问号之后的约束。由于 Rust 默认的泛型参数都需要是 Sized，也就是固定大小的类型，所以这里 ?Sized 代表用可变大小的类型。</p>
+</div>
+</details>
+<details id="admonition-toowned" class="admonition info">
+<summary class="admonition-title">
+<p>ToOwned</p>
+<p><a class="admonition-anchor-link" href="#admonition-toowned"></a></p>
+</summary>
+<div>
+<p><a href="https://doc.rust-lang.org/std/borrow/trait.ToOwned.html">ToOwned</a> 是一个 trait，它可以把借用的数据克隆出一个拥有所有权的数据。</p>
+</div>
+</details>
+<details id="admonition-owned" class="admonition info">
+<summary class="admonition-title">
+<p><B as ToOwned>::Owned</p>
+<p><a class="admonition-anchor-link" href="#admonition-owned"></a></p>
+</summary>
+<div>
+<h2 id="它对-b-做了一个强制类型转换转成-toowned-trait然后访问-toowned-trait-内部的-owned-类型"><a class="header" href="#它对-b-做了一个强制类型转换转成-toowned-trait然后访问-toowned-trait-内部的-owned-类型">它对 B 做了一个强制类型转换，转成 ToOwned trait，然后访问 ToOwned trait 内部的 Owned 类型</a></h2>
+<p>因为在 Rust 里，子类型可以强制转换成父类型，B 可以用 ToOwned 约束，所以它是 ToOwned trait 的子类型，因而 B 可以安全地强制转换成 ToOwned。这里 B as ToOwned 是成立的。</p>
+</div>
+</details>
+<h2 id="实现方式"><a class="header" href="#实现方式">实现方式</a></h2>
+<details id="admonition-不同语言实现泛型的方式" class="admonition info">
+<summary class="admonition-title">
+<p>不同语言实现泛型的方式</p>
+<p><a class="admonition-anchor-link" href="#admonition-不同语言实现泛型的方式"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.png" alt="不同语言实现泛型的方式" /></p>
+</div>
+</details>
+<h2 id="泛型数据结构"><a class="header" href="#泛型数据结构">泛型数据结构</a></h2>
+<h3 id="逐步约束把决策交给使用者"><a class="header" href="#逐步约束把决策交给使用者">逐步约束：把决策交给使用者</a></h3>
+<details id="admonition-在不同的实现下逐步添加约束" class="admonition info">
+<summary class="admonition-title">
+<p>在不同的实现下逐步添加约束</p>
+<p><a class="admonition-anchor-link" href="#admonition-在不同的实现下逐步添加约束"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::fs::File;
+use std::io::{BufReader, Read, Result};
+
+struct MyReader&lt;R&gt; {
+    reader: R,
+    buf: String,
+}
+
+impl&lt;R&gt; MyReader&lt;R&gt; {
+    pub fn new(reader: R) -&gt; Self {
+        Self {
+            reader,
+            buf: String::with_capacity(1024),
+        }
+    }
+}
+
+impl&lt;R&gt; MyReader&lt;R&gt;
+where
+    R: Read,
+{
+    pub fn process(&amp;mut self) -&gt; Result&lt;usize&gt; {
+        self.reader.read_to_string(&amp;mut self.buf)
+    }
+}
+
+fn main() {
+    let f = File::open(&quot;/etc/hosts&quot;).unwrap();
+    let mut reader = MyReader::new(BufReader::new(f));
+
+    let size = reader.process().unwrap();
+    println!(&quot;total size read: {}&quot;, size);
+}
+</code></pre></pre>
+</div>
+</details>
+<h2 id="泛型参数"><a class="header" href="#泛型参数">泛型参数</a></h2>
+<h3 id="参数多态"><a class="header" href="#参数多态">参数多态</a></h3>
+<h3 id="三种使用场景"><a class="header" href="#三种使用场景">三种使用场景</a></h3>
+<h4 id="延迟绑定"><a class="header" href="#延迟绑定">延迟绑定</a></h4>
+<h4 id="延迟绑定-1"><a class="header" href="#延迟绑定-1">延迟绑定</a></h4>
+<h4 id="多个实现"><a class="header" href="#多个实现">多个实现</a></h4>
+<h2 id="泛型函数"><a class="header" href="#泛型函数">泛型函数</a></h2>
+<h3 id="单态化"><a class="header" href="#单态化">单态化</a></h3>
+<details id="admonition-编译时展开泛型参数单态化" class="admonition info">
+<summary class="admonition-title">
+<p>编译时展开泛型参数单态化</p>
+<p><a class="admonition-anchor-link" href="#admonition-编译时展开泛型参数单态化"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>对于泛型函数，Rust 会进行单态化（Monomorphization）处理，也就是在编译时，把所有用到的泛型函数的泛型参数展开，生成若干个函数。
+所以，下方的 id() 编译后会得到 一个处理后的多个版本</p>
+</blockquote>
+<hr />
+<pre><pre class="playground"><code class="language-rust  editable">fn id&lt;T&gt;(x: T) -&gt; T {
+    x
+}
+
+fn main() {
+    let int = id(42);
+    let string = id(&quot;Tyr&quot;);
+    println!(&quot;{}, {}&quot;, int, string);
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-单态化的优劣" class="admonition info">
+<summary class="admonition-title">
+<p>单态化的优劣</p>
+<p><a class="admonition-anchor-link" href="#admonition-单态化的优劣"></a></p>
+</summary>
+<div>
+<ol>
+<li>单态化的好处是:</li>
+</ol>
+<ul>
+<li>泛型函数的调用是静态分派（static dispatch） 在编译时就一一对应</li>
+<li>既保有多态的灵活性，又没有任何效率的损失，和普通函数调用一样高效。</li>
+</ul>
+<ol start="2">
+<li>坏处：编译慢、文件大、丢失泛型信息。这反过来又是动态分派的好处</li>
+</ol>
+<ul>
+<li>但是对比刚才编译会展开的代码也能很清楚看出来，单态化有很明显的坏处</li>
+<li>就是编译速度很慢，一个泛型函数，编译器需要找到所有用到的不同类型，一个个编译</li>
+<li>所以 Rust 编译代码的速度总被人吐槽，这和单态化脱不开干系（另一个重要因素是宏）。</li>
+<li>同时，这样编出来的二进制会比较大，因为泛型函数的二进制代码实际存在 N 份。</li>
+<li>还有一个可能你不怎么注意的问题：因为单态化，代码以二进制分发会损失泛型的信息。</li>
+<li>如果我写了一个库，提供了如上的 id() 函数，使用这个库的开发者如果拿到的是二进制</li>
+<li>那么这个二进制中必须带有原始的泛型函数，才能正确调用。但单态化之后，原本的泛型信息就被丢弃了。</li>
+</ul>
+</div>
+</details>
+<h4 id="优劣"><a class="header" href="#优劣">优劣</a></h4>
+<h3 id="返回值携带泛型参数"><a class="header" href="#返回值携带泛型参数">返回值携带泛型参数</a></h3>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="2_1_type_details.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="2_3_trait.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="2_1_type_details.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="2_3_trait.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

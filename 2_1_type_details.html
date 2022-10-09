@@ -1,0 +1,468 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>类型系统特点 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2_1_type_details.html" class="active"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="类型系统"><a class="header" href="#类型系统">类型系统</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F">类型系统</a>
+<ul>
+<li><a href="#%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E5%88%86%E7%B1%BB%E5%9B%BE">类型系统分类图</a>
+<ul>
+<li><a href="#%E4%B8%89%E4%B8%AA%E6%A0%87%E5%87%86">三个标准</a></li>
+<li><a href="#rust%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E7%89%B9%E7%82%B9">Rust类型系统特点</a></li>
+</ul>
+</li>
+<li><a href="#%E7%B1%BB%E5%9E%8B%E5%88%86%E7%B1%BB">类型分类</a>
+<ul>
+<li><a href="#%E5%8E%9F%E7%94%9F%E7%B1%BB%E5%9E%8B">原生类型</a></li>
+<li><a href="#%E7%BB%84%E5%90%88%E7%B1%BB%E5%9E%8B">组合类型</a></li>
+<li><a href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E5%90%88%E7%B1%BB%E5%9E%8B">自定义组合类型</a></li>
+</ul>
+</li>
+<li><a href="#%E5%B0%8F%E4%BE%8B%E5%AD%90">小例子</a>
+<ul>
+<li><a href="#%E5%B8%B8%E9%87%8F">常量</a></li>
+</ul>
+</li>
+<li><a href="#%E7%B1%BB%E5%9E%8B%E6%8E%A8%E5%AF%BC">类型推导</a></li>
+<li><a href="#turbofish">Turbofish</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 02:33:18 UTC 2022 -->
+<!--te-->
+<h2 id="类型系统分类图"><a class="header" href="#类型系统分类图">类型系统分类图</a></h2>
+<div id="admonition-类型系统分类图" class="admonition info">
+<div class="admonition-title">
+<p>类型系统分类图</p>
+<p><a class="admonition-anchor-link" href="#admonition-类型系统分类图"></a></p>
+</div>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F.jpg" alt="类型系统分类图" /></p>
+</div>
+</div>
+<h3 id="三个标准"><a class="header" href="#三个标准">三个标准</a></h3>
+<ol>
+<li>隐式转换</li>
+<li>检查时机</li>
+<li>多态支持</li>
+</ol>
+<h3 id="rust类型系统特点"><a class="header" href="#rust类型系统特点">Rust类型系统特点</a></h3>
+<div id="admonition-rust的类型系统有什么特点" class="admonition info">
+<div class="admonition-title">
+<p>Rust的类型系统有什么特点？</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust的类型系统有什么特点"></a></p>
+</div>
+<div>
+<h2 id=""><a class="header" href="#"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257735.jpg" alt="Rust的类型系统有什么特点？" /></a></h2>
+<p>强类型 + 静态类型 + 显式类型</p>
+</div>
+</div>
+<h2 id="类型分类"><a class="header" href="#类型分类">类型分类</a></h2>
+<h3 id="原生类型"><a class="header" href="#原生类型">原生类型</a></h3>
+<details id="admonition-rust原声类型" class="admonition info">
+<summary class="admonition-title">
+<p>Rust原声类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust原声类型"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257523.jpg" alt="Rust原生类型" /></p>
+</div>
+</details>
+<h3 id="组合类型"><a class="header" href="#组合类型">组合类型</a></h3>
+<details id="admonition-rust组合类型" class="admonition info">
+<summary class="admonition-title">
+<p>Rust组合类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust组合类型"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/12%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9ARust%E7%9A%84%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9C%89%E4%BB%80%E4%B9%88%E7%89%B9%E7%82%B9%EF%BC%9F-4257587.jpg" alt="Rust组合类型" /></p>
+</div>
+</details>
+<h3 id="自定义组合类型"><a class="header" href="#自定义组合类型">自定义组合类型</a></h3>
+<h2 id="小例子"><a class="header" href="#小例子">小例子</a></h2>
+<h3 id="常量"><a class="header" href="#常量">常量</a></h3>
+<details id="admonition-常量定义使用" class="admonition info">
+<summary class="admonition-title">
+<p>常量定义使用</p>
+<p><a class="admonition-anchor-link" href="#admonition-常量定义使用"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">const PI: f64 = std::f64::consts::PI;
+static E: f32 = std::f32::consts::E;
+
+fn main() {
+    const V: u32 = 10;
+    static V1: &amp;str = &quot;hello&quot;;
+    println!(&quot;PI: {}, E: {}, V {}, V1: {}&quot;, PI, E, V, V1);
+}
+</code></pre></pre>
+</div>
+</details>
+<h2 id="类型推导"><a class="header" href="#类型推导">类型推导</a></h2>
+<details id="admonition-rust编译器可以从上下文自动推导类型" class="admonition info">
+<summary class="admonition-title">
+<p>Rust编译器可以从上下文自动推导类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust编译器可以从上下文自动推导类型"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::collections::BTreeMap;
+
+fn main() {
+    let mut map = BTreeMap::new();
+    // 没有这一行就缺少自动推导信息
+    // map.insert(&quot;hello&quot;, &quot;world&quot;);
+    println!(&quot;map: {:?}&quot;, map);
+}
+</code></pre></pre>
+<hr />
+<p>把第 5 行这个作用域内的 insert 语句注释去掉，Rust 编译器就会报错：“cannot infer type for type parameter K”。</p>
+</div>
+</details>
+<details id="admonition-rust编译器不能获取足够上下文信息时就需要明确类型" class="admonition info">
+<summary class="admonition-title">
+<p>Rust编译器不能获取足够上下文信息时，就需要明确类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust编译器不能获取足够上下文信息时就需要明确类型"></a></p>
+</summary>
+<div>
+<ol>
+<li>无法自动推导collect返回什么类型</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    let even_numbers = numbers
+        .into_iter()
+        .filter(|n| n % 2 == 0)
+        .collect();
+
+    println!(&quot;{:?}&quot;, even_numbers);
+}
+</code></pre></pre>
+<hr />
+<ol start="2">
+<li>给even_numbers添加类型声明即可</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    let even_numbers: Vec&lt;_&gt; = numbers
+        .into_iter()
+        .filter(|n| n % 2 == 0)
+        .collect();
+
+    println!(&quot;{:?}&quot;, even_numbers);
+}
+</code></pre></pre>
+<blockquote>
+<p>这里编译器只是无法推断出集合类型，但集合类型内部元素的类型，还是可以根据上下文得出，所以我们可以简写成 Vec&lt;_&gt;</p>
+</blockquote>
+<ol start="3">
+<li>也可以让 collect 返回一个明确的类型</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn main() {
+    let numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+    let even_numbers = numbers
+        .into_iter()
+        .filter(|n| n % 2 == 0)
+        .collect::&lt;Vec&lt;_&gt;&gt;();
+
+    println!(&quot;{:?}&quot;, even_numbers);
+}
+</code></pre></pre>
+<hr />
+<blockquote>
+<p>这里在泛型函数后使用 :: 来强制使用类型 T，这种写法被称为 turbofish</p>
+</blockquote>
+</div>
+</details>
+<h2 id="turbofish"><a class="header" href="#turbofish">Turbofish</a></h2>
+<details id="admonition-一个对-ip-地址和端口转换的例子" class="admonition info">
+<summary class="admonition-title">
+<p>一个对 IP 地址和端口转换的例子</p>
+<p><a class="admonition-anchor-link" href="#admonition-一个对-ip-地址和端口转换的例子"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::net::SocketAddr;
+
+fn main() {
+    let addr = &quot;127.0.0.1:8080&quot;.parse::&lt;SocketAddr&gt;().unwrap();
+    println!(&quot;addr: {:?}, port: {:?}&quot;, addr.ip(), addr.port());
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-如果类型在上下文无法被推导出来又没有-turbofish-的写法我们就不得不先给一个局部变量赋值时声明类型然后再返回这样代码就变得冗余" class="admonition info">
+<summary class="admonition-title">
+<p>如果类型在上下文无法被推导出来，又没有 turbofish 的写法，我们就不得不先给一个局部变量赋值时声明类型，然后再返回，这样代码就变得冗余</p>
+<p><a class="admonition-anchor-link" href="#admonition-如果类型在上下文无法被推导出来又没有-turbofish-的写法我们就不得不先给一个局部变量赋值时声明类型然后再返回这样代码就变得冗余"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match data {
+    Some(s) =&gt; v.parse::&lt;User&gt;()?,
+    _ =&gt; return Err(...),
+}
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="2_type_system.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="2_2_generic.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="2_type_system.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="2_2_generic.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
