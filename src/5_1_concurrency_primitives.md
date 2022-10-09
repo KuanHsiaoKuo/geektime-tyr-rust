@@ -1,6 +1,27 @@
 # 并发原语
 
 <!--ts-->
+* [并发原语](#并发原语)
+   * [Atomic](#atomic)
+      * [从锁开始](#从锁开始)
+      * [Atomic+CAS](#atomiccas)
+      * [ordering](#ordering)
+   * [Mutex](#mutex)
+   * [Atomic和Mutex的联系](#atomic和mutex的联系)
+   * [Condvar](#condvar)
+      * [Atomic和Mutex不能解决DAG模式](#atomic和mutex不能解决dag模式)
+      * [condvar介绍与使用](#condvar介绍与使用)
+   * [Channel](#channel)
+   * [自己实现一个基本的MPSC Channel](#自己实现一个基本的mpsc-channel)
+      * [测试驱动的设计](#测试驱动的设计)
+      * [实现 MPSC channel](#实现-mpsc-channel)
+      * [回顾测试驱动开发](#回顾测试驱动开发)
+   * [Actor](#actor)
+   * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 06:00:28 UTC 2022 -->
+
 <!--te-->
 
 ~~~admonish info title="在这些并发模式背后，都有哪些并发原语可以为我们所用呢" collapsible=true

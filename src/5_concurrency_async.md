@@ -1,54 +1,13 @@
 # V 并发与异步
 
 <!--ts-->
-
 * [V 并发与异步](#v-并发与异步)
-    * [区分并发与并行](#区分并发与并行)
-    * [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
-    * [并发原语](#并发原语)
-        * [Atomic](#atomic)
-            * [从锁开始](#从锁开始)
-            * [Atomic+CAS](#atomiccas)
-            * [ordering](#ordering)
-        * [Mutex](#mutex)
-        * [Atomic和Mutex的联系](#atomic和mutex的联系)
-        * [Condvar](#condvar)
-            * [Atomic和Mutex不能解决DAG模式](#atomic和mutex不能解决dag模式)
-            * [condvar介绍与使用](#condvar介绍与使用)
-        * [Channel](#channel)
-        * [Actor](#actor)
-        * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
-    * [自己实现一个基本的MPSC Channel](#自己实现一个基本的mpsc-channel)
-        * [测试驱动的设计](#测试驱动的设计)
-        * [实现 MPSC channel](#实现-mpsc-channel)
-        * [回顾测试驱动开发](#回顾测试驱动开发)
-    * [并发原语与异步的关系](#并发原语与异步的关系)
-    * [Future](#future)
-        * [actor是有栈协程，Future是无栈协程](#actor是有栈协程future是无栈协程)
-        * [Rust的Future](#rust的future)
-        * [Future和async/await](#future和asyncawait)
-        * [为什么需要 Future？](#为什么需要-future)
-        * [深入思路](#深入思路)
-        * [深入了解](#深入了解)
-        * [executor](#executor)
-        * [reactor pattern](#reactor-pattern)
-        * [怎么用 Future 做异步处理？](#怎么用-future-做异步处理)
-        * [使用 Future 的注意事项](#使用-future-的注意事项)
-        * [对比线程学习Future](#对比线程学习future)
-        * [为什么标准库的 Mutex 不能跨越 await？](#为什么标准库的-mutex-不能跨越-await)
-    * [async/await内部是怎么实现的？](#asyncawait内部是怎么实现的)
-        * [Context、Pin](#contextpin)
-        * [Context::waker: Waker 的调用机制](#contextwaker-waker-的调用机制)
-        * [async 究竟生成了什么？](#async-究竟生成了什么)
-        * [为什么需要 Pin？](#为什么需要-pin)
-        * [自引用数据结构](#自引用数据结构)
-        * [Unpin](#unpin)
-        * [### Box的Unpin思考](#-box的unpin思考)
-        * [async 产生的 Future 究竟是什么类型？](#async-产生的-future-究竟是什么类型)
-        * [回顾整理Future的Context、Pin/Unpin，以及async/await](#回顾整理future的contextpinunpin以及asyncawait)
+   * [区分并发与并行](#区分并发与并行)
+   * [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
+   * [并发原语与异步的关系](#并发原语与异步的关系)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 02:57:29 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 06:00:29 UTC 2022 -->
 
 <!--te-->
 
