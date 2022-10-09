@@ -1,21 +1,16 @@
 # httpie源码剖析
 
 <!--ts-->
-
 * [httpie源码剖析](#httpie源码剖析)
-    * [example的使用](#example的使用)
-        * [Cargo.toml](#cargotoml)
-    * [Step1：指令解析](#step1指令解析)
-        * [clap::Parser](#clapparser)
-    * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
-        * [参数验证](#参数验证)
-        * [键值对改造](#键值对改造)
-    * [Step3：异步请求改造](#step3异步请求改造)
-    * [Step4: 语法高亮打印](#step4-语法高亮打印)
-    * [Step5: 添加单元测试](#step5-添加单元测试)
+   * [example的使用](#example的使用)
+   * [Step1：指令解析](#step1指令解析)
+   * [Step2：添加参数验证与键值对改造](#step2添加参数验证与键值对改造)
+   * [Step3：异步请求改造](#step3异步请求改造)
+   * [Step4: 语法高亮打印](#step4-语法高亮打印)
+   * [Step5: 添加单元测试](#step5-添加单元测试)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:41 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:16 UTC 2022 -->
 
 <!--te-->
 
