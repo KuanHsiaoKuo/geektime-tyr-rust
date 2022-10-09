@@ -1,0 +1,680 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>所有权 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item expanded "><a href="1_3_ownership.html" class="active"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="一所有权-单一共享"><a class="header" href="#一所有权-单一共享">一、所有权: 单一/共享</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E4%B8%80%E6%89%80%E6%9C%89%E6%9D%83-%E5%8D%95%E4%B8%80%E5%85%B1%E4%BA%AB">一、所有权: 单一/共享</a>
+<ul>
+<li><a href="#%E5%AF%B9%E6%AF%94%E5%8D%95%E4%B8%80%E5%85%B1%E4%BA%AB%E6%89%80%E6%9C%89%E6%9D%83">对比单一/共享所有权</a></li>
+<li><a href="#%E5%8D%95%E4%B8%80%E6%89%80%E6%9C%89%E6%9D%83%E6%8E%8C%E6%8E%A7%E7%94%9F%E6%9D%80%E5%A4%A7%E6%9D%83">单一所有权：掌控生杀大权</a>
+<ul>
+<li><a href="#%E4%BB%8E%E5%A4%9A%E5%BC%95%E7%94%A8%E5%BC%80%E5%A7%8B">从多引用开始</a></li>
+<li><a href="#rust%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3">Rust如何解决</a>
+<ul>
+<li><a href="#%E6%96%B9%E6%A1%88%E4%B8%80%E5%8D%95%E4%B8%80%E6%89%80%E6%9C%89%E6%9D%83">方案一、单一所有权</a></li>
+<li><a href="#%E6%96%B9%E6%A1%88%E4%BA%8Ccopy">方案二、Copy</a></li>
+</ul>
+</li>
+<li><a href="#%E5%8D%95%E4%B8%80%E6%89%80%E6%9C%89%E6%9D%83%E8%A7%84%E5%88%99%E6%95%B4%E7%90%86">单一所有权规则整理</a></li>
+<li><a href="#%E5%8D%95%E4%B8%80%E6%89%80%E6%9C%89%E6%9D%83%E5%80%9F%E7%94%A8">单一所有权借用</a>
+<ul>
+<li><a href="#%E4%B8%A4%E7%A7%8D%E4%BC%A0%E5%8F%82%E6%96%B9%E5%BC%8F%E4%BC%A0%E5%80%BC%E4%BC%A0%E5%9D%80">两种传参方式：传值/传址</a></li>
+<li><a href="#%E5%8F%AA%E8%AF%BB%E5%80%9F%E7%94%A8%E5%BC%95%E7%94%A8">只读借用/引用</a></li>
+<li><a href="#%E5%80%9F%E7%94%A8%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%8E%E7%BA%A6%E6%9D%9F">借用的生命周期与约束</a></li>
+<li><a href="#%E5%8F%AF%E5%8F%98%E5%80%9F%E7%94%A8%E5%BC%95%E7%94%A8">可变借用/引用</a></li>
+<li><a href="#%E7%AC%AC%E4%B8%80%E6%80%A7%E5%8E%9F%E7%90%86%E7%90%86%E8%A7%A3%E5%8D%95%E4%B8%80%E6%89%80%E6%9C%89%E6%9D%83%E8%A7%84%E5%88%99">第一性原理理解单一所有权规则</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98-%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0">共享内存-多个所有者：引用计数</a>
+<ul>
+<li><a href="#rc%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E-%E5%8F%AA%E8%AF%BB%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0">Rc使用说明: 只读引用计数</a>
+<ul>
+<li><a href="#rc%E4%BD%BF%E7%94%A8boxleak">Rc使用Box::leak()</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8rc%E5%AE%9E%E7%8E%B0dag">使用Rc实现DAG</a></li>
+</ul>
+</li>
+<li><a href="#refcell-%E6%8F%90%E4%BE%9B%E5%86%85%E9%83%A8%E5%8F%AF%E5%8F%98%E6%80%A7%E5%8F%AF%E5%8F%98%E5%BC%95%E7%94%A8%E8%AE%A1%E6%95%B0">RefCell: 提供内部可变性，可变引用计数</a>
+<ul>
+<li><a href="#%E5%A4%96%E9%83%A8%E5%8F%AF%E5%8F%98%E6%80%A7%E4%B8%8E%E5%86%85%E9%83%A8%E5%8F%AF%E5%8F%98%E6%80%A7">外部可变性与内部可变性</a></li>
+<li><a href="#refcell%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8">RefCell简单使用</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8refcell%E5%AE%9E%E7%8E%B0%E5%8F%AF%E4%BF%AE%E6%94%B9%E7%89%88%E6%9C%ACdag">使用RefCell实现可修改版本DAG</a></li>
+</ul>
+</li>
+<li><a href="#%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%89%88%E6%9C%AC%E8%AE%A1%E6%95%B0%E5%99%A8arcrcmutexrwlockrefcell">线程安全版本计数器：Arc(Rc)、Mutex/RwLock(RefCell)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 02:50:11 UTC 2022 -->
+<!--te-->
+<h2 id="对比单一共享所有权"><a class="header" href="#对比单一共享所有权">对比单一/共享所有权</a></h2>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606985.jpg" alt="单一/共享所有权对比" /></p>
+<h2 id="单一所有权掌控生杀大权"><a class="header" href="#单一所有权掌控生杀大权">单一所有权：掌控生杀大权</a></h2>
+<h3 id="从多引用开始"><a class="header" href="#从多引用开始">从多引用开始</a></h3>
+<details id="admonition-多重堆引用问题" class="admonition info">
+<summary class="admonition-title">
+<p>多重堆引用问题</p>
+<p><a class="admonition-anchor-link" href="#admonition-多重堆引用问题"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/07%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E7%94%9F%E6%9D%80%E5%A4%A7%E6%9D%83%E5%88%B0%E5%BA%95%E5%9C%A8%E8%B0%81%E6%89%8B%E4%B8%8A%EF%BC%9F-4446989.jpg" alt="多重堆引用的问题" /></p>
+</div>
+</details>
+<h3 id="rust如何解决"><a class="header" href="#rust如何解决">Rust如何解决</a></h3>
+<h4 id="方案一单一所有权"><a class="header" href="#方案一单一所有权">方案一、单一所有权</a></h4>
+<details id="admonition-单一所有权解决多重引用问题" class="admonition info">
+<summary class="admonition-title">
+<p>单一所有权解决多重引用问题</p>
+<p><a class="admonition-anchor-link" href="#admonition-单一所有权解决多重引用问题"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/07%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E7%94%9F%E6%9D%80%E5%A4%A7%E6%9D%83%E5%88%B0%E5%BA%95%E5%9C%A8%E8%B0%81%E6%89%8B%E4%B8%8A%EF%BC%9F-4446891.jpg" alt="rust所有权规则解决多重引用问题" /></p>
+</div>
+</details>
+<h4 id="方案二copy"><a class="header" href="#方案二copy">方案二、Copy</a></h4>
+<details id="admonition-使用copy解决多重引用问题" class="admonition info">
+<summary class="admonition-title">
+<p>使用Copy解决多重引用问题</p>
+<p><a class="admonition-anchor-link" href="#admonition-使用copy解决多重引用问题"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/07%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E7%94%9F%E6%9D%80%E5%A4%A7%E6%9D%83%E5%88%B0%E5%BA%95%E5%9C%A8%E8%B0%81%E6%89%8B%E4%B8%8A%EF%BC%9F-4447051.jpg" alt="Copy解决" /></p>
+</div>
+</details>
+<h3 id="单一所有权规则整理"><a class="header" href="#单一所有权规则整理">单一所有权规则整理</a></h3>
+<details id="admonition-单一所有权规则整理" class="admonition info">
+<summary class="admonition-title">
+<p>单一所有权规则整理</p>
+<p><a class="admonition-anchor-link" href="#admonition-单一所有权规则整理"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/07%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E7%94%9F%E6%9D%80%E5%A4%A7%E6%9D%83%E5%88%B0%E5%BA%95%E5%9C%A8%E8%B0%81%E6%89%8B%E4%B8%8A%EF%BC%9F-4447111.jpg" alt="所有权规则整理" /></p>
+</div>
+</details>
+<h3 id="单一所有权借用"><a class="header" href="#单一所有权借用">单一所有权借用</a></h3>
+<h4 id="两种传参方式传值传址"><a class="header" href="#两种传参方式传值传址">两种传参方式：传值/传址</a></h4>
+<details id="admonition-传值-or-传址" class="admonition info">
+<summary class="admonition-title">
+<p>传值 or 传址</p>
+<p><a class="admonition-anchor-link" href="#admonition-传值-or-传址"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/08%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E5%80%9F%E7%94%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9F.jpg" alt="传值/传址" /></p>
+</div>
+</details>
+<h4 id="只读借用引用"><a class="header" href="#只读借用引用">只读借用/引用</a></h4>
+<details id="admonition-只读借用引用" class="admonition info">
+<summary class="admonition-title">
+<p>只读借用/引用</p>
+<p><a class="admonition-anchor-link" href="#admonition-只读借用引用"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/08%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E5%80%9F%E7%94%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9F-4447323.jpg" alt="只读" /></p>
+</div>
+</details>
+<h4 id="借用的生命周期与约束"><a class="header" href="#借用的生命周期与约束">借用的生命周期与约束</a></h4>
+<details id="admonition-三段生命周期分析" class="admonition info">
+<summary class="admonition-title">
+<p>三段生命周期分析</p>
+<p><a class="admonition-anchor-link" href="#admonition-三段生命周期分析"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/08%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E5%80%9F%E7%94%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9F-4447702.jpg" alt="三段生命周期分析" /></p>
+</div>
+</details>
+<h4 id="可变借用引用"><a class="header" href="#可变借用引用">可变借用/引用</a></h4>
+<blockquote>
+<p>同一个上下文中多个可变引用是不安全的，那如果同时有一个可变引用和若干个只读引 用就可以</p>
+</blockquote>
+<h4 id="第一性原理理解单一所有权规则"><a class="header" href="#第一性原理理解单一所有权规则">第一性原理理解单一所有权规则</a></h4>
+<details id="admonition-第一性原理理解所有权模型单一所有权共享所有权" class="admonition info">
+<summary class="admonition-title">
+<p>第一性原理理解所有权模型：单一所有权/共享所有权</p>
+<p><a class="admonition-anchor-link" href="#admonition-第一性原理理解所有权模型单一所有权共享所有权"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/08%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E5%80%9F%E7%94%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9F-4447883.jpg" alt="第一性原理" /></p>
+</div>
+</details>
+<h2 id="共享内存-多个所有者引用计数"><a class="header" href="#共享内存-多个所有者引用计数">共享内存-多个所有者：引用计数</a></h2>
+<details id="admonition-单一所有权与多个所有者是否有冲突" class="admonition info">
+<summary class="admonition-title">
+<p>单一所有权与多个所有者是否有冲突？</p>
+<p><a class="admonition-anchor-link" href="#admonition-单一所有权与多个所有者是否有冲突"></a></p>
+</summary>
+<div>
+<ol>
+<li>静态检查：单一所有权是rust的编译期默认检查内容</li>
+<li>动态检查：多个所有者主要是用于共享内存，这是专门提供Rc/Arc、Box::leak()、RefCell/Mutex/RwLock等工具。</li>
+</ol>
+<hr />
+<blockquote>
+<p>这里其实可以看出rust如何使用’二八法则’解决问题：</p>
+</blockquote>
+<ul>
+<li>对于常用场景，用编译期静态检查来默认解决</li>
+<li>对于特别场景，用专门的语法显式表达出来，提供运行期动态检查来专门解决</li>
+</ul>
+</div>
+</details>
+<h3 id="rc使用说明-只读引用计数"><a class="header" href="#rc使用说明-只读引用计数">Rc使用说明: 只读引用计数</a></h3>
+<details id="admonition-对一个-rc-结构进行-clone不会将其内部的数据复制只会增加引用计数" class="admonition info">
+<summary class="admonition-title">
+<p>对一个 Rc 结构进行 clone()，不会将其内部的数据复制，只会增加引用计数</p>
+<p><a class="admonition-anchor-link" href="#admonition-对一个-rc-结构进行-clone不会将其内部的数据复制只会增加引用计数"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::rc::Rc;
+fn main() {
+    let a = Rc::new(1);
+    let b = a.clone();
+    let c = a.clone();
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-上方代码rc引用计数示意图共享堆内存" class="admonition info">
+<summary class="admonition-title">
+<p>上方代码Rc引用计数示意图：共享堆内存</p>
+<p><a class="admonition-anchor-link" href="#admonition-上方代码rc引用计数示意图共享堆内存"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4604653.jpg" alt="引用计数示意图" /></p>
+</div>
+</details>
+<details id="admonition-clone源码" class="admonition info">
+<summary class="admonition-title">
+<p>clone源码</p>
+<p><a class="admonition-anchor-link" href="#admonition-clone源码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">fn clone(&amp;self) -&gt; Rc&lt;T&gt; {
+    // 增加引用计数
+    self.inner().inc_strong();
+    // 通过 self.ptr 生成一个新的 Rc 结构
+    Self::from_inner(self.ptr)
+}
+</code></pre></pre>
+</div>
+</details>
+<h4 id="rc使用boxleak"><a class="header" href="#rc使用boxleak">Rc使用Box::leak()</a></h4>
+<details id="admonition-使用boxleak创建不受栈内存控制堆堆内存示意图" class="admonition info">
+<summary class="admonition-title">
+<p>使用Box::leak()创建不受栈内存控制堆堆内存示意图</p>
+<p><a class="admonition-anchor-link" href="#admonition-使用boxleak创建不受栈内存控制堆堆内存示意图"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4605420.jpg" alt="使用Box::leak()创建不受栈内存控制堆堆内存示意图" /></p>
+</div>
+</details>
+<details id="admonition-有了-boxleak我们就可以跳出-rust-编译器的静态检查" class="admonition info">
+<summary class="admonition-title">
+<p>有了 Box::leak()，我们就可以跳出 Rust 编译器的静态检查</p>
+<p><a class="admonition-anchor-link" href="#admonition-有了-boxleak我们就可以跳出-rust-编译器的静态检查"></a></p>
+</summary>
+<div>
+<p>保证 Rc 指向的堆内存，有最大的生命周期，然后我们再通过引用计数，在合适的时机，结束这段内存的生命周期。如果你对此感兴趣，可以看 <a href="https://doc.rust-lang.org/src/alloc/rc.rs.html#342-350">Rc::new() 的源码</a>。</p>
+</div>
+</details>
+<h4 id="使用rc实现dag"><a class="header" href="#使用rc实现dag">使用Rc实现DAG</a></h4>
+<details id="admonition-dag数据结构示意图" class="admonition info">
+<summary class="admonition-title">
+<p>DAG数据结构示意图</p>
+<p><a class="admonition-anchor-link" href="#admonition-dag数据结构示意图"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4607216.jpg" alt="DAG数据结构" /></p>
+</div>
+</details>
+<details id="admonition-不可修改版本" class="admonition info">
+<summary class="admonition-title">
+<p>不可修改版本</p>
+<p><a class="admonition-anchor-link" href="#admonition-不可修改版本"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::rc::Rc;
+
+#[allow(dead_code)]
+#[derive(Debug)]
+struct Node {
+    id: usize,
+    downstream: Option&lt;Rc&lt;Node&gt;&gt;,
+}
+
+impl Node {
+    pub fn new(id: usize) -&gt; Self {
+        Self {
+            id,
+            downstream: None,
+        }
+    }
+
+    pub fn update_downstream(&amp;mut self, downstream: Rc&lt;Node&gt;) {
+        self.downstream = Some(downstream);
+    }
+
+    pub fn get_downstream(&amp;self) -&gt; Option&lt;Rc&lt;Node&gt;&gt; {
+        self.downstream.as_ref().cloned()
+    }
+}
+
+fn main() {
+    let mut node1 = Node::new(1);
+    let mut node2 = Node::new(2);
+    let mut node3 = Node::new(3);
+    let node4 = Node::new(4);
+    node3.update_downstream(Rc::new(node4));
+
+    node1.update_downstream(Rc::new(node3));
+    node2.update_downstream(node1.get_downstream().unwrap());
+    println!(&quot;node1: {:?}, node2: {:?}&quot;, node1, node2);
+
+    // 无法编译通过: cannot borrow as mutable
+    // let node5 = Node::new(5);
+    // let node3 = node1.get_downstream().unwrap();
+    // node3.update_downstream(Rc::new(node5));
+
+    // println!(&quot;node1: {:?}, node2: {:?}&quot;, node1, node2);
+}
+</code></pre></pre>
+<ul>
+<li>new()：建立一个新的 Node。</li>
+<li>update_downstream()：设置 Node 的 downstream。</li>
+<li>get_downstream()：clone 一份 Node 里的 downstream。</li>
+</ul>
+</div>
+</details>
+<h3 id="refcell-提供内部可变性可变引用计数"><a class="header" href="#refcell-提供内部可变性可变引用计数">RefCell: 提供内部可变性，可变引用计数</a></h3>
+<h4 id="外部可变性与内部可变性"><a class="header" href="#外部可变性与内部可变性">外部可变性与内部可变性</a></h4>
+<details id="admonition-外部可变性与内部可变性对比图" class="admonition info">
+<summary class="admonition-title">
+<p>外部可变性与内部可变性对比图</p>
+<p><a class="admonition-anchor-link" href="#admonition-外部可变性与内部可变性对比图"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606188-4606221.jpg" alt="外部可变性与内部可变性" /></p>
+</div>
+</details>
+<h4 id="refcell简单使用"><a class="header" href="#refcell简单使用">RefCell简单使用</a></h4>
+<details id="admonition-获得-refcell-内部数据的可变借用" class="admonition info">
+<summary class="admonition-title">
+<p>获得 RefCell 内部数据的可变借用</p>
+<p><a class="admonition-anchor-link" href="#admonition-获得-refcell-内部数据的可变借用"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::cell::RefCell;
+
+fn main() {
+    let data = RefCell::new(1);
+    {
+        // 获得 RefCell 内部数据的可变借用
+        let mut v = data.borrow_mut();
+        *v += 1;
+    }
+    println!(&quot;data: {:?}&quot;, data.borrow());
+}
+</code></pre></pre>
+</div>
+</details>
+<h4 id="使用refcell实现可修改版本dag"><a class="header" href="#使用refcell实现可修改版本dag">使用RefCell实现可修改版本DAG</a></h4>
+<details id="admonition-不可修改版本-1" class="admonition info">
+<summary class="admonition-title">
+<p>不可修改版本</p>
+<p><a class="admonition-anchor-link" href="#admonition-不可修改版本-1"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::cell::RefCell;
+use std::rc::Rc;
+
+#[allow(dead_code)]
+#[derive(Debug)]
+struct Node {
+    id: usize,
+    // 使用 Rc&lt;RefCell&lt;T&gt;&gt; 让节点可以被修改
+    downstream: Option&lt;Rc&lt;RefCell&lt;Node&gt;&gt;&gt;,
+}
+
+impl Node {
+    pub fn new(id: usize) -&gt; Self {
+        Self {
+            id,
+            downstream: None,
+        }
+    }
+
+    pub fn update_downstream(&amp;mut self, downstream: Rc&lt;RefCell&lt;Node&gt;&gt;) {
+        self.downstream = Some(downstream);
+    }
+
+    pub fn get_downstream(&amp;self) -&gt; Option&lt;Rc&lt;RefCell&lt;Node&gt;&gt;&gt; {
+        self.downstream.as_ref().cloned()
+    }
+}
+
+fn main() {
+    let mut node1 = Node::new(1);
+    let mut node2 = Node::new(2);
+    let mut node3 = Node::new(3);
+    let node4 = Node::new(4);
+
+    node3.update_downstream(Rc::new(RefCell::new(node4)));
+    node1.update_downstream(Rc::new(RefCell::new(node3)));
+    node2.update_downstream(node1.get_downstream().unwrap());
+    println!(&quot;node1: {:?}, node2: {:?}&quot;, node1, node2);
+
+    let node5 = Node::new(5);
+    let node3 = node1.get_downstream().unwrap();
+    // 获得可变引用，来修改 downstream
+    node3.borrow_mut().downstream = Some(Rc::new(RefCell::new(node5)));
+
+    println!(&quot;node1: {:?}, node2: {:?}&quot;, node1, node2);
+}
+</code></pre></pre>
+<ol>
+<li>首先数据结构的 downstream 需要 Rc 内部嵌套一个 RefCell</li>
+<li>这样，就可以利用 RefCell 的内部可变性，来获得数据的可变借用</li>
+<li>同时 Rc 还允许值有多个所有者。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-refcell内部可变性示意图" class="admonition info">
+<summary class="admonition-title">
+<p>RefCell内部可变性示意图</p>
+<p><a class="admonition-anchor-link" href="#admonition-refcell内部可变性示意图"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606429.jpg" alt="使用RefCell实现可修改版本DAG" /></p>
+</div>
+</details>
+<h3 id="线程安全版本计数器arcrcmutexrwlockrefcell"><a class="header" href="#线程安全版本计数器arcrcmutexrwlockrefcell">线程安全版本计数器：Arc(Rc)、Mutex/RwLock(RefCell)</a></h3>
+<details id="admonition-rust实现两套不同的引用计数数据结构" class="admonition info">
+<summary class="admonition-title">
+<p>Rust实现两套不同的引用计数数据结构</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust实现两套不同的引用计数数据结构"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>Arc 内部的引用计数使用了 <a href="https://doc.rust-lang.org/src/alloc/sync.rs.html#303-312">Atomic Usize</a> ，而非普通的 usize。
+从名称上也可以感觉出来，Atomic Usize 是 usize 的原子类型，它使用了 CPU 的特殊指令，来保证多线程下的安全。
+如果你对原子类型感兴趣，可以看 <a href="https://doc.rust-lang.org/std/sync/atomic/index.html">std::sync::atomic</a> 的文档。</p>
+</blockquote>
+<p>Rust 实现两套不同的引用计数数据结构，完全是为了性能考虑，从这里我们也可以感受到 Rust 对性能的极致渴求:</p>
+<ul>
+<li>如果不用跨线程访问，可以用效率非常高的 Rc； 如果要跨线程访问，那么必须用 Arc。</li>
+<li>同样的，RefCell 也不是线程安全的，如果我们要在多线程中，使用内部可变性，Rust 提供了 Mutex 和 RwLock。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-mutexrwlock其实是并发的两个方案" class="admonition info">
+<summary class="admonition-title">
+<p>Mutex/RwLock其实是并发的两个方案</p>
+<p><a class="admonition-anchor-link" href="#admonition-mutexrwlock其实是并发的两个方案"></a></p>
+</summary>
+<div>
+<p>这两个数据结构你应该都不陌生:</p>
+<ol>
+<li>Mutex 是互斥量，获得互斥量的线程对数据独占访问.</li>
+<li>RwLock 是读写锁，获得写锁的线程对数据独占访问，但当没有写锁的时候，允许有多个读锁。 </li>
+<li>读写锁的规则和 Rust 的借用规则非常类似，我们可以类比着学。</li>
+<li>Mutex 和 RwLock 都用在多线程环境下，对共享数据访问的保护上。</li>
+<li>前面构建的 DAG 如果要用在多线程环境下，需要把 Rc&gt; 替换为 Arc&gt; 或者 Arc&gt;。</li>
+</ol>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="1_2_programming_basic_concepts.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="1_4_lifetime.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="1_2_programming_basic_concepts.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="1_4_lifetime.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>从创建到消亡 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item expanded "><a href="1_5_go_through.html" class="active"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="三融会贯通从创建到消亡"><a class="header" href="#三融会贯通从创建到消亡">三、融会贯通，从创建到消亡</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E4%B8%89%E8%9E%8D%E4%BC%9A%E8%B4%AF%E9%80%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1">三、融会贯通，从创建到消亡</a>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA">创建</a>
+<ul>
+<li><a href="#%E5%A0%86%E5%86%85%E5%AD%98%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86%E5%8F%91%E5%B1%95%E5%8F%B2">堆内存生命周期管理发展史</a></li>
+<li><a href="#structenumvecstring%E5%88%9B%E5%BB%BA%E6%97%B6%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80">struct/enum/vec/String创建时的内存布局</a>
+<ul>
+<li><a href="#struct">struct</a></li>
+<li><a href="#enum">enum</a></li>
+<li><a href="#vec%E5%92%8Cstring">vec和String</a></li>
+<li><a href="#%E5%BC%95%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80">引用类型的内存布局</a></li>
+</ul>
+</li>
+<li><a href="#%E6%9B%B4%E5%A4%9A%E5%8F%AF%E8%A7%81cheatsrs">更多可见cheats.rs</a></li>
+</ul>
+</li>
+<li><a href="#%E4%BD%BF%E7%94%A8">使用</a>
+<ul>
+<li><a href="#copy%E5%92%8Cmove">copy和move</a></li>
+</ul>
+</li>
+<li><a href="#%E9%94%80%E6%AF%81">销毁</a>
+<ul>
+<li><a href="#drop%E9%87%8A%E6%94%BE%E5%A0%86%E5%86%85%E5%AD%98">drop释放堆内存</a></li>
+<li><a href="#raii%E9%87%8A%E6%94%BE%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90">RAII释放其他资源</a></li>
+<li><a href="#rust%E5%9C%A8%E7%BC%96%E8%AF%91%E6%97%B6%E8%BF%90%E8%A1%8C%E6%97%B6%E6%A3%80%E6%9F%A5%E8%B0%83%E7%94%A8drop">Rust在编译时、运行时检查调用drop</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 02:50:11 UTC 2022 -->
+<!--te-->
+<h2 id="创建"><a class="header" href="#创建">创建</a></h2>
+<h3 id="堆内存生命周期管理发展史"><a class="header" href="#堆内存生命周期管理发展史">堆内存生命周期管理发展史</a></h3>
+<details id="admonition-堆内存生命周期管理发展史" class="admonition info">
+<summary class="admonition-title">
+<p>堆内存生命周期管理发展史</p>
+<p><a class="admonition-anchor-link" href="#admonition-堆内存生命周期管理发展史"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F.jpg" alt="堆内存生命周期管理发展史" /></p>
+</div>
+</details>
+<details id="admonition-堆内存管理需求动态大小-or-生命周期" class="admonition info">
+<summary class="admonition-title">
+<p>堆内存管理需求：动态大小 or 生命周期</p>
+<p><a class="admonition-anchor-link" href="#admonition-堆内存管理需求动态大小-or-生命周期"></a></p>
+</summary>
+<div>
+<p>Rust 的创造者们，重新审视了堆内存的生命周期，发现:</p>
+<ul>
+<li>大部分堆内存的需求在于动态大小</li>
+<li>小部分需求是更长的生命周期。</li>
+</ul>
+<blockquote>
+<p>所以它默认将堆内存的生命周期和使用它的栈内存的生命周期绑在一起，并留了个小口子 leaked 机制，让堆内存在需要的时候，可以有超出帧存活期的生命周期。</p>
+</blockquote>
+<hr />
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4639705.jpg" alt="Rust与其他编程语言堆内存管理对比" /></p>
+</div>
+</details>
+<h3 id="structenumvecstring创建时的内存布局"><a class="header" href="#structenumvecstring创建时的内存布局">struct/enum/vec/String创建时的内存布局</a></h3>
+<h4 id="struct"><a class="header" href="#struct">struct</a></h4>
+<details id="admonition-内存布局优化示意图" class="admonition info">
+<summary class="admonition-title">
+<p>内存布局优化示意图</p>
+<p><a class="admonition-anchor-link" href="#admonition-内存布局优化示意图"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4639867.jpg" alt="内存布局优化示意图" /></p>
+</div>
+</details>
+<details id="admonition-c语言手动优化内存布局" class="admonition info">
+<summary class="admonition-title">
+<p>c语言手动优化内存布局</p>
+<p><a class="admonition-anchor-link" href="#admonition-c语言手动优化内存布局"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4639905.jpg" alt="c语言手动优化内存布局" /></p>
+</div>
+</details>
+<details id="admonition-c语言手动优化内存布局与rust自动优化内存布局对比" class="admonition info">
+<summary class="admonition-title">
+<p>c语言手动优化内存布局与rust自动优化内存布局对比</p>
+<p><a class="admonition-anchor-link" href="#admonition-c语言手动优化内存布局与rust自动优化内存布局对比"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4639936.jpg" alt="c语言手动优化内存布局与rust自动优化内存布局对比" /></p>
+</div>
+</details>
+<details id="admonition-代码对比rust和clang的内存布局优化" class="admonition info">
+<summary class="admonition-title">
+<p>代码对比rust和clang的内存布局优化</p>
+<p><a class="admonition-anchor-link" href="#admonition-代码对比rust和clang的内存布局优化"></a></p>
+</summary>
+<div>
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+struct S1 {
+    u_int8_t a;
+    u_int16_t b;
+    u_int8_t c;
+};
+
+struct S2 {
+    u_int8_t a;
+    u_int8_t c;
+    u_int16_t b;
+};
+
+void main() {
+    printf(&quot;size of S1: %d, S2: %d&quot;, sizeof(struct S1), sizeof(struct S2));
+}
+</code></pre>
+<hr />
+<pre><pre class="playground"><code class="language-rust  editable">use std::mem::{align_of, size_of};
+
+#[allow(dead_code)]
+struct S1 {
+    a: u8,
+    b: u16,
+    c: u8,
+}
+
+#[allow(dead_code)]
+struct S2 {
+    a: u8,
+    c: u8,
+    b: u16,
+}
+
+fn main() {
+    println!(&quot;sizeof S1: {}, S2: {}&quot;, size_of::&lt;S1&gt;(), size_of::&lt;S2&gt;());
+    println!(&quot;alignof S1: {}, S2: {}&quot;, align_of::&lt;S1&gt;(), align_of::&lt;S2&gt;());
+}
+</code></pre></pre>
+</div>
+</details>
+<h4 id="enum"><a class="header" href="#enum">enum</a></h4>
+<details id="admonition-enumoptionresult内存布局对比" class="admonition info">
+<summary class="admonition-title">
+<p>enum/Option<T>/Result&lt;T,E&gt;内存布局对比</p>
+<p><a class="admonition-anchor-link" href="#admonition-enumoptionresult内存布局对比"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4640218.jpg" alt="enum/Option&lt;T&gt;/Result&lt;T,E&gt;内存布局对比" /></p>
+</div>
+</details>
+<details id="admonition-rust-编译器会对-enum-做一些额外的优化让某些常用结构的内存布局更紧凑" class="admonition info">
+<summary class="admonition-title">
+<p>Rust 编译器会对 enum 做一些额外的优化，让某些常用结构的内存布局更紧凑。</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust-编译器会对-enum-做一些额外的优化让某些常用结构的内存布局更紧凑"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::collections::HashMap;
+use std::mem::size_of;
+
+#[allow(dead_code)]
+enum E {
+    A(f64),
+    B(HashMap&lt;String, String&gt;),
+    C(Result&lt;Vec&lt;u8&gt;, String&gt;),
+}
+
+macro_rules! show_size {
+    (header) =&gt; {
+        println!(
+            &quot;{:&lt;24} {:&gt;4}    {}    {}&quot;,
+            &quot;Type&quot;, &quot;T&quot;, &quot;Option&lt;T&gt;&quot;, &quot;Result&lt;T, io::Error&gt;&quot;
+        );
+        println!(&quot;{}&quot;, &quot;-&quot;.repeat(64));
+    };
+    ($t:ty) =&gt; {
+        println!(
+            &quot;{:&lt;24} {:4} {:8} {:12}&quot;,
+            stringify!($t),
+            size_of::&lt;$t&gt;(),
+            size_of::&lt;Option&lt;$t&gt;&gt;(),
+            size_of::&lt;Result&lt;$t, std::io::Error&gt;&gt;(),
+        )
+    };
+}
+
+fn main() {
+    show_size!(header);
+    show_size!(u8);
+    show_size!(f64);
+    show_size!(&amp;u8);
+    show_size!(Box&lt;u8&gt;);
+    show_size!(&amp;[u8]);
+
+    show_size!(String);
+    show_size!(Vec&lt;u8&gt;);
+    show_size!(HashMap&lt;String, String&gt;);
+    show_size!(E);
+}
+</code></pre></pre>
+<hr />
+<blockquote>
+<p>你会发现，Option 配合带有引用类型的数据结构，比如 &amp;u8、Box、Vec、HashMap ，没有额外占用空间，这就很有意思了</p>
+</blockquote>
+<pre><code class="language-shell">
+Type                        T    Option&lt;T&gt;    Result&lt;T, io::Error&gt;
+----------------------------------------------------------------
+u8                          1        2           24
+f64                         8       16           24
+&amp;u8                         8        8           24
+Box&lt;u8&gt;                     8        8           24
+&amp;[u8]                      16       16           24
+String                     24       24           32
+Vec&lt;u8&gt;                    24       24           32
+HashMap&lt;String, String&gt;    48       48           56
+E                          56       56           64
+</code></pre>
+<hr />
+<p>Rust 是这么处理的:</p>
+<ol>
+<li>我们知道，引用类型的第一个域是个指针，而指针是不可能等于 0 的，</li>
+<li>但是我们可以复用这个指针：当其为 0 时，表示 None，否则是 Some，减少了内存占用，这是个非常巧妙的优化</li>
+</ol>
+</div>
+</details>
+<h4 id="vec和string"><a class="header" href="#vec和string">vec<T>和String</a></h4>
+<details id="admonition-string其实就是vec" class="admonition info">
+<summary class="admonition-title">
+<p>String其实就是Vec<u8></p>
+<p><a class="admonition-anchor-link" href="#admonition-string其实就是vec"></a></p>
+</summary>
+<div>
+<p>String 和 Vec 占用相同的大小，都是 24 个字节。其实，如果你打开 String 结构的<a href="https://doc.rust-lang.org/src/alloc/string.rs.html#279-281">源码</a>，可以看到，它内部就是一个 Vec</p>
+</div>
+</details>
+<details id="admonition-vec-结构是-3-个-word-的胖指针" class="admonition info">
+<summary class="admonition-title">
+<p>Vec 结构是 3 个 word 的胖指针</p>
+<p><a class="admonition-anchor-link" href="#admonition-vec-结构是-3-个-word-的胖指针"></a></p>
+</summary>
+<div>
+<h2 id=""><a class="header" href="#"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4640654.jpg" alt="vec就是一个胖指针" /></a></h2>
+<p>包含：</p>
+<ol>
+<li>一个指向堆内存的指针 pointer</li>
+<li>分配的堆内存的容量 capacity</li>
+<li>以及数据在堆内存的长度 length</li>
+</ol>
+</div>
+</details>
+<h4 id="引用类型的内存布局"><a class="header" href="#引用类型的内存布局">引用类型的内存布局</a></h4>
+<details id="admonition-引用类型的内存布局" class="admonition info">
+<summary class="admonition-title">
+<p>引用类型的内存布局</p>
+<p><a class="admonition-anchor-link" href="#admonition-引用类型的内存布局"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F.png" alt="引用类型的内存布局" /></p>
+</div>
+</details>
+<h3 id="更多可见cheatsrs"><a class="header" href="#更多可见cheatsrs">更多可见cheats.rs</a></h3>
+<ul>
+<li><a href="https://cheats.rs/#data-layout">Rust Language Cheat Sheet</a></li>
+</ul>
+<h2 id="使用"><a class="header" href="#使用">使用</a></h2>
+<h3 id="copy和move"><a class="header" href="#copy和move">copy和move</a></h3>
+<details id="admonition-copy和move的内部实现都只是浅层按位做内存复制" class="admonition info">
+<summary class="admonition-title">
+<p>copy和move的内部实现都只是浅层按位做内存复制</p>
+<p><a class="admonition-anchor-link" href="#admonition-copy和move的内部实现都只是浅层按位做内存复制"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4640936.jpg" alt="copy和move的内部实现都只是浅层按位做内存复制" /></p>
+</div>
+</details>
+<h2 id="销毁"><a class="header" href="#销毁">销毁</a></h2>
+<h3 id="drop释放堆内存"><a class="header" href="#drop释放堆内存">drop释放堆内存</a></h3>
+<details id="admonition-当一个值被释放其实就是调用它的drop方法" class="admonition info">
+<summary class="admonition-title">
+<p>当一个值被释放，其实就是调用它的drop方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-当一个值被释放其实就是调用它的drop方法"></a></p>
+</summary>
+<div>
+<h2 id="-1"><a class="header" href="#-1"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4641072.jpg" alt="当一个值被释放，其实就是调用它的drop方法" /></a></h2>
+<ol>
+<li>变量 greeting 是一个字符串，在退出作用域时，其 drop() 函数被自动调用</li>
+<li>释放堆上包含 “hello world” 的内存</li>
+<li>然后再释放栈上的内存</li>
+</ol>
+</div>
+</details>
+<details id="admonition-复杂结构递归调用drop" class="admonition info">
+<summary class="admonition-title">
+<p>复杂结构递归调用drop</p>
+<p><a class="admonition-anchor-link" href="#admonition-复杂结构递归调用drop"></a></p>
+</summary>
+<div>
+<h2 id="-2"><a class="header" href="#-2"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4641173.jpg" alt="复杂结构递归调用drop" /></a></h2>
+<blockquote>
+<p>如果要释放的值是一个复杂的数据结构，比如一个结构体，那么:</p>
+</blockquote>
+<ol>
+<li>这个结构体在调用 drop() 时，会依次调用每一个域的 drop() 函数</li>
+<li>如果域又是一个复杂的结构或者集合类型，就会递归下去</li>
+<li>直到每一个域都释放干净。</li>
+</ol>
+<hr />
+<ul>
+<li>student 变量是一个结构体，有 name、age、scores。</li>
+<li>其中 name 是 String，scores 是 HashMap，它们本身需要额外 drop()。</li>
+<li>又因为 HashMap 的 key 是 String，所以还需要进一步调用这些 key 的 drop()。</li>
+</ul>
+<blockquote>
+<p>整个释放顺序从内到外是：先释放 HashMap 下的 key，然后释放 HashMap 堆上的表结构，最后释放栈上的内存</p>
+</blockquote>
+</div>
+</details>
+<h3 id="raii释放其他资源"><a class="header" href="#raii释放其他资源">RAII释放其他资源</a></h3>
+<details id="admonition-rust基于raii释放文件资源" class="admonition info">
+<summary class="admonition-title">
+<p>Rust基于RAII释放文件资源</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust基于raii释放文件资源"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::fs::File;
+use std::io::prelude::*;
+fn main() -&gt; std::io::Result&lt;()&gt; {
+    let mut file = File::create(&quot;foo.txt&quot;)?;
+    file.write_all(b&quot;Hello, world!&quot;)?;
+    Ok(())
+}
+</code></pre></pre>
+</div>
+</details>
+<h3 id="rust在编译时运行时检查调用drop"><a class="header" href="#rust在编译时运行时检查调用drop">Rust在编译时、运行时检查调用drop</a></h3>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4641604.jpg" alt="Rust在编译时、运行时检查调用drop" /></p>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="1_4_lifetime.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="2_type_system.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="1_4_lifetime.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="2_type_system.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
