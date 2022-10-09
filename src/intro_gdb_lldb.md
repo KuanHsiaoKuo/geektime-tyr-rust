@@ -1,26 +1,27 @@
 # gdb/lldb调试或查看内存结构
 
 <!--ts-->
+
 * [gdb/lldb调试或查看内存结构](#gdblldb调试或查看内存结构)
-   * [资料整理](#资料整理)
-      * [官方数据结构cheat sheet](#官方数据结构cheat-sheet)
-   * [查看hashmap内存结构](#查看hashmap内存结构)
-      * [bin配置与运行](#bin配置与运行)
-      * [目标调试代码](#目标调试代码)
-      * [使用gdb/lldb进行调试查看内存结构](#使用gdblldb进行调试查看内存结构)
-         * [gdb: 主要是linux系统](#gdb-主要是linux系统)
-         * [lldb: 主要OSX系统](#lldb-主要osx系统)
-         * [IDEA](#idea)
-         * [gdb与lldb命令对照](#gdb与lldb命令对照)
-         * [开始调试](#开始调试)
-         * [b(reakpoint): 添加断点](#breakpoint-添加断点)
-         * [r(un):运行到断点](#run运行到断点)
-         * [c(ontinue):继续单步执行](#continue继续单步执行)
-         * [x: 打印内存地址](#x-打印内存地址)
-         * [c(ontinue): 继续执行到下一个断点](#continue-继续执行到下一个断点)
-   * [查看闭包的结构](#查看闭包的结构)
-      * [代码](#代码)
-      * [运行进入lldb](#运行进入lldb)
+    * [资料整理](#资料整理)
+        * [官方数据结构cheat sheet](#官方数据结构cheat-sheet)
+    * [查看hashmap内存结构](#查看hashmap内存结构)
+        * [bin配置与运行](#bin配置与运行)
+        * [目标调试代码](#目标调试代码)
+        * [使用gdb/lldb进行调试查看内存结构](#使用gdblldb进行调试查看内存结构)
+            * [gdb: 主要是linux系统](#gdb-主要是linux系统)
+            * [lldb: 主要OSX系统](#lldb-主要osx系统)
+            * [IDEA](#idea)
+            * [gdb与lldb命令对照](#gdb与lldb命令对照)
+            * [开始调试](#开始调试)
+            * [b(reakpoint): 添加断点](#breakpoint-添加断点)
+            * [r(un):运行到断点](#run运行到断点)
+            * [c(ontinue):继续单步执行](#continue继续单步执行)
+            * [x: 打印内存地址](#x-打印内存地址)
+            * [c(ontinue): 继续执行到下一个断点](#continue-继续执行到下一个断点)
+    * [查看闭包的结构](#查看闭包的结构)
+        * [代码](#代码)
+        * [运行进入lldb](#运行进入lldb)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun Oct  9 06:07:37 UTC 2022 -->
@@ -33,6 +34,12 @@
 
 - [Rust Language Cheat Sheet](https://cheats.rs/#data-layout)
 
+### gdb强化插件
+
+- [cyrus-and/gdb-dashboard: Modular visual interface for GDB in Python](https://github.com/cyrus-and/gdb-dashboard)
+
+![](https://raw.githubusercontent.com/wiki/cyrus-and/gdb-dashboard/Screenshot.png)
+
 ## 查看hashmap内存结构
 
 ### bin配置与运行
@@ -40,7 +47,7 @@
 - [Cargo Targets - The Cargo Book](https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=bin#binaries)
 
 ```toml
-{{#include ../geektime_rust_codes/17_hash_table/Cargo.toml}}
+{{ #include ../geektime_rust_codes/17_hash_table/Cargo.toml}}
 ```
 
 > 如果要单独运行指定bin文件：
