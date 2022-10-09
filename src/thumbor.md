@@ -181,16 +181,15 @@
 
 ### photon.rs > 具体引擎Photon的trait实现
 
-#### Engine Trait
-
+~~~admonish note title="Engine Trait" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/05_thumbor/src/engine/photon.rs:32:47}}
 ```
+~~~
 
 #### SpecTransform Trait
 
-##### 格式语义化
-
+~~~admonish note title="格式语义化" collapsible=true
 ```rust
 impl SpecTransform(&OpreationName) for SpecificEngine {
     fn transform(&mut self, _op: &OperationName) {
@@ -202,12 +201,13 @@ impl SpecTransform(&OpreationName) for SpecificEngine {
 ```rust, editable
 {{#include ../geektime_rust_codes/05_thumbor/src/engine/photon.rs:54:108}}
 ```
+~~~
 
-### photon.rs > 在内存中对图片转换格式的方法
-
+~~~admonish note title="photon.rs > 在内存中对图片转换格式的方法" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/05_thumbor/src/engine/photon.rs:111:122}}
 ```
+~~~
 
 ## main.rs
 
