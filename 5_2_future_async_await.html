@@ -1,0 +1,1056 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>异步：Future/Async/Await - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item expanded "><a href="5_2_future_async_await.html" class="active"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="future"><a class="header" href="#future">Future</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#future">Future</a>
+<ul>
+<li><a href="#actor%E6%98%AF%E6%9C%89%E6%A0%88%E5%8D%8F%E7%A8%8Bfuture%E6%98%AF%E6%97%A0%E6%A0%88%E5%8D%8F%E7%A8%8B">actor是有栈协程，Future是无栈协程</a></li>
+<li><a href="#rust%E7%9A%84future">Rust的Future</a></li>
+<li><a href="#future%E5%92%8Casyncawait">Future和async/await</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-future">为什么需要 Future？</a></li>
+<li><a href="#%E6%B7%B1%E5%85%A5%E6%80%9D%E8%B7%AF">深入思路</a></li>
+<li><a href="#%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3">深入了解</a></li>
+<li><a href="#executor">executor</a></li>
+<li><a href="#reactor-pattern">reactor pattern</a></li>
+<li><a href="#%E6%80%8E%E4%B9%88%E7%94%A8-future-%E5%81%9A%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86">怎么用 Future 做异步处理？</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-future-%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">使用 Future 的注意事项</a></li>
+<li><a href="#%E5%AF%B9%E6%AF%94%E7%BA%BF%E7%A8%8B%E5%AD%A6%E4%B9%A0future">对比线程学习Future</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%A0%87%E5%87%86%E5%BA%93%E7%9A%84-mutex-%E4%B8%8D%E8%83%BD%E8%B7%A8%E8%B6%8A-await">为什么标准库的 Mutex 不能跨越 await？</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 06:07:33 UTC 2022 -->
+<!--te-->
+<h2 id="actor是有栈协程future是无栈协程"><a class="header" href="#actor是有栈协程future是无栈协程">actor是有栈协程，Future是无栈协程</a></h2>
+<details id="admonition-actor是有栈协程future是无栈协程" class="admonition info">
+<summary class="admonition-title">
+<p>actor是有栈协程，Future是无栈协程</p>
+<p><a class="admonition-anchor-link" href="#admonition-actor是有栈协程future是无栈协程"></a></p>
+</summary>
+<div>
+<p>待补充</p>
+</div>
+</details>
+<h2 id="rust的future"><a class="header" href="#rust的future">Rust的Future</a></h2>
+<details id="admonition-rust-的-future-跟-javascript-的-promisepython的future非常相似" class="admonition info">
+<summary class="admonition-title">
+<p>Rust 的 Future 跟 JavaScript 的 Promise、Python的Future非常相似</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust-的-future-跟-javascript-的-promisepython的future非常相似"></a></p>
+</summary>
+<div>
+<p>其实 Rust 的 Future 跟 JavaScript 的 Promise 非常类似。</p>
+<p>如果你熟悉 JavaScript，应该熟悉 Promise 的概念，它代表了在未来的某个时刻才能得到的结果的值，Promise 一般存在三个状态；</p>
+<ol>
+<li>等待（pending）状态</li>
+<li>Promise 已运行，但还未结束；</li>
+<li>结束状态，Promise 成功解析出一个值，或者执行失败。</li>
+</ol>
+<p>只不过 JavaScript 的 Promise 和线程类似，一旦创建就开始执行，对 Promise await 只是为了“等待”并获取解析出来的值；而 Rust 的 Future，只有在主动 await 后才开始执行。</p>
+</div>
+</details>
+<h2 id="future和asyncawait"><a class="header" href="#future和asyncawait">Future和async/await</a></h2>
+<details id="admonition-一般而言asyncawait和future是什么关系" class="admonition info">
+<summary class="admonition-title">
+<p>一般而言，async/await和Future是什么关系</p>
+<p><a class="admonition-anchor-link" href="#admonition-一般而言asyncawait和future是什么关系"></a></p>
+</summary>
+<div>
+<p>讲到这里估计你也看出来了，谈 Future 的时候，我们总会谈到 async/await。</p>
+<p>一般而言：</p>
+<ol>
+<li>async 定义了一个可以并发执行的任务</li>
+<li>而 await 则触发这个任务并发执行。</li>
+<li>大多数语言，包括 Rust，async/await 都是一个语法糖（syntactic sugar）</li>
+<li>它们使用状态机将 Promise/Future 这样的结构包装起来进行处理。</li>
+</ol>
+</div>
+</details>
+<h2 id="为什么需要-future"><a class="header" href="#为什么需要-future">为什么需要 Future？</a></h2>
+<details id="admonition-为什么需要future那不用asyncawait有什么问题" class="admonition info">
+<summary class="admonition-title">
+<p>为什么需要Future，那不用async/await有什么问题？</p>
+<p><a class="admonition-anchor-link" href="#admonition-为什么需要future那不用asyncawait有什么问题"></a></p>
+</summary>
+<div>
+<p>首先，谈一谈为什么需要 Future 这样的并发结构。</p>
+<p>在 Future 出现之前，我们的 Rust 代码都是同步的。也就是说：</p>
+<ol>
+<li>当你执行一个函数，CPU 处理完函数中的每一个指令才会返回。</li>
+<li>如果这个函数里有 IO 的操作，实际上，操作系统会把函数对应的线程挂起，放在一个等待队列中</li>
+<li>直到 IO 操作完成，才恢复这个线程，并从挂起的位置继续执行下去。</li>
+</ol>
+<blockquote>
+<p>这个模型非常简单直观，代码是一行一行执行的，开发者并不需要考虑哪些操作会阻塞，哪些不会，只关心他的业务逻辑就好。</p>
+</blockquote>
+<blockquote>
+<p>然而，随着 CPU 技术的不断发展，新世纪应用软件的主要矛盾不再是 CPU 算力不足，而是过于充沛的 CPU 算力和提升缓慢的 IO 速度之间的矛盾。如果有大量的 IO 操作，你的程序大部分时间并没有在运算，而是在不断地等待 IO。</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use serde_yaml::Value;
+use std::fs;
+
+fn main() -&gt; Result&lt;()&gt; {
+    // 读取 Cargo.toml，IO 操作 1
+    let content1 = fs::read_to_string(&quot;./Cargo.toml&quot;)?;
+    // 读取 Cargo.lock，IO 操作 2
+    let content2 = fs::read_to_string(&quot;./Cargo.lock&quot;)?;
+
+    // 计算
+    let yaml1 = toml2yaml(&amp;content1)?;
+    let yaml2 = toml2yaml(&amp;content2)?;
+
+    // 写入 /tmp/Cargo.yml，IO 操作 3
+    fs::write(&quot;/tmp/Cargo.yml&quot;, &amp;yaml1)?;
+    // 写入 /tmp/Cargo.lock，IO 操作 4
+    fs::write(&quot;/tmp/Cargo.lock&quot;, &amp;yaml2)?;
+
+    // 打印
+    println!(&quot;{}&quot;, yaml1);
+    println!(&quot;{}&quot;, yaml2);
+
+    Ok(())
+}
+
+fn toml2yaml(content: &amp;str) -&gt; Result&lt;String&gt; {
+    let value: Value = toml::from_str(&amp;content)?;
+    Ok(serde_yaml::to_string(&amp;value)?)
+}
+</code></pre></pre>
+<blockquote>
+<p>这段代码读取 Cargo.toml 和 Cargo.lock 将其转换成 yaml，再分别写入到 /tmp 下。</p>
+</blockquote>
+<p>虽然说这段代码的逻辑并没有问题，但性能有很大的问题:</p>
+<ol>
+<li>在读 Cargo.toml 时，整个主线程被阻塞，直到 Cargo.toml 读完，才能继续读下一个待处理的文件。</li>
+<li>整个主线程，只有在运行 toml2yaml 的时间片内，才真正在执行计算任务，之前的读取文件以及之后的写入文件，CPU 都在闲置。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F-4959308.jpg" alt="38｜异步处理：Future是什么？它和asyncawait是什么关系？" /></p>
+<p>当然，你会辩解，在读文件的过程中，我们不得不等待，因为 toml2yaml 函数的执行有赖于读取文件的结果。</p>
+<p>嗯没错，但是，这里还有很大的 CPU 浪费：我们读完第一个文件才开始读第二个文件，有没有可能两个文件同时读取呢？这样总共等待的时间是 max(time_for_file1, time_for_file2)，而非 time_for_file1 + time_for_file2 。</p>
+<p>这并不难，我们可以把文件读取和写入的操作放入单独的线程中执行，比如（代码）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::{anyhow, Result};
+use serde_yaml::Value;
+use std::{
+    fs,
+    thread::{self, JoinHandle},
+};
+
+/// 包装一下 JoinHandle，这样可以提供额外的方法
+struct MyJoinHandle&lt;T&gt;(JoinHandle&lt;Result&lt;T&gt;&gt;);
+
+impl&lt;T&gt; MyJoinHandle&lt;T&gt; {
+    /// 等待 thread 执行完（类似 await）
+    pub fn thread_await(self) -&gt; Result&lt;T&gt; {
+        self.0.join().map_err(|_| anyhow!(&quot;failed&quot;))?
+    }
+}
+
+fn main() -&gt; Result&lt;()&gt; {
+    // 读取 Cargo.toml，IO 操作 1
+    let t1 = thread_read(&quot;./Cargo.toml&quot;);
+    // 读取 Cargo.lock，IO 操作 2
+    let t2 = thread_read(&quot;./Cargo.lock&quot;);
+
+    let content1 = t1.thread_await()?;
+    let content2 = t2.thread_await()?;
+
+    // 计算
+    let yaml1 = toml2yaml(&amp;content1)?;
+    let yaml2 = toml2yaml(&amp;content2)?;
+
+    // 写入 /tmp/Cargo.yml，IO 操作 3
+    let t3 = thread_write(&quot;/tmp/Cargo.yml&quot;, yaml1);
+    // 写入 /tmp/Cargo.lock，IO 操作 4
+    let t4 = thread_write(&quot;/tmp/Cargo.lock&quot;, yaml2);
+
+    let yaml1 = t3.thread_await()?;
+    let yaml2 = t4.thread_await()?;
+
+    fs::write(&quot;/tmp/Cargo.yml&quot;, &amp;yaml1)?;
+    fs::write(&quot;/tmp/Cargo.lock&quot;, &amp;yaml2)?;
+
+    // 打印
+    println!(&quot;{}&quot;, yaml1);
+    println!(&quot;{}&quot;, yaml2);
+
+    Ok(())
+}
+
+fn thread_read(filename: &amp;'static str) -&gt; MyJoinHandle&lt;String&gt; {
+    let handle = thread::spawn(move || {
+        let s = fs::read_to_string(filename)?;
+        Ok::&lt;_, anyhow::Error&gt;(s)
+    });
+    MyJoinHandle(handle)
+}
+
+fn thread_write(filename: &amp;'static str, content: String) -&gt; MyJoinHandle&lt;String&gt; {
+    let handle = thread::spawn(move || {
+        fs::write(filename, &amp;content)?;
+        Ok::&lt;_, anyhow::Error&gt;(content)
+    });
+    MyJoinHandle(handle)
+}
+
+fn toml2yaml(content: &amp;str) -&gt; Result&lt;String&gt; {
+    let value: Value = toml::from_str(&amp;content)?;
+    Ok(serde_yaml::to_string(&amp;value)?)
+}
+</code></pre></pre>
+<blockquote>
+<p>这样，读取或者写入多个文件的过程并发执行，使等待的时间大大缩短。</p>
+</blockquote>
+<ol>
+<li>但是，如果要同时读取 100 个文件呢？</li>
+</ol>
+<ul>
+<li>显然，创建 100 个线程来做这样的事情不是一个好主意。</li>
+<li>在操作系统中，线程的数量是有限的，创建 / 阻塞 / 唤醒 / 销毁线程，都涉及不少的动作</li>
+<li>每个线程也都会被分配一个不小的调用栈</li>
+<li>所以从 CPU 和内存的角度来看，创建过多的线程会大大增加系统的开销。</li>
+</ul>
+<ol start="2">
+<li>其实，绝大多数操作系统对 I/O 操作提供了非阻塞接口，也就是说: </li>
+</ol>
+<ul>
+<li>你可以发起一个读取的指令</li>
+<li>自己处理类似 EWOULDBLOCK这样的错误码</li>
+<li>来更好地在同一个线程中处理多个文件的 IO</li>
+<li>而不是依赖操作系统通过调度帮你完成这件事。</li>
+</ul>
+<ol start="3">
+<li>不过这样就意味着，你需要:</li>
+</ol>
+<ul>
+<li>定义合适的数据结构来追踪每个文件的读取</li>
+<li>在用户态进行相应的调度</li>
+<li>阻塞等待 IO 的数据结构的运行</li>
+<li>让没有等待 IO 的数据结构得到机会使用 CPU</li>
+<li>以及当 IO 操作结束后，恢复等待 IO 的数据结构的运行等等。</li>
+</ul>
+<blockquote>
+<p>这样的操作粒度更小，可以最大程度利用 CPU 资源。
+这就是类似 Future 这样的并发结构的主要用途。</p>
+</blockquote>
+<ol start="4">
+<li>然而，如果这么处理，我们需要在用户态做很多事情,包括:</li>
+</ol>
+<ul>
+<li>处理 IO 任务的事件通知</li>
+<li>创建 Future</li>
+<li>合理地调度 Future</li>
+</ul>
+<blockquote>
+<p>这些事情，统统交给开发者做显然是不合理的。所以，Rust 提供了相应处理手段 async/await ：</p>
+</blockquote>
+<ul>
+<li>async 来方便地生成 Future</li>
+<li>await 来触发 Future 的调度和执行。</li>
+</ul>
+<hr />
+<p>我们看看，同样的任务，如何用 async/await 更高效地处理（代码）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use serde_yaml::Value;
+use tokio::{fs, try_join};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    // 读取 Cargo.toml，IO 操作 1
+    let f1 = fs::read_to_string(&quot;./Cargo.toml&quot;);
+    // 读取 Cargo.lock，IO 操作 2
+    let f2 = fs::read_to_string(&quot;./Cargo.lock&quot;);
+    let (content1, content2) = try_join!(f1, f2)?;
+
+    // 计算
+    let yaml1 = toml2yaml(&amp;content1)?;
+    let yaml2 = toml2yaml(&amp;content2)?;
+
+    // 写入 /tmp/Cargo.yml，IO 操作 3
+    let f3 = fs::write(&quot;/tmp/Cargo.yml&quot;, &amp;yaml1);
+    // 写入 /tmp/Cargo.lock，IO 操作 4
+    let f4 = fs::write(&quot;/tmp/Cargo.lock&quot;, &amp;yaml2);
+    try_join!(f3, f4)?;
+
+    // 打印
+    println!(&quot;{}&quot;, yaml1);
+    println!(&quot;{}&quot;, yaml2);
+
+    Ok(())
+}
+
+fn toml2yaml(content: &amp;str) -&gt; Result&lt;String&gt; {
+    let value: Value = toml::from_str(&amp;content)?;
+    Ok(serde_yaml::to_string(&amp;value)?)
+}
+</code></pre></pre>
+<p>在这段代码里:</p>
+<ol>
+<li>我们使用了 tokio::fs，而不是 std::fs</li>
+<li>tokio::fs 的文件操作都会返回一个 Future，然后可以 join 这些 Future，得到它们运行后的结果。</li>
+<li>join / try_join 是用来轮询多个 Future 的宏:</li>
+</ol>
+<ul>
+<li>它会依次处理每个 Future</li>
+<li>遇到阻塞就处理下一个</li>
+<li>直到所有 Future 产生结果。</li>
+</ul>
+<blockquote>
+<p>整个等待文件读取的时间是 max(time_for_file1, time_for_file2)，性能和使用线程的版本几乎一致，但是消耗的资源（主要是线程）要少很多。</p>
+</blockquote>
+<p>建议你好好对比这三个版本的代码，写一写，运行一下，感受它们的处理逻辑。</p>
+<p>注意在最后的 async/await 的版本中，我们不能把代码写成这样：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 读取 Cargo.toml，IO 操作 1
+let content1 = fs::read_to_string(&quot;./Cargo.toml&quot;).await?;
+// 读取 Cargo.lock，IO 操作 2
+let content1 = fs::read_to_string(&quot;./Cargo.lock&quot;).await?;
+</code></pre></pre>
+<p>这样写的话，和第一版同步的版本没有区别，因为 await 会运行 Future 直到 Future 执行结束，所以依旧是先读取 Cargo.toml，再读取 Cargo.lock，并没有达到并发的效果。</p>
+</div>
+</details>
+<h2 id="深入思路"><a class="header" href="#深入思路">深入思路</a></h2>
+<details id="admonition-从async-fn了解到future的思路" class="admonition info">
+<summary class="admonition-title">
+<p>从async fn了解到future的思路</p>
+<p><a class="admonition-anchor-link" href="#admonition-从async-fn了解到future的思路"></a></p>
+</summary>
+<div>
+<ol>
+<li>拆解 async fn 有点奇怪的返回值结构</li>
+<li>我们学习了 Reactor pattern</li>
+<li>大致了解了 tokio 如何通过 executor 和 reactor 共同作用，完成 Future 的调度、执行、阻塞，以及唤醒。这是一个完整的循环，直到 Future 返回 Poll::Ready(T)。</li>
+</ol>
+</div>
+</details>
+<h2 id="深入了解"><a class="header" href="#深入了解">深入了解</a></h2>
+<p>好，了解了 Future 在软件开发中的必要性，来深入研究一下 Future/async/await。</p>
+<details id="admonition-异步函数async-fn其实是语法糖它有等价函数写法" class="admonition info">
+<summary class="admonition-title">
+<p>异步函数（async fn）其实是语法糖，它有等价函数写法。</p>
+<p><a class="admonition-anchor-link" href="#admonition-异步函数async-fn其实是语法糖它有等价函数写法"></a></p>
+</summary>
+<div>
+<p>在前面代码撰写过程中，不知道你有没有发现，异步函数（async fn）的返回值是一个奇怪的 impl Future<Output> 的结构：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F.png" alt="38｜异步处理：Future是什么？它和asyncawait是什么关系？" /></p>
+<blockquote>
+<p>我们知道，一般会用 impl 关键字为数据结构实现 trait，也就是说接在 impl 关键字后面的东西是一个 trait，所以，显然 Future 是一个 trait，并且还有一个关联类型 Output。</p>
+</blockquote>
+<p>来看 <a href="https://doc.rust-lang.org/std/future/trait.Future.html">Future 的定义</a>：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Future {
+    type Output;
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
+}
+
+pub enum Poll&lt;T&gt; {
+    Ready(T),
+    Pending,
+}
+</code></pre></pre>
+<ol>
+<li>除了 Output 外，它还有一个 poll() 方法，这个方法返回 <a href="https://doc.rust-lang.org/std/future/trait.Future.html">PollSelf::Output</a>。</li>
+<li>而 Poll<T> 是个 enum，包含 Ready 和 Pending 两个状态。</li>
+<li>显然，当 Future 返回 Pending 状态时，活还没干完，但干不下去了，需要阻塞一阵子，等某个事件将其唤醒；</li>
+<li>当 Future 返回 Ready 状态时，Future 对应的值已经得到，此时可以返回了。</li>
+</ol>
+<blockquote>
+<p>你看，这样一个简单的数据结构，就托起了庞大的 Rust 异步 async/await 处理的生态。</p>
+</blockquote>
+<p>回到 async fn 的返回值我们接着说，显然它是一个 impl Future.</p>
+<blockquote>
+<p>那么如果我们给一个普通的函数返回 impl Future<Output>，它的行为和 async fn 是不是一致呢？</p>
+</blockquote>
+<p>来写个简单的实验（代码）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use futures::executor::block_on;
+use std::future::Future;
+
+#[tokio::main]
+async fn main() {
+    let name1 = &quot;Tyr&quot;.to_string();
+    let name2 = &quot;Lindsey&quot;.to_string();
+
+    say_hello1(&amp;name1).await;
+    say_hello2(&amp;name2).await;
+
+    // Future 除了可以用 await 来执行外，还可以直接用 executor 执行
+    block_on(say_hello1(&amp;name1));
+    block_on(say_hello2(&amp;name2));
+}
+
+async fn say_hello1(name: &amp;str) -&gt; usize {
+    println!(&quot;Hello {}&quot;, name);
+    42
+}
+
+// async fn 关键字相当于一个返回 impl Future&lt;Output&gt; 的语法糖
+fn say_hello2&lt;'fut&gt;(name: &amp;'fut str) -&gt; impl Future&lt;Output = usize&gt; + 'fut {
+    async move {
+        println!(&quot;Hello {}&quot;, name);
+        42
+    }
+}
+</code></pre></pre>
+<blockquote>
+<p>运行这段代码你会发现，say_hello1 和 say_hello2 是等价的，二者都可以使用 await 来执行，也可以将其提供给一个 executor 来执行。</p>
+</blockquote>
+</div>
+</details>
+<h2 id="executor"><a class="header" href="#executor">executor</a></h2>
+<details id="admonition-executor是什么--rust如何支持-rust常用的executor有哪些" class="admonition info">
+<summary class="admonition-title">
+<p>executor是什么-&gt; Rust如何支持-&gt;Rust常用的executor有哪些？</p>
+<p><a class="admonition-anchor-link" href="#admonition-executor是什么--rust如何支持-rust常用的executor有哪些"></a></p>
+</summary>
+<div>
+<p>这里我们见到了一个新的名词：executor。</p>
+<p>什么是 executor？</p>
+<ol>
+<li>你可以把 executor 大致想象成一个 Future 的调度器。</li>
+<li>对于线程来说，操作系统负责调度；</li>
+<li>但操作系统不会去调度用户态的协程（比如 Future），所以任何使用了协程来处理并发的程序，都需要有一个 executor 来负责协程的调度。</li>
+</ol>
+<p>很多在语言层面支持协程的编程语言，比如 Golang / Erlang，都自带一个用户态的调度器。</p>
+<p>Rust 虽然也提供 Future 这样的协程，但它在语言层面并不提供 executor，把要不要使用 executor 和使用什么样的 executor 的自主权交给了开发者。</p>
+<ul>
+<li>好处是，当我的代码中不需要使用协程时，不需要引入任何运行时；</li>
+<li>而需要使用协程时，可以在生态系统中选择最合适我应用的 executor。</li>
+</ul>
+<hr />
+<p>常见的 executor 有：</p>
+<ol>
+<li>futures 库自带的很简单的 executor，上面的代码就使用了它的 block_on 函数；</li>
+<li>tokio 提供的 executor，当使用 #[tokio::main] 时，就隐含引入了 tokio 的 executor；</li>
+<li><a href="https://github.com/async-rs/async-std">async-std</a> 提供的 executor，和 tokio 类似；</li>
+<li><a href="https://github.com/smol-rs/smol">smol 提供的 async-executor</a>，主要提供了 block_on。</li>
+</ol>
+<p>注意，上面的代码我们混用了 #[tokio::main] 和 futures:executor::block_on，这只是为了展示 Future 使用的不同方式，在正式代码里，不建议混用不同的 executor，会降低程序的性能，还可能引发奇怪的问题。</p>
+</div>
+</details>
+<h2 id="reactor-pattern"><a class="header" href="#reactor-pattern">reactor pattern</a></h2>
+<details id="admonition-reactor-pattern如何组成" class="admonition info">
+<summary class="admonition-title">
+<p>Reactor Pattern如何组成？</p>
+<p><a class="admonition-anchor-link" href="#admonition-reactor-pattern如何组成"></a></p>
+</summary>
+<div>
+<p>当我们谈到 executor 时，就不得不提 reactor，它俩都是 Reactor Pattern 的组成部分，作为构建高性能事件驱动系统的一个很典型模式，Reactor pattern 它包含三部分：</p>
+<ol>
+<li>task，待处理的任务</li>
+</ol>
+<p>任务可以被打断，并且把控制权交给 executor，等待之后的调度；</p>
+<ol start="2">
+<li>executor，一个调度器。</li>
+</ol>
+<p>维护等待运行的任务（ready queue），以及被阻塞的任务（wait queue）；</p>
+<ol start="3">
+<li>reactor，维护事件队列。</li>
+</ol>
+<p>当事件来临时，通知 executor 唤醒某个任务等待运行。</p>
+<ul>
+<li>executor 会调度执行待处理的任务，当任务无法继续进行却又没有完成时，它会挂起任务，并设置好合适的唤醒条件。</li>
+<li>之后，如果 reactor 得到了满足条件的事件，它会唤醒之前挂起的任务，然后 executor 就有机会继续执行这个任务。</li>
+<li>这样一直循环下去，直到任务执行完毕。</li>
+</ul>
+</div>
+</details>
+<h2 id="怎么用-future-做异步处理"><a class="header" href="#怎么用-future-做异步处理">怎么用 Future 做异步处理？</a></h2>
+<details id="admonition-rust如何基于reactor-pattern使用future做异步处理" class="admonition info">
+<summary class="admonition-title">
+<p>Rust如何基于Reactor pattern使用Future做异步处理</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust如何基于reactor-pattern使用future做异步处理"></a></p>
+</summary>
+<div>
+<p>理解了 Reactor pattern 后，Rust 使用 Future 做异步处理的整个结构就清晰了，我们以 tokio 为例：</p>
+<ol>
+<li>async/await 提供语法层面的支持</li>
+<li>Future 是异步任务的数据结构</li>
+<li>当 fut.await 时，executor 就会调度并执行它。</li>
+</ol>
+<hr />
+<ul>
+<li>tokio 的调度器（executor）会运行在多个线程上，运行线程自己的 ready queue 上的任务（Future）</li>
+<li>如果没有，就去别的线程的调度器上“偷”一些过来运行。</li>
+<li>当某个任务无法再继续取得进展，此时 Future 运行的结果是 Poll::Pending，那么调度器会挂起任务，并设置好合适的唤醒条件（Waker），等待被 reactor 唤醒。</li>
+<li>而 reactor 会利用操作系统提供的异步 I/O，比如 epoll / kqueue / IOCP，来监听操作系统提供的 IO 事件，当遇到满足条件的事件时，就会调用 Waker.wake() 唤醒被挂起的 Future。这个 Future 会回到 ready queue 等待执行。</li>
+</ul>
+<hr />
+<p>整个流程如下：</p>
+<h2 id=""><a class="header" href="#"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F.jpg" alt="38｜异步处理：Future是什么？它和asyncawait是什么关系？" /></a></h2>
+<p>我们以一个具体的代码示例来进一步理解这个过程（代码）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use futures::{SinkExt, StreamExt};
+use tokio::net::TcpListener;
+use tokio_util::codec::{Framed, LinesCodec};
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    let addr = &quot;0.0.0.0:8080&quot;;
+    let listener = TcpListener::bind(addr).await?;
+    println!(&quot;listen to: {}&quot;, addr);
+    loop {
+        let (stream, addr) = listener.accept().await?;
+        println!(&quot;Accepted: {:?}&quot;, addr);
+        tokio::spawn(async move {
+            // 使用 LinesCodec 把 TCP 数据切成一行行字符串处理
+            let framed = Framed::new(stream, LinesCodec::new());
+            // split 成 writer 和 reader
+            let (mut w, mut r) = framed.split();
+            for line in r.next().await {
+                // 每读到一行就加个前缀发回
+                w.send(format!(&quot;I got: {}&quot;, line?)).await?;
+            }
+            Ok::&lt;_, anyhow::Error&gt;(())
+        });
+    }
+}
+</code></pre></pre>
+<p>这是一个简单的 TCP 服务器:</p>
+<ol>
+<li>服务器每收到一个客户端的请求，就会用<a href="https://docs.rs/tokio/1.13.0/tokio/fn.spawn.html"> tokio::spawn </a>创建一个异步任务，放入 executor 中执行。</li>
+<li>这个异步任务接受客户端发来的按行分隔（分隔符是 “\r\n”）的数据帧，服务器每收到一行，就加个前缀把内容也按行发回给客户端。</li>
+<li>你可以用 telnet 和这个服务器交互：</li>
+</ol>
+<pre><code class="language-shell">❯ telnet localhost 8080
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+hello
+I got: hello
+Connection closed by foreign host.
+</code></pre>
+<ul>
+<li>假设我们在客户端输入了很大的一行数据，服务器在做 r.next().await 在执行的时候，收不完一行的数据，因而这个 Future 返回 Poll::Pending，此时它被挂起。</li>
+<li>当后续客户端的数据到达时，reactor 会知道这个 socket 上又有数据了，于是找到 socket 对应的 Future，将其唤醒，继续接收数据。</li>
+<li>这样反复下去，最终 r.next().await 得到 Poll::Ready(Ok(line))，于是它返回 Ok(line)，程序继续往下走，进入到 w.send() 的阶段。</li>
+</ul>
+<blockquote>
+<p>从这段代码中你可以看到，在 Rust 下使用异步处理是一件非常简单的事情</p>
+</blockquote>
+<ol>
+<li>除了几个你可能不太熟悉的概念:</li>
+</ol>
+<ul>
+<li>比如用于创建 Future 的 async 关键字</li>
+<li>用于执行和等待 Future 执行完毕的 await 关键字</li>
+<li>以及用于调度 Future 执行的运行时 #[tokio:main] </li>
+</ul>
+<ol start="2">
+<li>整体的代码和使用线程处理的代码完全一致。所以，它的上手难度非常低，很容易使用。</li>
+</ol>
+</div>
+</details>
+<h2 id="使用-future-的注意事项"><a class="header" href="#使用-future-的注意事项">使用 Future 的注意事项</a></h2>
+<details id="admonition-使用future处理异步任务的三个注意事项" class="admonition info">
+<summary class="admonition-title">
+<p>使用Future处理异步任务的三个注意事项</p>
+<p><a class="admonition-anchor-link" href="#admonition-使用future处理异步任务的三个注意事项"></a></p>
+</summary>
+<div>
+<p>目前我们已经基本明白 Future 运行的基本原理了，也可以在程序的不同部分自如地使用 Future/async/await 来进行异步处理。</p>
+<p>但是要注意，不是所有的应用场景都适合用 async/await，在使用的时候，有一些不容易注意到的坑需要我们妥善考虑。</p>
+<ol>
+<li>处理计算密集型任务时</li>
+</ol>
+<p>当你要处理的任务是 CPU 密集型，而非 IO 密集型，更适合使用线程，而非 Future。</p>
+<p>这是因为 Future 的调度是协作式多任务（Cooperative Multitasking），也就是说，除非 Future 主动放弃 CPU，不然它就会一直被执行，直到运行结束。我们看一个例子（代码）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use std::time::Duration;
+
+// 强制 tokio 只使用一个工作线程，这样 task 2 不会跑到其它线程执行
+#[tokio::main(worker_threads = 1)]
+async fn main() -&gt; Result&lt;()&gt; {
+    // 先开始执行 task 1 的话会阻塞，让 task 2 没有机会运行
+    tokio::spawn(async move {
+        eprintln!(&quot;task 1&quot;);
+        // 试试把这句注释掉看看会产生什么结果
+        // tokio::time::sleep(Duration::from_millis(1)).await;
+        loop {}
+    });
+
+    tokio::spawn(async move {
+        eprintln!(&quot;task 2&quot;);
+    });
+
+    tokio::time::sleep(Duration::from_millis(1)).await;
+    Ok(())
+}
+</code></pre></pre>
+<p>task 1 里有一个死循环，你可以把它想象成是执行时间很长又不包括 IO 处理的代码。运行这段代码，你会发现，task 2 没有机会得到执行。这是因为 task 1 不执行结束，或者不让出 CPU，task 2 没有机会被调度。</p>
+<ol start="2">
+<li>异步代码中使用 Mutex 时</li>
+</ol>
+<p>大部分时候，标准库的 Mutex 可以用在异步代码中，而且，这是推荐的用法。</p>
+<p>然而，标准库的 MutexGuard 不能安全地跨越 await，所以，当我们需要获得锁之后执行异步操作，必须使用 tokio 自带的 Mutex，看下面的例子（代码）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use anyhow::Result;
+use std::{sync::Arc, time::Duration};
+use tokio::sync::Mutex;
+
+struct DB;
+
+impl DB {
+    // 假装在 commit 数据
+    async fn commit(&amp;mut self) -&gt; Result&lt;usize&gt; {
+        Ok(42)
+    }
+}
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    let db1 = Arc::new(Mutex::new(DB));
+    let db2 = Arc::clone(&amp;db1);
+
+    tokio::spawn(async move {
+        let mut db = db1.lock().await;
+        // 因为拿到的 MutexGuard 要跨越 await，所以不能用 std::sync::Mutex
+        // 只能用 tokio::sync::Mutex
+        let affected = db.commit().await?;
+        println!(&quot;db1: Total affected rows: {}&quot;, affected);
+        Ok::&lt;_, anyhow::Error&gt;(())
+    });
+
+    tokio::spawn(async move {
+        let mut db = db2.lock().await;
+        let affected = db.commit().await?;
+        println!(&quot;db2: Total affected rows: {}&quot;, affected);
+
+        Ok::&lt;_, anyhow::Error&gt;(())
+    });
+
+    // 让两个 task 有机会执行完
+    tokio::time::sleep(Duration::from_millis(1)).await;
+
+    Ok(())
+}
+</code></pre></pre>
+<blockquote>
+<p>这个例子模拟了一个数据库的异步 commit() 操作</p>
+</blockquote>
+<ul>
+<li>如果我们需要在多个 tokio task 中使用这个 DB，需要使用 Arc&lt;Mutext<DB>&gt;。</li>
+<li>然而，db1.lock() 拿到锁后，我们需要运行 db.commit().await，这是一个异步操作。</li>
+<li>前面讲过，因为 tokio 实现了 work-stealing 调度，Future 有可能在不同的线程中执行，普通的 MutexGuard 编译直接就会出错，所以需要使用 tokio 的 Mutex。<a href="https://docs.rs/tokio/1.13.0/tokio/sync/struct.Mutex.html">更多信息可以看文档</a>。</li>
+</ul>
+<blockquote>
+<p>在这个例子里，我们又见识到了 Rust 编译器的伟大之处：如果一件事，它觉得你不能做，会通过编译器错误阻止你，而不是任由编译通过，然后让程序在运行过程中听天由命，让你无休止地和捉摸不定的并发 bug 斗争。</p>
+</blockquote>
+<ol start="3">
+<li>在线程和异步任务间做同步时</li>
+</ol>
+<p>在一个复杂的应用程序中，会兼有计算密集和 IO 密集的任务。</p>
+<p>前面说了，要避免在 tokio 这样的异步运行时中运行大量计算密集型的任务，一来效率不高，二来还容易饿死其它任务。</p>
+<p>所以，一般的做法是我们使用 channel 来在线程和 future 两者之间做同步。看一个例子：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::thread;
+
+use anyhow::Result;
+use blake3::Hasher;
+use futures::{SinkExt, StreamExt};
+use rayon::prelude::*;
+use tokio::{
+    net::TcpListener,
+    sync::{mpsc, oneshot},
+};
+use tokio_util::codec::{Framed, LinesCodec};
+
+pub const PREFIX_ZERO: &amp;[u8] = &amp;[0, 0, 0];
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    let addr = &quot;0.0.0.0:8080&quot;;
+    let listener = TcpListener::bind(addr).await?;
+    println!(&quot;listen to: {}&quot;, addr);
+
+    // 创建 tokio task 和 thread 之间的 channel
+    let (sender, mut receiver) = mpsc::unbounded_channel::&lt;(String, oneshot::Sender&lt;String&gt;)&gt;();
+
+    // 使用 thread 处理计算密集型任务
+    thread::spawn(move || {
+        // 读取从 tokio task 过来的 msg，注意这里用的是 blocking_recv，而非 await
+        while let Some((line, reply)) = receiver.blocking_recv() {
+            // 计算 pow
+            let result = match pow(&amp;line) {
+                Some((hash, nonce)) =&gt; format!(&quot;hash: {}, once: {}&quot;, hash, nonce),
+                None =&gt; &quot;Not found&quot;.to_string(),
+            };
+            // 把计算结果从 oneshot channel 里发回
+            if let Err(e) = reply.send(result) {
+                println!(&quot;Failed to send: {}&quot;, e);
+            }
+        }
+    });
+
+    // 使用 tokio task 处理 IO 密集型任务
+    loop {
+        let (stream, addr) = listener.accept().await?;
+        println!(&quot;Accepted: {:?}&quot;, addr);
+        let sender1 = sender.clone();
+        tokio::spawn(async move {
+            // 使用 LinesCodec 把 TCP 数据切成一行行字符串处理
+            let framed = Framed::new(stream, LinesCodec::new());
+            // split 成 writer 和 reader
+            let (mut w, mut r) = framed.split();
+            for line in r.next().await {
+                // 为每个消息创建一个 oneshot channel，用于发送回复
+                let (reply, reply_receiver) = oneshot::channel();
+                sender1.send((line?, reply))?;
+
+                // 接收 pow 计算完成后的 hash 和 nonce
+                if let Ok(v) = reply_receiver.await {
+                    w.send(format!(&quot;Pow calculated: {}&quot;, v)).await?;
+                }
+            }
+            Ok::&lt;_, anyhow::Error&gt;(())
+        });
+    }
+}
+
+// 使用 rayon 并发计算 u32 空间下所有 nonce，直到找到有头 N 个 0 的哈希
+pub fn pow(s: &amp;str) -&gt; Option&lt;(String, u32)&gt; {
+    let hasher = blake3_base_hash(s.as_bytes());
+    let nonce = (0..u32::MAX).into_par_iter().find_any(|n| {
+        let hash = blake3_hash(hasher.clone(), n).as_bytes().to_vec();
+        &amp;hash[..PREFIX_ZERO.len()] == PREFIX_ZERO
+    });
+    nonce.map(|n| {
+        let hash = blake3_hash(hasher, &amp;n).to_hex().to_string();
+        (hash, n)
+    })
+}
+
+// 计算携带 nonce 后的哈希
+fn blake3_hash(mut hasher: blake3::Hasher, nonce: &amp;u32) -&gt; blake3::Hash {
+    hasher.update(&amp;nonce.to_be_bytes()[..]);
+    hasher.finalize()
+}
+
+// 计算数据的哈希
+fn blake3_base_hash(data: &amp;[u8]) -&gt; Hasher {
+    let mut hasher = Hasher::new();
+    hasher.update(data);
+    hasher
+}
+</code></pre></pre>
+<p>在这个例子里:</p>
+<ol>
+<li>我们使用了之前撰写的 TCP server</li>
+<li>只不过这次，客户端输入过来的一行文字，会被计算出一个 POW（Proof of Work）的哈希</li>
+<li>调整 nonce，不断计算哈希，直到哈希的头三个字节全是零为止。</li>
+<li>服务器要返回计算好的哈希和获得该哈希的 nonce。</li>
+<li>这是一个典型的计算密集型任务，所以我们需要使用线程来处理它。</li>
+<li>而在 tokio task 和 thread 间使用 channel 进行同步。我们使用了一个 ubounded MPSC channel 从 tokio task 侧往 thread 侧发送消息，每条消息都附带一个 oneshot channel 用于 thread 侧往 tokio task 侧发送数据。</li>
+</ol>
+<blockquote>
+<p>建议你仔细读读这段代码，最好自己写一遍，感受一下使用 channel 在计算密集型和 IO 密集型任务同步的方式。</p>
+</blockquote>
+<p>如果你用 telnet 连接，发送 “hello world!”，会得到不同的哈希和 nonce，它们都是正确的结果：</p>
+<pre><code class="language-shell">
+❯ telnet localhost 8080
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+hello world!
+Pow calculated: hash: 0000006e6e9370d0f60f06bdc288efafa203fd99b9af0480d040b2cc89c44df0, once: 403407307
+Connection closed by foreign host.
+
+❯ telnet localhost 8080
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+hello world!
+Pow calculated: hash: 000000e23f0e9b7aeba9060a17ac676f3341284800a2db843e2f0e85f77f52dd, once: 36169623
+Connection closed by foreign host.
+
+</code></pre>
+</div>
+</details>
+<h2 id="对比线程学习future"><a class="header" href="#对比线程学习future">对比线程学习Future</a></h2>
+<details id="admonition-对比线程来学习future" class="admonition info">
+<summary class="admonition-title">
+<p>对比线程来学习future</p>
+<p><a class="admonition-anchor-link" href="#admonition-对比线程来学习future"></a></p>
+</summary>
+<div>
+<p>在学习 Future 的使用时，估计你也发现了，我们可以对比线程来学习，可以看到，下列代码的结构多么相似：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn thread_async() -&gt; JoinHandle&lt;usize&gt; {
+    thread::spawn(move || {
+        println!(&quot;hello thread!&quot;);
+        42
+    })
+}
+
+fn task_async() -&gt; impl Future&lt;Output = usize&gt; {
+    async move {
+        println!(&quot;hello async!&quot;);
+        42
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<h2 id="为什么标准库的-mutex-不能跨越-await"><a class="header" href="#为什么标准库的-mutex-不能跨越-await">为什么标准库的 Mutex 不能跨越 await？</a></h2>
+<p>想想看，为什么标准库的 Mutex 不能跨越 await？</p>
+<p>你可以把文中使用 tokio::sync::Mutex 的代码改成使用 std::sync::Mutex，并对使用的接口做相应的改动（把 lock().await 改成 lock().unwrap()），看看编译器会报什么错。</p>
+<p>对着错误提示，你明白为什么了么？</p>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="5_1_concurrency_primitives.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="5_3_deepin_async_await.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="5_1_concurrency_primitives.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="5_3_deepin_async_await.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
