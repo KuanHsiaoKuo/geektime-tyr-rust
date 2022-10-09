@@ -187,42 +187,29 @@
 <ul>
 <li><a href="#cargotoml">Cargo.toml</a></li>
 <li><a href="#srcerrorrs-thiserror%E4%BC%9A%E8%87%AA%E5%8A%A8%E8%BD%AC%E6%8D%A2">src/error.rs: thiserror会自动转换</a></li>
-<li><a href="#srclibrs%E5%AE%9A%E4%B9%89%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">src/lib.rs：定义结构体+实现方法+单元测试</a>
-<ul>
-<li><a href="#mod%E5%BC%95%E5%85%A5%E4%B8%8E%E4%BD%BF%E7%94%A8">mod引入与使用</a></li>
-<li><a href="#%E5%AE%9A%E4%B9%89%E7%BB%93%E6%9E%84%E4%BD%93">定义结构体</a>
-<ul>
-<li><a href="#%E4%B8%93%E9%97%A8%E7%AE%80%E5%8C%96%E5%A4%8D%E6%9D%82%E7%B1%BB%E5%9E%8B">专门简化复杂类型</a></li>
-<li><a href="#%E4%B8%93%E9%97%A8%E7%9A%84%E7%BB%93%E5%90%88%E7%89%88%E6%9C%ACgrep%E7%BB%93%E6%9E%84%E4%BD%93">专门的结合版本grep结构体</a></li>
-</ul>
-</li>
-<li><a href="#%E7%BB%99%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95">给结构体实现方法</a></li>
-<li><a href="#%E9%BB%98%E8%AE%A4%E7%AD%96%E7%95%A5-default_strategy">默认策略: default_strategy</a></li>
-<li><a href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E8%BE%93%E5%87%BA">格式化输出</a></li>
-<li><a href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
-</ul>
-</li>
-<li><a href="#srcmainrs">src/main.rs</a>
-<ul>
-<li><a href="#%E5%BC%95%E5%85%A5librs%E4%B8%AD%E7%9A%84%E5%86%85%E5%AE%B9">引入lib.rs中的内容</a></li>
-<li><a href="#%E4%B8%BB%E5%87%BD%E6%95%B0main">主函数：main()</a></li>
-</ul>
-</li>
+<li><a href="#srclibrs%E5%AE%9A%E4%B9%89%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">src/lib.rs：定义结构体+实现方法+单元测试</a></li>
+<li><a href="#srcmainrs">src/main.rs</a></li>
 <li><a href="#%E4%BD%BF%E7%94%A8">使用</a></li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:40:23 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:51:10 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h2>
-<pre><pre class="playground"><code class="language-rust  editable">[package]
+<details id="admonition-cargotoml" class="admonition note">
+<summary class="admonition-title">
+<p>Cargo.toml </p>
+<p><a class="admonition-anchor-link" href="#admonition-cargotoml"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">[package]
 name = &quot;rgrep&quot;
 version = &quot;0.1.0&quot;
 edition = &quot;2021&quot;
 
-<span class="boring">See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-</span>
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
 [dependencies]
 anyhow = &quot;1&quot;
 clap = { version = &quot;3&quot;, features = [&quot;derive&quot;] }
@@ -232,11 +219,18 @@ itertools = &quot;0.10&quot;
 rayon = &quot;1&quot;
 regex = &quot;1&quot;
 thiserror = &quot;1&quot;
-</code></pre></pre>
+</code></pre>
+</div>
+</details>
 <h2 id="srcerrorrs-thiserror会自动转换"><a class="header" href="#srcerrorrs-thiserror会自动转换">src/error.rs: thiserror会自动转换</a></h2>
+<details id="admonition--它们都是需要进行转换的错误thiserror-能够通过宏帮我们完成错误类型的转换" class="admonition note">
+<summary class="admonition-title">
 <blockquote>
 <p>它们都是需要进行转换的错误。thiserror 能够通过宏帮我们完成错误类型的转换。</p>
 </blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--它们都是需要进行转换的错误thiserror-能够通过宏帮我们完成错误类型的转换"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -249,20 +243,40 @@ pub enum GrepError {
     IoError(#[from] std::io::Error),
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="srclibrs定义结构体实现方法单元测试"><a class="header" href="#srclibrs定义结构体实现方法单元测试">src/lib.rs：定义结构体+实现方法+单元测试</a></h2>
-<h3 id="mod引入与使用"><a class="header" href="#mod引入与使用">mod引入与使用</a></h3>
+<details id="admonition-mod引入与使用" class="admonition note">
+<summary class="admonition-title">
+<p>mod引入与使用</p>
+<p><a class="admonition-anchor-link" href="#admonition-mod引入与使用"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">mod error;
 pub use error::GrepError;
 </code></pre></pre>
-<h3 id="定义结构体"><a class="header" href="#定义结构体">定义结构体</a></h3>
-<h4 id="专门简化复杂类型"><a class="header" href="#专门简化复杂类型">专门简化复杂类型</a></h4>
+</div>
+</details>
+<details id="admonition-定义结构体-专门简化复杂类型" class="admonition note">
+<summary class="admonition-title">
+<p>定义结构体: 专门简化复杂类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-定义结构体-专门简化复杂类型"></a></p>
+</summary>
+<div>
 <blockquote>
 <p>这里其实就是传入一个指定结构的函数对象</p>
 </blockquote>
 <pre><pre class="playground"><code class="language-rust  editable">/// 定义类型，这样，在使用时可以简化复杂类型的书写
 pub type StrategyFn = fn(&amp;Path, &amp;mut dyn BufRead, &amp;Regex, &amp;mut dyn Write) -&gt; Result&lt;(), GrepError&gt;;
 </code></pre></pre>
-<h4 id="专门的结合版本grep结构体"><a class="header" href="#专门的结合版本grep结构体">专门的结合版本grep结构体</a></h4>
+</div>
+</details>
+<details id="admonition-专门的结合版本grep结构体" class="admonition note">
+<summary class="admonition-title">
+<p>专门的结合版本grep结构体</p>
+<p><a class="admonition-anchor-link" href="#admonition-专门的结合版本grep结构体"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 简化版本的 grep，支持正则表达式和文件通配符
 #[derive(Parser, Debug)]
 #[clap(version = &quot;1.0&quot;, author = &quot;Tyr Chen &lt;tyr@chen.com&gt;&quot;)]
@@ -273,7 +287,14 @@ pub struct GrepConfig {
     glob: String,
 }
 </code></pre></pre>
-<h3 id="给结构体实现方法"><a class="header" href="#给结构体实现方法">给结构体实现方法</a></h3>
+</div>
+</details>
+<details id="admonition-librs-给结构体实现方法" class="admonition note">
+<summary class="admonition-title">
+<p>lib.rs: 给结构体实现方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-librs-给结构体实现方法"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">impl GrepConfig {
     /// 使用缺省策略来查找匹配
     pub fn match_with_default_strategy(&amp;self) -&gt; Result&lt;(), GrepError&gt; {
@@ -302,6 +323,8 @@ pub struct GrepConfig {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <blockquote>
 <p>主要实现两种解析策略：</p>
 </blockquote>
@@ -309,7 +332,12 @@ pub struct GrepConfig {
 <li>默认策略：match_with_default_strategy, 使用default_strategy</li>
 <li>指定策略：match_with, 使用传入的strategy: StrategyFn</li>
 </ol>
-<h3 id="默认策略-default_strategy"><a class="header" href="#默认策略-default_strategy">默认策略: default_strategy</a></h3>
+<details id="admonition-默认策略--default_strategy" class="admonition note">
+<summary class="admonition-title">
+<p>默认策略:  default_strategy</p>
+<p><a class="admonition-anchor-link" href="#admonition-默认策略--default_strategy"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 缺省策略，从头到尾串行查找，最后输出到 writer
 pub fn default_strategy(
     path: &amp;Path,
@@ -342,7 +370,14 @@ pub fn default_strategy(
     Ok(())
 }
 </code></pre></pre>
-<h3 id="格式化输出"><a class="header" href="#格式化输出">格式化输出</a></h3>
+</div>
+</details>
+<details id="admonition-格式化输出" class="admonition note">
+<summary class="admonition-title">
+<p>格式化输出</p>
+<p><a class="admonition-anchor-link" href="#admonition-格式化输出"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 格式化输出匹配的行，包含行号，列号和带有高亮的第一个匹配项
 pub fn format_line(line: &amp;str, lineno: usize, range: Range&lt;usize&gt;) -&gt; String {
     let Range { start, end } = range;
@@ -359,7 +394,14 @@ pub fn format_line(line: &amp;str, lineno: usize, range: Range&lt;usize&gt;) -&g
     )
 }
 </code></pre></pre>
-<h3 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h3>
+</div>
+</details>
+<details id="admonition-单元测试" class="admonition note">
+<summary class="admonition-title">
+<p>单元测试 </p>
+<p><a class="admonition-anchor-link" href="#admonition-单元测试"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
 mod tests {
 
@@ -396,11 +438,25 @@ mod tests {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="srcmainrs"><a class="header" href="#srcmainrs">src/main.rs</a></h2>
-<h3 id="引入librs中的内容"><a class="header" href="#引入librs中的内容">引入lib.rs中的内容</a></h3>
+<details id="admonition-引入librs中的内容" class="admonition note">
+<summary class="admonition-title">
+<p>引入lib.rs中的内容</p>
+<p><a class="admonition-anchor-link" href="#admonition-引入librs中的内容"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use itertools::Itertools;
 </code></pre></pre>
-<h3 id="主函数main"><a class="header" href="#主函数main">主函数：main()</a></h3>
+</div>
+</details>
+<details id="admonition-主函数main" class="admonition note">
+<summary class="admonition-title">
+<p>主函数：main() </p>
+<p><a class="admonition-anchor-link" href="#admonition-主函数main"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use regex::Regex;
 use std::{
     fs::File,
@@ -409,7 +465,15 @@ use std::{
     path::Path,
 };
 </code></pre></pre>
+</div>
+</details>
 <h2 id="使用"><a class="header" href="#使用">使用</a></h2>
+<details id="admonition-示例cargo-run---quiet----正则表达式-srcrs" class="admonition note">
+<summary class="admonition-title">
+<p>示例：cargo run –quiet – “正则表达式” “src/*.rs”</p>
+<p><a class="admonition-anchor-link" href="#admonition-示例cargo-run---quiet----正则表达式-srcrs"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo run --quiet -- &quot;Re[^\\s]+&quot; &quot;src/*.rs&quot;                                                                                                                                                                                            ─╯
 src/main.rs
      1:13  use anyhow::Result;
@@ -431,7 +495,8 @@ src/lib.rs
    126:29          let mut reader = BufReader::new(&amp;input[..]);
    127:23          let pattern = Regex::new(r&quot;he\w+&quot;).unwrap();
 </code></pre>
-
+</div>
+</details>
             </main>
 
             <!--            <script src="https://utteranc.es/client.js"-->
