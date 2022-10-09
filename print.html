@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:40 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:15 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -373,7 +373,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:42 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:16 UTC 2022 -->
 <!--te-->
 <h1 id="gdblldb"><a class="header" href="#gdblldb">gdb/lldb</a></h1>
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
@@ -955,22 +955,9 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 <ul>
 <li><a href="httpie.html#httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">httpie源码剖析</a>
 <ul>
-<li><a href="httpie.html#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a>
-<ul>
-<li><a href="httpie.html#cargotoml">Cargo.toml</a></li>
-</ul>
-</li>
-<li><a href="httpie.html#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a>
-<ul>
-<li><a href="httpie.html#clapparser">clap::Parser</a></li>
-</ul>
-</li>
-<li><a href="httpie.html#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a>
-<ul>
-<li><a href="httpie.html#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
-<li><a href="httpie.html#%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">键值对改造</a></li>
-</ul>
-</li>
+<li><a href="httpie.html#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a></li>
+<li><a href="httpie.html#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a></li>
+<li><a href="httpie.html#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a></li>
 <li><a href="httpie.html#step3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E6%94%B9%E9%80%A0">Step3：异步请求改造</a></li>
 <li><a href="httpie.html#step4-%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E6%89%93%E5%8D%B0">Step4: 语法高亮打印</a></li>
 <li><a href="httpie.html#step5-%E6%B7%BB%E5%8A%A0%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">Step5: 添加单元测试</a></li>
@@ -978,13 +965,18 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:41 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:16 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
 <li><a href="https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=%5B%5Bexample%5D%5D#examples">Cargo Targets &gt;&gt; Examples - The Cargo Book</a></li>
 </ul>
-<h3 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h3>
+<details id="admonition-cargotoml" class="admonition note">
+<summary class="admonition-title">
+<p>Cargo.toml </p>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-cargotoml"></a></p>
+</summary>
+<div>
 <pre><code class="language-toml">[package]
 name = &quot;httpie&quot;
 version = &quot;0.1.0&quot;
@@ -1021,15 +1013,16 @@ name = &quot;cli_verify&quot;
 [[example]]
 name = &quot;cli_get&quot;
 </code></pre>
-<div id="admonition-example使用" class="admonition tip">
-<div class="admonition-title">
-<p>example使用</p>
-<p><a class="admonition-anchor-link" href="httpie.html#admonition-example使用"></a></p>
 </div>
-<div>
+</details>
+<details id="admonition-1-示例代码放在根目录的examples文件夹与src同级" class="admonition note">
+<summary class="admonition-title">
 <ol>
 <li>示例代码放在根目录的examples文件夹，与src同级</li>
 </ol>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-1-示例代码放在根目录的examples文件夹与src同级"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">tree -L 2                                                                                                       ─╯
 .
 ├── Cargo.toml
@@ -1042,17 +1035,31 @@ name = &quot;cli_get&quot;
 
 2 directories, 5 files
 </code></pre>
+</div>
+</details>
+<details id="admonition-2-执行指令" class="admonition note">
+<summary class="admonition-title">
 <ol start="2">
-<li>执行指令</li>
+<li>执行指令 </li>
 </ol>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-2-执行指令"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo run --example &lt;example-name-in-cargo&gt;
 cargo run --example cli
 cargo run --example cli_get
 cargo run --example cli_verify
 </code></pre>
+</div>
+</details>
+<details id="admonition-3-使用示例" class="admonition note">
+<summary class="admonition-title">
 <ol start="3">
 <li>使用示例</li>
 </ol>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-3-使用示例"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo run --example cli                                                                                                                                                                                                                ─╯
     Finished dev [unoptimized + debuginfo] target(s) in 0.70s
      Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/cli`
@@ -1078,8 +1085,16 @@ SUBCOMMANDS:
 <li>SUBCOMMANDS来自代码中的注释</li>
 </ul>
 </div>
-</div>
+</details>
 <h2 id="step1指令解析"><a class="header" href="#step1指令解析">Step1：指令解析</a></h2>
+<details id="admonition-1-源码" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>源码 </li>
+</ol>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-1-源码"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use clap::Parser;
 
 // 定义 httpie 的 CLI 的主入口，它包含若干个子命令
@@ -1132,12 +1147,13 @@ fn main() {
     // println!(&quot;{:?}&quot;, opts::subcmd);
 }
 </code></pre></pre>
-<h3 id="clapparser"><a class="header" href="#clapparser">clap::Parser</a></h3>
-<div id="admonition-clapparser" class="admonition info">
-<div class="admonition-title">
-<p>clap::Parser</p>
-<p><a class="admonition-anchor-link" href="httpie.html#admonition-clapparser"></a></p>
 </div>
+</details>
+<details id="admonition-clapparser相关资料" class="admonition info">
+<summary class="admonition-title">
+<p>clap::Parser相关资料</p>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-clapparser相关资料"></a></p>
+</summary>
 <div>
 <ul>
 <li><a href="https://github.com/clap-rs/clap">clap-rs/clap: A full featured, fast Command Line Argument Parser for Rust</a></li>
@@ -1145,10 +1161,15 @@ fn main() {
 <li><a href="https://docs.rs/clap/latest/clap/parser/index.html">clap::parser - Rust</a></li>
 </ul>
 </div>
-</div>
+</details>
+<details id="admonition-1-clap的parser派生宏会自动实现parse方法来接收指令参数" class="admonition note">
+<summary class="admonition-title">
 <ol>
 <li>clap的parser派生宏会自动实现parse方法来接收指令参数</li>
 </ol>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-1-clap的parser派生宏会自动实现parse方法来接收指令参数"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">struct Opts {
     #[clap(subcommand)]
     subcmd: SubCommand,
@@ -1162,9 +1183,16 @@ fn main() {
     let opt_subcmd: SubCommand = opts.subcmd;
     // println!(&quot;{:?}&quot;, opts);
 </code></pre></pre>
+</div>
+</details>
+<details id="admonition-2-运行效果" class="admonition note">
+<summary class="admonition-title">
 <ol start="2">
 <li>运行效果</li>
 </ol>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-2-运行效果"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo run --example cli get http://jsonplaceholder.typicode.com/posts/2                                                                                                                                                                ─╯
    Compiling httpie v0.1.0 (/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/04_httpie)
     Finished dev [unoptimized + debuginfo] target(s) in 2.31s
@@ -1190,8 +1218,17 @@ For more information try --help
 <ul>
 <li>opts的获取：自动以空格分隔，根据<subcommand>模式匹配，之后的参数依次赋值给<subcommand> struct里面的元素</li>
 </ul>
+</div>
+</details>
 <h2 id="step2添加参数验证与键值对改造"><a class="header" href="#step2添加参数验证与键值对改造">Step2：添加参数验证与键值对改造</a></h2>
-<h3 id="参数验证"><a class="header" href="#参数验证">参数验证</a></h3>
+<details id="admonition-1-参数验证" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>参数验证</li>
+</ol>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-1-参数验证"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// feed get with an url and we will retrieve the response for you
 #[derive(Parser, Debug)]
 struct Get {
@@ -1214,9 +1251,14 @@ struct Post {
     body: Vec&lt;KvPair&gt;,
 }
 </code></pre></pre>
-<ol>
-<li>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了parse_url和parse_kv_pair检查一下。</li>
-</ol>
+</div>
+</details>
+<details id="admonition-clap-允许你为每个解析出来的值添加自定义的解析函数我们这里定义了parse_url和parse_kv_pair检查一下" class="admonition note">
+<summary class="admonition-title">
+<p>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了parse_url和parse_kv_pair检查一下。</p>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-clap-允许你为每个解析出来的值添加自定义的解析函数我们这里定义了parse_url和parse_kv_pair检查一下"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 因为我们为 KvPair 实现了 FromStr，这里可以直接 s.parse() 得到 KvPair
 fn parse_kv_pair(s: &amp;str) -&gt; Result&lt;KvPair&gt; {
     s.parse()
@@ -1228,10 +1270,16 @@ fn parse_url(s: &amp;str) -&gt; Result&lt;String&gt; {
     Ok(s.into())
 }
 </code></pre></pre>
-<ol>
-<li>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了个parse_url检查一下。</li>
+</div>
+</details>
+<details id="admonition-2-键值对改造" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>键值对改造 </li>
 </ol>
-<h3 id="键值对改造"><a class="header" href="#键值对改造">键值对改造</a></h3>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-2-键值对改造"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 命令行中的 key=value 可以通过 parse_kv_pair 解析成 KvPair 结构
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -1258,7 +1306,15 @@ impl FromStr for KvPair {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="step3异步请求改造"><a class="header" href="#step3异步请求改造">Step3：异步请求改造</a></h2>
+<details id="admonition-step3异步请求改造" class="admonition note">
+<summary class="admonition-title">
+<p>Step3：异步请求改造 </p>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-step3异步请求改造"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[tokio::main]
 async fn main() -&gt; Result&lt;()&gt; {
     let opts: Opts = Opts::parse();
@@ -1288,7 +1344,15 @@ async fn post(client: Client, args: &amp;Post) -&gt; Result&lt;()&gt; {
     Ok(())
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="step4-语法高亮打印"><a class="header" href="#step4-语法高亮打印">Step4: 语法高亮打印</a></h2>
+<details id="admonition-step4-语法高亮打印" class="admonition note">
+<summary class="admonition-title">
+<p>Step4: 语法高亮打印 </p>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-step4-语法高亮打印"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 打印服务器版本号 + 状态码
 fn print_status(resp: &amp;Response) {
     let status = format!(&quot;{:?} {}&quot;, resp.version(), resp.status()).blue();
@@ -1365,7 +1429,15 @@ async fn main() -&gt; Result&lt;()&gt; {
     Ok(result)
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="step5-添加单元测试"><a class="header" href="#step5-添加单元测试">Step5: 添加单元测试</a></h2>
+<details id="admonition-step5-添加单元测试" class="admonition note">
+<summary class="admonition-title">
+<p>Step5: 添加单元测试 </p>
+<p><a class="admonition-anchor-link" href="httpie.html#admonition-step5-添加单元测试"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 仅在 cargo test 时才编译
 #[cfg(test)]
 mod tests {
@@ -1399,6 +1471,8 @@ mod tests {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="rgrep"><a class="header" href="#rgrep">rgrep</a></h1>
 <!--ts-->
 <ul>
@@ -1432,9 +1506,9 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:48 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:23 UTC 2022 -->
 <!--te-->
-<h2 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h2>
+<h2 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h2>
 <pre><pre class="playground"><code class="language-rust  editable">[package]
 name = &quot;rgrep&quot;
 version = &quot;0.1.0&quot;
@@ -2478,7 +2552,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:22 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -2537,7 +2611,7 @@ cargo build -p queryer
 </div>
 </div>
 <h2 id="queryer-package"><a class="header" href="#queryer-package">queryer package</a></h2>
-<h3 id="cargotoml-2"><a class="header" href="#cargotoml-2">cargo.toml</a></h3>
+<h3 id="cargotoml-1"><a class="header" href="#cargotoml-1">cargo.toml</a></h3>
 <pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/06_queryer/queryer/cargo.toml}}
 </code></pre></pre>
 <h3 id="两个使用示例"><a class="header" href="#两个使用示例">两个使用示例</a></h3>
@@ -2955,7 +3029,7 @@ pub async fn retrieve_data(source: impl AsRef&lt;str&gt;) -&gt; Result&lt;String
 }
 </code></pre></pre>
 <h2 id="queryer-js-package-使用neon"><a class="header" href="#queryer-js-package-使用neon">queryer-js package: 使用neon</a></h2>
-<h3 id="cargotoml-3"><a class="header" href="#cargotoml-3">Cargo.toml</a></h3>
+<h3 id="cargotoml-2"><a class="header" href="#cargotoml-2">Cargo.toml</a></h3>
 <pre><pre class="playground"><code class="language-rust  editable">[package]
 name = &quot;queryer-js&quot;
 version = &quot;0.1.0&quot;
@@ -3029,7 +3103,7 @@ fn main(mut cx: ModuleContext) -&gt; NeonResult&lt;()&gt; {
 <blockquote>
 <p>python调用查询包</p>
 </blockquote>
-<h3 id="cargotoml-4"><a class="header" href="#cargotoml-4">Cargo.toml</a></h3>
+<h3 id="cargotoml-3"><a class="header" href="#cargotoml-3">Cargo.toml</a></h3>
 <pre><pre class="playground"><code class="language-rust  editable">[package]
 name = &quot;queryer_py&quot; # Python 模块需要用下划线
 version = &quot;0.1.0&quot;
@@ -3085,7 +3159,7 @@ fn queryer_py(_py: Python, m: &amp;PyModule) -&gt; PyResult&lt;()&gt; {
 }
 </code></pre></pre>
 <h2 id="data-viewer-package-使用tauri"><a class="header" href="#data-viewer-package-使用tauri">data-viewer package: 使用tauri</a></h2>
-<h3 id="cargotoml-5"><a class="header" href="#cargotoml-5">Cargo.toml</a></h3>
+<h3 id="cargotoml-4"><a class="header" href="#cargotoml-4">Cargo.toml</a></h3>
 <pre><pre class="playground"><code class="language-rust  editable">[package]
 name = &quot;app&quot;
 version = &quot;0.1.0&quot;
@@ -3153,7 +3227,7 @@ fn main() {
 <li><a href="1_stack_heap_ownership_lifetime_memory.html#i-%E4%BB%8E%E6%A0%88%E5%A0%86%E6%89%80%E6%9C%89%E6%9D%83%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%BC%80%E5%A7%8B%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">I. 从栈堆、所有权、生命周期开始内存管理</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:31 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:05 UTC 2022 -->
 <!--te-->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="内存"><a class="header" href="#内存">内存</a></h1>
 <!--ts-->
@@ -3177,7 +3251,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:29 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:03 UTC 2022 -->
 <!--te-->
 <h2 id="字符串内存使用图"><a class="header" href="#字符串内存使用图">字符串内存使用图</a></h2>
 <details id="admonition-字符串内存使用图" class="admonition info">
@@ -3260,7 +3334,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:29 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:03 UTC 2022 -->
 <!--te-->
 <h2 id="1-数据"><a class="header" href="#1-数据">1. 数据</a></h2>
 <h3 id="值和类型"><a class="header" href="#值和类型">值和类型</a></h3>
@@ -3361,7 +3435,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:30 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:04 UTC 2022 -->
 <!--te-->
 <h2 id="对比单一共享所有权"><a class="header" href="#对比单一共享所有权">对比单一/共享所有权</a></h2>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606985.jpg" alt="单一/共享所有权对比" /></p>
@@ -3756,7 +3830,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:30 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:04 UTC 2022 -->
 <!--te-->
 <h2 id="动态还是静态"><a class="header" href="#动态还是静态">动态还是静态？</a></h2>
 <details id="admonition-动态静态生命周期定义与表示方式" class="admonition info">
@@ -4076,7 +4150,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:31 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:04 UTC 2022 -->
 <!--te-->
 <h2 id="创建"><a class="header" href="#创建">创建</a></h2>
 <h3 id="堆内存生命周期管理发展史"><a class="header" href="#堆内存生命周期管理发展史">堆内存生命周期管理发展史</a></h3>
@@ -4385,7 +4459,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 <li><a href="2_type_system.html#ii-%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F">II. 类型系统</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:33 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:07 UTC 2022 -->
 <!--te-->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="类型系统"><a class="header" href="#类型系统">类型系统</a></h1>
 <!--ts-->
@@ -4416,7 +4490,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:32 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:05 UTC 2022 -->
 <!--te-->
 <h2 id="类型系统分类图"><a class="header" href="#类型系统分类图">类型系统分类图</a></h2>
 <div id="admonition-类型系统分类图" class="admonition info">
@@ -4638,7 +4712,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:32 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:06 UTC 2022 -->
 <!--te-->
 <h2 id="泛型就像定义函数"><a class="header" href="#泛型就像定义函数">泛型就像定义函数</a></h2>
 <ol>
@@ -4934,7 +5008,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:33 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:07 UTC 2022 -->
 <!--te-->
 <div id="admonition-trait概览图" class="admonition info">
 <div class="admonition-title">
@@ -6509,7 +6583,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:36 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:10 UTC 2022 -->
 <!--te-->
 <h2 id="数据结构快速一览"><a class="header" href="#数据结构快速一览">数据结构快速一览</a></h2>
 <div id="admonition-数据结构快速一览" class="admonition tip">
@@ -6572,7 +6646,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:34 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:08 UTC 2022 -->
 <!--te-->
 <h2 id="指针还是引用"><a class="header" href="#指针还是引用">指针还是引用</a></h2>
 <details id="admonition-引用是特殊的指针" class="admonition info">
@@ -7641,7 +7715,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:34 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:09 UTC 2022 -->
 <!--te-->
 <h2 id="对容器进行定义"><a class="header" href="#对容器进行定义">对容器进行定义</a></h2>
 <details id="admonition-容器数据结构如何理解" class="admonition tip">
@@ -8722,7 +8796,7 @@ map.insert('a', 1);
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:35 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:09 UTC 2022 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
 <details id="admonition-错误处理包含这么几部分" class="admonition info">
@@ -9072,7 +9146,7 @@ pub enum DataStoreError {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:35 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:10 UTC 2022 -->
 <!--te-->
 <h2 id="闭包的定义"><a class="header" href="#闭包的定义">闭包的定义</a></h2>
 <details id="admonition-闭包的基本概念" class="admonition info">
@@ -9805,7 +9879,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:36 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:11 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -10969,7 +11043,7 @@ pub struct Command {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:39 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:13 UTC 2022 -->
 <!--te-->
 <h2 id="区分并发与并行"><a class="header" href="#区分并发与并行">区分并发与并行</a></h2>
 <details id="admonition-再次区分并发与并行" class="admonition info">
@@ -11073,7 +11147,7 @@ pub struct Command {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:37 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:12 UTC 2022 -->
 <!--te-->
 <details id="admonition-在这些并发模式背后都有哪些并发原语可以为我们所用呢" class="admonition info">
 <summary class="admonition-title">
@@ -12975,7 +13049,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:38 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:12 UTC 2022 -->
 <!--te-->
 <h2 id="actor是有栈协程future是无栈协程"><a class="header" href="#actor是有栈协程future是无栈协程">actor是有栈协程，Future是无栈协程</a></h2>
 <details id="admonition-actor是有栈协程future是无栈协程" class="admonition info">
@@ -13773,7 +13847,7 @@ fn task_async() -&gt; impl Future&lt;Output = usize&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:38 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:13 UTC 2022 -->
 <!--te-->
 <details id="admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解" class="admonition info">
 <summary class="admonition-title">
@@ -14493,7 +14567,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:22 UTC 2022 -->
 <!--te-->
 <h1 id="整体回顾"><a class="header" href="#整体回顾">整体回顾</a></h1>
 <p>我们的 KV server 之旅就到此为止了。在整整 7 堂课里，我们一点点从零构造了一个完整的 KV server，包括注释在内，撰写了近三千行代码：</p>
@@ -14580,7 +14654,7 @@ rotation = 'Daily'
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:42 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:17 UTC 2022 -->
 <!--te-->
 <h2 id="为什么选-kv-server-来实操呢"><a class="header" href="#为什么选-kv-server-来实操呢">为什么选 KV server 来实操呢？</a></h2>
 <p>因为它是一个足够简单又足够复杂的服务。</p>
@@ -15106,7 +15180,7 @@ pub trait Storage {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:43 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:18 UTC 2022 -->
 <!--te-->
 <p>还是按照上一讲定义接口的顺序来一个一个测试：首先我们来构建协议层。</p>
 <h2 id="创建项目添加依赖"><a class="header" href="#创建项目添加依赖">创建项目，添加依赖</a></h2>
@@ -16281,7 +16355,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:44 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:18 UTC 2022 -->
 <!--te-->
 <p>前面已经完成了 KV store 的基本功能，但留了两个小尾巴：</p>
 <ol>
@@ -17165,7 +17239,7 @@ Rust 编译器会尽最大的努力，让你的代码简单。如果你用 clipp
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:44 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:19 UTC 2022 -->
 <!--te-->
 <h2 id="async-prost"><a class="header" href="#async-prost">async-prost</a></h2>
 <p>之前一直在使用一个神秘的 <a href="https://github.com/tyrchen/async-prost">async-prost 库</a>，我们神奇地完成了 TCP frame 的封包和解包。</p>
@@ -18238,7 +18312,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:19 UTC 2022 -->
 <!--te-->
 <details id="admonition-那么当我们的应用架构在-tcp-上时如何使用-tls-来保证客户端和服务器间的安全性呢" class="admonition question">
 <summary class="admonition-title">
@@ -18850,7 +18924,7 @@ protocol。对于有余力的同学，你们可以看看它的文档，尝试着
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:20 UTC 2022 -->
 <!--te-->
 <h2 id="回顾构建过程"><a class="header" href="#回顾构建过程">回顾构建过程</a></h2>
 <p>之前已经完成了一个相对完善的 KV server。</p>
@@ -19575,7 +19649,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:21 UTC 2022 -->
 <!--te-->
 <h2 id="现有架构分析"><a class="header" href="#现有架构分析">现有架构分析</a></h2>
 <details id="admonition-先简单回顾一下-redis-对-pubsub-的支持" class="admonition info">
@@ -20665,7 +20739,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:21 UTC 2022 -->
 <!--te-->
 <p>虽然这是一个“简单”的 KV server：</p>
 <ul>

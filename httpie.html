@@ -185,22 +185,9 @@
 <ul>
 <li><a href="#httpie%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90">httpie源码剖析</a>
 <ul>
-<li><a href="#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a>
-<ul>
-<li><a href="#cargotoml">Cargo.toml</a></li>
-</ul>
-</li>
-<li><a href="#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a>
-<ul>
-<li><a href="#clapparser">clap::Parser</a></li>
-</ul>
-</li>
-<li><a href="#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a>
-<ul>
-<li><a href="#%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81">参数验证</a></li>
-<li><a href="#%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">键值对改造</a></li>
-</ul>
-</li>
+<li><a href="#example%E7%9A%84%E4%BD%BF%E7%94%A8">example的使用</a></li>
+<li><a href="#step1%E6%8C%87%E4%BB%A4%E8%A7%A3%E6%9E%90">Step1：指令解析</a></li>
+<li><a href="#step2%E6%B7%BB%E5%8A%A0%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81%E4%B8%8E%E9%94%AE%E5%80%BC%E5%AF%B9%E6%94%B9%E9%80%A0">Step2：添加参数验证与键值对改造</a></li>
 <li><a href="#step3%E5%BC%82%E6%AD%A5%E8%AF%B7%E6%B1%82%E6%94%B9%E9%80%A0">Step3：异步请求改造</a></li>
 <li><a href="#step4-%E8%AF%AD%E6%B3%95%E9%AB%98%E4%BA%AE%E6%89%93%E5%8D%B0">Step4: 语法高亮打印</a></li>
 <li><a href="#step5-%E6%B7%BB%E5%8A%A0%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">Step5: 添加单元测试</a></li>
@@ -208,13 +195,18 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:28:41 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 07:40:16 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
 <li><a href="https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=%5B%5Bexample%5D%5D#examples">Cargo Targets &gt;&gt; Examples - The Cargo Book</a></li>
 </ul>
-<h3 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h3>
+<details id="admonition-cargotoml" class="admonition note">
+<summary class="admonition-title">
+<p>Cargo.toml </p>
+<p><a class="admonition-anchor-link" href="#admonition-cargotoml"></a></p>
+</summary>
+<div>
 <pre><code class="language-toml">[package]
 name = &quot;httpie&quot;
 version = &quot;0.1.0&quot;
@@ -251,15 +243,16 @@ name = &quot;cli_verify&quot;
 [[example]]
 name = &quot;cli_get&quot;
 </code></pre>
-<div id="admonition-example使用" class="admonition tip">
-<div class="admonition-title">
-<p>example使用</p>
-<p><a class="admonition-anchor-link" href="#admonition-example使用"></a></p>
 </div>
-<div>
+</details>
+<details id="admonition-1-示例代码放在根目录的examples文件夹与src同级" class="admonition note">
+<summary class="admonition-title">
 <ol>
 <li>示例代码放在根目录的examples文件夹，与src同级</li>
 </ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-示例代码放在根目录的examples文件夹与src同级"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">tree -L 2                                                                                                       ─╯
 .
 ├── Cargo.toml
@@ -272,17 +265,31 @@ name = &quot;cli_get&quot;
 
 2 directories, 5 files
 </code></pre>
+</div>
+</details>
+<details id="admonition-2-执行指令" class="admonition note">
+<summary class="admonition-title">
 <ol start="2">
-<li>执行指令</li>
+<li>执行指令 </li>
 </ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-执行指令"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo run --example &lt;example-name-in-cargo&gt;
 cargo run --example cli
 cargo run --example cli_get
 cargo run --example cli_verify
 </code></pre>
+</div>
+</details>
+<details id="admonition-3-使用示例" class="admonition note">
+<summary class="admonition-title">
 <ol start="3">
 <li>使用示例</li>
 </ol>
+<p><a class="admonition-anchor-link" href="#admonition-3-使用示例"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo run --example cli                                                                                                                                                                                                                ─╯
     Finished dev [unoptimized + debuginfo] target(s) in 0.70s
      Running `/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/examples/cli`
@@ -308,8 +315,16 @@ SUBCOMMANDS:
 <li>SUBCOMMANDS来自代码中的注释</li>
 </ul>
 </div>
-</div>
+</details>
 <h2 id="step1指令解析"><a class="header" href="#step1指令解析">Step1：指令解析</a></h2>
+<details id="admonition-1-源码" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>源码 </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-源码"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use clap::Parser;
 
 // 定义 httpie 的 CLI 的主入口，它包含若干个子命令
@@ -362,12 +377,13 @@ fn main() {
     // println!(&quot;{:?}&quot;, opts::subcmd);
 }
 </code></pre></pre>
-<h3 id="clapparser"><a class="header" href="#clapparser">clap::Parser</a></h3>
-<div id="admonition-clapparser" class="admonition info">
-<div class="admonition-title">
-<p>clap::Parser</p>
-<p><a class="admonition-anchor-link" href="#admonition-clapparser"></a></p>
 </div>
+</details>
+<details id="admonition-clapparser相关资料" class="admonition info">
+<summary class="admonition-title">
+<p>clap::Parser相关资料</p>
+<p><a class="admonition-anchor-link" href="#admonition-clapparser相关资料"></a></p>
+</summary>
 <div>
 <ul>
 <li><a href="https://github.com/clap-rs/clap">clap-rs/clap: A full featured, fast Command Line Argument Parser for Rust</a></li>
@@ -375,10 +391,15 @@ fn main() {
 <li><a href="https://docs.rs/clap/latest/clap/parser/index.html">clap::parser - Rust</a></li>
 </ul>
 </div>
-</div>
+</details>
+<details id="admonition-1-clap的parser派生宏会自动实现parse方法来接收指令参数" class="admonition note">
+<summary class="admonition-title">
 <ol>
 <li>clap的parser派生宏会自动实现parse方法来接收指令参数</li>
 </ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-clap的parser派生宏会自动实现parse方法来接收指令参数"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">struct Opts {
     #[clap(subcommand)]
     subcmd: SubCommand,
@@ -392,9 +413,16 @@ fn main() {
     let opt_subcmd: SubCommand = opts.subcmd;
     // println!(&quot;{:?}&quot;, opts);
 </code></pre></pre>
+</div>
+</details>
+<details id="admonition-2-运行效果" class="admonition note">
+<summary class="admonition-title">
 <ol start="2">
 <li>运行效果</li>
 </ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-运行效果"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo run --example cli get http://jsonplaceholder.typicode.com/posts/2                                                                                                                                                                ─╯
    Compiling httpie v0.1.0 (/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/04_httpie)
     Finished dev [unoptimized + debuginfo] target(s) in 2.31s
@@ -420,8 +448,17 @@ For more information try --help
 <ul>
 <li>opts的获取：自动以空格分隔，根据<subcommand>模式匹配，之后的参数依次赋值给<subcommand> struct里面的元素</li>
 </ul>
+</div>
+</details>
 <h2 id="step2添加参数验证与键值对改造"><a class="header" href="#step2添加参数验证与键值对改造">Step2：添加参数验证与键值对改造</a></h2>
-<h3 id="参数验证"><a class="header" href="#参数验证">参数验证</a></h3>
+<details id="admonition-1-参数验证" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>参数验证</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-参数验证"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// feed get with an url and we will retrieve the response for you
 #[derive(Parser, Debug)]
 struct Get {
@@ -444,9 +481,14 @@ struct Post {
     body: Vec&lt;KvPair&gt;,
 }
 </code></pre></pre>
-<ol>
-<li>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了parse_url和parse_kv_pair检查一下。</li>
-</ol>
+</div>
+</details>
+<details id="admonition-clap-允许你为每个解析出来的值添加自定义的解析函数我们这里定义了parse_url和parse_kv_pair检查一下" class="admonition note">
+<summary class="admonition-title">
+<p>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了parse_url和parse_kv_pair检查一下。</p>
+<p><a class="admonition-anchor-link" href="#admonition-clap-允许你为每个解析出来的值添加自定义的解析函数我们这里定义了parse_url和parse_kv_pair检查一下"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 因为我们为 KvPair 实现了 FromStr，这里可以直接 s.parse() 得到 KvPair
 fn parse_kv_pair(s: &amp;str) -&gt; Result&lt;KvPair&gt; {
     s.parse()
@@ -458,10 +500,16 @@ fn parse_url(s: &amp;str) -&gt; Result&lt;String&gt; {
     Ok(s.into())
 }
 </code></pre></pre>
-<ol>
-<li>clap 允许你为每个解析出来的值添加自定义的解析函数，我们这里定义了个parse_url检查一下。</li>
+</div>
+</details>
+<details id="admonition-2-键值对改造" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>键值对改造 </li>
 </ol>
-<h3 id="键值对改造"><a class="header" href="#键值对改造">键值对改造</a></h3>
+<p><a class="admonition-anchor-link" href="#admonition-2-键值对改造"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 命令行中的 key=value 可以通过 parse_kv_pair 解析成 KvPair 结构
 #[allow(dead_code)]
 #[derive(Debug)]
@@ -488,7 +536,15 @@ impl FromStr for KvPair {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="step3异步请求改造"><a class="header" href="#step3异步请求改造">Step3：异步请求改造</a></h2>
+<details id="admonition-step3异步请求改造" class="admonition note">
+<summary class="admonition-title">
+<p>Step3：异步请求改造 </p>
+<p><a class="admonition-anchor-link" href="#admonition-step3异步请求改造"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[tokio::main]
 async fn main() -&gt; Result&lt;()&gt; {
     let opts: Opts = Opts::parse();
@@ -518,7 +574,15 @@ async fn post(client: Client, args: &amp;Post) -&gt; Result&lt;()&gt; {
     Ok(())
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="step4-语法高亮打印"><a class="header" href="#step4-语法高亮打印">Step4: 语法高亮打印</a></h2>
+<details id="admonition-step4-语法高亮打印" class="admonition note">
+<summary class="admonition-title">
+<p>Step4: 语法高亮打印 </p>
+<p><a class="admonition-anchor-link" href="#admonition-step4-语法高亮打印"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 打印服务器版本号 + 状态码
 fn print_status(resp: &amp;Response) {
     let status = format!(&quot;{:?} {}&quot;, resp.version(), resp.status()).blue();
@@ -595,7 +659,15 @@ async fn main() -&gt; Result&lt;()&gt; {
     Ok(result)
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="step5-添加单元测试"><a class="header" href="#step5-添加单元测试">Step5: 添加单元测试</a></h2>
+<details id="admonition-step5-添加单元测试" class="admonition note">
+<summary class="admonition-title">
+<p>Step5: 添加单元测试 </p>
+<p><a class="admonition-anchor-link" href="#admonition-step5-添加单元测试"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 仅在 cargo test 时才编译
 #[cfg(test)]
 mod tests {
@@ -629,6 +701,8 @@ mod tests {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 
             </main>
 
