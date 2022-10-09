@@ -183,7 +183,13 @@
                 <h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
 <!--ts-->
 <!--te-->
-<h2 id="abiproto"><a class="header" href="#abiproto">abi.proto</a></h2>
+<h2 id="protobuf相关处理"><a class="header" href="#protobuf相关处理">protobuf相关处理</a></h2>
+<details id="admonition-abiproto" class="admonition note">
+<summary class="admonition-title">
+<p>abi.proto</p>
+<p><a class="admonition-anchor-link" href="#admonition-abiproto"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">syntax = &quot;proto3&quot;;
 
 package abi;
@@ -260,7 +266,14 @@ message Spec {
   }
 }
 </code></pre></pre>
-<h2 id="buildrs"><a class="header" href="#buildrs">build.rs</a></h2>
+</div>
+</details>
+<details id="admonition-buildrs" class="admonition note">
+<summary class="admonition-title">
+<p>build.rs</p>
+<p><a class="admonition-anchor-link" href="#admonition-buildrs"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use std::process::Command;
 
 fn main() {
@@ -290,15 +303,17 @@ fn main() {
 <blockquote>
 <p>在编译时可选择检查环境变量。</p>
 </blockquote>
+</div>
+</details>
 <h2 id="关于rust的模块"><a class="header" href="#关于rust的模块">关于rust的模块</a></h2>
 <blockquote>
 <p>可以参考这篇：<a href="https://zhuanlan.zhihu.com/p/443926839">Rust 模块系统理解 - 知乎</a></p>
 </blockquote>
-<div id="admonition-mod全认识" class="admonition tip">
-<div class="admonition-title">
+<details id="admonition-mod全认识" class="admonition tip">
+<summary class="admonition-title">
 <p>mod全认识</p>
 <p><a class="admonition-anchor-link" href="#admonition-mod全认识"></a></p>
-</div>
+</summary>
 <div>
 <ol>
 <li>mod(mod.rs或mod关键字)将代码分为多个逻辑模块，并管理这些模块的可见性（public / private）。</li>
@@ -321,16 +336,35 @@ fn main() {
 编译器规定use语句一定要在mod语句之前</li>
 </ol>
 </div>
-</div>
-<h2 id="mod文件定义与实现分离"><a class="header" href="#mod文件定义与实现分离">mod文件定义与实现分离</a></h2>
+</details>
+<details id="admonition-mod文件定义与实现分离" class="admonition abstract">
+<summary class="admonition-title">
+<p>mod文件定义与实现分离 </p>
+<p><a class="admonition-anchor-link" href="#admonition-mod文件定义与实现分离"></a></p>
+</summary>
+<div>
 <p>在rust中，一般会在模块的mod.rs文件中对供外部使用的项进行实现, 项可以是：函数，结构体，trait，impl块，甚至其它模块.
 这样有个好处，高内聚，可以在代码增长时，将变动局限在服务提供者内部，对外提供的api不变，不会造成破坏性更新。</p>
+</div>
+</details>
 <h2 id="pb模块-处理protobuf"><a class="header" href="#pb模块-处理protobuf">pb模块: 处理protobuf</a></h2>
-<h3 id="pbmodrs声明模块"><a class="header" href="#pbmodrs声明模块">pb/mod.rs声明模块</a></h3>
+<details id="admonition-pbmodrs声明模块" class="admonition note">
+<summary class="admonition-title">
+<p>pb/mod.rs声明模块 </p>
+<p><a class="admonition-anchor-link" href="#admonition-pbmodrs声明模块"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">mod abi; // 声明 abi.rs
 pub use abi::*;
 </code></pre></pre>
-<h3 id="pbabirs里面还有子模块"><a class="header" href="#pbabirs里面还有子模块">pb/abi.rs里面还有子模块</a></h3>
+</div>
+</details>
+<details id="admonition-pbabirs里面还有子模块" class="admonition note">
+<summary class="admonition-title">
+<p>pb/abi.rs里面还有子模块 </p>
+<p><a class="admonition-anchor-link" href="#admonition-pbabirs里面还有子模块"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// Nested message and enum types in `Spec`.
 pub mod spec {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
@@ -352,7 +386,14 @@ pub mod spec {
     }
 }
 </code></pre></pre>
-<h3 id="pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod"><a class="header" href="#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></h3>
+</div>
+</details>
+<details id="admonition-pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod" class="admonition note">
+<summary class="admonition-title">
+<p>pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</p>
+<p><a class="admonition-anchor-link" href="#admonition-pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ImageSpec {
@@ -441,7 +482,14 @@ pub struct Watermark {
     pub y: u32,
 }
 </code></pre></pre>
-<h3 id="pbabirs有个特殊结构体"><a class="header" href="#pbabirs有个特殊结构体">pb/abi.rs有个特殊结构体</a></h3>
+</div>
+</details>
+<details id="admonition-pbabirs有个特殊结构体" class="admonition note">
+<summary class="admonition-title">
+<p>pb/abi.rs有个特殊结构体</p>
+<p><a class="admonition-anchor-link" href="#admonition-pbabirs有个特殊结构体"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 一个 spec 可以包含上述的处理方式之一
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Spec {
@@ -449,8 +497,15 @@ pub struct Spec {
     pub data: ::core::option::Option&lt;spec::Data&gt;,
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="imagespec"><a class="header" href="#imagespec">ImageSpec</a></h3>
-<h4 id="定义有序数组"><a class="header" href="#定义有序数组">定义：有序数组</a></h4>
+<details id="admonition-定义有序数组" class="admonition note">
+<summary class="admonition-title">
+<p>定义：有序数组 </p>
+<p><a class="admonition-anchor-link" href="#admonition-定义有序数组"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -461,7 +516,14 @@ pub struct ImageSpec {
     pub specs: ::prost::alloc::vec::Vec&lt;Spec&gt;,
 }
 </code></pre></pre>
-<h4 id="实现new方法fromtryfrom实现类型转化"><a class="header" href="#实现new方法fromtryfrom实现类型转化">实现：new方法、From&amp;TryFrom实现类型转化</a></h4>
+</div>
+</details>
+<details id="admonition-实现new方法fromtryfrom实现类型转化" class="admonition note">
+<summary class="admonition-title">
+<p>实现：new方法、From&amp;TryFrom实现类型转化 </p>
+<p><a class="admonition-anchor-link" href="#admonition-实现new方法fromtryfrom实现类型转化"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
@@ -489,8 +551,15 @@ impl TryFrom&lt;&amp;str&gt; for ImageSpec {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="filter"><a class="header" href="#filter">Filter</a></h3>
-<h4 id="定义枚举体mod"><a class="header" href="#定义枚举体mod">定义：枚举体mod</a></h4>
+<details id="admonition-定义枚举体mod" class="admonition note">
+<summary class="admonition-title">
+<p>定义：枚举体mod </p>
+<p><a class="admonition-anchor-link" href="#admonition-定义枚举体mod"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -507,7 +576,14 @@ pub mod filter {
     }
 }
 </code></pre></pre>
-<h4 id="实现双引号的使用模式匹配"><a class="header" href="#实现双引号的使用模式匹配">实现：双引号的使用、模式匹配</a></h4>
+</div>
+</details>
+<details id="admonition-实现双引号的使用模式匹配" class="admonition note">
+<summary class="admonition-title">
+<p>实现：双引号的使用、模式匹配 </p>
+<p><a class="admonition-anchor-link" href="#admonition-实现双引号的使用模式匹配"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
@@ -523,8 +599,15 @@ impl filter::Filter {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="samplefilter"><a class="header" href="#samplefilter">SampleFilter</a></h3>
-<h4 id="定义枚举体mod-1"><a class="header" href="#定义枚举体mod-1">定义：枚举体mod</a></h4>
+<details id="admonition-定义枚举体mod-1" class="admonition note">
+<summary class="admonition-title">
+<p>定义：枚举体mod </p>
+<p><a class="admonition-anchor-link" href="#admonition-定义枚举体mod-1"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -548,7 +631,14 @@ pub mod resize {
     }
 }
 </code></pre></pre>
-<h3 id="实现mod使用双引号from转为不同结果"><a class="header" href="#实现mod使用双引号from转为不同结果">实现：mod使用双引号、From转为不同结果</a></h3>
+</div>
+</details>
+<details id="admonition-实现mod使用双引号from转为不同结果" class="admonition note">
+<summary class="admonition-title">
+<p>实现：mod使用双引号、From转为不同结果 </p>
+<p><a class="admonition-anchor-link" href="#admonition-实现mod使用双引号from转为不同结果"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
@@ -565,8 +655,15 @@ pub mod resize {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="spec"><a class="header" href="#spec">Spec</a></h3>
-<h4 id="定义结构体"><a class="header" href="#定义结构体">定义：结构体</a></h4>
+<details id="admonition-定义结构体" class="admonition note">
+<summary class="admonition-title">
+<p>定义：结构体 </p>
+<p><a class="admonition-anchor-link" href="#admonition-定义结构体"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -577,11 +674,27 @@ pub struct Spec {
     pub data: ::core::option::Option&lt;spec::Data&gt;,
 }
 </code></pre></pre>
-<h4 id="实现类似面向对象中添加类方法self"><a class="header" href="#实现类似面向对象中添加类方法self">实现：类似面向对象中添加类方法Self</a></h4>
+</div>
+</details>
+<details id="admonition--注意区别self和self的使用" class="admonition note">
+<summary class="admonition-title">
 <blockquote>
-<p>注意区别Self和self的使用：
-<a href="https://stackoverflow.com/questions/32304595/whats-the-difference-between-self-and-self">rust - What’s the difference between self and Self? - Stack Overflow</a></p>
+<p>注意区别Self和self的使用：</p>
 </blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--注意区别self和self的使用"></a></p>
+</summary>
+<div>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/32304595/whats-the-difference-between-self-and-self">rust - What’s the difference between self and Self? - Stack Overflow</a></p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-实现类似面向对象中添加类方法self" class="admonition note">
+<summary class="admonition-title">
+<p>实现：类似面向对象中添加类方法Self</p>
+<p><a class="admonition-anchor-link" href="#admonition-实现类似面向对象中添加类方法self"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
@@ -624,7 +737,15 @@ impl Spec {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h3>
+<details id="admonition-单元测试" class="admonition note">
+<summary class="admonition-title">
+<p>单元测试</p>
+<p><a class="admonition-anchor-link" href="#admonition-单元测试"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
 mod tests {
     use super::*;
@@ -640,8 +761,15 @@ mod tests {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="engine模块-处理图片"><a class="header" href="#engine模块-处理图片">engine模块: 处理图片</a></h2>
-<h3 id="modrs-定义统一的引擎trait"><a class="header" href="#modrs-定义统一的引擎trait">mod.rs: 定义统一的引擎trait</a></h3>
+<details id="admonition-modrs-定义统一的引擎trait" class="admonition note">
+<summary class="admonition-title">
+<p>mod.rs: 定义统一的引擎trait </p>
+<p><a class="admonition-anchor-link" href="#admonition-modrs-定义统一的引擎trait"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// Engine trait：未来可以添加更多的 engine，主流程只需要替换 engine
 pub trait Engine {
     // 对 engine 按照 specs 进行一系列有序的处理
@@ -656,7 +784,14 @@ pub trait SpecTransform&lt;T&gt; {
     fn transform(&amp;mut self, op: T);
 }
 </code></pre></pre>
-<h3 id="photonrs--静态变量加载"><a class="header" href="#photonrs--静态变量加载">photon.rs &gt; 静态变量加载</a></h3>
+</div>
+</details>
+<details id="admonition-photonrs--静态变量加载" class="admonition note">
+<summary class="admonition-title">
+<p>photon.rs &gt; 静态变量加载</p>
+<p><a class="admonition-anchor-link" href="#admonition-photonrs--静态变量加载"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">lazy_static! {
     // 预先把水印文件加载为静态变量
     static ref WATERMARK: PhotonImage = {
@@ -666,7 +801,14 @@ pub trait SpecTransform&lt;T&gt; {
     };
 }
 </code></pre></pre>
-<h3 id="photonrs--具体引擎photon的定义与转化tryfrom"><a class="header" href="#photonrs--具体引擎photon的定义与转化tryfrom">photon.rs &gt; 具体引擎Photon的定义与转化TryFrom</a></h3>
+</div>
+</details>
+<details id="admonition-photonrs--具体引擎photon的定义与转化tryfrom" class="admonition note">
+<summary class="admonition-title">
+<p>photon.rs &gt; 具体引擎Photon的定义与转化TryFrom</p>
+<p><a class="admonition-anchor-link" href="#admonition-photonrs--具体引擎photon的定义与转化tryfrom"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">pub struct Photon(PhotonImage);
 
 // 从 Bytes 转换成 Photon 结构
@@ -678,6 +820,8 @@ impl TryFrom&lt;Bytes&gt; for Photon {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="photonrs--具体引擎photon的trait实现"><a class="header" href="#photonrs--具体引擎photon的trait实现">photon.rs &gt; 具体引擎Photon的trait实现</a></h3>
 <h4 id="engine-trait"><a class="header" href="#engine-trait">Engine Trait</a></h4>
 <pre><pre class="playground"><code class="language-rust  editable">impl Engine for Photon {
@@ -779,7 +923,12 @@ impl SpecTransform&lt;&amp;Watermark&gt; for Photon {
 }
 </code></pre></pre>
 <h2 id="mainrs"><a class="header" href="#mainrs">main.rs</a></h2>
-<h3 id="先引入mod再use"><a class="header" href="#先引入mod再use">先引入mod，再use</a></h3>
+<details id="admonition-先引入mod再use" class="admonition note">
+<summary class="admonition-title">
+<p>先引入mod，再use</p>
+<p><a class="admonition-anchor-link" href="#admonition-先引入mod再use"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 参数使用 serde 做 Deserialize，axum 会自动识别并解析
 #[derive(Deserialize)]
 struct Params {
@@ -787,10 +936,25 @@ struct Params {
     url: String,
 }
 </code></pre></pre>
-<h3 id="图片资源用到lru策略缓存type定义"><a class="header" href="#图片资源用到lru策略缓存type定义">图片资源用到Lru策略缓存type定义</a></h3>
+</div>
+</details>
+<details id="admonition-图片资源用到lru策略缓存type定义" class="admonition note">
+<summary class="admonition-title">
+<p>图片资源用到Lru策略缓存type定义</p>
+<p><a class="admonition-anchor-link" href="#admonition-图片资源用到lru策略缓存type定义"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">type Cache = Arc&lt;Mutex&lt;LruCache&lt;u64, Bytes&gt;&gt;&gt;;
 </code></pre></pre>
+</div>
+</details>
 <h3 id="主流程main函数"><a class="header" href="#主流程main函数">主流程main函数</a></h3>
+<details id="admonition-main" class="admonition note">
+<summary class="admonition-title">
+<p>main()</p>
+<p><a class="admonition-anchor-link" href="#admonition-main"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[tokio::main]
 async fn main() {
     // 初始化 tracing
@@ -821,7 +985,14 @@ async fn main() {
         .unwrap();
 }
 </code></pre></pre>
-<h4 id="建造者模式"><a class="header" href="#建造者模式">建造者模式</a></h4>
+</div>
+</details>
+<details id="admonition-建造者模式" class="admonition note">
+<summary class="admonition-title">
+<p>建造者模式 </p>
+<p><a class="admonition-anchor-link" href="#admonition-建造者模式"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">            ServiceBuilder::new()
                 .load_shed()
                 .concurrency_limit(1024)
@@ -831,29 +1002,57 @@ async fn main() {
                 .layer(CompressionLayer::new())
                 .into_inner(),
 </code></pre></pre>
-<h4 id="类型转换"><a class="header" href="#类型转换">类型转换</a></h4>
+</div>
+</details>
+<details id="admonition-类型转换" class="admonition note">
+<summary class="admonition-title">
+<p>类型转换 </p>
+<p><a class="admonition-anchor-link" href="#admonition-类型转换"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">    // 运行 web 服务器
     let addr = &quot;127.0.0.1:3000&quot;.parse().unwrap();
 </code></pre></pre>
-<h5 id="数字与字符串"><a class="header" href="#数字与字符串">数字与字符串</a></h5>
+</div>
+</details>
+<details id="admonition-笔记类型转换总结" class="admonition abstract">
+<summary class="admonition-title">
+<p>笔记：类型转换总结</p>
+<p><a class="admonition-anchor-link" href="#admonition-笔记类型转换总结"></a></p>
+</summary>
+<div>
+<ol>
+<li>数字与字符串</li>
+</ol>
 <p>||i32|u32|f64|String*|
 |--|---|---|---|-------|
 |i32|\|x as u32|x as f64|x.to_string()|
 |u32|x as i32|\|x as f64|x.to_string()|
 |f64|x as i32|x as u32|\|x.to_string()|
 |String*|x.parse().unwrap()|x.parse().unwrap()|x.parse().unwrap()|\|</p>
-<h5 id="string-与--str"><a class="header" href="#string-与--str">String 与 &amp; str</a></h5>
+<ol start="2">
+<li>String 与 &amp; str</li>
+</ol>
 <p>|\|String|&amp;str|
 |-|------|----|
 |String|\|&amp;*x|
 |&amp;str|x.to_string()|\|</p>
-<h5 id="智能指针"><a class="header" href="#智能指针">智能指针</a></h5>
+<ol start="3">
+<li>智能指针</li>
+</ol>
 <p>|\|Vec&lt;T&gt;|&amp;[T]|Box&lt;[T]&gt;|
 |-|------|----|--------|
 |Vec&lt;T&gt;|\|&amp;x[…]|x.into_boxed_slice()|
 |&amp;[T]|x.to_vec()|\|Box::new(*x)|
 |Box&lt;[T]&gt;|x.to_vec()|&amp;*x|\|</p>
-<h3 id="路由绑定的处理函数handler"><a class="header" href="#路由绑定的处理函数handler">路由绑定的处理函数handler</a></h3>
+</div>
+</details>
+<details id="admonition-路由绑定的处理函数handler" class="admonition note">
+<summary class="admonition-title">
+<p>路由绑定的处理函数handler </p>
+<p><a class="admonition-anchor-link" href="#admonition-路由绑定的处理函数handler"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// basic handler that responds with a static string
 async fn generate(
     Path(Params { spec, url }): Path&lt;Params&gt;,
@@ -884,7 +1083,14 @@ async fn generate(
     Ok((headers, image))
 }
 </code></pre></pre>
-<h3 id="处理函数用到的图片获取方法"><a class="header" href="#处理函数用到的图片获取方法">处理函数用到的图片获取方法</a></h3>
+</div>
+</details>
+<details id="admonition-处理函数用到的图片获取方法" class="admonition note">
+<summary class="admonition-title">
+<p>处理函数用到的图片获取方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-处理函数用到的图片获取方法"></a></p>
+</summary>
+<div>
 <blockquote>
 <p>对于图片的网络请求，我们先把 URL 做个哈希，在 LRU 缓存中查找，找不到才用 reqwest 发送请求。</p>
 </blockquote>
@@ -912,7 +1118,14 @@ async fn retrieve_image(url: &amp;str, cache: Cache) -&gt; Result&lt;Bytes&gt; {
     Ok(data)
 }
 </code></pre></pre>
-<h3 id="一个用于调试的辅助函数"><a class="header" href="#一个用于调试的辅助函数">一个用于调试的辅助函数</a></h3>
+</div>
+</details>
+<details id="admonition-一个用于调试的辅助函数" class="admonition note">
+<summary class="admonition-title">
+<p>一个用于调试的辅助函数</p>
+<p><a class="admonition-anchor-link" href="#admonition-一个用于调试的辅助函数"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 调试辅助函数
 fn print_test_url(url: &amp;str) {
     use std::borrow::Borrow;
@@ -925,14 +1138,22 @@ fn print_test_url(url: &amp;str) {
     println!(&quot;test url: http://localhost:3000/image/{}/{}&quot;, s, test_image);
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="运行与日志"><a class="header" href="#运行与日志">运行与日志</a></h2>
+<details id="admonition--将rust_log级别设置为info" class="admonition note">
+<summary class="admonition-title">
 <blockquote>
 <p>将RUST_LOG级别设置为info</p>
 </blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--将rust_log级别设置为info"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo build --release
 RUST_LOG=info target/release/thumbor
 </code></pre>
-
+</div>
+</details>
             </main>
 
             <!--            <script src="https://utteranc.es/client.js"-->

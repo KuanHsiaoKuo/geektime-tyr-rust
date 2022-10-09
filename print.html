@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:05 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:32 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -373,7 +373,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:06 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:32 UTC 2022 -->
 <!--te-->
 <h1 id="gdblldb"><a class="header" href="#gdblldb">gdb/lldb</a></h1>
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
@@ -965,7 +965,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:06 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:32 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1487,7 +1487,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:10 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:33 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h2>
 <details id="admonition-cargotoml" class="admonition note">
@@ -1792,7 +1792,13 @@ src/lib.rs
 </details><div style="break-before: page; page-break-before: always;"></div><h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
 <!--ts-->
 <!--te-->
-<h2 id="abiproto"><a class="header" href="#abiproto">abi.proto</a></h2>
+<h2 id="protobuf相关处理"><a class="header" href="#protobuf相关处理">protobuf相关处理</a></h2>
+<details id="admonition-abiproto" class="admonition note">
+<summary class="admonition-title">
+<p>abi.proto</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-abiproto"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">syntax = &quot;proto3&quot;;
 
 package abi;
@@ -1869,7 +1875,14 @@ message Spec {
   }
 }
 </code></pre></pre>
-<h2 id="buildrs"><a class="header" href="#buildrs">build.rs</a></h2>
+</div>
+</details>
+<details id="admonition-buildrs" class="admonition note">
+<summary class="admonition-title">
+<p>build.rs</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-buildrs"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use std::process::Command;
 
 fn main() {
@@ -1899,15 +1912,17 @@ fn main() {
 <blockquote>
 <p>在编译时可选择检查环境变量。</p>
 </blockquote>
+</div>
+</details>
 <h2 id="关于rust的模块"><a class="header" href="#关于rust的模块">关于rust的模块</a></h2>
 <blockquote>
 <p>可以参考这篇：<a href="https://zhuanlan.zhihu.com/p/443926839">Rust 模块系统理解 - 知乎</a></p>
 </blockquote>
-<div id="admonition-mod全认识" class="admonition tip">
-<div class="admonition-title">
+<details id="admonition-mod全认识" class="admonition tip">
+<summary class="admonition-title">
 <p>mod全认识</p>
 <p><a class="admonition-anchor-link" href="thumbor.html#admonition-mod全认识"></a></p>
-</div>
+</summary>
 <div>
 <ol>
 <li>mod(mod.rs或mod关键字)将代码分为多个逻辑模块，并管理这些模块的可见性（public / private）。</li>
@@ -1930,16 +1945,35 @@ fn main() {
 编译器规定use语句一定要在mod语句之前</li>
 </ol>
 </div>
-</div>
-<h2 id="mod文件定义与实现分离"><a class="header" href="#mod文件定义与实现分离">mod文件定义与实现分离</a></h2>
+</details>
+<details id="admonition-mod文件定义与实现分离" class="admonition abstract">
+<summary class="admonition-title">
+<p>mod文件定义与实现分离 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-mod文件定义与实现分离"></a></p>
+</summary>
+<div>
 <p>在rust中，一般会在模块的mod.rs文件中对供外部使用的项进行实现, 项可以是：函数，结构体，trait，impl块，甚至其它模块.
 这样有个好处，高内聚，可以在代码增长时，将变动局限在服务提供者内部，对外提供的api不变，不会造成破坏性更新。</p>
+</div>
+</details>
 <h2 id="pb模块-处理protobuf"><a class="header" href="#pb模块-处理protobuf">pb模块: 处理protobuf</a></h2>
-<h3 id="pbmodrs声明模块"><a class="header" href="#pbmodrs声明模块">pb/mod.rs声明模块</a></h3>
+<details id="admonition-pbmodrs声明模块" class="admonition note">
+<summary class="admonition-title">
+<p>pb/mod.rs声明模块 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-pbmodrs声明模块"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">mod abi; // 声明 abi.rs
 pub use abi::*;
 </code></pre></pre>
-<h3 id="pbabirs里面还有子模块"><a class="header" href="#pbabirs里面还有子模块">pb/abi.rs里面还有子模块</a></h3>
+</div>
+</details>
+<details id="admonition-pbabirs里面还有子模块" class="admonition note">
+<summary class="admonition-title">
+<p>pb/abi.rs里面还有子模块 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-pbabirs里面还有子模块"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// Nested message and enum types in `Spec`.
 pub mod spec {
     #[derive(Clone, PartialEq, ::prost::Oneof)]
@@ -1961,7 +1995,14 @@ pub mod spec {
     }
 }
 </code></pre></pre>
-<h3 id="pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod"><a class="header" href="#pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod">pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</a></h3>
+</div>
+</details>
+<details id="admonition-pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod" class="admonition note">
+<summary class="admonition-title">
+<p>pb/abi.rs另外定义了spec::Data里面的各个元素结构体/嵌套模块mod</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-pbabirs另外定义了specdata里面的各个元素结构体嵌套模块mod"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 一个 ImageSpec 是一个有序的数组，服务器按照 spec 的顺序处理
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ImageSpec {
@@ -2050,7 +2091,14 @@ pub struct Watermark {
     pub y: u32,
 }
 </code></pre></pre>
-<h3 id="pbabirs有个特殊结构体"><a class="header" href="#pbabirs有个特殊结构体">pb/abi.rs有个特殊结构体</a></h3>
+</div>
+</details>
+<details id="admonition-pbabirs有个特殊结构体" class="admonition note">
+<summary class="admonition-title">
+<p>pb/abi.rs有个特殊结构体</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-pbabirs有个特殊结构体"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 一个 spec 可以包含上述的处理方式之一
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Spec {
@@ -2058,8 +2106,15 @@ pub struct Spec {
     pub data: ::core::option::Option&lt;spec::Data&gt;,
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="imagespec"><a class="header" href="#imagespec">ImageSpec</a></h3>
-<h4 id="定义有序数组"><a class="header" href="#定义有序数组">定义：有序数组</a></h4>
+<details id="admonition-定义有序数组" class="admonition note">
+<summary class="admonition-title">
+<p>定义：有序数组 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-定义有序数组"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -2070,7 +2125,14 @@ pub struct ImageSpec {
     pub specs: ::prost::alloc::vec::Vec&lt;Spec&gt;,
 }
 </code></pre></pre>
-<h4 id="实现new方法fromtryfrom实现类型转化"><a class="header" href="#实现new方法fromtryfrom实现类型转化">实现：new方法、From&amp;TryFrom实现类型转化</a></h4>
+</div>
+</details>
+<details id="admonition-实现new方法fromtryfrom实现类型转化" class="admonition note">
+<summary class="admonition-title">
+<p>实现：new方法、From&amp;TryFrom实现类型转化 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-实现new方法fromtryfrom实现类型转化"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
@@ -2098,8 +2160,15 @@ impl TryFrom&lt;&amp;str&gt; for ImageSpec {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="filter"><a class="header" href="#filter">Filter</a></h3>
-<h4 id="定义枚举体mod"><a class="header" href="#定义枚举体mod">定义：枚举体mod</a></h4>
+<details id="admonition-定义枚举体mod" class="admonition note">
+<summary class="admonition-title">
+<p>定义：枚举体mod </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-定义枚举体mod"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -2116,7 +2185,14 @@ pub mod filter {
     }
 }
 </code></pre></pre>
-<h4 id="实现双引号的使用模式匹配"><a class="header" href="#实现双引号的使用模式匹配">实现：双引号的使用、模式匹配</a></h4>
+</div>
+</details>
+<details id="admonition-实现双引号的使用模式匹配" class="admonition note">
+<summary class="admonition-title">
+<p>实现：双引号的使用、模式匹配 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-实现双引号的使用模式匹配"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
@@ -2132,8 +2208,15 @@ impl filter::Filter {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="samplefilter"><a class="header" href="#samplefilter">SampleFilter</a></h3>
-<h4 id="定义枚举体mod-1"><a class="header" href="#定义枚举体mod-1">定义：枚举体mod</a></h4>
+<details id="admonition-定义枚举体mod-1" class="admonition note">
+<summary class="admonition-title">
+<p>定义：枚举体mod </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-定义枚举体mod-1"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -2157,7 +2240,14 @@ pub mod resize {
     }
 }
 </code></pre></pre>
-<h3 id="实现mod使用双引号from转为不同结果"><a class="header" href="#实现mod使用双引号from转为不同结果">实现：mod使用双引号、From转为不同结果</a></h3>
+</div>
+</details>
+<details id="admonition-实现mod使用双引号from转为不同结果" class="admonition note">
+<summary class="admonition-title">
+<p>实现：mod使用双引号、From转为不同结果 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-实现mod使用双引号from转为不同结果"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
@@ -2174,8 +2264,15 @@ pub mod resize {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="spec"><a class="header" href="#spec">Spec</a></h3>
-<h4 id="定义结构体"><a class="header" href="#定义结构体">定义：结构体</a></h4>
+<details id="admonition-定义结构体" class="admonition note">
+<summary class="admonition-title">
+<p>定义：结构体 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-定义结构体"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/abi.rs</li>
 </ul>
@@ -2186,11 +2283,27 @@ pub struct Spec {
     pub data: ::core::option::Option&lt;spec::Data&gt;,
 }
 </code></pre></pre>
-<h4 id="实现类似面向对象中添加类方法self"><a class="header" href="#实现类似面向对象中添加类方法self">实现：类似面向对象中添加类方法Self</a></h4>
+</div>
+</details>
+<details id="admonition--注意区别self和self的使用" class="admonition note">
+<summary class="admonition-title">
 <blockquote>
-<p>注意区别Self和self的使用：
-<a href="https://stackoverflow.com/questions/32304595/whats-the-difference-between-self-and-self">rust - What’s the difference between self and Self? - Stack Overflow</a></p>
+<p>注意区别Self和self的使用：</p>
 </blockquote>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition--注意区别self和self的使用"></a></p>
+</summary>
+<div>
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/32304595/whats-the-difference-between-self-and-self">rust - What’s the difference between self and Self? - Stack Overflow</a></p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-实现类似面向对象中添加类方法self" class="admonition note">
+<summary class="admonition-title">
+<p>实现：类似面向对象中添加类方法Self</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-实现类似面向对象中添加类方法self"></a></p>
+</summary>
+<div>
 <ul>
 <li>pb/mod.rs</li>
 </ul>
@@ -2233,7 +2346,15 @@ impl Spec {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h3>
+<details id="admonition-单元测试" class="admonition note">
+<summary class="admonition-title">
+<p>单元测试</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-单元测试"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
 mod tests {
     use super::*;
@@ -2249,8 +2370,15 @@ mod tests {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="engine模块-处理图片"><a class="header" href="#engine模块-处理图片">engine模块: 处理图片</a></h2>
-<h3 id="modrs-定义统一的引擎trait"><a class="header" href="#modrs-定义统一的引擎trait">mod.rs: 定义统一的引擎trait</a></h3>
+<details id="admonition-modrs-定义统一的引擎trait" class="admonition note">
+<summary class="admonition-title">
+<p>mod.rs: 定义统一的引擎trait </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-modrs-定义统一的引擎trait"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// Engine trait：未来可以添加更多的 engine，主流程只需要替换 engine
 pub trait Engine {
     // 对 engine 按照 specs 进行一系列有序的处理
@@ -2265,7 +2393,14 @@ pub trait SpecTransform&lt;T&gt; {
     fn transform(&amp;mut self, op: T);
 }
 </code></pre></pre>
-<h3 id="photonrs--静态变量加载"><a class="header" href="#photonrs--静态变量加载">photon.rs &gt; 静态变量加载</a></h3>
+</div>
+</details>
+<details id="admonition-photonrs--静态变量加载" class="admonition note">
+<summary class="admonition-title">
+<p>photon.rs &gt; 静态变量加载</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-photonrs--静态变量加载"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">lazy_static! {
     // 预先把水印文件加载为静态变量
     static ref WATERMARK: PhotonImage = {
@@ -2275,7 +2410,14 @@ pub trait SpecTransform&lt;T&gt; {
     };
 }
 </code></pre></pre>
-<h3 id="photonrs--具体引擎photon的定义与转化tryfrom"><a class="header" href="#photonrs--具体引擎photon的定义与转化tryfrom">photon.rs &gt; 具体引擎Photon的定义与转化TryFrom</a></h3>
+</div>
+</details>
+<details id="admonition-photonrs--具体引擎photon的定义与转化tryfrom" class="admonition note">
+<summary class="admonition-title">
+<p>photon.rs &gt; 具体引擎Photon的定义与转化TryFrom</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-photonrs--具体引擎photon的定义与转化tryfrom"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">pub struct Photon(PhotonImage);
 
 // 从 Bytes 转换成 Photon 结构
@@ -2287,6 +2429,8 @@ impl TryFrom&lt;Bytes&gt; for Photon {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="photonrs--具体引擎photon的trait实现"><a class="header" href="#photonrs--具体引擎photon的trait实现">photon.rs &gt; 具体引擎Photon的trait实现</a></h3>
 <h4 id="engine-trait"><a class="header" href="#engine-trait">Engine Trait</a></h4>
 <pre><pre class="playground"><code class="language-rust  editable">impl Engine for Photon {
@@ -2388,7 +2532,12 @@ impl SpecTransform&lt;&amp;Watermark&gt; for Photon {
 }
 </code></pre></pre>
 <h2 id="mainrs"><a class="header" href="#mainrs">main.rs</a></h2>
-<h3 id="先引入mod再use"><a class="header" href="#先引入mod再use">先引入mod，再use</a></h3>
+<details id="admonition-先引入mod再use" class="admonition note">
+<summary class="admonition-title">
+<p>先引入mod，再use</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-先引入mod再use"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 参数使用 serde 做 Deserialize，axum 会自动识别并解析
 #[derive(Deserialize)]
 struct Params {
@@ -2396,10 +2545,25 @@ struct Params {
     url: String,
 }
 </code></pre></pre>
-<h3 id="图片资源用到lru策略缓存type定义"><a class="header" href="#图片资源用到lru策略缓存type定义">图片资源用到Lru策略缓存type定义</a></h3>
+</div>
+</details>
+<details id="admonition-图片资源用到lru策略缓存type定义" class="admonition note">
+<summary class="admonition-title">
+<p>图片资源用到Lru策略缓存type定义</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-图片资源用到lru策略缓存type定义"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">type Cache = Arc&lt;Mutex&lt;LruCache&lt;u64, Bytes&gt;&gt;&gt;;
 </code></pre></pre>
+</div>
+</details>
 <h3 id="主流程main函数"><a class="header" href="#主流程main函数">主流程main函数</a></h3>
+<details id="admonition-main" class="admonition note">
+<summary class="admonition-title">
+<p>main()</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-main"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[tokio::main]
 async fn main() {
     // 初始化 tracing
@@ -2430,7 +2594,14 @@ async fn main() {
         .unwrap();
 }
 </code></pre></pre>
-<h4 id="建造者模式"><a class="header" href="#建造者模式">建造者模式</a></h4>
+</div>
+</details>
+<details id="admonition-建造者模式" class="admonition note">
+<summary class="admonition-title">
+<p>建造者模式 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-建造者模式"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">            ServiceBuilder::new()
                 .load_shed()
                 .concurrency_limit(1024)
@@ -2440,29 +2611,57 @@ async fn main() {
                 .layer(CompressionLayer::new())
                 .into_inner(),
 </code></pre></pre>
-<h4 id="类型转换"><a class="header" href="#类型转换">类型转换</a></h4>
+</div>
+</details>
+<details id="admonition-类型转换" class="admonition note">
+<summary class="admonition-title">
+<p>类型转换 </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-类型转换"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">    // 运行 web 服务器
     let addr = &quot;127.0.0.1:3000&quot;.parse().unwrap();
 </code></pre></pre>
-<h5 id="数字与字符串"><a class="header" href="#数字与字符串">数字与字符串</a></h5>
+</div>
+</details>
+<details id="admonition-笔记类型转换总结" class="admonition abstract">
+<summary class="admonition-title">
+<p>笔记：类型转换总结</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-笔记类型转换总结"></a></p>
+</summary>
+<div>
+<ol>
+<li>数字与字符串</li>
+</ol>
 <p>||i32|u32|f64|String*|
 |--|---|---|---|-------|
 |i32|\|x as u32|x as f64|x.to_string()|
 |u32|x as i32|\|x as f64|x.to_string()|
 |f64|x as i32|x as u32|\|x.to_string()|
 |String*|x.parse().unwrap()|x.parse().unwrap()|x.parse().unwrap()|\|</p>
-<h5 id="string-与--str"><a class="header" href="#string-与--str">String 与 &amp; str</a></h5>
+<ol start="2">
+<li>String 与 &amp; str</li>
+</ol>
 <p>|\|String|&amp;str|
 |-|------|----|
 |String|\|&amp;*x|
 |&amp;str|x.to_string()|\|</p>
-<h5 id="智能指针"><a class="header" href="#智能指针">智能指针</a></h5>
+<ol start="3">
+<li>智能指针</li>
+</ol>
 <p>|\|Vec&lt;T&gt;|&amp;[T]|Box&lt;[T]&gt;|
 |-|------|----|--------|
 |Vec&lt;T&gt;|\|&amp;x[…]|x.into_boxed_slice()|
 |&amp;[T]|x.to_vec()|\|Box::new(*x)|
 |Box&lt;[T]&gt;|x.to_vec()|&amp;*x|\|</p>
-<h3 id="路由绑定的处理函数handler"><a class="header" href="#路由绑定的处理函数handler">路由绑定的处理函数handler</a></h3>
+</div>
+</details>
+<details id="admonition-路由绑定的处理函数handler" class="admonition note">
+<summary class="admonition-title">
+<p>路由绑定的处理函数handler </p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-路由绑定的处理函数handler"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// basic handler that responds with a static string
 async fn generate(
     Path(Params { spec, url }): Path&lt;Params&gt;,
@@ -2493,7 +2692,14 @@ async fn generate(
     Ok((headers, image))
 }
 </code></pre></pre>
-<h3 id="处理函数用到的图片获取方法"><a class="header" href="#处理函数用到的图片获取方法">处理函数用到的图片获取方法</a></h3>
+</div>
+</details>
+<details id="admonition-处理函数用到的图片获取方法" class="admonition note">
+<summary class="admonition-title">
+<p>处理函数用到的图片获取方法</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-处理函数用到的图片获取方法"></a></p>
+</summary>
+<div>
 <blockquote>
 <p>对于图片的网络请求，我们先把 URL 做个哈希，在 LRU 缓存中查找，找不到才用 reqwest 发送请求。</p>
 </blockquote>
@@ -2521,7 +2727,14 @@ async fn retrieve_image(url: &amp;str, cache: Cache) -&gt; Result&lt;Bytes&gt; {
     Ok(data)
 }
 </code></pre></pre>
-<h3 id="一个用于调试的辅助函数"><a class="header" href="#一个用于调试的辅助函数">一个用于调试的辅助函数</a></h3>
+</div>
+</details>
+<details id="admonition-一个用于调试的辅助函数" class="admonition note">
+<summary class="admonition-title">
+<p>一个用于调试的辅助函数</p>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition-一个用于调试的辅助函数"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 调试辅助函数
 fn print_test_url(url: &amp;str) {
     use std::borrow::Borrow;
@@ -2534,14 +2747,22 @@ fn print_test_url(url: &amp;str) {
     println!(&quot;test url: http://localhost:3000/image/{}/{}&quot;, s, test_image);
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="运行与日志"><a class="header" href="#运行与日志">运行与日志</a></h2>
+<details id="admonition--将rust_log级别设置为info" class="admonition note">
+<summary class="admonition-title">
 <blockquote>
 <p>将RUST_LOG级别设置为info</p>
 </blockquote>
+<p><a class="admonition-anchor-link" href="thumbor.html#admonition--将rust_log级别设置为info"></a></p>
+</summary>
+<div>
 <pre><code class="language-shell">cargo build --release
 RUST_LOG=info target/release/thumbor
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="sql查询工具"><a class="header" href="#sql查询工具">SQL查询工具</a></h1>
+</div>
+</details><div style="break-before: page; page-break-before: always;"></div><h1 id="sql查询工具"><a class="header" href="#sql查询工具">SQL查询工具</a></h1>
 <!--ts-->
 <ul>
 <li><a href="queryer.html#sql%E6%9F%A5%E8%AF%A2%E5%B7%A5%E5%85%B7">SQL查询工具</a>
@@ -2617,7 +2838,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:09 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:33 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -3189,7 +3410,7 @@ features = [&quot;extension-module&quot;]
 [build-dependencies]
 pyo3-build-config = &quot;0.14&quot;
 </code></pre></pre>
-<h3 id="buildrs-1"><a class="header" href="#buildrs-1">build.rs</a></h3>
+<h3 id="buildrs"><a class="header" href="#buildrs">build.rs</a></h3>
 <pre><pre class="playground"><code class="language-rust  editable">fn main() {
     pyo3_build_config::add_extension_module_link_args();
 }
@@ -3252,7 +3473,7 @@ tauri = { version = &quot;1.0.0-beta.8&quot;, features = [&quot;api-all&quot;] }
 default = [ &quot;custom-protocol&quot; ]
 custom-protocol = [ &quot;tauri/custom-protocol&quot; ]
 </code></pre></pre>
-<h3 id="buildrs-2"><a class="header" href="#buildrs-2">build.rs</a></h3>
+<h3 id="buildrs-1"><a class="header" href="#buildrs-1">build.rs</a></h3>
 <pre><pre class="playground"><code class="language-rust  editable">fn main() {
   tauri_build::build()
 }
@@ -3292,7 +3513,7 @@ fn main() {
 <li><a href="1_stack_heap_ownership_lifetime_memory.html#i-%E4%BB%8E%E6%A0%88%E5%A0%86%E6%89%80%E6%9C%89%E6%9D%83%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%BC%80%E5%A7%8B%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">I. 从栈堆、所有权、生命周期开始内存管理</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:01 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:30 UTC 2022 -->
 <!--te-->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="内存"><a class="header" href="#内存">内存</a></h1>
 <!--ts-->
@@ -3316,7 +3537,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:50:59 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:29 UTC 2022 -->
 <!--te-->
 <h2 id="字符串内存使用图"><a class="header" href="#字符串内存使用图">字符串内存使用图</a></h2>
 <details id="admonition-字符串内存使用图" class="admonition info">
@@ -3399,7 +3620,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:00 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:29 UTC 2022 -->
 <!--te-->
 <h2 id="1-数据"><a class="header" href="#1-数据">1. 数据</a></h2>
 <h3 id="值和类型"><a class="header" href="#值和类型">值和类型</a></h3>
@@ -3500,7 +3721,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:00 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:29 UTC 2022 -->
 <!--te-->
 <h2 id="对比单一共享所有权"><a class="header" href="#对比单一共享所有权">对比单一/共享所有权</a></h2>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606985.jpg" alt="单一/共享所有权对比" /></p>
@@ -3895,7 +4116,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:00 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:29 UTC 2022 -->
 <!--te-->
 <h2 id="动态还是静态"><a class="header" href="#动态还是静态">动态还是静态？</a></h2>
 <details id="admonition-动态静态生命周期定义与表示方式" class="admonition info">
@@ -4215,7 +4436,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:00 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:29 UTC 2022 -->
 <!--te-->
 <h2 id="创建"><a class="header" href="#创建">创建</a></h2>
 <h3 id="堆内存生命周期管理发展史"><a class="header" href="#堆内存生命周期管理发展史">堆内存生命周期管理发展史</a></h3>
@@ -4524,7 +4745,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 <li><a href="2_type_system.html#ii-%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F">II. 类型系统</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:02 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:30 UTC 2022 -->
 <!--te-->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="类型系统"><a class="header" href="#类型系统">类型系统</a></h1>
 <!--ts-->
@@ -4555,7 +4776,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:01 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:30 UTC 2022 -->
 <!--te-->
 <h2 id="类型系统分类图"><a class="header" href="#类型系统分类图">类型系统分类图</a></h2>
 <div id="admonition-类型系统分类图" class="admonition info">
@@ -4777,7 +4998,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:01 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:30 UTC 2022 -->
 <!--te-->
 <h2 id="泛型就像定义函数"><a class="header" href="#泛型就像定义函数">泛型就像定义函数</a></h2>
 <ol>
@@ -5073,7 +5294,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:01 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:30 UTC 2022 -->
 <!--te-->
 <div id="admonition-trait概览图" class="admonition info">
 <div class="admonition-title">
@@ -6237,7 +6458,7 @@ fn main() {
 <p>最后一个标记 trait Unpin，是用于自引用类型的，属于Future trait。</p>
 </div>
 </details>
-<h3 id="类型转换-1"><a class="header" href="#类型转换-1">类型转换</a></h3>
+<h3 id="类型转换"><a class="header" href="#类型转换">类型转换</a></h3>
 <details id="admonition-对比两种转化方式" class="admonition info">
 <summary class="admonition-title">
 <p>对比两种转化方式</p>
@@ -6648,7 +6869,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:03 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:31 UTC 2022 -->
 <!--te-->
 <h2 id="数据结构快速一览"><a class="header" href="#数据结构快速一览">数据结构快速一览</a></h2>
 <div id="admonition-数据结构快速一览" class="admonition tip">
@@ -6711,7 +6932,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:02 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:30 UTC 2022 -->
 <!--te-->
 <h2 id="指针还是引用"><a class="header" href="#指针还是引用">指针还是引用</a></h2>
 <details id="admonition-引用是特殊的指针" class="admonition info">
@@ -7780,7 +8001,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:02 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:30 UTC 2022 -->
 <!--te-->
 <h2 id="对容器进行定义"><a class="header" href="#对容器进行定义">对容器进行定义</a></h2>
 <details id="admonition-容器数据结构如何理解" class="admonition tip">
@@ -8861,7 +9082,7 @@ map.insert('a', 1);
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:03 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:30 UTC 2022 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
 <details id="admonition-错误处理包含这么几部分" class="admonition info">
@@ -9211,7 +9432,7 @@ pub enum DataStoreError {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:03 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:31 UTC 2022 -->
 <!--te-->
 <h2 id="闭包的定义"><a class="header" href="#闭包的定义">闭包的定义</a></h2>
 <details id="admonition-闭包的基本概念" class="admonition info">
@@ -9944,7 +10165,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:04 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:31 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -11108,7 +11329,7 @@ pub struct Command {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:05 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:31 UTC 2022 -->
 <!--te-->
 <h2 id="区分并发与并行"><a class="header" href="#区分并发与并行">区分并发与并行</a></h2>
 <details id="admonition-再次区分并发与并行" class="admonition info">
@@ -11212,7 +11433,7 @@ pub struct Command {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:04 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:31 UTC 2022 -->
 <!--te-->
 <details id="admonition-在这些并发模式背后都有哪些并发原语可以为我们所用呢" class="admonition info">
 <summary class="admonition-title">
@@ -13114,7 +13335,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:04 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:31 UTC 2022 -->
 <!--te-->
 <h2 id="actor是有栈协程future是无栈协程"><a class="header" href="#actor是有栈协程future是无栈协程">actor是有栈协程，Future是无栈协程</a></h2>
 <details id="admonition-actor是有栈协程future是无栈协程" class="admonition info">
@@ -13912,7 +14133,7 @@ fn task_async() -&gt; impl Future&lt;Output = usize&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:04 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:31 UTC 2022 -->
 <!--te-->
 <details id="admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解" class="admonition info">
 <summary class="admonition-title">
@@ -14632,7 +14853,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:09 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:33 UTC 2022 -->
 <!--te-->
 <h1 id="整体回顾"><a class="header" href="#整体回顾">整体回顾</a></h1>
 <p>我们的 KV server 之旅就到此为止了。在整整 7 堂课里，我们一点点从零构造了一个完整的 KV server，包括注释在内，撰写了近三千行代码：</p>
@@ -14719,7 +14940,7 @@ rotation = 'Daily'
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:07 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:32 UTC 2022 -->
 <!--te-->
 <h2 id="为什么选-kv-server-来实操呢"><a class="header" href="#为什么选-kv-server-来实操呢">为什么选 KV server 来实操呢？</a></h2>
 <p>因为它是一个足够简单又足够复杂的服务。</p>
@@ -15245,7 +15466,7 @@ pub trait Storage {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:07 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:32 UTC 2022 -->
 <!--te-->
 <p>还是按照上一讲定义接口的顺序来一个一个测试：首先我们来构建协议层。</p>
 <h2 id="创建项目添加依赖"><a class="header" href="#创建项目添加依赖">创建项目，添加依赖</a></h2>
@@ -16420,7 +16641,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:07 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:32 UTC 2022 -->
 <!--te-->
 <p>前面已经完成了 KV store 的基本功能，但留了两个小尾巴：</p>
 <ol>
@@ -17304,7 +17525,7 @@ Rust 编译器会尽最大的努力，让你的代码简单。如果你用 clipp
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:07 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:33 UTC 2022 -->
 <!--te-->
 <h2 id="async-prost"><a class="header" href="#async-prost">async-prost</a></h2>
 <p>之前一直在使用一个神秘的 <a href="https://github.com/tyrchen/async-prost">async-prost 库</a>，我们神奇地完成了 TCP frame 的封包和解包。</p>
@@ -18377,7 +18598,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:08 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:33 UTC 2022 -->
 <!--te-->
 <details id="admonition-那么当我们的应用架构在-tcp-上时如何使用-tls-来保证客户端和服务器间的安全性呢" class="admonition question">
 <summary class="admonition-title">
@@ -18989,7 +19210,7 @@ protocol。对于有余力的同学，你们可以看看它的文档，尝试着
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:08 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:33 UTC 2022 -->
 <!--te-->
 <h2 id="回顾构建过程"><a class="header" href="#回顾构建过程">回顾构建过程</a></h2>
 <p>之前已经完成了一个相对完善的 KV server。</p>
@@ -19714,7 +19935,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:09 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:33 UTC 2022 -->
 <!--te-->
 <h2 id="现有架构分析"><a class="header" href="#现有架构分析">现有架构分析</a></h2>
 <details id="admonition-先简单回顾一下-redis-对-pubsub-的支持" class="admonition info">
@@ -20804,7 +21025,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 07:51:09 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:06:33 UTC 2022 -->
 <!--te-->
 <p>虽然这是一个“简单”的 KV server：</p>
 <ul>
