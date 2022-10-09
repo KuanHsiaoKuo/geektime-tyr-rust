@@ -1,6 +1,25 @@
 # 三、融会贯通，从创建到消亡
 
 <!--ts-->
+* [三、融会贯通，从创建到消亡](#三融会贯通从创建到消亡)
+   * [创建](#创建)
+      * [堆内存生命周期管理发展史](#堆内存生命周期管理发展史)
+      * [struct/enum/vec/String创建时的内存布局](#structenumvecstring创建时的内存布局)
+         * [struct](#struct)
+         * [enum](#enum)
+         * [vec和String](#vec和string)
+         * [引用类型的内存布局](#引用类型的内存布局)
+      * [更多可见cheats.rs](#更多可见cheatsrs)
+   * [使用](#使用)
+      * [copy和move](#copy和move)
+   * [销毁](#销毁)
+      * [drop释放堆内存](#drop释放堆内存)
+      * [RAII释放其他资源](#raii释放其他资源)
+      * [Rust在编译时、运行时检查调用drop](#rust在编译时运行时检查调用drop)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 02:50:11 UTC 2022 -->
+
 <!--te-->
 
 ## 创建
