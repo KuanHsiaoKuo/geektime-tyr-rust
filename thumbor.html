@@ -180,7 +180,36 @@
                 <div class="sidetoc">
                     <nav class="pagetoc"></nav>
                 </div>
-                <h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
+                <style>.extended-markdown-table {
+    display: grid;
+}
+
+.extended-markdown-table > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 20px;
+    border-bottom: 1px solid var(--table-border-color);
+    border-right: 1px solid var(--table-border-color);
+}
+
+.extended-markdown-table > div.extended-markdown-left-border {
+    border-left: 1px solid var(--table-border-color);
+}
+
+.extended-markdown-table > div.extended-markdown-header {
+    text-align: center;
+    background: var(--table-header-bg);
+    border-bottom: 1px solid var(--table-header-bg);
+    border-right: 1px solid var(--table-header-bg);
+    font-weight: bold;
+}
+
+.extended-markdown-table > div.extended-markdown-header.extended-markdown-left-border {
+    border-left: 1px solid var(--table-header-bg);
+}
+</style>
+<h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
 <!--ts-->
 <!--te-->
 <h2 id="protobuf相关处理"><a class="header" href="#protobuf相关处理">protobuf相关处理</a></h2>
@@ -1045,27 +1074,15 @@ async fn main() {
 <ol>
 <li>数字与字符串</li>
 </ol>
-<p>||i32|u32|f64|String*|
-|--|---|---|---|-------|
-|i32|\|x as u32|x as f64|x.to_string()|
-|u32|x as i32|\|x as f64|x.to_string()|
-|f64|x as i32|x as u32|\|x.to_string()|
-|String*|x.parse().unwrap()|x.parse().unwrap()|x.parse().unwrap()|\|</p>
+<div class="extended-markdown-table"><div class="extended-markdown-header extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2"></div><div class="extended-markdown-header" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2">i32</div><div class="extended-markdown-header" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2">u32</div><div class="extended-markdown-header" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 1; grid-row-end: 2">f64</div><div class="extended-markdown-header" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 1; grid-row-end: 2">String*</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 2; grid-row-end: 3">i32</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 2; grid-row-end: 3">\</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3">x as u32</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 2; grid-row-end: 3">x as f64</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 2; grid-row-end: 3">x.to_string()</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 3; grid-row-end: 4">u32</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4">x as i32</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4">\</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 3; grid-row-end: 4">x as f64</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 3; grid-row-end: 4">x.to_string()</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 4; grid-row-end: 5">f64</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 4; grid-row-end: 5">x as i32</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 4; grid-row-end: 5">x as u32</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 4; grid-row-end: 5">\</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 4; grid-row-end: 5">x.to_string()</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 5; grid-row-end: 6">String*</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 5; grid-row-end: 6">x.parse().unwrap()</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 5; grid-row-end: 6">x.parse().unwrap()</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 5; grid-row-end: 6">x.parse().unwrap()</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 5; grid-row-end: 6">\</div></div>
 <ol start="2">
 <li>String 与 &amp; str</li>
 </ol>
-<p>|\|String|&amp;str|
-|-|------|----|
-|String|\|&amp;*x|
-|&amp;str|x.to_string()|\|</p>
+<div class="extended-markdown-table"><div class="extended-markdown-header extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2">\</div><div class="extended-markdown-header" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2">String</div><div class="extended-markdown-header" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2">&str</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 2; grid-row-end: 3">String</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 2; grid-row-end: 3">\</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3">&*x</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 3; grid-row-end: 4">&str</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4">x.to_string()</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4">\</div></div>
 <ol start="3">
 <li>智能指针</li>
 </ol>
-<p>|\|Vec&lt;T&gt;|&amp;[T]|Box&lt;[T]&gt;|
-|-|------|----|--------|
-|Vec&lt;T&gt;|\|&amp;x[…]|x.into_boxed_slice()|
-|&amp;[T]|x.to_vec()|\|Box::new(*x)|
-|Box&lt;[T]&gt;|x.to_vec()|&amp;*x|\|</p>
+<div class="extended-markdown-table"><div class="extended-markdown-header extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2">\</div><div class="extended-markdown-header" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2">Vec\<T\></div><div class="extended-markdown-header" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2">&[T]</div><div class="extended-markdown-header" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 1; grid-row-end: 2">Box<[T]></div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 2; grid-row-end: 3">Vec\<T\></div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 2; grid-row-end: 3">\</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3">&x[...]</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 2; grid-row-end: 3">x.into_boxed_slice()</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 3; grid-row-end: 4">&[T]</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4">x.to_vec()</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4">\</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 3; grid-row-end: 4">Box::new(\*x)</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 4; grid-row-end: 5">Box<[T]></div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 4; grid-row-end: 5">x.to_vec()</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 4; grid-row-end: 5">&\*x</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 4; grid-row-end: 5">\</div></div>
 </div>
 </details>
 <details id="admonition-路由绑定的处理函数handler" class="admonition note">

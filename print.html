@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:43 UTC 2022 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -373,7 +373,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:44 UTC 2022 -->
 <!--te-->
 <h1 id="gdblldb"><a class="header" href="#gdblldb">gdb/lldb</a></h1>
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
@@ -965,7 +965,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:44 UTC 2022 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1487,7 +1487,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:49 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:45 UTC 2022 -->
 <!--te-->
 <h2 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h2>
 <details id="admonition-cargotoml" class="admonition note">
@@ -1789,7 +1789,36 @@ src/lib.rs
    127:23          let pattern = Regex::new(r&quot;he\w+&quot;).unwrap();
 </code></pre>
 </div>
-</details><div style="break-before: page; page-break-before: always;"></div><h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
+</details><div style="break-before: page; page-break-before: always;"></div><style>.extended-markdown-table {
+    display: grid;
+}
+
+.extended-markdown-table > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 20px;
+    border-bottom: 1px solid var(--table-border-color);
+    border-right: 1px solid var(--table-border-color);
+}
+
+.extended-markdown-table > div.extended-markdown-left-border {
+    border-left: 1px solid var(--table-border-color);
+}
+
+.extended-markdown-table > div.extended-markdown-header {
+    text-align: center;
+    background: var(--table-header-bg);
+    border-bottom: 1px solid var(--table-header-bg);
+    border-right: 1px solid var(--table-header-bg);
+    font-weight: bold;
+}
+
+.extended-markdown-table > div.extended-markdown-header.extended-markdown-left-border {
+    border-left: 1px solid var(--table-header-bg);
+}
+</style>
+<h1 id="thumbor图片服务"><a class="header" href="#thumbor图片服务">thumbor图片服务</a></h1>
 <!--ts-->
 <!--te-->
 <h2 id="protobuf相关处理"><a class="header" href="#protobuf相关处理">protobuf相关处理</a></h2>
@@ -2654,27 +2683,15 @@ async fn main() {
 <ol>
 <li>数字与字符串</li>
 </ol>
-<p>||i32|u32|f64|String*|
-|--|---|---|---|-------|
-|i32|\|x as u32|x as f64|x.to_string()|
-|u32|x as i32|\|x as f64|x.to_string()|
-|f64|x as i32|x as u32|\|x.to_string()|
-|String*|x.parse().unwrap()|x.parse().unwrap()|x.parse().unwrap()|\|</p>
+<div class="extended-markdown-table"><div class="extended-markdown-header extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2"></div><div class="extended-markdown-header" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2">i32</div><div class="extended-markdown-header" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2">u32</div><div class="extended-markdown-header" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 1; grid-row-end: 2">f64</div><div class="extended-markdown-header" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 1; grid-row-end: 2">String*</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 2; grid-row-end: 3">i32</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 2; grid-row-end: 3">\</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3">x as u32</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 2; grid-row-end: 3">x as f64</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 2; grid-row-end: 3">x.to_string()</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 3; grid-row-end: 4">u32</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4">x as i32</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4">\</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 3; grid-row-end: 4">x as f64</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 3; grid-row-end: 4">x.to_string()</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 4; grid-row-end: 5">f64</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 4; grid-row-end: 5">x as i32</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 4; grid-row-end: 5">x as u32</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 4; grid-row-end: 5">\</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 4; grid-row-end: 5">x.to_string()</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 5; grid-row-end: 6">String*</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 5; grid-row-end: 6">x.parse().unwrap()</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 5; grid-row-end: 6">x.parse().unwrap()</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 5; grid-row-end: 6">x.parse().unwrap()</div><div class="" style="grid-column-start: 5; grid-column-end: 6; grid-row-start: 5; grid-row-end: 6">\</div></div>
 <ol start="2">
 <li>String 与 &amp; str</li>
 </ol>
-<p>|\|String|&amp;str|
-|-|------|----|
-|String|\|&amp;*x|
-|&amp;str|x.to_string()|\|</p>
+<div class="extended-markdown-table"><div class="extended-markdown-header extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2">\</div><div class="extended-markdown-header" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2">String</div><div class="extended-markdown-header" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2">&str</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 2; grid-row-end: 3">String</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 2; grid-row-end: 3">\</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3">&*x</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 3; grid-row-end: 4">&str</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4">x.to_string()</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4">\</div></div>
 <ol start="3">
 <li>智能指针</li>
 </ol>
-<p>|\|Vec&lt;T&gt;|&amp;[T]|Box&lt;[T]&gt;|
-|-|------|----|--------|
-|Vec&lt;T&gt;|\|&amp;x[…]|x.into_boxed_slice()|
-|&amp;[T]|x.to_vec()|\|Box::new(*x)|
-|Box&lt;[T]&gt;|x.to_vec()|&amp;*x|\|</p>
+<div class="extended-markdown-table"><div class="extended-markdown-header extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2">\</div><div class="extended-markdown-header" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2">Vec\<T\></div><div class="extended-markdown-header" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2">&[T]</div><div class="extended-markdown-header" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 1; grid-row-end: 2">Box<[T]></div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 2; grid-row-end: 3">Vec\<T\></div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 2; grid-row-end: 3">\</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3">&x[...]</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 2; grid-row-end: 3">x.into_boxed_slice()</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 3; grid-row-end: 4">&[T]</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4">x.to_vec()</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4">\</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 3; grid-row-end: 4">Box::new(\*x)</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 4; grid-row-end: 5">Box<[T]></div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 4; grid-row-end: 5">x.to_vec()</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 4; grid-row-end: 5">&\*x</div><div class="" style="grid-column-start: 4; grid-column-end: 5; grid-row-start: 4; grid-row-end: 5">\</div></div>
 </div>
 </details>
 <details id="admonition-路由绑定的处理函数handler" class="admonition note">
@@ -2859,7 +2876,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:49 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:45 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -3534,7 +3551,7 @@ fn main() {
 <li><a href="1_stack_heap_ownership_lifetime_memory.html#i-%E4%BB%8E%E6%A0%88%E5%A0%86%E6%89%80%E6%9C%89%E6%9D%83%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%BC%80%E5%A7%8B%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">I. 从栈堆、所有权、生命周期开始内存管理</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:41 UTC 2022 -->
 <!--te-->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="内存"><a class="header" href="#内存">内存</a></h1>
 <!--ts-->
@@ -3558,7 +3575,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:44 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:41 UTC 2022 -->
 <!--te-->
 <h2 id="字符串内存使用图"><a class="header" href="#字符串内存使用图">字符串内存使用图</a></h2>
 <details id="admonition-字符串内存使用图" class="admonition info">
@@ -3641,7 +3658,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:44 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:41 UTC 2022 -->
 <!--te-->
 <h2 id="1-数据"><a class="header" href="#1-数据">1. 数据</a></h2>
 <h3 id="值和类型"><a class="header" href="#值和类型">值和类型</a></h3>
@@ -3742,7 +3759,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:44 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:41 UTC 2022 -->
 <!--te-->
 <h2 id="对比单一共享所有权"><a class="header" href="#对比单一共享所有权">对比单一/共享所有权</a></h2>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606985.jpg" alt="单一/共享所有权对比" /></p>
@@ -4137,7 +4154,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:41 UTC 2022 -->
 <!--te-->
 <h2 id="动态还是静态"><a class="header" href="#动态还是静态">动态还是静态？</a></h2>
 <details id="admonition-动态静态生命周期定义与表示方式" class="admonition info">
@@ -4457,7 +4474,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:41 UTC 2022 -->
 <!--te-->
 <h2 id="创建"><a class="header" href="#创建">创建</a></h2>
 <h3 id="堆内存生命周期管理发展史"><a class="header" href="#堆内存生命周期管理发展史">堆内存生命周期管理发展史</a></h3>
@@ -4766,7 +4783,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 <li><a href="2_type_system.html#ii-%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F">II. 类型系统</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:42 UTC 2022 -->
 <!--te-->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="类型系统"><a class="header" href="#类型系统">类型系统</a></h1>
 <!--ts-->
@@ -4797,7 +4814,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:41 UTC 2022 -->
 <!--te-->
 <h2 id="类型系统分类图"><a class="header" href="#类型系统分类图">类型系统分类图</a></h2>
 <div id="admonition-类型系统分类图" class="admonition info">
@@ -5019,7 +5036,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:42 UTC 2022 -->
 <!--te-->
 <h2 id="泛型就像定义函数"><a class="header" href="#泛型就像定义函数">泛型就像定义函数</a></h2>
 <ol>
@@ -5315,7 +5332,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:42 UTC 2022 -->
 <!--te-->
 <div id="admonition-trait概览图" class="admonition info">
 <div class="admonition-title">
@@ -6890,7 +6907,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:42 UTC 2022 -->
 <!--te-->
 <h2 id="数据结构快速一览"><a class="header" href="#数据结构快速一览">数据结构快速一览</a></h2>
 <div id="admonition-数据结构快速一览" class="admonition tip">
@@ -6953,7 +6970,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:42 UTC 2022 -->
 <!--te-->
 <h2 id="指针还是引用"><a class="header" href="#指针还是引用">指针还是引用</a></h2>
 <details id="admonition-引用是特殊的指针" class="admonition info">
@@ -8022,7 +8039,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:42 UTC 2022 -->
 <!--te-->
 <h2 id="对容器进行定义"><a class="header" href="#对容器进行定义">对容器进行定义</a></h2>
 <details id="admonition-容器数据结构如何理解" class="admonition tip">
@@ -9103,7 +9120,7 @@ map.insert('a', 1);
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:42 UTC 2022 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
 <details id="admonition-错误处理包含这么几部分" class="admonition info">
@@ -9453,7 +9470,7 @@ pub enum DataStoreError {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:42 UTC 2022 -->
 <!--te-->
 <h2 id="闭包的定义"><a class="header" href="#闭包的定义">闭包的定义</a></h2>
 <details id="admonition-闭包的基本概念" class="admonition info">
@@ -10186,7 +10203,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:43 UTC 2022 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -11350,7 +11367,7 @@ pub struct Command {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:43 UTC 2022 -->
 <!--te-->
 <h2 id="区分并发与并行"><a class="header" href="#区分并发与并行">区分并发与并行</a></h2>
 <details id="admonition-再次区分并发与并行" class="admonition info">
@@ -11454,7 +11471,7 @@ pub struct Command {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:43 UTC 2022 -->
 <!--te-->
 <details id="admonition-在这些并发模式背后都有哪些并发原语可以为我们所用呢" class="admonition info">
 <summary class="admonition-title">
@@ -13356,7 +13373,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:43 UTC 2022 -->
 <!--te-->
 <h2 id="actor是有栈协程future是无栈协程"><a class="header" href="#actor是有栈协程future是无栈协程">actor是有栈协程，Future是无栈协程</a></h2>
 <details id="admonition-actor是有栈协程future是无栈协程" class="admonition info">
@@ -14154,7 +14171,7 @@ fn task_async() -&gt; impl Future&lt;Output = usize&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:46 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:43 UTC 2022 -->
 <!--te-->
 <details id="admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解" class="admonition info">
 <summary class="admonition-title">
@@ -14874,7 +14891,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:49 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:45 UTC 2022 -->
 <!--te-->
 <h1 id="整体回顾"><a class="header" href="#整体回顾">整体回顾</a></h1>
 <p>我们的 KV server 之旅就到此为止了。在整整 7 堂课里，我们一点点从零构造了一个完整的 KV server，包括注释在内，撰写了近三千行代码：</p>
@@ -14961,7 +14978,7 @@ rotation = 'Daily'
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:44 UTC 2022 -->
 <!--te-->
 <h2 id="为什么选-kv-server-来实操呢"><a class="header" href="#为什么选-kv-server-来实操呢">为什么选 KV server 来实操呢？</a></h2>
 <p>因为它是一个足够简单又足够复杂的服务。</p>
@@ -15487,7 +15504,7 @@ pub trait Storage {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:48 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:44 UTC 2022 -->
 <!--te-->
 <p>还是按照上一讲定义接口的顺序来一个一个测试：首先我们来构建协议层。</p>
 <h2 id="创建项目添加依赖"><a class="header" href="#创建项目添加依赖">创建项目，添加依赖</a></h2>
@@ -16662,7 +16679,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:48 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:44 UTC 2022 -->
 <!--te-->
 <p>前面已经完成了 KV store 的基本功能，但留了两个小尾巴：</p>
 <ol>
@@ -17546,7 +17563,7 @@ Rust 编译器会尽最大的努力，让你的代码简单。如果你用 clipp
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:48 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:44 UTC 2022 -->
 <!--te-->
 <h2 id="async-prost"><a class="header" href="#async-prost">async-prost</a></h2>
 <p>之前一直在使用一个神秘的 <a href="https://github.com/tyrchen/async-prost">async-prost 库</a>，我们神奇地完成了 TCP frame 的封包和解包。</p>
@@ -18619,7 +18636,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:48 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:44 UTC 2022 -->
 <!--te-->
 <details id="admonition-那么当我们的应用架构在-tcp-上时如何使用-tls-来保证客户端和服务器间的安全性呢" class="admonition question">
 <summary class="admonition-title">
@@ -19231,7 +19248,7 @@ protocol。对于有余力的同学，你们可以看看它的文档，尝试着
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:48 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:44 UTC 2022 -->
 <!--te-->
 <h2 id="回顾构建过程"><a class="header" href="#回顾构建过程">回顾构建过程</a></h2>
 <p>之前已经完成了一个相对完善的 KV server。</p>
@@ -19956,7 +19973,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:48 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:45 UTC 2022 -->
 <!--te-->
 <h2 id="现有架构分析"><a class="header" href="#现有架构分析">现有架构分析</a></h2>
 <details id="admonition-先简单回顾一下-redis-对-pubsub-的支持" class="admonition info">
@@ -21046,7 +21063,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:12:48 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:47:45 UTC 2022 -->
 <!--te-->
 <p>虽然这是一个“简单”的 KV server：</p>
 <ul>
