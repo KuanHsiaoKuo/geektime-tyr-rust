@@ -1,6 +1,34 @@
 # 二、集合容器
 
 <!--ts-->
+* [二、集合容器](#二集合容器)
+   * [对容器进行定义](#对容器进行定义)
+   * [对集合容器进行定义](#对集合容器进行定义)
+   * [切片](#切片)
+      * [array vs vector](#array-vs-vector)
+      * [Vec 和 &amp;[T]](#vec-和-t)
+      * [解引用](#解引用)
+      * [切片和迭代器 Iterator](#切片和迭代器-iterator)
+      * [特殊的切片：&amp;str](#特殊的切片str)
+      * [Box&lt;[T]&gt;](#boxt)
+      * [常用切片对比图](#常用切片对比图)
+   * [哈希表](#哈希表)
+      * [哈希表还是列表](#哈希表还是列表)
+      * [Rust 的哈希表](#rust-的哈希表)
+   * [<a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" style="max-width: 100%;"></a>](#-1)
+      * [HashMap 的数据结构](#hashmap-的数据结构)
+      * [HashMap 的基本使用方法](#hashmap-的基本使用方法)
+      * [HashMap 的内存布局](#hashmap-的内存布局)
+      * [ctrl 表](#ctrl-表)
+      * [哈希表重新分配与增长](#哈希表重新分配与增长)
+      * [删除一个值](#删除一个值)
+      * [让自定义的数据结构做 Hash key](#让自定义的数据结构做-hash-key)
+      * [HashSet / BTreeMap / BTreeSet](#hashset--btreemap--btreeset)
+      * [为什么 Rust 的 HashMap 要缺省采用加密安全的哈希算法？](#为什么-rust-的-hashmap-要缺省采用加密安全的哈希算法)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 02:57:28 UTC 2022 -->
+
 <!--te-->
 
 ## 对容器进行定义

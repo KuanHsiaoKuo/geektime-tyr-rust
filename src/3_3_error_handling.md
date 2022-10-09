@@ -1,6 +1,19 @@
 # 三、错误处理
 
 <!--ts-->
+* [三、错误处理](#三错误处理)
+   * [错误处理包含这么几部分](#错误处理包含这么几部分)
+   * [错误处理的主流方法](#错误处理的主流方法)
+   * [Rust 的错误处理](#rust-的错误处理)
+      * [Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型。](#rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型)
+      * [? 操作符](#-操作符)
+      * [函数式错误处理](#函数式错误处理)
+      * [panic! 和 catch_unwind](#panic-和-catch_unwind)
+      * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sun Oct  9 02:57:28 UTC 2022 -->
+
 <!--te-->
 
 ## 错误处理包含这么几部分
