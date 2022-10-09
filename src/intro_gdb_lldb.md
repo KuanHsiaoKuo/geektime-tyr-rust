@@ -1,32 +1,35 @@
 # gdb/lldb调试或查看内存结构
 
 <!--ts-->
+
 * [gdb/lldb调试或查看内存结构](#gdblldb调试或查看内存结构)
-   * [资料整理](#资料整理)
-      * [官方数据结构cheat sheet](#官方数据结构cheat-sheet)
-      * [gdb强化插件](#gdb强化插件)
-   * [查看hashmap内存结构](#查看hashmap内存结构)
-      * [bin配置与运行](#bin配置与运行)
-      * [目标调试代码](#目标调试代码)
-      * [使用gdb/lldb进行调试查看内存结构](#使用gdblldb进行调试查看内存结构)
-         * [gdb: 主要是linux系统](#gdb-主要是linux系统)
-         * [lldb: 主要OSX系统](#lldb-主要osx系统)
-         * [IDEA](#idea)
-         * [gdb与lldb命令对照](#gdb与lldb命令对照)
-         * [开始调试](#开始调试)
-         * [b(reakpoint): 添加断点](#breakpoint-添加断点)
-         * [r(un):运行到断点](#run运行到断点)
-         * [c(ontinue):继续单步执行](#continue继续单步执行)
-         * [x: 打印内存地址](#x-打印内存地址)
-         * [c(ontinue): 继续执行到下一个断点](#continue-继续执行到下一个断点)
-   * [查看闭包的结构](#查看闭包的结构)
-      * [代码](#代码)
-      * [运行进入lldb](#运行进入lldb)
+    * [资料整理](#资料整理)
+        * [官方数据结构cheat sheet](#官方数据结构cheat-sheet)
+        * [gdb强化插件](#gdb强化插件)
+    * [查看hashmap内存结构](#查看hashmap内存结构)
+        * [bin配置与运行](#bin配置与运行)
+        * [目标调试代码](#目标调试代码)
+        * [使用gdb/lldb进行调试查看内存结构](#使用gdblldb进行调试查看内存结构)
+            * [gdb: 主要是linux系统](#gdb-主要是linux系统)
+            * [lldb: 主要OSX系统](#lldb-主要osx系统)
+            * [IDEA](#idea)
+            * [gdb与lldb命令对照](#gdb与lldb命令对照)
+            * [开始调试](#开始调试)
+            * [b(reakpoint): 添加断点](#breakpoint-添加断点)
+            * [r(un):运行到断点](#run运行到断点)
+            * [c(ontinue):继续单步执行](#continue继续单步执行)
+            * [x: 打印内存地址](#x-打印内存地址)
+            * [c(ontinue): 继续执行到下一个断点](#continue-继续执行到下一个断点)
+    * [查看闭包的结构](#查看闭包的结构)
+        * [代码](#代码)
+        * [运行进入lldb](#运行进入lldb)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun Oct  9 07:14:08 UTC 2022 -->
 
 <!--te-->
+
+# gdb/lldb
 
 ## 资料整理
 
@@ -36,14 +39,32 @@
 
 ### gdb强化插件
 
+~~~admonish info title=" 介绍与截图 " collapsible=true
 - [cyrus-and/gdb-dashboard: Modular visual interface for GDB in Python](https://github.com/cyrus-and/gdb-dashboard)
 
 ![](https://raw.githubusercontent.com/wiki/cyrus-and/gdb-dashboard/Screenshot.png)
+~~~
+
+### gdb: 主要是linux系统
+
+### lldb: 主要OSX系统
+
+### IDEA
+
+~~~admonish info title="> IDEA自带的调试界面同时包含lldb更好的界面功能。 " collapsible=true
+
+![CleanShot 2022-09-18 at 21.24.12@2x](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/CleanShot%202022-09-18%20at%2021.24.12%402x.png)
+~~~
+
+### gdb与lldb命令对照
+
+~~~admonish info title=" gdb与lldb命令对照 " collapsible=true
+- [GDB to LLDB command map — The LLDB Debugger](https://lldb.llvm.org/use/map.html)
+~~~
 
 ## 查看hashmap内存结构
 
-### bin配置与运行
-
+~~~admonish note title="1. bin配置与运行 " collapsible=true
 - [Cargo Targets - The Cargo Book](https://doc.rust-lang.org/cargo/reference/cargo-targets.html?highlight=bin#binaries)
 
 ```toml
@@ -55,31 +76,17 @@
 ```shell
 cargo run --bin hashmap2
 ```
+~~~
 
-### 目标调试代码
-
+~~~admonish note title="2. 目标调试代码 " collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/17_hash_table/src/hashmap2.rs}}
 ```
+~~~
 
 ### 使用gdb/lldb进行调试查看内存结构
 
-#### gdb: 主要是linux系统
-
-#### lldb: 主要OSX系统
-
-#### IDEA
-
-> 自带的调试界面同时包含lldb更好的界面功能。
-
-![CleanShot 2022-09-18 at 21.24.12@2x](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/CleanShot%202022-09-18%20at%2021.24.12%402x.png)
-
-#### gdb与lldb命令对照
-
-- [GDB to LLDB command map — The LLDB Debugger](https://lldb.llvm.org/use/map.html)
-
-#### 开始调试
-
+~~~admonish note title="1. 开始调试 " collapsible=true
 ```shell
 rust-lldb target/debug/hashmap2                                                                                                                  ─╯
 (lldb) command script import "/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/etc/lldb_lookup.py"
@@ -107,9 +114,9 @@ Executing commands in '/Users/kuanhsiaokuo/.rustup/toolchains/stable-x86_64-appl
 Current executable set to '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/hashmap2' (x86_64).
 (lldb)
 ```
+~~~
 
-#### b(reakpoint): 添加断点
-
+~~~admonish note title="2. b(reakpoint): 添加断点 " collapsible=true
 > 在32行打断点，方便看std::mem::transmute(arr)
 
 ```shell
@@ -117,8 +124,9 @@ Current executable set to '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab
 Breakpoint 1: where = hashmap2`hashmap2::explain::h4091c852f38a0de4 + 406 at hashmap2.rs:32:34, address = 0x0000000100008d16
 ```
 
-#### r(un):运行到断点
+~~~
 
+~~~admonish note title="3. r(un):运行到断点 " collapsible=true
 ```shell
 (lldb) r
 Process 69337 launched: '/Users/kuanhsiaokuo/Developer/spare_projects/rust_lab/geektime-rust/geektime_rust_codes/target/debug/hashmap2' (x86_64)
@@ -138,9 +146,9 @@ Target 0: (hashmap2) stopped.
 # 最初的状态，哈希表为空
 empty: bucket_mask 0x0, ctrl 0x100043d20, growth_left: 0, items: 0
 ```
+~~~
 
-#### c(ontinue):继续单步执行
-
+~~~admonish note title="4. c(ontinue):继续单步执行 " collapsible=true
 ```shell
 (lldb) c
 Process 69337 resuming
@@ -161,7 +169,9 @@ Target 0: (hashmap2) stopped.
 added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
 ```
 
-#### x: 打印内存地址
+~~~
+
+~~~admonish note title="5. x: 打印内存地址" collapsible=true
 
 - [打印内存的值 | 100个gdb小技巧](https://wizardforcel.gitbooks.io/100-gdb-tips/content/examine-memory.html)
 
@@ -173,8 +183,9 @@ added 1: bucket_mask 0x3, ctrl 0x600001700160, growth_left: 2, items: 1
 0x600001700180: 0x20ec913f 0x00007ff8 0x4e5ef01e 0x00000000
 ```
 
-#### c(ontinue): 继续执行到下一个断点
+~~~
 
+~~~admonish note title="5. c(ontinue): 继续执行到下一个断点 " collapsible=true
 ```shell
 (lldb) c
 Process 69337 resuming
@@ -267,17 +278,17 @@ final: bucket_mask 0x7, ctrl 0x600002604040, growth_left: 4, items: 3
 0x600002604070: 0x00000000 0x00000000 0x00000000 0x00000000
 0x600002604080: 0x00000000 0x00000000 0x00000000 0x00000000
 ```
+~~~
 
 ## 查看闭包的结构
 
-### 代码
-
+~~~admonish note title="代码: " collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/19_closure/examples/closure_size.rs}}
 ```
+~~~
 
-### 运行进入lldb
-
+~~~admonish note title="运行进入lldb" collapsible=true
 ```shell
 # 自动去examples目录找对应名字的代码文件
 cargo run --example closure_size
@@ -468,3 +479,5 @@ C语言、C++、Shell、Python、Java语言及其他相近的语言使用字首�
 3、八进制：以0开头，由0~7组成的数。如，0126,050000.
 
 4、十六进制：以0X或0x开头，由0~9，A~F或a~f 组成。如，0x12A,0x5a000。
+
+~~~
