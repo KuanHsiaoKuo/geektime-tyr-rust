@@ -193,76 +193,33 @@
 <li><a href="#queryer-package">queryer package</a>
 <ul>
 <li><a href="#cargotoml">cargo.toml</a></li>
-<li><a href="#%E4%B8%A4%E4%B8%AA%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">两个使用示例</a>
-<ul>
-<li><a href="#dialectrssql%E8%A7%A3%E6%9E%90">dialect.rs:SQL解析</a></li>
-<li><a href="#covidrs-ast%E8%BD%AC%E6%8D%A2">covid.rs: AST转换</a></li>
+<li><a href="#%E4%B8%A4%E4%B8%AA%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">两个使用示例</a></li>
+<li><a href="#srcconvertrs">src/convert.rs</a></li>
+<li><a href="#srcdialectrs">src/dialect.rs</a></li>
+<li><a href="#srcloaderrs">src/loader.rs</a></li>
+<li><a href="#srcfetcherrs">src/fetcher.rs</a></li>
 </ul>
 </li>
-<li><a href="#srcconvertrs">src/convert.rs</a>
-<ul>
-<li><a href="#%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9A%E4%B9%89sql%E4%B8%8E%E5%AF%B9%E5%BA%94%E9%83%A8%E5%88%86%E7%BB%93%E6%9E%84%E4%BD%93-%E6%B3%A8%E6%84%8F%E9%99%90%E4%BA%8E%E5%AD%A4%E5%84%BF%E5%8E%9F%E5%88%99%E7%9A%84%E5%86%8D%E5%8C%85%E8%A3%85">结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装</a></li>
-<li><a href="#sql%E7%9A%84%E8%BD%AC%E6%8D%A2">sql的转换</a></li>
-<li><a href="#%E5%AF%B9%E5%BA%94%E9%83%A8%E5%88%86%E7%BB%93%E6%9E%84%E4%BD%93%E7%9A%84%E8%BD%AC%E6%8D%A2">对应部分结构体的转换</a></li>
-<li><a href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95">单元测试</a></li>
-</ul>
-</li>
-<li><a href="#srcdialectrs">src/dialect.rs</a>
-<ul>
-<li><a href="#%E5%AE%9A%E4%B9%89%E6%96%B9%E8%A8%80%E7%BB%93%E6%9E%84%E4%BD%93">定义方言结构体</a></li>
-<li><a href="#%E7%BB%99%E6%96%B9%E8%A8%80%E7%BB%93%E6%9E%84%E4%BD%93%E5%AE%9E%E7%8E%B0trait">给方言结构体实现trait</a></li>
-<li><a href="#%E6%B7%BB%E5%8A%A0%E6%B5%8B%E8%AF%95%E7%94%A8%E5%87%BD%E6%95%B0">添加测试用函数</a></li>
-<li><a href="#%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95-1">单元测试</a></li>
-</ul>
-</li>
-<li><a href="#srcloaderrs">src/loader.rs</a>
-<ul>
-<li><a href="#%E5%AE%9A%E4%B9%89loader%E4%B8%8Ecsvloader">定义Loader与CsvLoader</a></li>
-<li><a href="#%E5%AE%9A%E4%B9%89trait%E5%B9%B6%E7%BB%99csvloader%E5%AE%9E%E7%8E%B0">定义trait并给CsvLoader实现</a></li>
-<li><a href="#todo-%E7%BB%99csvloader%E6%B7%BB%E5%8A%A0%E5%86%85%E5%AE%B9%E6%A3%80%E6%B5%8B">todo: 给CsvLoader添加内容检测</a></li>
-</ul>
-</li>
-<li><a href="#srcfetcherrs">src/fetcher.rs</a>
-<ul>
-<li><a href="#%E5%AE%9A%E4%B9%89urlfetcher%E4%B8%8Efilefetcher">定义UrlFetcher与FileFetcher</a></li>
-<li><a href="#%E5%AE%9A%E4%B9%89trait%E5%B9%B6%E7%BB%99fetcher%E4%B8%8Efilefetcher%E5%AE%9E%E7%8E%B0">定义trait并给Fetcher与FileFetcher实现</a></li>
-<li><a href="#%E6%9C%80%E5%90%8E%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E8%8E%B7%E5%8F%96%E6%95%B0%E6%8D%AE%E7%9A%84%E6%96%B9%E6%B3%95">最后定义一个获取数据的方法</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#queryer-js-package-%E4%BD%BF%E7%94%A8neon">queryer-js package: 使用neon</a>
-<ul>
-<li><a href="#cargotoml-1">Cargo.toml</a></li>
-<li><a href="#build-in-packagejson">build in package.json</a></li>
-<li><a href="#srclibrs">src/lib.rs</a></li>
-</ul>
-</li>
-<li><a href="#queryer-py-package-%E4%BD%BF%E7%94%A8pyo3">queryer-py package: 使用pyo3</a>
-<ul>
-<li><a href="#cargotoml-2">Cargo.toml</a></li>
-<li><a href="#buildrs">build.rs</a></li>
-<li><a href="#srclibrs-1">src/lib.rs</a></li>
-</ul>
-</li>
-<li><a href="#data-viewer-package-%E4%BD%BF%E7%94%A8tauri">data-viewer package: 使用tauri</a>
-<ul>
-<li><a href="#cargotoml-3">Cargo.toml</a></li>
-<li><a href="#buildrs-1">build.rs</a></li>
-<li><a href="#mainrs">main.rs</a></li>
-</ul>
-</li>
+<li><a href="#queryer-js-package-%E4%BD%BF%E7%94%A8neon">queryer-js package: 使用neon</a></li>
+<li><a href="#queryer-py-package-%E4%BD%BF%E7%94%A8pyo3">queryer-py package: 使用pyo3</a></li>
+<li><a href="#data-viewer-package-%E4%BD%BF%E7%94%A8tauri">data-viewer package: 使用tauri</a></li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:47:45 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct  9 08:58:24 UTC 2022 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
 <p><a href="https://course.rs/cargo/reference/workspaces.html">工作空间 Workspace - Rust语言圣经(Rust Course)</a></p>
 </blockquote>
-<pre><pre class="playground"><code class="language-rust  editable">[workspace]
+<details id="admonition-cargotoml" class="admonition note">
+<summary class="admonition-title">
+<p>Cargo.toml </p>
+<p><a class="admonition-anchor-link" href="#admonition-cargotoml"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">[workspace]
 
 members = [
   &quot;queryer&quot;,
@@ -270,22 +227,24 @@ members = [
   &quot;queryer-py&quot;,
   &quot;data-viewer/src-tauri&quot;
 ]
-</code></pre></pre>
-<div id="admonition-虚拟清单" class="admonition info">
-<div class="admonition-title">
+</code></pre>
+</div>
+</details>
+<details id="admonition-虚拟清单" class="admonition info">
+<summary class="admonition-title">
 <p>虚拟清单</p>
 <p><a class="admonition-anchor-link" href="#admonition-虚拟清单"></a></p>
-</div>
+</summary>
 <div>
 <p>若一个 Cargo.toml 有 [workspace] 但是没有 [package] 部分，则它是虚拟清单类型的工作空间。</p>
 <p>对于没有主 package 的场景或你希望将所有的 package 组织在单独的目录中时，这种方式就非常适合。</p>
 </div>
-</div>
-<div id="admonition-workspace关键点" class="admonition tip">
-<div class="admonition-title">
+</details>
+<details id="admonition-workspace关键点" class="admonition tip">
+<summary class="admonition-title">
 <p>workspace关键点</p>
 <p><a class="admonition-anchor-link" href="#admonition-workspace关键点"></a></p>
-</div>
+</summary>
 <div>
 <ul>
 <li>所有的 package 共享同一个 Cargo.lock 文件，该文件位于工作空间的根目录中</li>
@@ -293,16 +252,16 @@ members = [
 <li>只有工作空间根目录的 Cargo.toml 才能包含 [patch], [replace] 和 [profile.*]，而成员的 Cargo.toml 中的相应部分将被自动忽略</li>
 </ul>
 </div>
-</div>
+</details>
 <h3 id="workspace使用方式"><a class="header" href="#workspace使用方式">workspace使用方式</a></h3>
 <pre><code class="language-shell">cargo run -p &lt;member package&gt;
 cargo build -p queryer
 </code></pre>
-<div id="admonition-使用说明" class="admonition info">
-<div class="admonition-title">
+<details id="admonition-使用说明" class="admonition info">
+<summary class="admonition-title">
 <p>使用说明</p>
 <p><a class="admonition-anchor-link" href="#admonition-使用说明"></a></p>
-</div>
+</summary>
 <div>
 <ol>
 <li>
@@ -313,13 +272,28 @@ cargo build -p queryer
 </li>
 </ol>
 </div>
-</div>
+</details>
 <h2 id="queryer-package"><a class="header" href="#queryer-package">queryer package</a></h2>
 <h3 id="cargotoml"><a class="header" href="#cargotoml">cargo.toml</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{{#include ../geektime_rust_codes/06_queryer/queryer/cargo.toml}}
-</code></pre></pre>
+<details id="admonition-cargotoml-1" class="admonition note">
+<summary class="admonition-title">
+<p>cargo.toml </p>
+<p><a class="admonition-anchor-link" href="#admonition-cargotoml-1"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">{{#include ../geektime_rust_codes/06_queryer/queryer/cargo.toml}}
+</code></pre>
+</div>
+</details>
 <h3 id="两个使用示例"><a class="header" href="#两个使用示例">两个使用示例</a></h3>
-<h4 id="dialectrssql解析"><a class="header" href="#dialectrssql解析">dialect.rs:SQL解析</a></h4>
+<details id="admonition-1-dialectrssql解析" class="admonition note">
+<summary class="admonition-title">
+<ol>
+<li>dialect.rs:SQL解析</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-dialectrssql解析"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use sqlparser::{dialect::GenericDialect, parser::Parser};
 
 fn main() {
@@ -335,7 +309,16 @@ fn main() {
     println!(&quot;{:#?}&quot;, ast);
 }
 </code></pre></pre>
-<h4 id="covidrs-ast转换"><a class="header" href="#covidrs-ast转换">covid.rs: AST转换</a></h4>
+</div>
+</details>
+<details id="admonition-2-covidrs-ast转换" class="admonition note">
+<summary class="admonition-title">
+<ol start="2">
+<li>covid.rs: AST转换 </li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-covidrs-ast转换"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use anyhow::Result;
 use queryer::query;
 
@@ -357,8 +340,15 @@ async fn main() -&gt; Result&lt;()&gt; {
     Ok(())
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="srcconvertrs"><a class="header" href="#srcconvertrs">src/convert.rs</a></h3>
-<h4 id="结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装"><a class="header" href="#结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装">结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装</a></h4>
+<details id="admonition-结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装" class="admonition note">
+<summary class="admonition-title">
+<p>结构体定义:sql与对应部分结构体, 注意限于孤儿原则的再包装</p>
+<p><a class="admonition-anchor-link" href="#admonition-结构体定义sql与对应部分结构体-注意限于孤儿原则的再包装"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 解析出来的 SQL
 pub struct Sql&lt;'a&gt; {
     pub(crate) selection: Vec&lt;Expr&gt;,
@@ -381,7 +371,14 @@ pub struct Offset&lt;'a&gt;(pub(crate) &amp;'a SqlOffset);
 pub struct Limit&lt;'a&gt;(pub(crate) &amp;'a SqlExpr);
 pub struct Value(pub(crate) SqlValue);
 </code></pre></pre>
-<h4 id="sql的转换"><a class="header" href="#sql的转换">sql的转换</a></h4>
+</div>
+</details>
+<details id="admonition-sql的转换" class="admonition note">
+<summary class="admonition-title">
+<p>sql的转换</p>
+<p><a class="admonition-anchor-link" href="#admonition-sql的转换"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 把 SqlParser 解析出来的 Statement 转换成我们需要的结构
 impl&lt;'a&gt; TryFrom&lt;&amp;'a Statement&gt; for Sql&lt;'a&gt; {
     type Error = anyhow::Error;
@@ -440,7 +437,14 @@ impl&lt;'a&gt; TryFrom&lt;&amp;'a Statement&gt; for Sql&lt;'a&gt; {
     }
 }
 </code></pre></pre>
-<h4 id="对应部分结构体的转换"><a class="header" href="#对应部分结构体的转换">对应部分结构体的转换</a></h4>
+</div>
+</details>
+<details id="admonition-对应部分结构体的转换" class="admonition note">
+<summary class="admonition-title">
+<p>对应部分结构体的转换</p>
+<p><a class="admonition-anchor-link" href="#admonition-对应部分结构体的转换"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 把 SqlParser 的 Expr 转换成 DataFrame 的 Expr
 impl TryFrom&lt;Expression&gt; for Expr {
     type Error = anyhow::Error;
@@ -582,7 +586,14 @@ impl TryFrom&lt;Value&gt; for LiteralValue {
     }
 }
 </code></pre></pre>
-<h4 id="单元测试"><a class="header" href="#单元测试">单元测试</a></h4>
+</div>
+</details>
+<details id="admonition-单元测试" class="admonition note">
+<summary class="admonition-title">
+<p>单元测试</p>
+<p><a class="admonition-anchor-link" href="#admonition-单元测试"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
 mod tests {
     use super::*;
@@ -606,12 +617,26 @@ mod tests {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="srcdialectrs"><a class="header" href="#srcdialectrs">src/dialect.rs</a></h3>
-<h4 id="定义方言结构体"><a class="header" href="#定义方言结构体">定义方言结构体</a></h4>
+<details id="admonition-定义方言结构体" class="admonition note">
+<summary class="admonition-title">
+<p>定义方言结构体</p>
+<p><a class="admonition-anchor-link" href="#admonition-定义方言结构体"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[derive(Debug, Default)]
 pub struct TyrDialect;
 </code></pre></pre>
-<h4 id="给方言结构体实现trait"><a class="header" href="#给方言结构体实现trait">给方言结构体实现trait</a></h4>
+</div>
+</details>
+<details id="admonition-给方言结构体实现trait" class="admonition note">
+<summary class="admonition-title">
+<p>给方言结构体实现trait</p>
+<p><a class="admonition-anchor-link" href="#admonition-给方言结构体实现trait"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// 创建自己的 sql 方言。TyrDialect 支持 identifier 可以是简单的 url
 impl Dialect for TyrDialect {
     fn is_identifier_start(&amp;self, ch: char) -&gt; bool {
@@ -627,7 +652,14 @@ impl Dialect for TyrDialect {
     }
 }
 </code></pre></pre>
-<h4 id="添加测试用函数"><a class="header" href="#添加测试用函数">添加测试用函数</a></h4>
+</div>
+</details>
+<details id="admonition-添加测试用函数" class="admonition note">
+<summary class="admonition-title">
+<p>添加测试用函数</p>
+<p><a class="admonition-anchor-link" href="#admonition-添加测试用函数"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 测试辅助函数
 pub fn example_sql() -&gt; String {
     let url = &quot;https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/latest/owid-covid-latest.csv&quot;;
@@ -641,7 +673,14 @@ pub fn example_sql() -&gt; String {
     sql
 }
 </code></pre></pre>
-<h4 id="单元测试-1"><a class="header" href="#单元测试-1">单元测试</a></h4>
+</div>
+</details>
+<details id="admonition-单元测试-1" class="admonition note">
+<summary class="admonition-title">
+<p>单元测试 </p>
+<p><a class="admonition-anchor-link" href="#admonition-单元测试-1"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[cfg(test)]
 mod tests {
     use super::*;
@@ -653,8 +692,15 @@ mod tests {
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="srcloaderrs"><a class="header" href="#srcloaderrs">src/loader.rs</a></h3>
-<h4 id="定义loader与csvloader"><a class="header" href="#定义loader与csvloader">定义Loader与CsvLoader</a></h4>
+<details id="admonition-定义loader与csvloader" class="admonition note">
+<summary class="admonition-title">
+<p>定义Loader与CsvLoader</p>
+<p><a class="admonition-anchor-link" href="#admonition-定义loader与csvloader"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#[derive(Debug)]
 #[non_exhaustive]
 pub enum Loader {
@@ -664,7 +710,14 @@ pub enum Loader {
 #[derive(Default, Debug)]
 pub struct CsvLoader(pub(crate) String);
 </code></pre></pre>
-<h4 id="定义trait并给csvloader实现"><a class="header" href="#定义trait并给csvloader实现">定义trait并给CsvLoader实现</a></h4>
+</div>
+</details>
+<details id="admonition-定义trait并给csvloader实现" class="admonition note">
+<summary class="admonition-title">
+<p>定义trait并给CsvLoader实现</p>
+<p><a class="admonition-anchor-link" href="#admonition-定义trait并给csvloader实现"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">
     let sql = format!(
         &quot;SELECT location name, total_cases, new_cases, total_deaths, new_deaths \
@@ -681,19 +734,40 @@ mod tests {
     use sqlparser::parser::Parser;
 
 </code></pre></pre>
-<h4 id="todo-给csvloader添加内容检测"><a class="header" href="#todo-给csvloader添加内容检测">todo: 给CsvLoader添加内容检测</a></h4>
+</div>
+</details>
+<details id="admonition-todo-给csvloader添加内容检测" class="admonition note">
+<summary class="admonition-title">
+<p>todo: 给CsvLoader添加内容检测</p>
+<p><a class="admonition-anchor-link" href="#admonition-todo-给csvloader添加内容检测"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">    fn it_works() {
         assert!(Parser::parse_sql(&amp;TyrDialect::default(), &amp;example_sql()).is_ok());
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h3 id="srcfetcherrs"><a class="header" href="#srcfetcherrs">src/fetcher.rs</a></h3>
-<h4 id="定义urlfetcher与filefetcher"><a class="header" href="#定义urlfetcher与filefetcher">定义UrlFetcher与FileFetcher</a></h4>
+<details id="admonition-定义urlfetcher与filefetcher" class="admonition note">
+<summary class="admonition-title">
+<p>定义UrlFetcher与FileFetcher</p>
+<p><a class="admonition-anchor-link" href="#admonition-定义urlfetcher与filefetcher"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">struct UrlFetcher&lt;'a&gt;(pub(crate) &amp;'a str);
 
 struct FileFetcher&lt;'a&gt;(pub(crate) &amp;'a str);
 </code></pre></pre>
-<h4 id="定义trait并给fetcher与filefetcher实现"><a class="header" href="#定义trait并给fetcher与filefetcher实现">定义trait并给Fetcher与FileFetcher实现</a></h4>
+</div>
+</details>
+<details id="admonition-定义trait并给fetcher与filefetcher实现" class="admonition note">
+<summary class="admonition-title">
+<p>定义trait并给Fetcher与FileFetcher实现 </p>
+<p><a class="admonition-anchor-link" href="#admonition-定义trait并给fetcher与filefetcher实现"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">// Rust 的 async trait 还没有稳定，可以用 async_trait 宏
 #[async_trait]
 pub trait Fetch {
@@ -719,7 +793,14 @@ impl&lt;'a&gt; Fetch for FileFetcher&lt;'a&gt; {
     }
 }
 </code></pre></pre>
-<h4 id="最后定义一个获取数据的方法"><a class="header" href="#最后定义一个获取数据的方法">最后定义一个获取数据的方法</a></h4>
+</div>
+</details>
+<details id="admonition-最后定义一个获取数据的方法" class="admonition note">
+<summary class="admonition-title">
+<p>最后定义一个获取数据的方法 </p>
+<p><a class="admonition-anchor-link" href="#admonition-最后定义一个获取数据的方法"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">/// 从文件源或者 http 源中获取数据，返回字符串
 pub async fn retrieve_data(source: impl AsRef&lt;str&gt;) -&gt; Result&lt;String&gt; {
     let name = source.as_ref();
@@ -732,9 +813,16 @@ pub async fn retrieve_data(source: impl AsRef&lt;str&gt;) -&gt; Result&lt;String
     }
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="queryer-js-package-使用neon"><a class="header" href="#queryer-js-package-使用neon">queryer-js package: 使用neon</a></h2>
-<h3 id="cargotoml-1"><a class="header" href="#cargotoml-1">Cargo.toml</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">[package]
+<details id="admonition-cargotoml-2" class="admonition note">
+<summary class="admonition-title">
+<p>Cargo.toml </p>
+<p><a class="admonition-anchor-link" href="#admonition-cargotoml-2"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">[package]
 name = &quot;queryer-js&quot;
 version = &quot;0.1.0&quot;
 license = &quot;ISC&quot;
@@ -753,9 +841,16 @@ tokio = { version = &quot;1&quot;, features = [&quot;full&quot;] }
 version = &quot;0.9&quot;
 default-features = false
 features = [&quot;napi-6&quot;]
-</code></pre></pre>
-<h3 id="build-in-packagejson"><a class="header" href="#build-in-packagejson">build in package.json</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">{
+</code></pre>
+</div>
+</details>
+<details id="admonition-build-in-packagejson" class="admonition note">
+<summary class="admonition-title">
+<p>build in package.json</p>
+<p><a class="admonition-anchor-link" href="#admonition-build-in-packagejson"></a></p>
+</summary>
+<div>
+<pre><code class="language-json">{
   &quot;name&quot;: &quot;queryer-js&quot;,
   &quot;version&quot;: &quot;0.1.0&quot;,
   &quot;description&quot;: &quot;&quot;,
@@ -773,8 +868,15 @@ features = [&quot;napi-6&quot;]
     &quot;cargo-cp-artifact&quot;: &quot;^0.1&quot;
   }
 }
-</code></pre></pre>
-<h3 id="srclibrs"><a class="header" href="#srclibrs">src/lib.rs</a></h3>
+</code></pre>
+</div>
+</details>
+<details id="admonition-srclibrs" class="admonition note">
+<summary class="admonition-title">
+<p>src/lib.rs </p>
+<p><a class="admonition-anchor-link" href="#admonition-srclibrs"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">use neon::prelude::*;
 
 pub fn example_sql(mut cx: FunctionContext) -&gt; JsResult&lt;JsString&gt; {
@@ -803,12 +905,19 @@ fn main(mut cx: ModuleContext) -&gt; NeonResult&lt;()&gt; {
     Ok(())
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="queryer-py-package-使用pyo3"><a class="header" href="#queryer-py-package-使用pyo3">queryer-py package: 使用pyo3</a></h2>
 <blockquote>
 <p>python调用查询包</p>
 </blockquote>
-<h3 id="cargotoml-2"><a class="header" href="#cargotoml-2">Cargo.toml</a></h3>
-<pre><pre class="playground"><code class="language-rust  editable">[package]
+<details id="admonition-cargotoml-3" class="admonition note">
+<summary class="admonition-title">
+<p>Cargo.toml </p>
+<p><a class="admonition-anchor-link" href="#admonition-cargotoml-3"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">[package]
 name = &quot;queryer_py&quot; # Python 模块需要用下划线
 version = &quot;0.1.0&quot;
 edition = &quot;2021&quot;
@@ -827,13 +936,27 @@ features = [&quot;extension-module&quot;]
 
 [build-dependencies]
 pyo3-build-config = &quot;0.14&quot;
-</code></pre></pre>
-<h3 id="buildrs"><a class="header" href="#buildrs">build.rs</a></h3>
+</code></pre>
+</div>
+</details>
+<details id="admonition-buildrs" class="admonition note">
+<summary class="admonition-title">
+<p>build.rs </p>
+<p><a class="admonition-anchor-link" href="#admonition-buildrs"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">fn main() {
     pyo3_build_config::add_extension_module_link_args();
 }
 </code></pre></pre>
-<h3 id="srclibrs-1"><a class="header" href="#srclibrs-1">src/lib.rs</a></h3>
+</div>
+</details>
+<details id="admonition-srclibrs-1" class="admonition note">
+<summary class="admonition-title">
+<p>src/lib.rs</p>
+<p><a class="admonition-anchor-link" href="#admonition-srclibrs-1"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#![allow(clippy::needless_option_as_deref)]
 use pyo3::{exceptions, prelude::*};
 
@@ -862,8 +985,15 @@ fn queryer_py(_py: Python, m: &amp;PyModule) -&gt; PyResult&lt;()&gt; {
     Ok(())
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="data-viewer-package-使用tauri"><a class="header" href="#data-viewer-package-使用tauri">data-viewer package: 使用tauri</a></h2>
-<h3 id="cargotoml-3"><a class="header" href="#cargotoml-3">Cargo.toml</a></h3>
+<details id="admonition-cargotoml-4" class="admonition note">
+<summary class="admonition-title">
+<p>Cargo.toml</p>
+<p><a class="admonition-anchor-link" href="#admonition-cargotoml-4"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">[package]
 name = &quot;app&quot;
 version = &quot;0.1.0&quot;
@@ -891,12 +1021,26 @@ tauri = { version = &quot;1.0.0-beta.8&quot;, features = [&quot;api-all&quot;] }
 default = [ &quot;custom-protocol&quot; ]
 custom-protocol = [ &quot;tauri/custom-protocol&quot; ]
 </code></pre></pre>
-<h3 id="buildrs-1"><a class="header" href="#buildrs-1">build.rs</a></h3>
+</div>
+</details>
+<details id="admonition-buildrs-1" class="admonition note">
+<summary class="admonition-title">
+<p>build.rs</p>
+<p><a class="admonition-anchor-link" href="#admonition-buildrs-1"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">fn main() {
   tauri_build::build()
 }
 </code></pre></pre>
-<h3 id="mainrs"><a class="header" href="#mainrs">main.rs</a></h3>
+</div>
+</details>
+<details id="admonition-mainrs" class="admonition note">
+<summary class="admonition-title">
+<p>main.rs </p>
+<p><a class="admonition-anchor-link" href="#admonition-mainrs"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">#![cfg_attr(
   all(not(debug_assertions), target_os = &quot;windows&quot;),
   windows_subsystem = &quot;windows&quot;
@@ -920,6 +1064,8 @@ fn main() {
     .expect(&quot;error while running tauri application&quot;);
 }
 </code></pre></pre>
+</div>
+</details>
 
             </main>
 
