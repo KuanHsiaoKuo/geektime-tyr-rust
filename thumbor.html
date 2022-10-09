@@ -823,7 +823,12 @@ impl TryFrom&lt;Bytes&gt; for Photon {
 </div>
 </details>
 <h3 id="photonrs--具体引擎photon的trait实现"><a class="header" href="#photonrs--具体引擎photon的trait实现">photon.rs &gt; 具体引擎Photon的trait实现</a></h3>
-<h4 id="engine-trait"><a class="header" href="#engine-trait">Engine Trait</a></h4>
+<details id="admonition-engine-trait" class="admonition note">
+<summary class="admonition-title">
+<p>Engine Trait</p>
+<p><a class="admonition-anchor-link" href="#admonition-engine-trait"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">impl Engine for Photon {
     fn apply(&amp;mut self, specs: &amp;[Spec]) {
         for spec in specs.iter() {
@@ -841,8 +846,15 @@ impl TryFrom&lt;Bytes&gt; for Photon {
         }
     }
 </code></pre></pre>
+</div>
+</details>
 <h4 id="spectransform-trait"><a class="header" href="#spectransform-trait">SpecTransform Trait</a></h4>
-<h5 id="格式语义化"><a class="header" href="#格式语义化">格式语义化</a></h5>
+<details id="admonition-格式语义化" class="admonition note">
+<summary class="admonition-title">
+<p>格式语义化</p>
+<p><a class="admonition-anchor-link" href="#admonition-格式语义化"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
 </span><span class="boring">fn main() {
 </span>impl SpecTransform(&amp;OpreationName) for SpecificEngine {
@@ -908,7 +920,14 @@ impl SpecTransform&lt;&amp;Watermark&gt; for Photon {
     }
 }
 </code></pre></pre>
-<h3 id="photonrs--在内存中对图片转换格式的方法"><a class="header" href="#photonrs--在内存中对图片转换格式的方法">photon.rs &gt; 在内存中对图片转换格式的方法</a></h3>
+</div>
+</details>
+<details id="admonition-photonrs--在内存中对图片转换格式的方法" class="admonition note">
+<summary class="admonition-title">
+<p>photon.rs &gt; 在内存中对图片转换格式的方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-photonrs--在内存中对图片转换格式的方法"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">fn image_to_buf(img: PhotonImage, format: ImageOutputFormat) -&gt; Vec&lt;u8&gt; {
     let raw_pixels = img.get_raw_pixels();
     let width = img.get_width();
@@ -922,6 +941,8 @@ impl SpecTransform&lt;&amp;Watermark&gt; for Photon {
     buffer
 }
 </code></pre></pre>
+</div>
+</details>
 <h2 id="mainrs"><a class="header" href="#mainrs">main.rs</a></h2>
 <details id="admonition-先引入mod再use" class="admonition note">
 <summary class="admonition-title">
