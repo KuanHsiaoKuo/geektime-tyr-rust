@@ -25,87 +25,88 @@
 
 ## Cargo.toml
 
-```rust, editable
+~~~admonish note title="Cargo.toml " collapsible=true
+```toml
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/Cargo.toml}}
 ```
+~~~
 
 ## src/error.rs: thiserror会自动转换
 
-> 它们都是需要进行转换的错误。thiserror 能够通过宏帮我们完成错误类型的转换。
-
+~~~admonish note title="> 它们都是需要进行转换的错误。thiserror 能够通过宏帮我们完成错误类型的转换。" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/error.rs}}
 ```
+~~~
 
 ## src/lib.rs：定义结构体+实现方法+单元测试
 
-### mod引入与使用
-
+~~~admonish note title="mod引入与使用" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:13:14}}
 ```
+~~~
 
-### 定义结构体
-
-#### 专门简化复杂类型
-
+~~~admonish note title="定义结构体: 专门简化复杂类型" collapsible=true
 > 这里其实就是传入一个指定结构的函数对象
 
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:16:17}}
 ```
+~~~
 
-#### 专门的结合版本grep结构体
-
+~~~admonish note title="专门的结合版本grep结构体" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:19:27}}
 ```
+~~~
 
-### 给结构体实现方法
-
+~~~admonish note title="lib.rs: 给结构体实现方法" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:29:55}}
 ```
+~~~
 
 > 主要实现两种解析策略：
 
 1. 默认策略：match_with_default_strategy, 使用default_strategy
 2. 指定策略：match_with, 使用传入的strategy: StrategyFn
 
-### 默认策略: default_strategy
-
+~~~admonish note title="默认策略:  default_strategy" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:57:87}}
 ```
+~~~
 
-### 格式化输出
-
+~~~admonish note title="格式化输出" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:89:103}}
 ```
+~~~
 
-### 单元测试
-
+~~~admonish note title="单元测试 " collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:105:139}}
 ```
+~~~
 
 ## src/main.rs
 
-### 引入lib.rs中的内容
-
+~~~admonish note title="引入lib.rs中的内容" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:3:3}}
 ```
+~~~
 
-### 主函数：main()
-
+~~~admonish note title="主函数：main() " collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/22_mid_term_rgrep/src/lib.rs:5:11}}
 ```
+~~~
 
 ## 使用
 
+~~~admonish note title='示例：cargo run --quiet -- "正则表达式" "src/*.rs"' collapsible=true
 ```shell
 cargo run --quiet -- "Re[^\\s]+" "src/*.rs"                                                                                                                                                                                            ─╯
 src/main.rs
@@ -128,3 +129,4 @@ src/lib.rs
    126:29          let mut reader = BufReader::new(&input[..]);
    127:23          let pattern = Regex::new(r"he\w+").unwrap();
 ```
+~~~
