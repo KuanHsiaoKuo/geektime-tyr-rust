@@ -1,29 +1,30 @@
 # 一、所有权: 单一/共享
 
 <!--ts-->
+
 * [一、所有权: 单一/共享](#一所有权-单一共享)
-   * [对比单一/共享所有权](#对比单一共享所有权)
-   * [单一所有权：掌控生杀大权](#单一所有权掌控生杀大权)
-      * [从多引用开始](#从多引用开始)
-      * [Rust如何解决](#rust如何解决)
-         * [方案一、单一所有权](#方案一单一所有权)
-         * [方案二、Copy](#方案二copy)
-      * [单一所有权规则整理](#单一所有权规则整理)
-      * [单一所有权借用](#单一所有权借用)
-         * [两种传参方式：传值/传址](#两种传参方式传值传址)
-         * [只读借用/引用](#只读借用引用)
-         * [借用的生命周期与约束](#借用的生命周期与约束)
-         * [可变借用/引用](#可变借用引用)
-      * [第一性原理理解单一所有权规则](#第一性原理理解单一所有权规则)
-   * [共享内存-多个所有者：引用计数](#共享内存-多个所有者引用计数)
-      * [Rc使用说明: 只读引用计数](#rc使用说明-只读引用计数)
-         * [Rc使用Box::leak()](#rc使用boxleak)
-         * [使用Rc实现DAG](#使用rc实现dag)
-      * [RefCell: 提供内部可变性，可变引用计数](#refcell-提供内部可变性可变引用计数)
-         * [外部可变性与内部可变性](#外部可变性与内部可变性)
-         * [RefCell简单使用](#refcell简单使用)
-         * [使用RefCell实现可修改版本DAG](#使用refcell实现可修改版本dag)
-      * [线程安全版本计数器：Arc(Rc)、Mutex/RwLock(RefCell)](#线程安全版本计数器arcrcmutexrwlockrefcell)
+    * [对比单一/共享所有权](#对比单一共享所有权)
+    * [单一所有权：掌控生杀大权](#单一所有权掌控生杀大权)
+        * [从多引用开始](#从多引用开始)
+        * [Rust如何解决](#rust如何解决)
+            * [方案一、单一所有权](#方案一单一所有权)
+            * [方案二、Copy](#方案二copy)
+        * [单一所有权规则整理](#单一所有权规则整理)
+        * [单一所有权借用](#单一所有权借用)
+            * [两种传参方式：传值/传址](#两种传参方式传值传址)
+            * [只读借用/引用](#只读借用引用)
+            * [借用的生命周期与约束](#借用的生命周期与约束)
+            * [可变借用/引用](#可变借用引用)
+        * [第一性原理理解单一所有权规则](#第一性原理理解单一所有权规则)
+    * [共享内存-多个所有者：引用计数](#共享内存-多个所有者引用计数)
+        * [Rc使用说明: 只读引用计数](#rc使用说明-只读引用计数)
+            * [Rc使用Box::leak()](#rc使用boxleak)
+            * [使用Rc实现DAG](#使用rc实现dag)
+        * [RefCell: 提供内部可变性，可变引用计数](#refcell-提供内部可变性可变引用计数)
+            * [外部可变性与内部可变性](#外部可变性与内部可变性)
+            * [RefCell简单使用](#refcell简单使用)
+            * [使用RefCell实现可修改版本DAG](#使用refcell实现可修改版本dag)
+        * [线程安全版本计数器：Arc(Rc)、Mutex/RwLock(RefCell)](#线程安全版本计数器arcrcmutexrwlockrefcell)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Mon Oct 10 08:15:26 UTC 2022 -->
@@ -164,6 +165,10 @@ fn clone(&self) -> Rc<T> {
 ![外部可变性与内部可变性](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606188-4606221.jpg)
 ~~~
 
+~~~admonish info title='RefCell内部可变性示意图' collapsible=true
+![使用RefCell实现可修改版本DAG](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606429.jpg)
+~~~
+
 #### RefCell简单使用
 
 ~~~admonish info title='获得 RefCell 内部数据的可变借用' collapsible=true
@@ -181,10 +186,6 @@ fn clone(&self) -> Rc<T> {
 1. 首先数据结构的 downstream 需要 Rc 内部嵌套一个 RefCell
 2. 这样，就可以利用 RefCell 的内部可变性，来获得数据的可变借用
 3. 同时 Rc 还允许值有多个所有者。
-~~~
-
-~~~admonish info title='RefCell内部可变性示意图' collapsible=true
-![使用RefCell实现可修改版本DAG](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606429.jpg)
 ~~~
 
 ### 线程安全版本计数器：Arc(Rc)、Mutex/RwLock(RefCell)
