@@ -1,14 +1,15 @@
 # 二、生命周期
 
 <!--ts-->
+
 * [二、生命周期](#二生命周期)
-   * [动态还是静态？](#动态还是静态)
-   * [如何识别生命周期](#如何识别生命周期)
-      * [两个小例子](#两个小例子)
-      * [需要生命周期标注的情况](#需要生命周期标注的情况)
-      * [编译器其实会自动进行生命周期标注](#编译器其实会自动进行生命周期标注)
-      * [生命周期标注练习](#生命周期标注练习)
-      * [生命周期标注的目的](#生命周期标注的目的)
+    * [动态还是静态？](#动态还是静态)
+    * [如何识别生命周期](#如何识别生命周期)
+        * [两个小例子](#两个小例子)
+        * [需要生命周期标注的情况](#需要生命周期标注的情况)
+        * [编译器其实会自动进行生命周期标注](#编译器其实会自动进行生命周期标注)
+        * [生命周期标注练习](#生命周期标注练习)
+        * [生命周期标注的目的](#生命周期标注的目的)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Mon Oct 10 08:41:12 UTC 2022 -->
@@ -53,23 +54,6 @@
 2. y 和 x 处在同一个作用域下， x 引用了 y，我们可以看到 x 的生命周期 'a 和 y 的生命周期 'b 几乎同时结束，或者说 'a 小于等于 'b，所以，x 引用 y 是可行的。
 ~~~
 
-### 需要生命周期标注的情况
-
-~~~admonish info title='missing lifetime specifier' collapsible=true
-```rust, editable
-{{#include ../geektime_rust_codes/10_lifetime/src/lifetime.rs}}
-```
-1. 编译器在编译 max() 函数时，无法判断 s1、s2 和返回值的生命周期。
-2. 函数本身携带的信息，就是编译器在编译时使用的全部信息。
-3. 这里函数本身提供的信息就告诉编译期，生命周期不一致
-~~~
-
-~~~admonish info title='添加生命周期标注即可编译通过' collapsible=true
-```rust, editable
-{{#include ../geektime_rust_codes/10_lifetime/src/lifetime1.rs}}
-```
-~~~
-
 ### 编译器其实会自动进行生命周期标注
 
 > 编译器希望尽可能减轻开发者的负担，其实所有使用了引用的函数，都需要生命周期的标注，只不过编译器会自动做这件事，省却了开发者的麻烦
@@ -92,6 +76,23 @@
 1. 所有引用类型的参数都有独立的生命周期 'a 、'b 等。
 2. 如果只有一个引用型输入，它的生命周期会赋给所有输出。
 3. 如果有多个引用类型的参数，其中一个是 self，那么它的生命周期会赋给所有输出。
+~~~
+
+### 需要生命周期标注的情况
+
+~~~admonish info title='missing lifetime specifier' collapsible=true
+```rust, editable
+{{#include ../geektime_rust_codes/10_lifetime/src/lifetime.rs}}
+```
+1. 编译器在编译 max() 函数时，无法判断 s1、s2 和返回值的生命周期。
+2. 函数本身携带的信息，就是编译器在编译时使用的全部信息。
+3. 这里函数本身提供的信息就告诉编译期，生命周期不一致
+~~~
+
+~~~admonish info title='添加生命周期标注即可编译通过' collapsible=true
+```rust, editable
+{{#include ../geektime_rust_codes/10_lifetime/src/lifetime1.rs}}
+```
 ~~~
 
 ### 生命周期标注练习
