@@ -86,7 +86,7 @@
 
 > 同一个上下文中多个可变引用是不安全的，那如果同时有一个可变引用和若干个只读引 用就可以
 
-#### 第一性原理理解单一所有权规则
+### 第一性原理理解单一所有权规则
 
 ~~~admonish info title='第一性原理理解所有权模型：单一所有权/共享所有权' collapsible=true
 ![第一性原理](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/08%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E5%80%BC%E7%9A%84%E5%80%9F%E7%94%A8%E6%98%AF%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C%E7%9A%84%EF%BC%9F-4447883.jpg)
