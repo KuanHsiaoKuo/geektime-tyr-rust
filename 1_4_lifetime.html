@@ -189,8 +189,8 @@
 <li><a href="#%E5%A6%82%E4%BD%95%E8%AF%86%E5%88%AB%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F">如何识别生命周期</a>
 <ul>
 <li><a href="#%E4%B8%A4%E4%B8%AA%E5%B0%8F%E4%BE%8B%E5%AD%90">两个小例子</a></li>
-<li><a href="#%E9%9C%80%E8%A6%81%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A0%87%E6%B3%A8%E7%9A%84%E6%83%85%E5%86%B5">需要生命周期标注的情况</a></li>
 <li><a href="#%E7%BC%96%E8%AF%91%E5%99%A8%E5%85%B6%E5%AE%9E%E4%BC%9A%E8%87%AA%E5%8A%A8%E8%BF%9B%E8%A1%8C%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A0%87%E6%B3%A8">编译器其实会自动进行生命周期标注</a></li>
+<li><a href="#%E9%9C%80%E8%A6%81%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A0%87%E6%B3%A8%E7%9A%84%E6%83%85%E5%86%B5">需要生命周期标注的情况</a></li>
 <li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A0%87%E6%B3%A8%E7%BB%83%E4%B9%A0">生命周期标注练习</a></li>
 <li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A0%87%E6%B3%A8%E7%9A%84%E7%9B%AE%E7%9A%84">生命周期标注的目的</a></li>
 </ul>
@@ -199,7 +199,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 10 08:45:15 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 10 10:34:47 UTC 2022 -->
 <!--te-->
 <h2 id="动态还是静态"><a class="header" href="#动态还是静态">动态还是静态？</a></h2>
 <details id="admonition-动态静态生命周期定义与表示方式" class="admonition info">
@@ -260,6 +260,74 @@
 <hr />
 <ol start="2">
 <li>y 和 x 处在同一个作用域下， x 引用了 y，我们可以看到 x 的生命周期 ’a 和 y 的生命周期 ’b 几乎同时结束，或者说 ’a 小于等于 ’b，所以，x 引用 y 是可行的。</li>
+</ol>
+</div>
+</details>
+<h3 id="编译器其实会自动进行生命周期标注"><a class="header" href="#编译器其实会自动进行生命周期标注">编译器其实会自动进行生命周期标注</a></h3>
+<blockquote>
+<p>编译器希望尽可能减轻开发者的负担，其实所有使用了引用的函数，都需要生命周期的标注，只不过编译器会自动做这件事，省却了开发者的麻烦</p>
+</blockquote>
+<details id="admonition-编译器自动进行生命周期标注" class="admonition info">
+<summary class="admonition-title">
+<p>编译器自动进行生命周期标注</p>
+<p><a class="admonition-anchor-link" href="#admonition-编译器自动进行生命周期标注"></a></p>
+</summary>
+<div>
+<ol>
+<li>无标注版本</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">fn main() {
+    let s1 = &quot;Hello world&quot;;
+
+    println!(&quot;first word of s1: {}&quot;, first(s1));
+}
+
+// 如果你用 clippy，多余的 lifetime 会提醒你不需要
+// fn first&lt;'a&gt;(s: &amp;'a str) -&gt; &amp;'a str {
+fn first(s: &amp;str) -&gt; &amp;str {
+    let trimmed = s.trim();
+    match trimmed.find(' ') {
+        None =&gt; &quot;&quot;,
+        Some(pos) =&gt; &amp;trimmed[..pos],
+    }
+}
+</code></pre></pre>
+<hr />
+<ol start="2">
+<li>自动标注</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">fn main() {
+    let s1 = &quot;Lindsey&quot;;
+    let s2 = String::from(&quot;Rosie&quot;);
+
+    let result = max(s1, &amp;s2);
+
+    println!(&quot;bigger one: {}&quot;, result);
+}
+
+fn max&lt;'a&gt;(s1: &amp;'a str, s2: &amp;'a str) -&gt; &amp;'a str {
+    if s1 &gt; s2 {
+        s1
+    } else {
+        s2
+    }
+}
+</code></pre></pre>
+<blockquote>
+<p>返回值如何标注？是 ’a 还是’b 呢？这里的冲突，编译器无能为力。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-自动标注规则" class="admonition info">
+<summary class="admonition-title">
+<p>自动标注规则</p>
+<p><a class="admonition-anchor-link" href="#admonition-自动标注规则"></a></p>
+</summary>
+<div>
+<ol>
+<li>所有引用类型的参数都有独立的生命周期 ’a 、’b 等。</li>
+<li>如果只有一个引用型输入，它的生命周期会赋给所有输出。</li>
+<li>如果有多个引用类型的参数，其中一个是 self，那么它的生命周期会赋给所有输出。</li>
 </ol>
 </div>
 </details>
@@ -333,74 +401,6 @@ fn max&lt;'a&gt;(s1: &amp;'a str, s2: &amp;'a str) -&gt; &amp;'a str {
     }
 }
 </code></pre></pre>
-</div>
-</details>
-<h3 id="编译器其实会自动进行生命周期标注"><a class="header" href="#编译器其实会自动进行生命周期标注">编译器其实会自动进行生命周期标注</a></h3>
-<blockquote>
-<p>编译器希望尽可能减轻开发者的负担，其实所有使用了引用的函数，都需要生命周期的标注，只不过编译器会自动做这件事，省却了开发者的麻烦</p>
-</blockquote>
-<details id="admonition-编译器自动进行生命周期标注" class="admonition info">
-<summary class="admonition-title">
-<p>编译器自动进行生命周期标注</p>
-<p><a class="admonition-anchor-link" href="#admonition-编译器自动进行生命周期标注"></a></p>
-</summary>
-<div>
-<ol>
-<li>无标注版本</li>
-</ol>
-<pre><pre class="playground"><code class="language-rust  editable">fn main() {
-    let s1 = &quot;Hello world&quot;;
-
-    println!(&quot;first word of s1: {}&quot;, first(s1));
-}
-
-// 如果你用 clippy，多余的 lifetime 会提醒你不需要
-// fn first&lt;'a&gt;(s: &amp;'a str) -&gt; &amp;'a str {
-fn first(s: &amp;str) -&gt; &amp;str {
-    let trimmed = s.trim();
-    match trimmed.find(' ') {
-        None =&gt; &quot;&quot;,
-        Some(pos) =&gt; &amp;trimmed[..pos],
-    }
-}
-</code></pre></pre>
-<hr />
-<ol start="2">
-<li>自动标注</li>
-</ol>
-<pre><pre class="playground"><code class="language-rust  editable">fn main() {
-    let s1 = &quot;Lindsey&quot;;
-    let s2 = String::from(&quot;Rosie&quot;);
-
-    let result = max(s1, &amp;s2);
-
-    println!(&quot;bigger one: {}&quot;, result);
-}
-
-fn max&lt;'a&gt;(s1: &amp;'a str, s2: &amp;'a str) -&gt; &amp;'a str {
-    if s1 &gt; s2 {
-        s1
-    } else {
-        s2
-    }
-}
-</code></pre></pre>
-<blockquote>
-<p>返回值如何标注？是 ’a 还是’b 呢？这里的冲突，编译器无能为力。</p>
-</blockquote>
-</div>
-</details>
-<details id="admonition-自动标注规则" class="admonition info">
-<summary class="admonition-title">
-<p>自动标注规则</p>
-<p><a class="admonition-anchor-link" href="#admonition-自动标注规则"></a></p>
-</summary>
-<div>
-<ol>
-<li>所有引用类型的参数都有独立的生命周期 ’a 、’b 等。</li>
-<li>如果只有一个引用型输入，它的生命周期会赋给所有输出。</li>
-<li>如果有多个引用类型的参数，其中一个是 self，那么它的生命周期会赋给所有输出。</li>
-</ol>
 </div>
 </details>
 <h3 id="生命周期标注练习"><a class="header" href="#生命周期标注练习">生命周期标注练习</a></h3>
