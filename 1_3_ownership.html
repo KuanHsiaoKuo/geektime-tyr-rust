@@ -229,7 +229,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 10 08:15:26 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 10 08:41:12 UTC 2022 -->
 <!--te-->
 <h2 id="对比单一共享所有权"><a class="header" href="#对比单一共享所有权">对比单一/共享所有权</a></h2>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606985.jpg" alt="单一/共享所有权对比" /></p>
@@ -479,6 +479,15 @@ fn main() {
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606188-4606221.jpg" alt="外部可变性与内部可变性" /></p>
 </div>
 </details>
+<details id="admonition-refcell内部可变性示意图" class="admonition info">
+<summary class="admonition-title">
+<p>RefCell内部可变性示意图</p>
+<p><a class="admonition-anchor-link" href="#admonition-refcell内部可变性示意图"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606429.jpg" alt="使用RefCell实现可修改版本DAG" /></p>
+</div>
+</details>
 <h4 id="refcell简单使用"><a class="header" href="#refcell简单使用">RefCell简单使用</a></h4>
 <details id="admonition-获得-refcell-内部数据的可变借用" class="admonition info">
 <summary class="admonition-title">
@@ -559,15 +568,6 @@ fn main() {
 <li>这样，就可以利用 RefCell 的内部可变性，来获得数据的可变借用</li>
 <li>同时 Rc 还允许值有多个所有者。</li>
 </ol>
-</div>
-</details>
-<details id="admonition-refcell内部可变性示意图" class="admonition info">
-<summary class="admonition-title">
-<p>RefCell内部可变性示意图</p>
-<p><a class="admonition-anchor-link" href="#admonition-refcell内部可变性示意图"></a></p>
-</summary>
-<div>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606429.jpg" alt="使用RefCell实现可修改版本DAG" /></p>
 </div>
 </details>
 <h3 id="线程安全版本计数器arcrcmutexrwlockrefcell"><a class="header" href="#线程安全版本计数器arcrcmutexrwlockrefcell">线程安全版本计数器：Arc(Rc)、Mutex/RwLock(RefCell)</a></h3>
