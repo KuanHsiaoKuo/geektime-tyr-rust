@@ -14,7 +14,7 @@
          * [只读借用/引用](#只读借用引用)
          * [借用的生命周期与约束](#借用的生命周期与约束)
          * [可变借用/引用](#可变借用引用)
-         * [第一性原理理解单一所有权规则](#第一性原理理解单一所有权规则)
+      * [第一性原理理解单一所有权规则](#第一性原理理解单一所有权规则)
    * [共享内存-多个所有者：引用计数](#共享内存-多个所有者引用计数)
       * [Rc使用说明: 只读引用计数](#rc使用说明-只读引用计数)
          * [Rc使用Box::leak()](#rc使用boxleak)
@@ -26,7 +26,7 @@
       * [线程安全版本计数器：Arc(Rc)、Mutex/RwLock(RefCell)](#线程安全版本计数器arcrcmutexrwlockrefcell)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct  9 08:58:20 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 10 08:15:26 UTC 2022 -->
 
 <!--te-->
 
