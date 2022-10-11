@@ -82,7 +82,7 @@ Cow（Clone-on-Write）是 Rust 中一个很有意思且很重要的数据结构
 [ToOwned](https://doc.rust-lang.org/std/borrow/trait.ToOwned.html) 是一个 trait，它可以把借用的数据克隆出一个拥有所有权的数据。
 ~~~
 
-~~~admonish info title='<B as ToOwned>::Owned' collapsible=true
+~~~admonish info title='\<B as ToOwned\>::Owned' collapsible=true
 它对 B 做了一个强制类型转换，转成 ToOwned trait，然后访问 ToOwned trait 内部的 Owned 类型
 ----
 因为在 Rust 里，子类型可以强制转换成父类型，B 可以用 ToOwned 约束，所以它是 ToOwned trait 的子类型，因而 B 可以安全地强制转换成 ToOwned。这里 B as ToOwned 是成立的。
@@ -112,7 +112,7 @@ Cow（Clone-on-Write）是 Rust 中一个很有意思且很重要的数据结构
 
 #### 延迟绑定
 
-#### 延迟绑定
+#### 额外类型
 
 #### 多个实现
 
