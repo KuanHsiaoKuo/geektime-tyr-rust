@@ -190,6 +190,7 @@
 <li><a href="#%E5%A0%86%E5%86%85%E5%AD%98%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E7%AE%A1%E7%90%86%E5%8F%91%E5%B1%95%E5%8F%B2">堆内存生命周期管理发展史</a></li>
 <li><a href="#structenumvecstring%E5%88%9B%E5%BB%BA%E6%97%B6%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80">struct/enum/vec/String创建时的内存布局</a>
 <ul>
+<li><a href="#%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E4%BC%98%E5%8C%96%E4%BB%80%E4%B9%88%E6%84%8F%E6%80%9D">内存布局优化什么意思？</a></li>
 <li><a href="#struct">struct</a></li>
 <li><a href="#enum">enum</a></li>
 <li><a href="#vec%E5%92%8Cstring">vec和String</a></li>
@@ -208,14 +209,13 @@
 <ul>
 <li><a href="#drop%E9%87%8A%E6%94%BE%E5%A0%86%E5%86%85%E5%AD%98">drop释放堆内存</a></li>
 <li><a href="#raii%E9%87%8A%E6%94%BE%E5%85%B6%E4%BB%96%E8%B5%84%E6%BA%90">RAII释放其他资源</a></li>
-<li><a href="#rust%E5%9C%A8%E7%BC%96%E8%AF%91%E6%97%B6%E8%BF%90%E8%A1%8C%E6%97%B6%E6%A3%80%E6%9F%A5%E8%B0%83%E7%94%A8drop">Rust在编译时、运行时检查调用drop</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 10 10:34:47 UTC 2022 -->
+<!-- Added by: runner, at: Tue Oct 11 03:10:10 UTC 2022 -->
 <!--te-->
 <h2 id="创建"><a class="header" href="#创建">创建</a></h2>
 <h3 id="堆内存生命周期管理发展史"><a class="header" href="#堆内存生命周期管理发展史">堆内存生命周期管理发展史</a></h3>
@@ -247,7 +247,7 @@
 </div>
 </details>
 <h3 id="structenumvecstring创建时的内存布局"><a class="header" href="#structenumvecstring创建时的内存布局">struct/enum/vec/String创建时的内存布局</a></h3>
-<h4 id="struct"><a class="header" href="#struct">struct</a></h4>
+<h4 id="内存布局优化什么意思"><a class="header" href="#内存布局优化什么意思">内存布局优化什么意思？</a></h4>
 <details id="admonition-内存布局优化示意图" class="admonition info">
 <summary class="admonition-title">
 <p>内存布局优化示意图</p>
@@ -257,6 +257,7 @@
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4639867.jpg" alt="内存布局优化示意图" /></p>
 </div>
 </details>
+<h4 id="struct"><a class="header" href="#struct">struct</a></h4>
 <details id="admonition-c语言手动优化内存布局" class="admonition info">
 <summary class="admonition-title">
 <p>c语言手动优化内存布局</p>
@@ -499,6 +500,15 @@ E                          56       56           64
 </blockquote>
 </div>
 </details>
+<details id="admonition-rust在编译时运行时检查调用drop" class="admonition info">
+<summary class="admonition-title">
+<p>Rust在编译时、运行时检查调用drop</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust在编译时运行时检查调用drop"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4641604.jpg" alt="Rust在编译时、运行时检查调用drop" /></p>
+</div>
+</details>
 <h3 id="raii释放其他资源"><a class="header" href="#raii释放其他资源">RAII释放其他资源</a></h3>
 <details id="admonition-rust基于raii释放文件资源" class="admonition info">
 <summary class="admonition-title">
@@ -516,8 +526,6 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 </code></pre></pre>
 </div>
 </details>
-<h3 id="rust在编译时运行时检查调用drop"><a class="header" href="#rust在编译时运行时检查调用drop">Rust在编译时、运行时检查调用drop</a></h3>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4641604.jpg" alt="Rust在编译时、运行时检查调用drop" /></p>
 
             </main>
 
