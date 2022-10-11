@@ -1,21 +1,22 @@
 # 三、融会贯通，从创建到消亡
 
 <!--ts-->
+
 * [三、融会贯通，从创建到消亡](#三融会贯通从创建到消亡)
-   * [创建](#创建)
-      * [堆内存生命周期管理发展史](#堆内存生命周期管理发展史)
-      * [struct/enum/vec/String创建时的内存布局](#structenumvecstring创建时的内存布局)
-         * [struct](#struct)
-         * [enum](#enum)
-         * [vec和String](#vec和string)
-         * [引用类型的内存布局](#引用类型的内存布局)
-      * [更多可见cheats.rs](#更多可见cheatsrs)
-   * [使用](#使用)
-      * [copy和move](#copy和move)
-   * [销毁](#销毁)
-      * [drop释放堆内存](#drop释放堆内存)
-      * [RAII释放其他资源](#raii释放其他资源)
-      * [Rust在编译时、运行时检查调用drop](#rust在编译时运行时检查调用drop)
+    * [创建](#创建)
+        * [堆内存生命周期管理发展史](#堆内存生命周期管理发展史)
+        * [struct/enum/vec/String创建时的内存布局](#structenumvecstring创建时的内存布局)
+            * [struct](#struct)
+            * [enum](#enum)
+            * [vec和String](#vec和string)
+            * [引用类型的内存布局](#引用类型的内存布局)
+        * [更多可见cheats.rs](#更多可见cheatsrs)
+    * [使用](#使用)
+        * [copy和move](#copy和move)
+    * [销毁](#销毁)
+        * [drop释放堆内存](#drop释放堆内存)
+        * [RAII释放其他资源](#raii释放其他资源)
+        * [Rust在编译时、运行时检查调用drop](#rust在编译时运行时检查调用drop)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Mon Oct 10 10:34:47 UTC 2022 -->
@@ -46,11 +47,13 @@ Rust 的创造者们，重新审视了堆内存的生命周期，发现:
 
 ### struct/enum/vec/String创建时的内存布局
 
-#### struct
+#### 内存布局优化什么意思？
 
 ~~~admonish info title='内存布局优化示意图' collapsible=true
 ![内存布局优化示意图](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4639867.jpg)
 ~~~
+
+#### struct
 
 ~~~admonish info title='c语言手动优化内存布局' collapsible=true
 ![c语言手动优化内存布局](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4639905.jpg)
@@ -178,6 +181,10 @@ String 和 Vec 占用相同的大小，都是 24 个字节。其实，如果你�
 > 整个释放顺序从内到外是：先释放 HashMap 下的 key，然后释放 HashMap 堆上的表结构，最后释放栈上的内存
 ~~~
 
+~~~admonish info title='Rust在编译时、运行时检查调用drop' collapsible=true
+![Rust在编译时、运行时检查调用drop](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4641604.jpg)
+~~~
+
 ### RAII释放其他资源
 
 ~~~admonish info title='Rust基于RAII释放文件资源' collapsible=true
@@ -186,6 +193,3 @@ String 和 Vec 占用相同的大小，都是 24 个字节。其实，如果你�
 ```
 ~~~
 
-### Rust在编译时、运行时检查调用drop
-
-![Rust在编译时、运行时检查调用drop](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/11%EF%BD%9C%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%EF%BC%9A%E4%BB%8E%E5%88%9B%E5%BB%BA%E5%88%B0%E6%B6%88%E4%BA%A1%EF%BC%8C%E5%80%BC%E9%83%BD%E7%BB%8F%E5%8E%86%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F-4641604.jpg)
