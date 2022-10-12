@@ -186,6 +186,7 @@
 <li><a href="#%E6%B3%9B%E5%9E%8B">泛型</a>
 <ul>
 <li><a href="#%E6%B3%9B%E5%9E%8B%E5%B0%B1%E5%83%8F%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0">泛型就像定义函数</a></li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">泛型基本使用示例</a></li>
 <li><a href="#%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F">实现方式</a></li>
 <li><a href="#%E6%B3%9B%E5%9E%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">泛型数据结构</a>
 <ul>
@@ -198,7 +199,7 @@
 <li><a href="#%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">三种使用场景</a>
 <ul>
 <li><a href="#%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A">延迟绑定</a></li>
-<li><a href="#%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A-1">延迟绑定</a></li>
+<li><a href="#%E9%A2%9D%E5%A4%96%E7%B1%BB%E5%9E%8B">额外类型</a></li>
 <li><a href="#%E5%A4%9A%E4%B8%AA%E5%AE%9E%E7%8E%B0">多个实现</a></li>
 </ul>
 </li>
@@ -218,13 +219,14 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Oct 11 08:12:02 UTC 2022 -->
+<!-- Added by: runner, at: Wed Oct 12 02:34:47 UTC 2022 -->
 <!--te-->
 <h2 id="泛型就像定义函数"><a class="header" href="#泛型就像定义函数">泛型就像定义函数</a></h2>
 <ol>
 <li>函数，是把重复代码中的参数抽取出来，使其更加通用，调用函数的时候，根据参数的不同，我们得到不同的结果；</li>
 <li>而泛型，是把重复数据结构中的参数抽取出来，在使用泛型类型时，根据不同的参数，我们会得到不同的具体类型。</li>
 </ol>
+<h2 id="泛型基本使用示例"><a class="header" href="#泛型基本使用示例">泛型基本使用示例</a></h2>
 <details id="admonition-泛型结构vec例子" class="admonition info">
 <summary class="admonition-title">
 <p>泛型结构Vec<T>例子</p>
@@ -319,6 +321,9 @@ pub enum Cow&lt;'a, B: ?Sized + 'a&gt; where B: ToOwned,
 </div>
 </details>
 <h2 id="实现方式"><a class="header" href="#实现方式">实现方式</a></h2>
+<blockquote>
+<p>阅读这张图的内容，可以理出不少设计。比如trait object和trait bound其实从一开始就是不同路线的解决方案</p>
+</blockquote>
 <details id="admonition-不同语言实现泛型的方式" class="admonition info">
 <summary class="admonition-title">
 <p>不同语言实现泛型的方式</p>
@@ -376,7 +381,7 @@ fn main() {
 <h3 id="参数多态"><a class="header" href="#参数多态">参数多态</a></h3>
 <h3 id="三种使用场景"><a class="header" href="#三种使用场景">三种使用场景</a></h3>
 <h4 id="延迟绑定"><a class="header" href="#延迟绑定">延迟绑定</a></h4>
-<h4 id="延迟绑定-1"><a class="header" href="#延迟绑定-1">延迟绑定</a></h4>
+<h4 id="额外类型"><a class="header" href="#额外类型">额外类型</a></h4>
 <h4 id="多个实现"><a class="header" href="#多个实现">多个实现</a></h4>
 <h2 id="泛型函数"><a class="header" href="#泛型函数">泛型函数</a></h2>
 <h3 id="单态化"><a class="header" href="#单态化">单态化</a></h3>
