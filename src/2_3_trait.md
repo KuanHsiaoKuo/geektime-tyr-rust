@@ -56,10 +56,17 @@
 
 ### Self和self
 
-~~~admonish info title='Self和self区别使用, Self其实就是静态方法' collapsible=true
+> 类比python：Self对应Cls， self两边一样。
+
+~~~admonish info title='Self和self区别使用, Self其实就是类方法' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/write.rs}}
 ```
+~~~
+
+~~~admonish info title="顺便区分一下类方法和静态方法" collapsible=true
+1. 定义时：类方法需要加cls参数，静态方法不需要
+2. 调用时：类方法默认添加cls参数, 静态方法不会传入
 ~~~
 
 ~~~admonish info title='self: Self, 实例来自于类型' collapsible=true
