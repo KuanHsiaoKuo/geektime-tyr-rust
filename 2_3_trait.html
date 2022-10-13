@@ -262,7 +262,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Oct 12 02:34:47 UTC 2022 -->
+<!-- Added by: runner, at: Thu Oct 13 04:50:56 UTC 2022 -->
 <!--te-->
 <div id="admonition-trait概览图" class="admonition info">
 <div class="admonition-title">
@@ -275,10 +275,13 @@
 </div>
 <h2 id="基本练习"><a class="header" href="#基本练习">基本练习</a></h2>
 <h3 id="self和self"><a class="header" href="#self和self">Self和self</a></h3>
-<details id="admonition-self和self区别使用-self其实就是静态方法" class="admonition info">
+<blockquote>
+<p>类比python：Self对应Cls， self两边一样。</p>
+</blockquote>
+<details id="admonition-self和self区别使用-self其实就是类方法" class="admonition info">
 <summary class="admonition-title">
-<p>Self和self区别使用, Self其实就是静态方法</p>
-<p><a class="admonition-anchor-link" href="#admonition-self和self区别使用-self其实就是静态方法"></a></p>
+<p>Self和self区别使用, Self其实就是类方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-self和self区别使用-self其实就是类方法"></a></p>
 </summary>
 <div>
 <pre><pre class="playground"><code class="language-rust  editable">use std::fmt;
@@ -319,6 +322,18 @@ fn main() {
     println!(&quot;{:?}&quot;, buf);
 }
 </code></pre></pre>
+</div>
+</details>
+<details id="admonition-顺便区分一下类方法和静态方法" class="admonition info">
+<summary class="admonition-title">
+<p>顺便区分一下类方法和静态方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-顺便区分一下类方法和静态方法"></a></p>
+</summary>
+<div>
+<ol>
+<li>定义时：类方法需要加cls参数，静态方法不需要</li>
+<li>调用时：类方法默认添加cls参数, 静态方法不会传入</li>
+</ol>
 </div>
 </details>
 <details id="admonition-self-self-实例来自于类型" class="admonition info">
