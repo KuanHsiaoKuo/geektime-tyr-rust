@@ -1,44 +1,45 @@
 # Trait
 
 <!--ts-->
+
 * [Trait](#trait)
-   * [接口抽象 or 特设多态](#接口抽象-or-特设多态)
-   * [孤儿规则](#孤儿规则)
-   * [基本练习](#基本练习)
-      * [支持泛型](#支持泛型)
-      * [支持继承](#支持继承)
-      * [Self和self](#self和self)
-   * [递进练习trait使用场景](#递进练习trait使用场景)
-      * [基础使用：具体类型实现](#基础使用具体类型实现)
-      * [进阶使用1：泛型实现+trait约束](#进阶使用1泛型实现trait约束)
-      * [进阶使用2: trait带有泛型参数+trait约束](#进阶使用2-trait带有泛型参数trait约束)
-      * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
-   * [Trait Object](#trait-object)
-      * [子类型多态: 动态分派](#子类型多态-动态分派)
-      * [实现机理：ptr+vtable](#实现机理ptrvtable)
-      * [对象安全](#对象安全)
-      * [使用场景](#使用场景)
-         * [在函数中使用](#在函数中使用)
-         * [在函数返回值中使用](#在函数返回值中使用)
-            * [在数据结构中使用](#在数据结构中使用)
-   * [常用trait](#常用trait)
-      * [内存相关](#内存相关)
-         * [Copy](#copy)
-         * [Drop](#drop)
-      * [标签trait](#标签trait)
-         * [Sized](#sized)
-         * [Send/Sync](#sendsync)
-      * [类型转换](#类型转换)
-         * [From/Into: 值到值](#frominto-值到值)
-         * [TryFrom/TryInto: 值到值，可能出现错误](#tryfromtryinto-值到值可能出现错误)
-         * [AsRef/AsMut: 引用到引用](#asrefasmut-引用到引用)
-      * [操作符相关: Deref/DerefMut](#操作符相关-derefderefmut)
-      * [其他：Debug/Display/Default](#其他debugdisplaydefault)
-   * [设计架构](#设计架构)
-      * [顺手自然](#顺手自然)
-      * [桥接](#桥接)
-      * [控制反转](#控制反转)
-      * [SOLID原则](#solid原则)
+    * [接口抽象 or 特设多态](#接口抽象-or-特设多态)
+    * [孤儿规则](#孤儿规则)
+    * [基本练习](#基本练习)
+        * [支持泛型](#支持泛型)
+        * [支持继承](#支持继承)
+        * [Self和self](#self和self)
+    * [递进练习trait使用场景](#递进练习trait使用场景)
+        * [基础使用：具体类型实现](#基础使用具体类型实现)
+        * [进阶使用1：泛型实现+trait约束](#进阶使用1泛型实现trait约束)
+        * [进阶使用2: trait带有泛型参数+trait约束](#进阶使用2-trait带有泛型参数trait约束)
+        * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
+    * [Trait Object](#trait-object)
+        * [子类型多态: 动态分派](#子类型多态-动态分派)
+        * [实现机理：ptr+vtable](#实现机理ptrvtable)
+        * [对象安全](#对象安全)
+        * [使用场景](#使用场景)
+            * [在函数中使用](#在函数中使用)
+            * [在函数返回值中使用](#在函数返回值中使用)
+                * [在数据结构中使用](#在数据结构中使用)
+    * [常用trait](#常用trait)
+        * [内存相关](#内存相关)
+            * [Copy](#copy)
+            * [Drop](#drop)
+        * [标签trait](#标签trait)
+            * [Sized](#sized)
+            * [Send/Sync](#sendsync)
+        * [类型转换](#类型转换)
+            * [From/Into: 值到值](#frominto-值到值)
+            * [TryFrom/TryInto: 值到值，可能出现错误](#tryfromtryinto-值到值可能出现错误)
+            * [AsRef/AsMut: 引用到引用](#asrefasmut-引用到引用)
+        * [操作符相关: Deref/DerefMut](#操作符相关-derefderefmut)
+        * [其他：Debug/Display/Default](#其他debugdisplaydefault)
+    * [设计架构](#设计架构)
+        * [顺手自然](#顺手自然)
+        * [桥接](#桥接)
+        * [控制反转](#控制反转)
+        * [SOLID原则](#solid原则)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri Oct 14 07:55:37 UTC 2022 -->
@@ -123,7 +124,12 @@ impl<T: ?Sized> StreamExt for T where T: Stream {}
 2. 这种基础用法中，被实现的是具体类型
 ~~~
 
-### 进阶使用1：泛型实现+trait约束
+### 进阶使用
+
+1. 这也是分离定义与实现的用处
+2. 下方的[常用trait](#常用trait)实现也是基于进阶使用整理出来提供的工具。
+
+#### 泛型实现+trait约束
 
 ~~~admonish info title='impl<T> Parse for T' collapsible=true
 ```rust, editable
@@ -134,7 +140,7 @@ impl<T: ?Sized> StreamExt for T where T: Stream {}
 > 这个抽象点多体会一下：从抓类型到抓实现特定trait的泛型
 ~~~
 
-### 进阶使用2: trait带有泛型参数+trait约束
+#### trait带有泛型参数+trait约束
 
 > 使用一个思考题来加深印象
 
@@ -286,9 +292,11 @@ HtmlFormatter 的引用赋值给 Formatter 后，会生成一个 Trait Object，
 
 #### 在函数返回值中使用
 
-##### 在数据结构中使用
+#### 在数据结构中使用
 
 ## 常用trait
+
+> 基于[trait进阶使用](#进阶使用)
 
 ~~~admonish info title='常用trait分类整理' collapsible=false
 ![14｜类型系统：有哪些必须掌握的trait？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/14%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1%E7%9A%84trait%EF%BC%9F.jpg)
@@ -747,7 +755,8 @@ fn main() {
 
 #### TryFrom/TryInto: 值到值，可能出现错误
 
-注意，如果你的数据类型在转换过程中有可能出现错误，可以使用 TryFrom 和 TryInto，它们的用法和 From / Into 一样，只是 trait 内多了一个关联类型 Error，且返回的结果是 Result。
+> 注意，如果你的数据类型在转换过程中有可能出现错误，可以使用 TryFrom 和 TryInto.
+> 它们的用法和 From / Into 一样，只是 trait 内多了一个关联类型 Error，且返回的结果是 Result。
 
 #### AsRef/AsMut: 引用到引用
 
