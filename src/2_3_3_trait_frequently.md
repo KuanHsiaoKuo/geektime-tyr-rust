@@ -20,7 +20,7 @@
 
 <!--te-->
 
-> 基于[trait进阶使用](#进阶使用)
+> 基于[trait进阶使用](/2_3_1_trait_impl.html#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8)
 
 ~~~admonish info title='常用trait分类整理' collapsible=false
 ![14｜类型系统：有哪些必须掌握的trait？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/14%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1%E7%9A%84trait%EF%BC%9F.jpg)

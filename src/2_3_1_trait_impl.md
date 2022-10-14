@@ -75,7 +75,7 @@ impl<T: ?Sized> StreamExt for T where T: Stream {}
 ### 进阶使用
 
 1. 这也是分离定义与实现的用处
-2. 下方的[常用trait](#常用trait)实现也是基于进阶使用整理出来提供的工具。
+2. 下方的[常用trait](2_3_3_trait_frequently.html#常用trait)实现也是基于进阶使用整理出来提供的工具。
 
 #### 泛型实现+trait约束
 
