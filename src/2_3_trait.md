@@ -1,47 +1,48 @@
 # Trait
 
 <!--ts-->
+
 * [Trait](#trait)
-   * [基本练习](#基本练习)
-      * [Self和self](#self和self)
-      * [递进练习trait使用](#递进练习trait使用)
-         * [基础定义trait](#基础定义trait)
-         * [添加泛型参数作为泛型约束](#添加泛型参数作为泛型约束)
-         * [使用关联类型+添加Result&lt;T, E&gt;](#使用关联类型添加resultt-e)
-      * [泛型约束: 支持泛型的trait](#泛型约束-支持泛型的trait)
-         * [思考题](#思考题)
-         * [解决方案](#解决方案)
-      * [关联类型](#关联类型)
-      * [支持泛型](#支持泛型)
-      * [支持继承](#支持继承)
-      * [接口抽象 or 特设多态](#接口抽象-or-特设多态)
-   * [Trait Object](#trait-object)
-      * [子类型多态: 动态分派](#子类型多态-动态分派)
-      * [实现机理：ptr+vtable](#实现机理ptrvtable)
-      * [对象安全](#对象安全)
-      * [使用场景](#使用场景)
-         * [在函数中使用](#在函数中使用)
-         * [在函数返回值中使用](#在函数返回值中使用)
-            * [在数据结构中使用](#在数据结构中使用)
-   * [孤儿规则](#孤儿规则)
-   * [常用trait](#常用trait)
-      * [内存相关](#内存相关)
-         * [Copy](#copy)
-         * [Drop](#drop)
-      * [标签trait](#标签trait)
-         * [Sized](#sized)
-         * [Send/Sync](#sendsync)
-      * [类型转换](#类型转换)
-         * [From/Into: 值到值](#frominto-值到值)
-         * [TryFrom/TryInto: 值到值，可能出现错误](#tryfromtryinto-值到值可能出现错误)
-         * [AsRef/AsMut: 引用到引用](#asrefasmut-引用到引用)
-      * [操作符相关: Deref/DerefMut](#操作符相关-derefderefmut)
-      * [其他：Debug/Display/Default](#其他debugdisplaydefault)
-   * [设计架构](#设计架构)
-      * [顺手自然](#顺手自然)
-      * [桥接](#桥接)
-      * [控制反转](#控制反转)
-      * [SOLID原则](#solid原则)
+    * [基本练习](#基本练习)
+        * [Self和self](#self和self)
+        * [递进练习trait使用](#递进练习trait使用)
+            * [基础定义trait](#基础定义trait)
+            * [添加泛型参数作为泛型约束](#添加泛型参数作为泛型约束)
+            * [使用关联类型+添加Result&lt;T, E&gt;](#使用关联类型添加resultt-e)
+        * [泛型约束: 支持泛型的trait](#泛型约束-支持泛型的trait)
+            * [思考题](#思考题)
+            * [解决方案](#解决方案)
+        * [关联类型](#关联类型)
+        * [支持泛型](#支持泛型)
+        * [支持继承](#支持继承)
+        * [接口抽象 or 特设多态](#接口抽象-or-特设多态)
+    * [Trait Object](#trait-object)
+        * [子类型多态: 动态分派](#子类型多态-动态分派)
+        * [实现机理：ptr+vtable](#实现机理ptrvtable)
+        * [对象安全](#对象安全)
+        * [使用场景](#使用场景)
+            * [在函数中使用](#在函数中使用)
+            * [在函数返回值中使用](#在函数返回值中使用)
+                * [在数据结构中使用](#在数据结构中使用)
+    * [孤儿规则](#孤儿规则)
+    * [常用trait](#常用trait)
+        * [内存相关](#内存相关)
+            * [Copy](#copy)
+            * [Drop](#drop)
+        * [标签trait](#标签trait)
+            * [Sized](#sized)
+            * [Send/Sync](#sendsync)
+        * [类型转换](#类型转换)
+            * [From/Into: 值到值](#frominto-值到值)
+            * [TryFrom/TryInto: 值到值，可能出现错误](#tryfromtryinto-值到值可能出现错误)
+            * [AsRef/AsMut: 引用到引用](#asrefasmut-引用到引用)
+        * [操作符相关: Deref/DerefMut](#操作符相关-derefderefmut)
+        * [其他：Debug/Display/Default](#其他debugdisplaydefault)
+    * [设计架构](#设计架构)
+        * [顺手自然](#顺手自然)
+        * [桥接](#桥接)
+        * [控制反转](#控制反转)
+        * [SOLID原则](#solid原则)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Thu Oct 13 04:50:56 UTC 2022 -->
@@ -74,29 +75,40 @@
 2. self 在用作方法的第一个参数时，实际上是 self: Self 的简写，所以 &self 是 self: &Self, 而 &mut self 是 self: &mut Self。
 ~~~
 
-### 递进练习trait使用
+### 递进练习trait三种使用场景
 
-#### 基础定义trait
+#### 基础使用：具体类型实现
 
 ~~~admonish info title='定义Parse trait并实现使用' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/parse.rs}}
 ```
+---
+1. 这里的Parse Trait里面的parse方法没有传入self/Self参数，所以调用的时候使用::而不是.
+2. 这种基础用法中，被实现的是具体类型
 ~~~
 
-#### 添加泛型参数作为泛型约束
+#### 进阶使用：泛型实现+trait约束
 
 ~~~admonish info title='impl<T> Parse for T' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/parse1.rs}}
 ```
+1. 对比上一个例子，这里被实现的是泛型，对于上一种用法进一步抽象
+2. 这样就把被实现类型从一个具体类型，扩展为一类实现了具体trait的类型，不需要重复去实现trait
+> 这个抽象点多体会一下：从抓类型到抓实现特定trait的泛型
 ~~~
 
-#### 使用关联类型+添加Result<T, E>
+#### 补充使用：使用关联类型+添加Result<T, E>
 
 ~~~admonish info title='关联类型自定义Error' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/parse2.rs}}
+```
+---
+```rust
+type Error = String;
+fn parse(s: &str) -> Result<Self, Self::Error>
 ```
 ~~~
 
