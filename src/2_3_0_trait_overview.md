@@ -1,6 +1,13 @@
 # Trait概览
 
 <!--ts-->
+* [Trait概览](#trait概览)
+   * [接口抽象 or 特设多态](#接口抽象-or-特设多态)
+   * [孤儿规则](#孤儿规则)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Fri Oct 14 08:27:17 UTC 2022 -->
+
 <!--te-->
 
 ~~~admonish info title='trait概览图' collapsible=false

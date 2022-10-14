@@ -1,6 +1,23 @@
 # 常用trait
 
 <!--ts-->
+* [常用trait](#常用trait)
+   * [内存相关](#内存相关)
+      * [Copy](#copy)
+      * [Drop](#drop)
+   * [标签trait](#标签trait)
+      * [Sized](#sized)
+      * [Send/Sync](#sendsync)
+   * [类型转换](#类型转换)
+      * [From/Into: 值到值](#frominto-值到值)
+      * [TryFrom/TryInto: 值到值，可能出现错误](#tryfromtryinto-值到值可能出现错误)
+      * [AsRef/AsMut: 引用到引用](#asrefasmut-引用到引用)
+   * [操作符相关: Deref/DerefMut](#操作符相关-derefderefmut)
+   * [其他：Debug/Display/Default](#其他debugdisplaydefault)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Fri Oct 14 08:27:17 UTC 2022 -->
+
 <!--te-->
 
 > 基于[trait进阶使用](#进阶使用)

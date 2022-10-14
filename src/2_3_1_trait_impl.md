@@ -1,6 +1,21 @@
 # Trait Impl
 
 <!--ts-->
+* [Trait Impl](#trait-impl)
+   * [基本练习](#基本练习)
+      * [支持泛型](#支持泛型)
+      * [支持继承](#支持继承)
+      * [Self和self](#self和self)
+   * [递进练习trait使用场景](#递进练习trait使用场景)
+      * [基础使用：具体类型实现](#基础使用具体类型实现)
+      * [进阶使用](#进阶使用)
+         * [泛型实现+trait约束](#泛型实现trait约束)
+         * [trait带有泛型参数+trait约束](#trait带有泛型参数trait约束)
+      * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Fri Oct 14 08:27:17 UTC 2022 -->
+
 <!--te-->
 
 ## 基本练习

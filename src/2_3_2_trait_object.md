@@ -1,6 +1,18 @@
 # Trait Object
 
 <!--ts-->
+* [Trait Object](#trait-object)
+   * [子类型多态: 动态分派](#子类型多态-动态分派)
+   * [实现机理：ptr+vtable](#实现机理ptrvtable)
+   * [对象安全](#对象安全)
+   * [使用场景](#使用场景)
+      * [在函数中使用](#在函数中使用)
+      * [在函数返回值中使用](#在函数返回值中使用)
+      * [在数据结构中使用](#在数据结构中使用)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Fri Oct 14 08:27:17 UTC 2022 -->
+
 <!--te-->
 
 ## 子类型多态: 动态分派
