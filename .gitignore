@@ -12,3 +12,6 @@
 *.idea
 book
 */target
+*/target/
+*DS_Store
+
