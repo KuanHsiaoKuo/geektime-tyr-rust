@@ -197,8 +197,12 @@
 <li><a href="#%E9%80%92%E8%BF%9B%E7%BB%83%E4%B9%A0trait%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">递进练习trait使用场景</a>
 <ul>
 <li><a href="#%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E5%85%B7%E4%BD%93%E7%B1%BB%E5%9E%8B%E5%AE%9E%E7%8E%B0">基础使用：具体类型实现</a></li>
-<li><a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A81%E6%B3%9B%E5%9E%8B%E5%AE%9E%E7%8E%B0trait%E7%BA%A6%E6%9D%9F">进阶使用1：泛型实现+trait约束</a></li>
-<li><a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A82-trait%E5%B8%A6%E6%9C%89%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0trait%E7%BA%A6%E6%9D%9F">进阶使用2: trait带有泛型参数+trait约束</a></li>
+<li><a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8">进阶使用</a>
+<ul>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%AE%9E%E7%8E%B0trait%E7%BA%A6%E6%9D%9F">泛型实现+trait约束</a></li>
+<li><a href="#trait%E5%B8%A6%E6%9C%89%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0trait%E7%BA%A6%E6%9D%9F">trait带有泛型参数+trait约束</a></li>
+</ul>
+</li>
 <li><a href="#%E8%A1%A5%E5%85%85%E4%BD%BF%E7%94%A8%E4%BD%BF%E7%94%A8%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B%E6%B7%BB%E5%8A%A0resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></li>
 </ul>
 </li>
@@ -210,11 +214,8 @@
 <li><a href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">使用场景</a>
 <ul>
 <li><a href="#%E5%9C%A8%E5%87%BD%E6%95%B0%E4%B8%AD%E4%BD%BF%E7%94%A8">在函数中使用</a></li>
-<li><a href="#%E5%9C%A8%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%AD%E4%BD%BF%E7%94%A8">在函数返回值中使用</a>
-<ul>
+<li><a href="#%E5%9C%A8%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%AD%E4%BD%BF%E7%94%A8">在函数返回值中使用</a></li>
 <li><a href="#%E5%9C%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%AD%E4%BD%BF%E7%94%A8">在数据结构中使用</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -256,7 +257,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Oct 14 07:55:37 UTC 2022 -->
+<!-- Added by: runner, at: Fri Oct 14 08:06:11 UTC 2022 -->
 <!--te-->
 <div id="admonition-trait概览图" class="admonition info">
 <div class="admonition-title">
@@ -481,7 +482,12 @@ fn main() {
 </ol>
 </div>
 </details>
-<h3 id="进阶使用1泛型实现trait约束"><a class="header" href="#进阶使用1泛型实现trait约束">进阶使用1：泛型实现+trait约束</a></h3>
+<h3 id="进阶使用"><a class="header" href="#进阶使用">进阶使用</a></h3>
+<ol>
+<li>这也是分离定义与实现的用处</li>
+<li>下方的<a href="#%E5%B8%B8%E7%94%A8trait">常用trait</a>实现也是基于进阶使用整理出来提供的工具。</li>
+</ol>
+<h4 id="泛型实现trait约束"><a class="header" href="#泛型实现trait约束">泛型实现+trait约束</a></h4>
 <details id="admonition-impl-parse-for-t" class="admonition info">
 <summary class="admonition-title">
 <p>impl<T> Parse for T</p>
@@ -533,7 +539,7 @@ fn main() {
 </blockquote>
 </div>
 </details>
-<h3 id="进阶使用2-trait带有泛型参数trait约束"><a class="header" href="#进阶使用2-trait带有泛型参数trait约束">进阶使用2: trait带有泛型参数+trait约束</a></h3>
+<h4 id="trait带有泛型参数trait约束"><a class="header" href="#trait带有泛型参数trait约束">trait带有泛型参数+trait约束</a></h4>
 <blockquote>
 <p>使用一个思考题来加深印象</p>
 </blockquote>
@@ -904,8 +910,11 @@ fn main() {
 <h3 id="使用场景"><a class="header" href="#使用场景">使用场景</a></h3>
 <h4 id="在函数中使用"><a class="header" href="#在函数中使用">在函数中使用</a></h4>
 <h4 id="在函数返回值中使用"><a class="header" href="#在函数返回值中使用">在函数返回值中使用</a></h4>
-<h5 id="在数据结构中使用"><a class="header" href="#在数据结构中使用">在数据结构中使用</a></h5>
+<h4 id="在数据结构中使用"><a class="header" href="#在数据结构中使用">在数据结构中使用</a></h4>
 <h2 id="常用trait"><a class="header" href="#常用trait">常用trait</a></h2>
+<blockquote>
+<p>基于<a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8">trait进阶使用</a></p>
+</blockquote>
 <div id="admonition-常用trait分类整理" class="admonition info">
 <div class="admonition-title">
 <p>常用trait分类整理</p>
@@ -1566,7 +1575,10 @@ fn main() {
 </div>
 </details>
 <h4 id="tryfromtryinto-值到值可能出现错误"><a class="header" href="#tryfromtryinto-值到值可能出现错误">TryFrom/TryInto: 值到值，可能出现错误</a></h4>
-<p>注意，如果你的数据类型在转换过程中有可能出现错误，可以使用 TryFrom 和 TryInto，它们的用法和 From / Into 一样，只是 trait 内多了一个关联类型 Error，且返回的结果是 Result。</p>
+<blockquote>
+<p>注意，如果你的数据类型在转换过程中有可能出现错误，可以使用 TryFrom 和 TryInto.
+它们的用法和 From / Into 一样，只是 trait 内多了一个关联类型 Error，且返回的结果是 Result。</p>
+</blockquote>
 <h4 id="asrefasmut-引用到引用"><a class="header" href="#asrefasmut-引用到引用">AsRef/AsMut: 引用到引用</a></h4>
 <details id="admonition-asrefasmut定义" class="admonition info">
 <summary class="admonition-title">
