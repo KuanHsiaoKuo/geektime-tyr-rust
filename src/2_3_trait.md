@@ -1,47 +1,48 @@
 # Trait
 
 <!--ts-->
+
 * [Trait](#trait)
-   * [基本练习](#基本练习)
-      * [Self和self](#self和self)
-      * [递进练习trait三种使用场景](#递进练习trait三种使用场景)
-         * [基础使用：具体类型实现](#基础使用具体类型实现)
-         * [进阶使用：泛型实现+trait约束](#进阶使用泛型实现trait约束)
-         * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
-      * [泛型约束: 支持泛型的trait](#泛型约束-支持泛型的trait)
-         * [思考题](#思考题)
-         * [解决方案](#解决方案)
-      * [关联类型](#关联类型)
-      * [支持泛型](#支持泛型)
-      * [支持继承](#支持继承)
-      * [接口抽象 or 特设多态](#接口抽象-or-特设多态)
-   * [Trait Object](#trait-object)
-      * [子类型多态: 动态分派](#子类型多态-动态分派)
-      * [实现机理：ptr+vtable](#实现机理ptrvtable)
-      * [对象安全](#对象安全)
-      * [使用场景](#使用场景)
-         * [在函数中使用](#在函数中使用)
-         * [在函数返回值中使用](#在函数返回值中使用)
-            * [在数据结构中使用](#在数据结构中使用)
-   * [孤儿规则](#孤儿规则)
-   * [常用trait](#常用trait)
-      * [内存相关](#内存相关)
-         * [Copy](#copy)
-         * [Drop](#drop)
-      * [标签trait](#标签trait)
-         * [Sized](#sized)
-         * [Send/Sync](#sendsync)
-      * [类型转换](#类型转换)
-         * [From/Into: 值到值](#frominto-值到值)
-         * [TryFrom/TryInto: 值到值，可能出现错误](#tryfromtryinto-值到值可能出现错误)
-         * [AsRef/AsMut: 引用到引用](#asrefasmut-引用到引用)
-      * [操作符相关: Deref/DerefMut](#操作符相关-derefderefmut)
-      * [其他：Debug/Display/Default](#其他debugdisplaydefault)
-   * [设计架构](#设计架构)
-      * [顺手自然](#顺手自然)
-      * [桥接](#桥接)
-      * [控制反转](#控制反转)
-      * [SOLID原则](#solid原则)
+    * [基本练习](#基本练习)
+        * [Self和self](#self和self)
+        * [递进练习trait三种使用场景](#递进练习trait三种使用场景)
+            * [基础使用：具体类型实现](#基础使用具体类型实现)
+            * [进阶使用：泛型实现+trait约束](#进阶使用泛型实现trait约束)
+            * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
+        * [泛型约束: 支持泛型的trait](#泛型约束-支持泛型的trait)
+            * [思考题](#思考题)
+            * [解决方案](#解决方案)
+        * [关联类型](#关联类型)
+        * [支持泛型](#支持泛型)
+        * [支持继承](#支持继承)
+        * [接口抽象 or 特设多态](#接口抽象-or-特设多态)
+    * [Trait Object](#trait-object)
+        * [子类型多态: 动态分派](#子类型多态-动态分派)
+        * [实现机理：ptr+vtable](#实现机理ptrvtable)
+        * [对象安全](#对象安全)
+        * [使用场景](#使用场景)
+            * [在函数中使用](#在函数中使用)
+            * [在函数返回值中使用](#在函数返回值中使用)
+                * [在数据结构中使用](#在数据结构中使用)
+    * [孤儿规则](#孤儿规则)
+    * [常用trait](#常用trait)
+        * [内存相关](#内存相关)
+            * [Copy](#copy)
+            * [Drop](#drop)
+        * [标签trait](#标签trait)
+            * [Sized](#sized)
+            * [Send/Sync](#sendsync)
+        * [类型转换](#类型转换)
+            * [From/Into: 值到值](#frominto-值到值)
+            * [TryFrom/TryInto: 值到值，可能出现错误](#tryfromtryinto-值到值可能出现错误)
+            * [AsRef/AsMut: 引用到引用](#asrefasmut-引用到引用)
+        * [操作符相关: Deref/DerefMut](#操作符相关-derefderefmut)
+        * [其他：Debug/Display/Default](#其他debugdisplaydefault)
+    * [设计架构](#设计架构)
+        * [顺手自然](#顺手自然)
+        * [桥接](#桥接)
+        * [控制反转](#控制反转)
+        * [SOLID原则](#solid原则)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri Oct 14 07:30:15 UTC 2022 -->
@@ -53,6 +54,25 @@
 ~~~
 
 ## 基本练习
+
+### 支持泛型
+
+~~~admonish info title='版本一：支持数字相加' collapsible=true
+```rust, editable
+{{#include ../geektime_rust_codes/13_traits/src/add.rs}}
+```
+~~~
+
+### 支持继承
+
+~~~admonish info title='trait B:A' collapsible=true
+在 Rust 中，一个 trait 可以“继承”另一个 trait 的关联类型和关联函数。比如 trait B: A ，是说任何类型 T，如果实现了 trait B，它也必须实现 trait A，换句话说，trait B 在定义时可以使用 trait A 中的关联类型和方法。
+```rust, editable
+impl<T: ?Sized> StreamExt for T where T: Stream {}
+```
+----
+如果你实现了 Stream trait，就可以直接使用 StreamExt 里的方法了
+~~~
 
 ### Self和self
 
@@ -74,9 +94,9 @@
 2. self 在用作方法的第一个参数时，实际上是 self: Self 的简写，所以 &self 是 self: &Self, 而 &mut self 是 self: &mut Self。
 ~~~
 
-### 递进练习trait三种使用场景
+## 递进练习trait三种使用场景
 
-#### 基础使用：具体类型实现
+### 基础使用：具体类型实现
 
 ~~~admonish info title='定义Parse trait并实现使用' collapsible=true
 ```rust, editable
@@ -87,7 +107,7 @@
 2. 这种基础用法中，被实现的是具体类型
 ~~~
 
-#### 进阶使用：泛型实现+trait约束
+### 进阶使用1：泛型实现+trait约束
 
 ~~~admonish info title='impl<T> Parse for T' collapsible=true
 ```rust, editable
@@ -98,22 +118,9 @@
 > 这个抽象点多体会一下：从抓类型到抓实现特定trait的泛型
 ~~~
 
-#### 补充使用：使用关联类型+添加Result<T, E>
+### 进阶使用2: trait带有泛型参数+trait约束
 
-~~~admonish info title='关联类型自定义Error' collapsible=true
-```rust, editable
-{{#include ../geektime_rust_codes/13_traits/src/parse2.rs}}
-```
----
-```rust
-type Error = String;
-fn parse(s: &str) -> Result<Self, Self::Error>
-```
-~~~
-
-### 泛型约束: 支持泛型的trait
-
-#### 思考题
+> 使用一个思考题来加深印象
 
 ~~~admonish info title='泛型参数impl报错' collapsible=true
 ```rust, editable
@@ -149,7 +156,7 @@ fn main() {
 主要原因是，实现 new 方法时，对泛型的约束要求要满足 W: Write，而 new 的声明返回值是 Self，也就是说 self.wirter 必须是 W: Write 类型(泛型)，但实际返回值是一个确定的类型 BufWriter<TcpStream>，这不满足要求。
 ~~~
 
-#### 解决方案
+### 解决方案
 
 ~~~admonish info title='解决方案梳理'
 1. 修改 new 方法的返回值
@@ -199,25 +206,17 @@ fn main() {
 ```
 ~~~
 
-### 关联类型
+### 补充使用：使用关联类型+添加Result<T, E>
 
-### 支持泛型
-
-~~~admonish info title='版本一：支持数字相加' collapsible=true
+~~~admonish info title='关联类型自定义Error' collapsible=true
 ```rust, editable
-{{#include ../geektime_rust_codes/13_traits/src/add.rs}}
+{{#include ../geektime_rust_codes/13_traits/src/parse2.rs}}
 ```
-~~~
-
-### 支持继承
-
-~~~admonish info title='trait B:A' collapsible=true
-在 Rust 中，一个 trait 可以“继承”另一个 trait 的关联类型和关联函数。比如 trait B: A ，是说任何类型 T，如果实现了 trait B，它也必须实现 trait A，换句话说，trait B 在定义时可以使用 trait A 中的关联类型和方法。
-```rust, editable
-impl<T: ?Sized> StreamExt for T where T: Stream {}
+---
+```rust
+type Error = String;
+fn parse(s: &str) -> Result<Self, Self::Error>
 ```
-----
-如果你实现了 Stream trait，就可以直接使用 StreamExt 里的方法了
 ~~~
 
 ### 接口抽象 or 特设多态
