@@ -187,23 +187,18 @@
 <ul>
 <li><a href="#%E5%9F%BA%E6%9C%AC%E7%BB%83%E4%B9%A0">基本练习</a>
 <ul>
+<li><a href="#%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B">支持泛型</a></li>
+<li><a href="#%E6%94%AF%E6%8C%81%E7%BB%A7%E6%89%BF">支持继承</a></li>
 <li><a href="#self%E5%92%8Cself">Self和self</a></li>
+</ul>
+</li>
 <li><a href="#%E9%80%92%E8%BF%9B%E7%BB%83%E4%B9%A0trait%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">递进练习trait三种使用场景</a>
 <ul>
 <li><a href="#%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E5%85%B7%E4%BD%93%E7%B1%BB%E5%9E%8B%E5%AE%9E%E7%8E%B0">基础使用：具体类型实现</a></li>
-<li><a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8%E6%B3%9B%E5%9E%8B%E5%AE%9E%E7%8E%B0trait%E7%BA%A6%E6%9D%9F">进阶使用：泛型实现+trait约束</a></li>
-<li><a href="#%E8%A1%A5%E5%85%85%E4%BD%BF%E7%94%A8%E4%BD%BF%E7%94%A8%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B%E6%B7%BB%E5%8A%A0resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></li>
-</ul>
-</li>
-<li><a href="#%E6%B3%9B%E5%9E%8B%E7%BA%A6%E6%9D%9F-%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B%E7%9A%84trait">泛型约束: 支持泛型的trait</a>
-<ul>
-<li><a href="#%E6%80%9D%E8%80%83%E9%A2%98">思考题</a></li>
+<li><a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A81%E6%B3%9B%E5%9E%8B%E5%AE%9E%E7%8E%B0trait%E7%BA%A6%E6%9D%9F">进阶使用1：泛型实现+trait约束</a></li>
+<li><a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A82-trait%E5%B8%A6%E6%9C%89%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0trait%E7%BA%A6%E6%9D%9F">进阶使用2: trait带有泛型参数+trait约束</a></li>
 <li><a href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">解决方案</a></li>
-</ul>
-</li>
-<li><a href="#%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B">关联类型</a></li>
-<li><a href="#%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B">支持泛型</a></li>
-<li><a href="#%E6%94%AF%E6%8C%81%E7%BB%A7%E6%89%BF">支持继承</a></li>
+<li><a href="#%E8%A1%A5%E5%85%85%E4%BD%BF%E7%94%A8%E4%BD%BF%E7%94%A8%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B%E6%B7%BB%E5%8A%A0resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></li>
 <li><a href="#%E6%8E%A5%E5%8F%A3%E6%8A%BD%E8%B1%A1-or-%E7%89%B9%E8%AE%BE%E5%A4%9A%E6%80%81">接口抽象 or 特设多态</a></li>
 </ul>
 </li>
@@ -262,7 +257,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Oct 14 07:30:15 UTC 2022 -->
+<!-- Added by: runner, at: Fri Oct 14 07:44:33 UTC 2022 -->
 <!--te-->
 <div id="admonition-trait概览图" class="admonition info">
 <div class="admonition-title">
@@ -274,6 +269,64 @@
 </div>
 </div>
 <h2 id="基本练习"><a class="header" href="#基本练习">基本练习</a></h2>
+<h3 id="支持泛型"><a class="header" href="#支持泛型">支持泛型</a></h3>
+<details id="admonition-版本一支持数字相加" class="admonition info">
+<summary class="admonition-title">
+<p>版本一：支持数字相加</p>
+<p><a class="admonition-anchor-link" href="#admonition-版本一支持数字相加"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::ops::Add;
+
+#[derive(Debug)]
+struct Complex {
+    real: f64,
+    imagine: f64,
+}
+
+impl Complex {
+    pub fn new(real: f64, imagine: f64) -&gt; Self {
+        Self { real, imagine }
+    }
+}
+
+// 对 Complex 类型的实现
+impl Add for Complex {
+    type Output = Self;
+
+    // 注意 add 第一个参数是 self，会移动所有权
+    fn add(self, rhs: Self) -&gt; Self::Output {
+        let real = self.real + rhs.real;
+        let imagine = self.imagine + rhs.imagine;
+        Self::new(real, imagine)
+    }
+}
+
+
+fn main() {
+    let c1 = Complex::new(1.0, 1f64);
+    let c2 = Complex::new(2 as f64, 3.0);
+    println!(&quot;{:?}&quot;, c1 + c2);
+    // c1, c2 已经被移动，所以下面这句无法编译
+    // println!(&quot;{:?}&quot;, c1 + c2);
+}
+</code></pre></pre>
+</div>
+</details>
+<h3 id="支持继承"><a class="header" href="#支持继承">支持继承</a></h3>
+<details id="admonition-trait-ba" class="admonition info">
+<summary class="admonition-title">
+<p>trait B:A</p>
+<p><a class="admonition-anchor-link" href="#admonition-trait-ba"></a></p>
+</summary>
+<div>
+<p>在 Rust 中，一个 trait 可以“继承”另一个 trait 的关联类型和关联函数。比如 trait B: A ，是说任何类型 T，如果实现了 trait B，它也必须实现 trait A，换句话说，trait B 在定义时可以使用 trait A 中的关联类型和方法。</p>
+<pre><pre class="playground"><code class="language-rust  editable">impl&lt;T: ?Sized&gt; StreamExt for T where T: Stream {}
+</code></pre></pre>
+<hr />
+<p>如果你实现了 Stream trait，就可以直接使用 StreamExt 里的方法了</p>
+</div>
+</details>
 <h3 id="self和self"><a class="header" href="#self和self">Self和self</a></h3>
 <blockquote>
 <p>类比python：Self对应Cls， self两边一样。</p>
@@ -348,8 +401,8 @@ fn main() {
 </ol>
 </div>
 </details>
-<h3 id="递进练习trait三种使用场景"><a class="header" href="#递进练习trait三种使用场景">递进练习trait三种使用场景</a></h3>
-<h4 id="基础使用具体类型实现"><a class="header" href="#基础使用具体类型实现">基础使用：具体类型实现</a></h4>
+<h2 id="递进练习trait三种使用场景"><a class="header" href="#递进练习trait三种使用场景">递进练习trait三种使用场景</a></h2>
+<h3 id="基础使用具体类型实现"><a class="header" href="#基础使用具体类型实现">基础使用：具体类型实现</a></h3>
 <details id="admonition-定义parse-trait并实现使用" class="admonition info">
 <summary class="admonition-title">
 <p>定义Parse trait并实现使用</p>
@@ -392,7 +445,7 @@ fn main() {
 </ol>
 </div>
 </details>
-<h4 id="进阶使用泛型实现trait约束"><a class="header" href="#进阶使用泛型实现trait约束">进阶使用：泛型实现+trait约束</a></h4>
+<h3 id="进阶使用1泛型实现trait约束"><a class="header" href="#进阶使用1泛型实现trait约束">进阶使用1：泛型实现+trait约束</a></h3>
 <details id="admonition-impl-parse-for-t" class="admonition info">
 <summary class="admonition-title">
 <p>impl<T> Parse for T</p>
@@ -444,72 +497,10 @@ fn main() {
 </blockquote>
 </div>
 </details>
-<h4 id="补充使用使用关联类型添加resultt-e"><a class="header" href="#补充使用使用关联类型添加resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></h4>
-<details id="admonition-关联类型自定义error" class="admonition info">
-<summary class="admonition-title">
-<p>关联类型自定义Error</p>
-<p><a class="admonition-anchor-link" href="#admonition-关联类型自定义error"></a></p>
-</summary>
-<div>
-<pre><pre class="playground"><code class="language-rust  editable">use std::str::FromStr;
-
-use regex::Regex;
-pub trait Parse {
-    type Error;
-    fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
-    where
-        Self: Sized;
-}
-
-impl&lt;T&gt; Parse for T
-where
-    T: FromStr + Default,
-{
-    // 定义关联类型 Error 为 String
-    type Error = String;
-    fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt; {
-        let re: Regex = Regex::new(r&quot;^[0-9]+(\.[0-9]+)?&quot;).unwrap();
-        if let Some(captures) = re.captures(s) {
-            // 当出错时我们返回 Err(String)
-            captures
-                .get(0)
-                .map_or(Err(&quot;failed to capture&quot;.to_string()), |s| {
-                    s.as_str()
-                        .parse()
-                        .map_err(|_err| &quot;failed to parse captured string&quot;.to_string())
-                })
-        } else {
-            Err(&quot;failed to parse string&quot;.to_string())
-        }
-    }
-}
-
-#[test]
-fn parse_should_work() {
-    assert_eq!(u32::parse(&quot;123abcd&quot;), Ok(123));
-    assert_eq!(
-        u32::parse(&quot;123.45abcd&quot;),
-        Err(&quot;failed to parse captured string&quot;.into())
-    );
-    assert_eq!(f64::parse(&quot;123.45abcd&quot;), Ok(123.45));
-    assert!(f64::parse(&quot;abcd&quot;).is_err());
-}
-
-fn main() {
-    println!(&quot;result: {:?}&quot;, u8::parse(&quot;255 hello world&quot;));
-}
-</code></pre></pre>
-<hr />
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>type Error = String;
-fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
-<span class="boring">}
-</span></code></pre></pre>
-</div>
-</details>
-<h3 id="泛型约束-支持泛型的trait"><a class="header" href="#泛型约束-支持泛型的trait">泛型约束: 支持泛型的trait</a></h3>
-<h4 id="思考题"><a class="header" href="#思考题">思考题</a></h4>
+<h3 id="进阶使用2-trait带有泛型参数trait约束"><a class="header" href="#进阶使用2-trait带有泛型参数trait约束">进阶使用2: trait带有泛型参数+trait约束</a></h3>
+<blockquote>
+<p>使用一个思考题来加深印象</p>
+</blockquote>
 <details id="admonition-泛型参数impl报错" class="admonition info">
 <summary class="admonition-title">
 <p>泛型参数impl报错</p>
@@ -553,7 +544,7 @@ fn main() {
 <p>主要原因是，实现 new 方法时，对泛型的约束要求要满足 W: Write，而 new 的声明返回值是 Self，也就是说 self.wirter 必须是 W: Write 类型(泛型)，但实际返回值是一个确定的类型 BufWriter<TcpStream>，这不满足要求。</p>
 </div>
 </div>
-<h4 id="解决方案"><a class="header" href="#解决方案">解决方案</a></h4>
+<h3 id="解决方案"><a class="header" href="#解决方案">解决方案</a></h3>
 <div id="admonition-解决方案梳理" class="admonition info">
 <div class="admonition-title">
 <p>解决方案梳理</p>
@@ -650,63 +641,68 @@ fn main() {
 </code></pre></pre>
 </div>
 </details>
-<h3 id="关联类型"><a class="header" href="#关联类型">关联类型</a></h3>
-<h3 id="支持泛型"><a class="header" href="#支持泛型">支持泛型</a></h3>
-<details id="admonition-版本一支持数字相加" class="admonition info">
+<h3 id="补充使用使用关联类型添加resultt-e"><a class="header" href="#补充使用使用关联类型添加resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></h3>
+<details id="admonition-关联类型自定义error" class="admonition info">
 <summary class="admonition-title">
-<p>版本一：支持数字相加</p>
-<p><a class="admonition-anchor-link" href="#admonition-版本一支持数字相加"></a></p>
+<p>关联类型自定义Error</p>
+<p><a class="admonition-anchor-link" href="#admonition-关联类型自定义error"></a></p>
 </summary>
 <div>
-<pre><pre class="playground"><code class="language-rust  editable">use std::ops::Add;
+<pre><pre class="playground"><code class="language-rust  editable">use std::str::FromStr;
 
-#[derive(Debug)]
-struct Complex {
-    real: f64,
-    imagine: f64,
+use regex::Regex;
+pub trait Parse {
+    type Error;
+    fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
+    where
+        Self: Sized;
 }
 
-impl Complex {
-    pub fn new(real: f64, imagine: f64) -&gt; Self {
-        Self { real, imagine }
+impl&lt;T&gt; Parse for T
+where
+    T: FromStr + Default,
+{
+    // 定义关联类型 Error 为 String
+    type Error = String;
+    fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt; {
+        let re: Regex = Regex::new(r&quot;^[0-9]+(\.[0-9]+)?&quot;).unwrap();
+        if let Some(captures) = re.captures(s) {
+            // 当出错时我们返回 Err(String)
+            captures
+                .get(0)
+                .map_or(Err(&quot;failed to capture&quot;.to_string()), |s| {
+                    s.as_str()
+                        .parse()
+                        .map_err(|_err| &quot;failed to parse captured string&quot;.to_string())
+                })
+        } else {
+            Err(&quot;failed to parse string&quot;.to_string())
+        }
     }
 }
 
-// 对 Complex 类型的实现
-impl Add for Complex {
-    type Output = Self;
-
-    // 注意 add 第一个参数是 self，会移动所有权
-    fn add(self, rhs: Self) -&gt; Self::Output {
-        let real = self.real + rhs.real;
-        let imagine = self.imagine + rhs.imagine;
-        Self::new(real, imagine)
-    }
+#[test]
+fn parse_should_work() {
+    assert_eq!(u32::parse(&quot;123abcd&quot;), Ok(123));
+    assert_eq!(
+        u32::parse(&quot;123.45abcd&quot;),
+        Err(&quot;failed to parse captured string&quot;.into())
+    );
+    assert_eq!(f64::parse(&quot;123.45abcd&quot;), Ok(123.45));
+    assert!(f64::parse(&quot;abcd&quot;).is_err());
 }
-
 
 fn main() {
-    let c1 = Complex::new(1.0, 1f64);
-    let c2 = Complex::new(2 as f64, 3.0);
-    println!(&quot;{:?}&quot;, c1 + c2);
-    // c1, c2 已经被移动，所以下面这句无法编译
-    // println!(&quot;{:?}&quot;, c1 + c2);
+    println!(&quot;result: {:?}&quot;, u8::parse(&quot;255 hello world&quot;));
 }
 </code></pre></pre>
-</div>
-</details>
-<h3 id="支持继承"><a class="header" href="#支持继承">支持继承</a></h3>
-<details id="admonition-trait-ba" class="admonition info">
-<summary class="admonition-title">
-<p>trait B:A</p>
-<p><a class="admonition-anchor-link" href="#admonition-trait-ba"></a></p>
-</summary>
-<div>
-<p>在 Rust 中，一个 trait 可以“继承”另一个 trait 的关联类型和关联函数。比如 trait B: A ，是说任何类型 T，如果实现了 trait B，它也必须实现 trait A，换句话说，trait B 在定义时可以使用 trait A 中的关联类型和方法。</p>
-<pre><pre class="playground"><code class="language-rust  editable">impl&lt;T: ?Sized&gt; StreamExt for T where T: Stream {}
-</code></pre></pre>
 <hr />
-<p>如果你实现了 Stream trait，就可以直接使用 StreamExt 里的方法了</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>type Error = String;
+fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
+<span class="boring">}
+</span></code></pre></pre>
 </div>
 </details>
 <h3 id="接口抽象-or-特设多态"><a class="header" href="#接口抽象-or-特设多态">接口抽象 or 特设多态</a></h3>
