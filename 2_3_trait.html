@@ -188,11 +188,11 @@
 <li><a href="#%E5%9F%BA%E6%9C%AC%E7%BB%83%E4%B9%A0">基本练习</a>
 <ul>
 <li><a href="#self%E5%92%8Cself">Self和self</a></li>
-<li><a href="#%E9%80%92%E8%BF%9B%E7%BB%83%E4%B9%A0trait%E4%BD%BF%E7%94%A8">递进练习trait使用</a>
+<li><a href="#%E9%80%92%E8%BF%9B%E7%BB%83%E4%B9%A0trait%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">递进练习trait三种使用场景</a>
 <ul>
-<li><a href="#%E5%9F%BA%E7%A1%80%E5%AE%9A%E4%B9%89trait">基础定义trait</a></li>
-<li><a href="#%E6%B7%BB%E5%8A%A0%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0%E4%BD%9C%E4%B8%BA%E6%B3%9B%E5%9E%8B%E7%BA%A6%E6%9D%9F">添加泛型参数作为泛型约束</a></li>
-<li><a href="#%E4%BD%BF%E7%94%A8%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B%E6%B7%BB%E5%8A%A0resultt-e">使用关联类型+添加Result&lt;T, E&gt;</a></li>
+<li><a href="#%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E5%85%B7%E4%BD%93%E7%B1%BB%E5%9E%8B%E5%AE%9E%E7%8E%B0">基础使用：具体类型实现</a></li>
+<li><a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8%E6%B3%9B%E5%9E%8B%E5%AE%9E%E7%8E%B0trait%E7%BA%A6%E6%9D%9F">进阶使用：泛型实现+trait约束</a></li>
+<li><a href="#%E8%A1%A5%E5%85%85%E4%BD%BF%E7%94%A8%E4%BD%BF%E7%94%A8%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B%E6%B7%BB%E5%8A%A0resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></li>
 </ul>
 </li>
 <li><a href="#%E6%B3%9B%E5%9E%8B%E7%BA%A6%E6%9D%9F-%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B%E7%9A%84trait">泛型约束: 支持泛型的trait</a>
@@ -262,7 +262,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Oct 13 04:50:56 UTC 2022 -->
+<!-- Added by: runner, at: Fri Oct 14 07:30:15 UTC 2022 -->
 <!--te-->
 <div id="admonition-trait概览图" class="admonition info">
 <div class="admonition-title">
@@ -348,8 +348,8 @@ fn main() {
 </ol>
 </div>
 </details>
-<h3 id="递进练习trait使用"><a class="header" href="#递进练习trait使用">递进练习trait使用</a></h3>
-<h4 id="基础定义trait"><a class="header" href="#基础定义trait">基础定义trait</a></h4>
+<h3 id="递进练习trait三种使用场景"><a class="header" href="#递进练习trait三种使用场景">递进练习trait三种使用场景</a></h3>
+<h4 id="基础使用具体类型实现"><a class="header" href="#基础使用具体类型实现">基础使用：具体类型实现</a></h4>
 <details id="admonition-定义parse-trait并实现使用" class="admonition info">
 <summary class="admonition-title">
 <p>定义Parse trait并实现使用</p>
@@ -385,9 +385,14 @@ fn main() {
     println!(&quot;result: {}&quot;, u8::parse(&quot;255 hello world&quot;));
 }
 </code></pre></pre>
+<hr />
+<ol>
+<li>这里的Parse Trait里面的parse方法没有传入self/Self参数，所以调用的时候使用::而不是.</li>
+<li>这种基础用法中，被实现的是具体类型</li>
+</ol>
 </div>
 </details>
-<h4 id="添加泛型参数作为泛型约束"><a class="header" href="#添加泛型参数作为泛型约束">添加泛型参数作为泛型约束</a></h4>
+<h4 id="进阶使用泛型实现trait约束"><a class="header" href="#进阶使用泛型实现trait约束">进阶使用：泛型实现+trait约束</a></h4>
 <details id="admonition-impl-parse-for-t" class="admonition info">
 <summary class="admonition-title">
 <p>impl<T> Parse for T</p>
@@ -430,9 +435,16 @@ fn main() {
     println!(&quot;result: {}&quot;, u8::parse(&quot;255 hello world&quot;));
 }
 </code></pre></pre>
+<ol>
+<li>对比上一个例子，这里被实现的是泛型，对于上一种用法进一步抽象</li>
+<li>这样就把被实现类型从一个具体类型，扩展为一类实现了具体trait的类型，不需要重复去实现trait</li>
+</ol>
+<blockquote>
+<p>这个抽象点多体会一下：从抓类型到抓实现特定trait的泛型</p>
+</blockquote>
 </div>
 </details>
-<h4 id="使用关联类型添加resultt-e"><a class="header" href="#使用关联类型添加resultt-e">使用关联类型+添加Result&lt;T, E&gt;</a></h4>
+<h4 id="补充使用使用关联类型添加resultt-e"><a class="header" href="#补充使用使用关联类型添加resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></h4>
 <details id="admonition-关联类型自定义error" class="admonition info">
 <summary class="admonition-title">
 <p>关联类型自定义Error</p>
@@ -487,6 +499,13 @@ fn main() {
     println!(&quot;result: {:?}&quot;, u8::parse(&quot;255 hello world&quot;));
 }
 </code></pre></pre>
+<hr />
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>type Error = String;
+fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
+<span class="boring">}
+</span></code></pre></pre>
 </div>
 </details>
 <h3 id="泛型约束-支持泛型的trait"><a class="header" href="#泛型约束-支持泛型的trait">泛型约束: 支持泛型的trait</a></h3>
