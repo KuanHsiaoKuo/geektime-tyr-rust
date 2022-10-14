@@ -3,7 +3,7 @@
 <head>
     <!-- Book generated using mdBook -->
     <meta charset="UTF-8">
-    <title>I. 从栈堆、所有权、生命周期开始内存管理 - Anatomy In First Rust Programming Class 🦀</title>
+    <title>trait概览 - Anatomy In First Rust Programming Class 🦀</title>
 
 
     <!-- Custom HTML head -->
@@ -95,7 +95,7 @@
 
 <nav id="sidebar" class="sidebar" aria-label="Table of contents">
     <div class="sidebar-scrollbox">
-        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html" class="active"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item expanded "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2_3_0_trait_overview.html" class="active"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
     </div>
     <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
 </nav>
@@ -180,15 +180,66 @@
                 <div class="sidetoc">
                     <nav class="pagetoc"></nav>
                 </div>
-                <h1 id="i-从栈堆所有权生命周期开始内存管理"><a class="header" href="#i-从栈堆所有权生命周期开始内存管理">I. 从栈堆、所有权、生命周期开始内存管理</a></h1>
+                <h1 id="trait概览"><a class="header" href="#trait概览">Trait概览</a></h1>
 <!--ts-->
 <ul>
-<li><a href="#i-%E4%BB%8E%E6%A0%88%E5%A0%86%E6%89%80%E6%9C%89%E6%9D%83%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%BC%80%E5%A7%8B%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">I. 从栈堆、所有权、生命周期开始内存管理</a></li>
+<li><a href="#trait%E6%A6%82%E8%A7%88">Trait概览</a>
+<ul>
+<li><a href="#%E6%8E%A5%E5%8F%A3%E6%8A%BD%E8%B1%A1-or-%E7%89%B9%E8%AE%BE%E5%A4%9A%E6%80%81">接口抽象 or 特设多态</a></li>
+<li><a href="#%E5%AD%A4%E5%84%BF%E8%A7%84%E5%88%99">孤儿规则</a></li>
+</ul>
+</li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Fri Oct 14 08:27:17 UTC 2022 -->
 <!--te-->
-
+<div id="admonition-trait概览图" class="admonition info">
+<div class="admonition-title">
+<p>trait概览图</p>
+<p><a class="admonition-anchor-link" href="#admonition-trait概览图"></a></p>
+</div>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F.jpg" alt="trait概览图" /></p>
+</div>
+</div>
+<h2 id="接口抽象-or-特设多态"><a class="header" href="#接口抽象-or-特设多态">接口抽象 or 特设多态</a></h2>
+<details id="admonition-接口抽象对不同类型统一实现--trait将各种接口定义场景考虑进去" class="admonition info">
+<summary class="admonition-title">
+<p>接口抽象：对不同类型统一实现 + trait将各种接口定义场景考虑进去</p>
+<p><a class="admonition-anchor-link" href="#admonition-接口抽象对不同类型统一实现--trait将各种接口定义场景考虑进去"></a></p>
+</summary>
+<div>
+<p>trait 作为对不同数据结构中相同行为的一种抽象。</p>
+<ol>
+<li>延迟实现:
+除了基本 trait 之外，当行为和具体的数据关联时，比如字符串解析时定义的 Parse trait，我们引入了带有关联类型的 trait，把和行为有关的数据类型的定义，进一步延迟到 trait 实现的时候。</li>
+<li>对于同一个类型的同一个 trait 行为，可以有不同的实现，比如我们之前大量使用的 From，此时可以用泛型 trait。可以说 Rust 的 trait 就像一把瑞士军刀，把需要定义接口的各种场景都考虑进去了。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-对不同类型的不同实现-特设多态" class="admonition info">
+<summary class="admonition-title">
+<p>对不同类型的不同实现: 特设多态</p>
+<p><a class="admonition-anchor-link" href="#admonition-对不同类型的不同实现-特设多态"></a></p>
+</summary>
+<div>
+<p>特设多态是同一种行为的不同实现。所以其实，通过定义 trait 以及为不同的类型实现这个 trait，我们就已经实现了特设多态。</p>
+<ol>
+<li>Add trait 就是一个典型的特设多态，同样是加法操作，根据操作数据的不同进行不同的处理。</li>
+<li>Service trait 是一个不那么明显的特设多态，同样是 Web 请求，对于不同的 URL，我们使用不同的代码去处理。</li>
+</ol>
+</div>
+</details>
+<h2 id="孤儿规则"><a class="header" href="#孤儿规则">孤儿规则</a></h2>
+<details id="admonition-定义或实现至少有一个" class="admonition info">
+<summary class="admonition-title">
+<p>定义或实现，至少有一个</p>
+<p><a class="admonition-anchor-link" href="#admonition-定义或实现至少有一个"></a></p>
+</summary>
+<div>
+<p>trait 和实现 trait 的数据类型，至少有一个是在当前 crate 中定义的，也就是说，你不能为第三方的类型实现第三方的 trait，当你尝试这么做时，Rust 编译器会报错。</p>
+</div>
+</details>
             </main>
 
             <!--            <script src="https://utteranc.es/client.js"-->
@@ -200,12 +251,12 @@
 
             <nav class="nav-wrapper" aria-label="Page navigation">
                 <!-- Mobile navigation buttons -->
-                    <a rel="prev" href="rust_cores.html" class="mobile-nav-chapters previous"
+                    <a rel="prev" href="2_3_trait.html" class="mobile-nav-chapters previous"
                        title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next" href="1_1_stack_heap.html" class="mobile-nav-chapters next"
+                    <a rel="next" href="2_3_1_trait_impl.html" class="mobile-nav-chapters next"
                        title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
@@ -216,12 +267,12 @@
     </div>
 
     <nav class="nav-wide-wrapper" aria-label="Page navigation">
-            <a rel="prev" href="rust_cores.html" class="nav-chapters previous" title="Previous chapter"
+            <a rel="prev" href="2_3_trait.html" class="nav-chapters previous" title="Previous chapter"
                aria-label="Previous chapter" aria-keyshortcuts="Left">
                 <i class="fa fa-angle-left"></i>
             </a>
 
-            <a rel="next" href="1_1_stack_heap.html" class="nav-chapters next" title="Next chapter"
+            <a rel="next" href="2_3_1_trait_impl.html" class="nav-chapters next" title="Next chapter"
                aria-label="Next chapter" aria-keyshortcuts="Right">
                 <i class="fa fa-angle-right"></i>
             </a>

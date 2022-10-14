@@ -1,0 +1,440 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>Trait Object - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item expanded "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item expanded "><a href="2_3_2_trait_object.html" class="active"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="trait-object"><a class="header" href="#trait-object">Trait Object</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#trait-object">Trait Object</a>
+<ul>
+<li><a href="#%E5%AD%90%E7%B1%BB%E5%9E%8B%E5%A4%9A%E6%80%81-%E5%8A%A8%E6%80%81%E5%88%86%E6%B4%BE">子类型多态: 动态分派</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E6%9C%BA%E7%90%86ptrvtable">实现机理：ptr+vtable</a></li>
+<li><a href="#%E5%AF%B9%E8%B1%A1%E5%AE%89%E5%85%A8">对象安全</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">使用场景</a>
+<ul>
+<li><a href="#%E5%9C%A8%E5%87%BD%E6%95%B0%E4%B8%AD%E4%BD%BF%E7%94%A8">在函数中使用</a></li>
+<li><a href="#%E5%9C%A8%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC%E4%B8%AD%E4%BD%BF%E7%94%A8">在函数返回值中使用</a></li>
+<li><a href="#%E5%9C%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%AD%E4%BD%BF%E7%94%A8">在数据结构中使用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Fri Oct 14 08:27:17 UTC 2022 -->
+<!--te-->
+<h2 id="子类型多态-动态分派"><a class="header" href="#子类型多态-动态分派">子类型多态: 动态分派</a></h2>
+<details id="admonition-在运行期决定" class="admonition info">
+<summary class="admonition-title">
+<p>在运行期决定</p>
+<p><a class="admonition-anchor-link" href="#admonition-在运行期决定"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">pub trait Formatter {
+    fn format(&amp;self, input: &amp;mut String) -&gt; bool;
+}
+
+struct MarkdownFormatter;
+impl Formatter for MarkdownFormatter {
+    fn format(&amp;self, input: &amp;mut String) -&gt; bool {
+        input.push_str(&quot;\nformatted with Markdown formatter&quot;);
+        true
+    }
+}
+
+struct RustFormatter;
+impl Formatter for RustFormatter {
+    fn format(&amp;self, input: &amp;mut String) -&gt; bool {
+        input.push_str(&quot;\nformatted with Rust formatter&quot;);
+        true
+    }
+}
+
+struct HtmlFormatter;
+impl Formatter for HtmlFormatter {
+    fn format(&amp;self, input: &amp;mut String) -&gt; bool {
+        input.push_str(&quot;\nformatted with HTML formatter&quot;);
+        true
+    }
+}
+
+pub fn format(input: &amp;mut String, formatters: Vec&lt;&amp;dyn Formatter&gt;) {
+    for formatter in formatters {
+        formatter.format(input);
+    }
+}
+
+fn main() {
+    let mut text = &quot;Hello world!&quot;.to_string();
+    let html: &amp;dyn Formatter = &amp;HtmlFormatter;
+    let rust: &amp;dyn Formatter = &amp;RustFormatter;
+    let formatters = vec![html, rust];
+    format(&amp;mut text, formatters);
+
+    println!(&quot;text: {}&quot;, text);
+}
+</code></pre></pre>
+<hr />
+<p>要有一种手段，告诉编译器，此处需要并且仅需要任何实现了 Formatter 接口的数据类型。在 Rust 里，这种类型叫 Trait Object，表现为 &amp;dyn Trait 或者 Box。</p>
+<ol>
+<li>这里结构体只是声明了一下，并不关注其包含什么字段</li>
+</ol>
+</div>
+</details>
+<h2 id="实现机理ptrvtable"><a class="header" href="#实现机理ptrvtable">实现机理：ptr+vtable</a></h2>
+<details id="admonition-trait-object的底层逻辑就是胖指针" class="admonition info">
+<summary class="admonition-title">
+<p>Trait Object的底层逻辑就是胖指针</p>
+<p><a class="admonition-anchor-link" href="#admonition-trait-object的底层逻辑就是胖指针"></a></p>
+</summary>
+<div>
+<h2 id=""><a class="header" href="#"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F-4258625.jpg" alt="13｜类型系统：如何使用trait来定义接口？" /></a></h2>
+<p>HtmlFormatter 的引用赋值给 Formatter 后，会生成一个 Trait Object，在上图中可以看到，Trait Object 的底层逻辑就是胖指针。</p>
+<blockquote>
+<p>其中，一个指针指向数据本身，另一个则指向虚函数表（vtable）。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-vtable是一张静态表" class="admonition info">
+<summary class="admonition-title">
+<p>vtable是一张静态表</p>
+<p><a class="admonition-anchor-link" href="#admonition-vtable是一张静态表"></a></p>
+</summary>
+<div>
+<h2 id="-1"><a class="header" href="#-1"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/13%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8trait%E6%9D%A5%E5%AE%9A%E4%B9%89%E6%8E%A5%E5%8F%A3%EF%BC%9F-4258661.jpg" alt="13｜类型系统：如何使用trait来定义接口？" /></a></h2>
+<ol>
+<li>vtable 是一张静态的表，Rust 在编译时会为使用了 trait object 的类型的 trait 实现生成一张表，放在可执行文件中（一般在 TEXT 或 RODATA 段）</li>
+</ol>
+<blockquote>
+<p>在这张表里，包含具体类型的一些信息，如 size、aligment 以及一系列函数指针
+这个接口支持的所有的方法，比如 format() ；具体类型的 drop trait，当 Trait object 被释放，它用来释放其使用的所有资源。这样，当在运行时执行 formatter.format() 时，formatter 就可以从 vtable 里找到对应的函数指针，执行具体的操作。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-vtable会为每个类型的每个trait实现一张表" class="admonition info">
+<summary class="admonition-title">
+<p>vtable会为每个类型的每个trait实现一张表</p>
+<p><a class="admonition-anchor-link" href="#admonition-vtable会为每个类型的每个trait实现一张表"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::fmt::{Debug, Display};
+use std::mem::transmute;
+
+fn main() {
+    let s = String::from(&quot;hello world!&quot;);
+    let s1 = String::from(&quot;goodbye world!&quot;);
+    // Display / Debug trait object for s
+    let w1: &amp;dyn Display = &amp;s;
+    let w2: &amp;dyn Debug = &amp;s;
+
+    // Display / Debug trait object for s1
+    let w3: &amp;dyn Display = &amp;s1;
+    let w4: &amp;dyn Debug = &amp;s1;
+
+    // 强行把 triat object 转换成两个地址 (usize, usize)
+    // 这是不安全的，所以是 unsafe
+    let (addr1, vtable1): (usize, usize) = unsafe { transmute(w1) };
+    let (addr2, vtable2): (usize, usize) = unsafe { transmute(w2) };
+    let (addr3, vtable3): (usize, usize) = unsafe { transmute(w3) };
+    let (addr4, vtable4): (usize, usize) = unsafe { transmute(w4) };
+
+    // s 和 s1 在栈上的地址，以及 main 在 TEXT 段的地址
+    println!(
+        &quot;s: {:p}, s1: {:p}, main(): {:p}&quot;,
+        &amp;s, &amp;s1, main as *const ()
+    );
+    // trait object(s / Display) 的 ptr 地址和 vtable 地址
+    println!(&quot;addr1: 0x{:x}, vtable1: 0x{:x}&quot;, addr1, vtable1);
+    // trait object(s / Debug) 的 ptr 地址和 vtable 地址
+    println!(&quot;addr2: 0x{:x}, vtable2: 0x{:x}&quot;, addr2, vtable2);
+
+    // trait object(s1 / Display) 的 ptr 地址和 vtable 地址
+    println!(&quot;addr3: 0x{:x}, vtable3: 0x{:x}&quot;, addr3, vtable3);
+
+    // trait object(s1 / Display) 的 ptr 地址和 vtable 地址
+    println!(&quot;addr4: 0x{:x}, vtable4: 0x{:x}&quot;, addr4, vtable4);
+
+    // 指向同一个数据的 trait object 其 ptr 地址相同
+    assert_eq!(addr1, addr2);
+    assert_eq!(addr3, addr4);
+
+    // 指向同一种类型的同一个 trait 的 vtable 地址相同
+    // 这里都是 String + Display
+    assert_eq!(vtable1, vtable3);
+    // 这里都是 String + Debug
+    assert_eq!(vtable2, vtable4);
+}
+</code></pre></pre>
+</div>
+</details>
+<h2 id="对象安全"><a class="header" href="#对象安全">对象安全</a></h2>
+<details id="admonition-那什么样的-trait-不是对象安全的呢" class="admonition info">
+<summary class="admonition-title">
+<p>那什么样的 trait 不是对象安全的呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-那什么样的-trait-不是对象安全的呢"></a></p>
+</summary>
+<div>
+<ol>
+<li>如果 trait 所有的方法，返回值是 Self 或者携带泛型参数，那么这个 trait 就不能产生 trait object。</li>
+<li>不允许返回 Self，是因为 trait object 在产生时，原来的类型会被抹去，所以 Self 究竟是谁不知道。</li>
+<li>比如 Clone trait 只有一个方法 clone()，返回 Self，所以它就不能产生 trait object。</li>
+<li>不允许携带泛型参数，是因为 Rust 里带泛型的类型在编译时会做单态化，而 trait object 是运行时的产物，两者不能兼容。</li>
+<li>比如 Fromtrait，因为整个 trait 带了泛型，每个方法也自然包含泛型，就不能产生 trait object。如果一个 trait 只有部分方法返回 Self 或者使用了泛型参数，那么这部分方法在 trait object 中不能调用。</li>
+</ol>
+</div>
+</details>
+<h2 id="使用场景"><a class="header" href="#使用场景">使用场景</a></h2>
+<h3 id="在函数中使用"><a class="header" href="#在函数中使用">在函数中使用</a></h3>
+<h3 id="在函数返回值中使用"><a class="header" href="#在函数返回值中使用">在函数返回值中使用</a></h3>
+<h3 id="在数据结构中使用"><a class="header" href="#在数据结构中使用">在数据结构中使用</a></h3>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="2_3_1_trait_impl.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="2_3_3_trait_frequently.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="2_3_1_trait_impl.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="2_3_3_trait_frequently.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

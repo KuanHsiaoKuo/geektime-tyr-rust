@@ -1,0 +1,726 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>Trait Impl - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item expanded "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item expanded "><a href="2_3_1_trait_impl.html" class="active"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="trait-impl"><a class="header" href="#trait-impl">Trait Impl</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#trait-impl">Trait Impl</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E7%BB%83%E4%B9%A0">基本练习</a>
+<ul>
+<li><a href="#%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B">支持泛型</a></li>
+<li><a href="#%E6%94%AF%E6%8C%81%E7%BB%A7%E6%89%BF">支持继承</a></li>
+<li><a href="#self%E5%92%8Cself">Self和self</a></li>
+</ul>
+</li>
+<li><a href="#%E9%80%92%E8%BF%9B%E7%BB%83%E4%B9%A0trait%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">递进练习trait使用场景</a>
+<ul>
+<li><a href="#%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E5%85%B7%E4%BD%93%E7%B1%BB%E5%9E%8B%E5%AE%9E%E7%8E%B0">基础使用：具体类型实现</a></li>
+<li><a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8">进阶使用</a>
+<ul>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%AE%9E%E7%8E%B0trait%E7%BA%A6%E6%9D%9F">泛型实现+trait约束</a></li>
+<li><a href="#trait%E5%B8%A6%E6%9C%89%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0trait%E7%BA%A6%E6%9D%9F">trait带有泛型参数+trait约束</a></li>
+</ul>
+</li>
+<li><a href="#%E8%A1%A5%E5%85%85%E4%BD%BF%E7%94%A8%E4%BD%BF%E7%94%A8%E5%85%B3%E8%81%94%E7%B1%BB%E5%9E%8B%E6%B7%BB%E5%8A%A0resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Fri Oct 14 08:27:17 UTC 2022 -->
+<!--te-->
+<h2 id="基本练习"><a class="header" href="#基本练习">基本练习</a></h2>
+<h3 id="支持泛型"><a class="header" href="#支持泛型">支持泛型</a></h3>
+<details id="admonition-版本一支持数字相加" class="admonition info">
+<summary class="admonition-title">
+<p>版本一：支持数字相加</p>
+<p><a class="admonition-anchor-link" href="#admonition-版本一支持数字相加"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::ops::Add;
+
+#[derive(Debug)]
+struct Complex {
+    real: f64,
+    imagine: f64,
+}
+
+impl Complex {
+    pub fn new(real: f64, imagine: f64) -&gt; Self {
+        Self { real, imagine }
+    }
+}
+
+// 对 Complex 类型的实现
+impl Add for Complex {
+    type Output = Self;
+
+    // 注意 add 第一个参数是 self，会移动所有权
+    fn add(self, rhs: Self) -&gt; Self::Output {
+        let real = self.real + rhs.real;
+        let imagine = self.imagine + rhs.imagine;
+        Self::new(real, imagine)
+    }
+}
+
+
+fn main() {
+    let c1 = Complex::new(1.0, 1f64);
+    let c2 = Complex::new(2 as f64, 3.0);
+    println!(&quot;{:?}&quot;, c1 + c2);
+    // c1, c2 已经被移动，所以下面这句无法编译
+    // println!(&quot;{:?}&quot;, c1 + c2);
+}
+</code></pre></pre>
+</div>
+</details>
+<h3 id="支持继承"><a class="header" href="#支持继承">支持继承</a></h3>
+<details id="admonition-trait-ba" class="admonition info">
+<summary class="admonition-title">
+<p>trait B:A</p>
+<p><a class="admonition-anchor-link" href="#admonition-trait-ba"></a></p>
+</summary>
+<div>
+<p>在 Rust 中，一个 trait 可以“继承”另一个 trait 的关联类型和关联函数。比如 trait B: A ，是说任何类型 T，如果实现了 trait B，它也必须实现 trait A，换句话说，trait B 在定义时可以使用 trait A 中的关联类型和方法。</p>
+<pre><pre class="playground"><code class="language-rust  editable">impl&lt;T: ?Sized&gt; StreamExt for T where T: Stream {}
+</code></pre></pre>
+<hr />
+<p>如果你实现了 Stream trait，就可以直接使用 StreamExt 里的方法了</p>
+</div>
+</details>
+<h3 id="self和self"><a class="header" href="#self和self">Self和self</a></h3>
+<blockquote>
+<p>类比python：Self对应Cls， self两边一样。</p>
+</blockquote>
+<details id="admonition-self和self区别使用-self其实就是类方法" class="admonition info">
+<summary class="admonition-title">
+<p>Self和self区别使用, Self其实就是类方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-self和self区别使用-self其实就是类方法"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::fmt;
+use std::io::Write;
+
+struct BufBuilder {
+    buf: Vec&lt;u8&gt;,
+}
+
+impl BufBuilder {
+    pub fn new() -&gt; Self {
+        Self {
+            buf: Vec::with_capacity(1024),
+        }
+    }
+}
+
+impl fmt::Debug for BufBuilder {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter) -&gt; fmt::Result {
+        write!(f, &quot;{}&quot;, String::from_utf8_lossy(self.buf.as_ref()))
+    }
+}
+
+impl Write for BufBuilder {
+    fn write(&amp;mut self, buf: &amp;[u8]) -&gt; std::io::Result&lt;usize&gt; {
+        self.buf.extend_from_slice(buf);
+        Ok(buf.len())
+    }
+
+    fn flush(&amp;mut self) -&gt; std::io::Result&lt;()&gt; {
+        Ok(())
+    }
+}
+
+fn main() {
+    let mut buf = BufBuilder::new();
+    buf.write_all(b&quot;Hello world!&quot;).unwrap();
+    println!(&quot;{:?}&quot;, buf);
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-顺便区分一下类方法和静态方法" class="admonition info">
+<summary class="admonition-title">
+<p>顺便区分一下类方法和静态方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-顺便区分一下类方法和静态方法"></a></p>
+</summary>
+<div>
+<ol>
+<li>定义时：类方法需要加cls参数，静态方法不需要</li>
+<li>调用时：类方法默认添加cls参数, 静态方法不会传入</li>
+</ol>
+</div>
+</details>
+<details id="admonition-self-self-实例来自于类型" class="admonition info">
+<summary class="admonition-title">
+<p>self: Self, 实例来自于类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-self-self-实例来自于类型"></a></p>
+</summary>
+<div>
+<ol>
+<li>Self 代表当前的类型，比如 File 类型实现了 Write，那么实现过程中使用到的 Self 就指代 File。</li>
+<li>self 在用作方法的第一个参数时，实际上是 self: Self 的简写，所以 &amp;self 是 self: &amp;Self, 而 &amp;mut self 是 self: &amp;mut Self。</li>
+</ol>
+</div>
+</details>
+<h2 id="递进练习trait使用场景"><a class="header" href="#递进练习trait使用场景">递进练习trait使用场景</a></h2>
+<h3 id="基础使用具体类型实现"><a class="header" href="#基础使用具体类型实现">基础使用：具体类型实现</a></h3>
+<details id="admonition-定义parse-trait并实现使用" class="admonition info">
+<summary class="admonition-title">
+<p>定义Parse trait并实现使用</p>
+<p><a class="admonition-anchor-link" href="#admonition-定义parse-trait并实现使用"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use regex::Regex;
+pub trait Parse {
+    fn parse(s: &amp;str) -&gt; Self;
+}
+
+impl Parse for u8 {
+    fn parse(s: &amp;str) -&gt; Self {
+        let re: Regex = Regex::new(r&quot;^[0-9]+&quot;).unwrap();
+        if let Some(captures) = re.captures(s) {
+            captures
+                .get(0)
+                .map_or(0, |s| s.as_str().parse().unwrap_or(0))
+        } else {
+            0
+        }
+    }
+}
+
+#[test]
+fn parse_should_work() {
+    assert_eq!(u8::parse(&quot;123abcd&quot;), 123);
+    assert_eq!(u8::parse(&quot;1234abcd&quot;), 0);
+    assert_eq!(u8::parse(&quot;abcd&quot;), 0);
+}
+
+fn main() {
+    println!(&quot;result: {}&quot;, u8::parse(&quot;255 hello world&quot;));
+}
+</code></pre></pre>
+<hr />
+<ol>
+<li>这里的Parse Trait里面的parse方法没有传入self/Self参数，所以调用的时候使用::而不是.</li>
+<li>这种基础用法中，被实现的是具体类型</li>
+</ol>
+</div>
+</details>
+<h3 id="进阶使用"><a class="header" href="#进阶使用">进阶使用</a></h3>
+<ol>
+<li>这也是分离定义与实现的用处</li>
+<li>下方的<a href="#%E5%B8%B8%E7%94%A8trait">常用trait</a>实现也是基于进阶使用整理出来提供的工具。</li>
+</ol>
+<h4 id="泛型实现trait约束"><a class="header" href="#泛型实现trait约束">泛型实现+trait约束</a></h4>
+<details id="admonition-impl-parse-for-t" class="admonition info">
+<summary class="admonition-title">
+<p>impl<T> Parse for T</p>
+<p><a class="admonition-anchor-link" href="#admonition-impl-parse-for-t"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::str::FromStr;
+
+use regex::Regex;
+pub trait Parse {
+    fn parse(s: &amp;str) -&gt; Self;
+}
+
+impl&lt;T&gt; Parse for T
+where
+    T: FromStr + Default,
+{
+    fn parse(s: &amp;str) -&gt; Self {
+        let re: Regex = Regex::new(r&quot;^[0-9]+(\.[0-9]+)?&quot;).unwrap();
+        let d = || Default::default();
+        if let Some(captures) = re.captures(s) {
+            captures
+                .get(0)
+                .map_or(d(), |s| s.as_str().parse().unwrap_or_else(|_| d()))
+        } else {
+            d()
+        }
+    }
+}
+
+#[test]
+fn parse_should_work() {
+    assert_eq!(u32::parse(&quot;123abcd&quot;), 123);
+    assert_eq!(u32::parse(&quot;123.45abcd&quot;), 0);
+    assert_eq!(f64::parse(&quot;123.45abcd&quot;).to_string(), &quot;123.45&quot;);
+    assert_eq!(f64::parse(&quot;abcd&quot;).to_string(), &quot;0&quot;);
+}
+
+fn main() {
+    println!(&quot;result: {}&quot;, u8::parse(&quot;255 hello world&quot;));
+}
+</code></pre></pre>
+<ol>
+<li>对比上一个例子，这里被实现的是泛型，对于上一种用法进一步抽象</li>
+<li>这样就把被实现类型从一个具体类型，扩展为一类实现了具体trait的类型，不需要重复去实现trait</li>
+</ol>
+<blockquote>
+<p>这个抽象点多体会一下：从抓类型到抓实现特定trait的泛型</p>
+</blockquote>
+</div>
+</details>
+<h4 id="trait带有泛型参数trait约束"><a class="header" href="#trait带有泛型参数trait约束">trait带有泛型参数+trait约束</a></h4>
+<blockquote>
+<p>使用一个思考题来加深印象</p>
+</blockquote>
+<details id="admonition-泛型参数impl报错" class="admonition info">
+<summary class="admonition-title">
+<p>泛型参数impl报错</p>
+<p><a class="admonition-anchor-link" href="#admonition-泛型参数impl报错"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::io::{BufWriter, Write};
+use std::net::TcpStream;
+
+#[derive(Debug)]
+struct MyWriter&lt;W&gt; {
+    writer: W,
+}
+
+impl&lt;W: Write&gt; MyWriter&lt;W&gt; {
+    pub fn new(addr: &amp;str) -&gt; Self {
+        let stream = TcpStream::connect(&quot;127.0.0.1:8080&quot;).unwrap();
+        Self {
+            writer: BufWriter::new(stream),
+        }
+    }
+
+    pub fn write(&amp;mut self, buf: &amp;str) -&gt; std::io::Result&lt;()&gt; {
+        self.writer.write_all(buf.as_bytes())
+    }
+}
+
+fn main() {
+    let writer = MyWriter::new(&quot;127.0.0.1:8080&quot;);
+    writer.write(&quot;hello world!&quot;);
+}
+</code></pre></pre>
+</div>
+</details>
+<div id="admonition-分析编译报错原因" class="admonition tip">
+<div class="admonition-title">
+<p>分析编译报错原因</p>
+<p><a class="admonition-anchor-link" href="#admonition-分析编译报错原因"></a></p>
+</div>
+<div>
+<p>主要原因是，实现 new 方法时，对泛型的约束要求要满足 W: Write，而 new 的声明返回值是 Self，也就是说 self.wirter 必须是 W: Write 类型(泛型)，但实际返回值是一个确定的类型 BufWriter<TcpStream>，这不满足要求。</p>
+</div>
+</div>
+<div id="admonition-解决方案梳理" class="admonition info">
+<div class="admonition-title">
+<p>解决方案梳理</p>
+<p><a class="admonition-anchor-link" href="#admonition-解决方案梳理"></a></p>
+</div>
+<div>
+<ol>
+<li>修改 new 方法的返回值</li>
+<li>对确定的类型 MyWriter&lt;BufWriter<TcpStream>&gt;实现 new 方法</li>
+<li>修改 new 方法的实现，使用依赖注入</li>
+</ol>
+</div>
+</div>
+<details id="admonition-1-修改new方法返回值" class="admonition info">
+<summary class="admonition-title">
+<ol>
+<li>修改new方法返回值</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-1-修改new方法返回值"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::io::{BufWriter, Write};
+use std::net::TcpStream;
+
+#[derive(Debug)]
+struct MyWriter&lt;W&gt; {
+    writer: W,
+}
+
+impl&lt;W: Write&gt; MyWriter&lt;W&gt; {
+    pub fn new(writer: W) -&gt; Self {
+        Self { writer }
+    }
+
+    pub fn write(&amp;mut self, buf: &amp;str) -&gt; std::io::Result&lt;()&gt; {
+        self.writer.write_all(buf.as_bytes())
+    }
+}
+
+fn main() {
+    let stream = TcpStream::connect(&quot;127.0.0.1:8080&quot;).unwrap();
+
+    let mut writer = MyWriter::new(BufWriter::new(stream));
+    writer.write(&quot;hello world!&quot;).unwrap();
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-2-针对实现new方法" class="admonition info">
+<summary class="admonition-title">
+<ol start="2">
+<li>针对实现new方法</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-2-针对实现new方法"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">impl MyWriter&lt;BufWriter&lt;TcpStream&gt;&gt; {
+    pub fn new(addr: &amp;str) -&gt; Self {
+        let stream = TcpStream::connect(addr).unwrap();
+        Self {
+            writer: BufWriter::new(stream),
+        }
+    }
+}
+
+fn main() {
+    let mut writer = MyWriter::new(&quot;127.0.0.1:8080&quot;);
+    writer.write(&quot;hello world!&quot;);
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-3-使用依赖注入修改new方法实现" class="admonition info">
+<summary class="admonition-title">
+<ol start="3">
+<li>使用依赖注入修改new方法实现</li>
+</ol>
+<p><a class="admonition-anchor-link" href="#admonition-3-使用依赖注入修改new方法实现"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">impl&lt;W: Write&gt; MyWriter&lt;W&gt; {
+    pub fn new(writer: W) -&gt; Self {
+        Self {
+            writer,
+        }
+    }
+}
+
+fn main() {
+    let stream = TcpStream::connect(&quot;127.0.0.1:8080&quot;).unwrap();
+    let mut writer = MyWriter::new(BufWriter::new(stream));
+    writer.write(&quot;hello world!&quot;);
+}
+</code></pre></pre>
+</div>
+</details>
+<h3 id="补充使用使用关联类型添加resultt-e"><a class="header" href="#补充使用使用关联类型添加resultt-e">补充使用：使用关联类型+添加Result&lt;T, E&gt;</a></h3>
+<details id="admonition-关联类型自定义error" class="admonition info">
+<summary class="admonition-title">
+<p>关联类型自定义Error</p>
+<p><a class="admonition-anchor-link" href="#admonition-关联类型自定义error"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::str::FromStr;
+
+use regex::Regex;
+pub trait Parse {
+    type Error;
+    fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
+    where
+        Self: Sized;
+}
+
+impl&lt;T&gt; Parse for T
+where
+    T: FromStr + Default,
+{
+    // 定义关联类型 Error 为 String
+    type Error = String;
+    fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt; {
+        let re: Regex = Regex::new(r&quot;^[0-9]+(\.[0-9]+)?&quot;).unwrap();
+        if let Some(captures) = re.captures(s) {
+            // 当出错时我们返回 Err(String)
+            captures
+                .get(0)
+                .map_or(Err(&quot;failed to capture&quot;.to_string()), |s| {
+                    s.as_str()
+                        .parse()
+                        .map_err(|_err| &quot;failed to parse captured string&quot;.to_string())
+                })
+        } else {
+            Err(&quot;failed to parse string&quot;.to_string())
+        }
+    }
+}
+
+#[test]
+fn parse_should_work() {
+    assert_eq!(u32::parse(&quot;123abcd&quot;), Ok(123));
+    assert_eq!(
+        u32::parse(&quot;123.45abcd&quot;),
+        Err(&quot;failed to parse captured string&quot;.into())
+    );
+    assert_eq!(f64::parse(&quot;123.45abcd&quot;), Ok(123.45));
+    assert!(f64::parse(&quot;abcd&quot;).is_err());
+}
+
+fn main() {
+    println!(&quot;result: {:?}&quot;, u8::parse(&quot;255 hello world&quot;));
+}
+</code></pre></pre>
+<hr />
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>type Error = String;
+fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="2_3_0_trait_overview.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="2_3_2_trait_object.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="2_3_0_trait_overview.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="2_3_2_trait_object.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,1255 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>常用trait - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item expanded "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item expanded "><a href="2_3_3_trait_frequently.html" class="active"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="常用trait"><a class="header" href="#常用trait">常用trait</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E5%B8%B8%E7%94%A8trait">常用trait</a>
+<ul>
+<li><a href="#%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3">内存相关</a>
+<ul>
+<li><a href="#copy">Copy</a></li>
+<li><a href="#drop">Drop</a></li>
+</ul>
+</li>
+<li><a href="#%E6%A0%87%E7%AD%BEtrait">标签trait</a>
+<ul>
+<li><a href="#sized">Sized</a></li>
+<li><a href="#sendsync">Send/Sync</a></li>
+</ul>
+</li>
+<li><a href="#%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2">类型转换</a>
+<ul>
+<li><a href="#frominto-%E5%80%BC%E5%88%B0%E5%80%BC">From/Into: 值到值</a></li>
+<li><a href="#tryfromtryinto-%E5%80%BC%E5%88%B0%E5%80%BC%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E9%94%99%E8%AF%AF">TryFrom/TryInto: 值到值，可能出现错误</a></li>
+<li><a href="#asrefasmut-%E5%BC%95%E7%94%A8%E5%88%B0%E5%BC%95%E7%94%A8">AsRef/AsMut: 引用到引用</a></li>
+</ul>
+</li>
+<li><a href="#%E6%93%8D%E4%BD%9C%E7%AC%A6%E7%9B%B8%E5%85%B3-derefderefmut">操作符相关: Deref/DerefMut</a></li>
+<li><a href="#%E5%85%B6%E4%BB%96debugdisplaydefault">其他：Debug/Display/Default</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Fri Oct 14 08:27:17 UTC 2022 -->
+<!--te-->
+<blockquote>
+<p>基于<a href="#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8">trait进阶使用</a></p>
+</blockquote>
+<div id="admonition-常用trait分类整理" class="admonition info">
+<div class="admonition-title">
+<p>常用trait分类整理</p>
+<p><a class="admonition-anchor-link" href="#admonition-常用trait分类整理"></a></p>
+</div>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/14%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1%E7%9A%84trait%EF%BC%9F.jpg" alt="14｜类型系统：有哪些必须掌握的trait？" /></p>
+</div>
+</div>
+<h2 id="内存相关"><a class="header" href="#内存相关">内存相关</a></h2>
+<details id="admonition-clone使用示例" class="admonition info">
+<summary class="admonition-title">
+<p>Clone使用示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-clone使用示例"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Clone {
+  fn clone(&amp;self) -&gt; Self;
+
+  fn clone_from(&amp;mut self, source: &amp;Self) {
+    *self = source.clone()
+  }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-clone与clone_from" class="admonition info">
+<summary class="admonition-title">
+<p>clone()与clone_from()</p>
+<p><a class="admonition-anchor-link" href="#admonition-clone与clone_from"></a></p>
+</summary>
+<div>
+<p>Clone trait 有两个方法， clone() 和 clone_from() ，后者有缺省实现，所以平时我们只需要实现 clone() 方法即可。你也许会疑惑，这个 clone_from() 有什么作用呢？因为看起来 a.clone_from(&amp;b) ，和 a = b.clone() 是等价的。其实不是，如果 a 已经存在，在 clone 过程中会分配内存，那么用 a.clone_from(&amp;b) 可以避免内存分配，提高效率。b.clone() 是等价的。其实不是，如果 a 已经存在，在 clone 过程中会分配内存，那么用 a.clone_from(&amp;b) 可以避免内存分配，提高效率。</p>
+</div>
+</details>
+<details id="admonition-clone-trait-可以通过派生宏直接实现这样能简化不少代码" class="admonition info">
+<summary class="admonition-title">
+<p>Clone trait 可以通过派生宏直接实现，这样能简化不少代码</p>
+<p><a class="admonition-anchor-link" href="#admonition-clone-trait-可以通过派生宏直接实现这样能简化不少代码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">#[derive(Clone, Debug)]
+struct Developer {
+  name: String,
+  age: u8,
+  lang: Language
+}
+
+#[allow(dead_code)]
+#[derive(Clone, Debug)]
+enum Language {
+  Rust,
+  TypeScript,
+  Elixir,
+  Haskell
+}
+
+fn main() {
+    let dev = Developer {
+        name: &quot;Tyr&quot;.to_string(),
+        age: 18,
+        lang: Language::Rust
+    };
+    let dev1 = dev.clone();
+    println!(&quot;dev: {:?}, addr of dev name: {:p}&quot;, dev, dev.name.as_str());
+    println!(&quot;dev1: {:?}, addr of dev1 name: {:p}&quot;, dev1, dev1.name.as_str())
+}
+</code></pre></pre>
+<hr />
+<p>如果没有为 Language 实现 Clone 的话，Developer 的派生宏 Clone 将会编译出错。运行这段代码可以看到，对于 name，也就是 String 类型的 Clone，其堆上的内存也被 Clone 了一份，所以 Clone 是深度拷贝，栈内存和堆内存一起拷贝。</p>
+</div>
+</details>
+<details id="admonition-clone-方法的接口是-self" class="admonition info">
+<summary class="admonition-title">
+<p>clone 方法的接口是 &amp;self</p>
+<p><a class="admonition-anchor-link" href="#admonition-clone-方法的接口是-self"></a></p>
+</summary>
+<div>
+<p>值得注意的是，clone 方法的接口是 &amp;self，这在绝大多数场合下都是适用的，我们在 clone 一个数据时只需要有已有数据的只读引用。但对 Rc 这样在 clone() 时维护引用计数的数据结构，clone() 过程中会改变自己，所以要用 Cell 这样提供内部可变性的结构来进行改变，如果你也有类似的需求，可以参考</p>
+</div>
+</details>
+<h3 id="copy"><a class="header" href="#copy">Copy</a></h3>
+<details id="admonition-不可变引用实现了-copy而可变引用-mut-t-没有实现-copy" class="admonition info">
+<summary class="admonition-title">
+<p>不可变引用实现了 Copy，而可变引用 &amp;mut T 没有实现 Copy</p>
+<p><a class="admonition-anchor-link" href="#admonition-不可变引用实现了-copy而可变引用-mut-t-没有实现-copy"></a></p>
+</summary>
+<div>
+<p>不可变引用实现了 Copy，而可变引用 &amp;mut T 没有实现 Copy。为什么是这样？因为如果可变引用实现了 Copy trait，那么生成一个可变引用然后把它赋值给另一个变量时，就会违背所有权规则：
+同一个作用域下只能有一个可变引用。可见，Rust 标准库在哪些结构可以 Copy、哪些不可以 Copy 上，有着仔细的考量。</p>
+</div>
+</details>
+<h3 id="drop"><a class="header" href="#drop">Drop</a></h3>
+<details id="admonition-有两种情况你可能需要手工实现-drop" class="admonition info">
+<summary class="admonition-title">
+<p>有两种情况你可能需要手工实现 Drop</p>
+<p><a class="admonition-anchor-link" href="#admonition-有两种情况你可能需要手工实现-drop"></a></p>
+</summary>
+<div>
+<p>大部分场景无需为数据结构提供 Drop trait，系统默认会依次对数据结构的每个域做 drop。但有两种情况你可能需要手工实现 Drop。</p>
+<ol>
+<li>第一种是希望在数据结束生命周期的时候做一些事情，比如记日志。</li>
+<li>第二种是需要对资源回收的场景。编译器并不知道你额外使用了哪些资源，也就无法帮助你 drop 它们。比如说锁资源的释放，</li>
+<li>在 MutexGuard 中实现了 Drop 来释放锁资源：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">impl&lt;T: ?Sized&gt; Drop for MutexGuard&lt;'_, T&gt; {
+    #[inline]
+    fn drop(&amp;mut self) {
+        unsafe {
+            self.lock.poison.done(&amp;self.poison);
+            self.lock.inner.raw_unlock();
+        }
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-copy与drop互斥" class="admonition info">
+<summary class="admonition-title">
+<p>Copy与Drop互斥</p>
+<p><a class="admonition-anchor-link" href="#admonition-copy与drop互斥"></a></p>
+</summary>
+<div>
+<p>需要注意的是，Copy trait 和 Drop trait 是互斥的，两者不能共存，当你尝试为同一种数据类型实现 Copy 时，也实现 Drop，编译器就会报错。</p>
+<blockquote>
+<p>这其实很好理解：</p>
+</blockquote>
+<ul>
+<li>Copy 是按位做浅拷贝，那么它会默认拷贝的数据没有需要释放的资源；</li>
+<li>而 Drop 恰恰是为了释放额外的资源而生的。</li>
+</ul>
+<hr />
+<p>辅助理解，在代码中，强行用 Box::into_raw 获得堆内存的指针，放入 RawBuffer 结构中，这样就接管了这块堆内存的释放。
+虽然 RawBuffer 可以实现 Copy trait，但这样一来就无法实现 Drop trait。
+如果程序非要这么写，会导致内存泄漏，因为该释放的堆内存没有释放。</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::{fmt, slice};
+
+// 注意这里，我们实现了 Copy，这是因为 *mut u8/usize 都支持 Copy
+#[derive(Clone, Copy)]
+struct RawBuffer {
+    // 裸指针用 *const / *mut 来表述，这和引用的 &amp; 不同
+    ptr: *mut u8,
+    len: usize,
+}
+
+impl From&lt;Vec&lt;u8&gt;&gt; for RawBuffer {
+    fn from(vec: Vec&lt;u8&gt;) -&gt; Self {
+        let slice = vec.into_boxed_slice();
+        Self {
+            len: slice.len(),
+            // into_raw 之后，Box 就不管这块内存的释放了，RawBuffer 需要处理释放
+            ptr: Box::into_raw(slice) as *mut u8,
+        }
+    }
+}
+
+// 如果 RawBuffer 实现了 Drop trait，就可以在所有者退出时释放堆内存
+// 然后，Drop trait 会跟 Copy trait 冲突，要么不实现 Copy，要么不实现 Drop
+// 如果不实现 Drop，那么就会导致内存泄漏，但它不会对正确性有任何破坏
+// 比如不会出现 use after free 这样的问题。
+// 你可以试着把下面注释去掉，看看会出什么问题
+// impl Drop for RawBuffer {
+//     #[inline]
+//     fn drop(&amp;mut self) {
+//         let data = unsafe { Box::from_raw(slice::from_raw_parts_mut(self.ptr, self.len)) };
+//         drop(data)
+//     }
+// }
+
+impl fmt::Debug for RawBuffer {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        let data = self.as_ref();
+        write!(f, &quot;{:p}: {:?}&quot;, self.ptr, data)
+    }
+}
+
+impl AsRef&lt;[u8]&gt; for RawBuffer {
+    fn as_ref(&amp;self) -&gt; &amp;[u8] {
+        unsafe { slice::from_raw_parts(self.ptr, self.len) }
+    }
+}
+
+fn main() {
+    let data = vec![1, 2, 3, 4];
+
+    let buf: RawBuffer = data.into();
+
+    // 因为 buf 允许 Copy，所以这里 Copy 了一份
+    use_buffer(buf);
+
+    // buf 还能用
+    println!(&quot;buf: {:?}&quot;, buf);
+}
+
+fn use_buffer(buf: RawBuffer) {
+    println!(&quot;buf to die: {:?}&quot;, buf);
+
+    // 这里不用特意 drop，写出来只是为了说明 Copy 出来的 buf 被 Drop 了
+    drop(buf)
+}
+</code></pre></pre>
+<hr />
+<p>但是这个操作不会破坏 Rust 的正确性保证：即便你 Copy 了 N 份 RawBuffer，由于无法实现 Drop trait，RawBuffer 指向的那同一块堆内存不会释放，所以不会出现 use after free 的内存安全问题</p>
+</div>
+</details>
+<details id="admonition-对于代码安全来说内存泄漏危害大还是-use-after-free-危害大呢" class="admonition info">
+<summary class="admonition-title">
+<p>对于代码安全来说，内存泄漏危害大？还是 use after free 危害大呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-对于代码安全来说内存泄漏危害大还是-use-after-free-危害大呢"></a></p>
+</summary>
+<div>
+<p>对于代码安全来说，内存泄漏危害大？还是 use after free 危害大呢？</p>
+<blockquote>
+<p>肯定是后者。</p>
+</blockquote>
+<ul>
+<li>Rust 的底线是内存安全，所以两害相权取其轻。</li>
+<li>实际上，任何编程语言都无法保证不发生人为的内存泄漏</li>
+<li>比如程序在运行时，开发者疏忽了，对哈希表只添加不删除，就会造成内存泄漏。</li>
+<li>但 Rust 会保证即使开发者疏忽了，也不会出现内存安全问题。</li>
+</ul>
+</div>
+</details>
+<h2 id="标签trait"><a class="header" href="#标签trait">标签trait</a></h2>
+<h3 id="sized"><a class="header" href="#sized">Sized</a></h3>
+<details id="admonition-size-data-和处理-data-的函数-process_data" class="admonition info">
+<summary class="admonition-title">
+<p>Size: Data 和处理 Data 的函数 process_data</p>
+<p><a class="admonition-anchor-link" href="#admonition-size-data-和处理-data-的函数-process_data"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+struct Data&lt;T&gt; {
+    inner: T,
+}
+
+fn process_data&lt;T&gt;(data: Data&lt;T&gt;) {
+    todo!();
+}
+</code></pre></pre>
+<p>等价于：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+struct Data&lt;T: Sized&gt; {
+    inner: T,
+}
+
+fn process_data&lt;T: Sized&gt;(data: Data&lt;T&gt;) {
+    todo!();
+}
+</code></pre></pre>
+<hr />
+<p>大部分时候，我们都希望能自动添加这样的约束，因为这样定义出的泛型结构，在编译期，大小是固定的，可以作为参数传递给函数。如果没有这个约束，T 是大小不固定的类型， process_data 函数会无法编译。</p>
+</div>
+</details>
+<details id="admonition-sized-在少数情况下需要-t-是可变类型的" class="admonition info">
+<summary class="admonition-title">
+<p>?Sized: 在少数情况下，需要 T 是可变类型的</p>
+<p><a class="admonition-anchor-link" href="#admonition-sized-在少数情况下需要-t-是可变类型的"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub enum Cow&lt;'a, B: ?Sized + 'a&gt; where B: ToOwned,
+{
+    // 借用的数据
+    Borrowed(&amp;'a B),
+    // 拥有的数据
+    Owned(&lt;B as ToOwned&gt;::Owned),
+}
+</code></pre></pre>
+<hr />
+<p>这样 B 就可以是 [T] 或者 str 类型，大小都是不固定的。要注意 Borrowed(&amp;’a B) 大小是固定的，因为它内部是对 B 的一个引用，而引用的大小是固定的</p>
+</div>
+</details>
+<h3 id="sendsync"><a class="header" href="#sendsync">Send/Sync</a></h3>
+<details id="admonition-这两个-trait-都是-unsafe-auto-trait" class="admonition info">
+<summary class="admonition-title">
+<p>这两个 trait 都是 unsafe auto trait</p>
+<p><a class="admonition-anchor-link" href="#admonition-这两个-trait-都是-unsafe-auto-trait"></a></p>
+</summary>
+<div>
+<p>这两个 trait 都是 unsafe auto trait:</p>
+<ul>
+<li>auto 意味着编译器会在合适的场合，自动为数据结构添加它们的实现</li>
+<li>而 unsafe 代表实现的这个 trait 可能会违背 Rust 的内存安全准则</li>
+<li>如果开发者手工实现这两个 trait ，要自己为它们的安全性负责。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-sendsync-是-rust-并发安全的基础" class="admonition info">
+<summary class="admonition-title">
+<p>Send/Sync 是 Rust 并发安全的基础</p>
+<p><a class="admonition-anchor-link" href="#admonition-sendsync-是-rust-并发安全的基础"></a></p>
+</summary>
+<div>
+<p>Send/Sync 是 Rust 并发安全的基础：</p>
+<ul>
+<li>如果一个类型 T 实现了 Send trait，意味着 T 可以安全地从一个线程移动到另一个线程，也就是说所有权可以在线程间移动。</li>
+<li>如果一个类型 T 实现了 Sync trait，则意味着 &amp;T 可以安全地在多个线程中共享。一个类型 T 满足 Sync trait，当且仅当 &amp;T 满足 Send trait。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-sendsync-在线程安全中的作用" class="admonition info">
+<summary class="admonition-title">
+<p>Send/Sync 在线程安全中的作用</p>
+<p><a class="admonition-anchor-link" href="#admonition-sendsync-在线程安全中的作用"></a></p>
+</summary>
+<div>
+<p>对于 Send/Sync 在线程安全中的作用，可以这么看:</p>
+<ol>
+<li>如果一个类型 T: Send，那么 T 在某个线程中的独占访问是线程安全的；</li>
+<li>如果一个类型 T: Sync，那么 T 在线程间的只读共享是安全的。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-绝大多数自定义的数据结构都是满足-send--sync-的标准库中不支持-send--sync-的数据结构主要有" class="admonition info">
+<summary class="admonition-title">
+<p>绝大多数自定义的数据结构都是满足 Send / Sync 的。标准库中，不支持 Send / Sync 的数据结构主要有</p>
+<p><a class="admonition-anchor-link" href="#admonition-绝大多数自定义的数据结构都是满足-send--sync-的标准库中不支持-send--sync-的数据结构主要有"></a></p>
+</summary>
+<div>
+<ol>
+<li>裸指针 *const T / *mut T。
+它们是不安全的，所以既不是 Send 也不是 Sync。</li>
+<li>UnsafeCell 不支持 Sync。
+也就是说，任何使用了 Cell 或者 RefCell 的数据结构不支持 Sync。</li>
+<li>引用计数 Rc 不支持 Send 也不支持 Sync。所以 Rc 无法跨线程。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-尝试跨线程使用-rc--refcell会发生什么" class="admonition info">
+<summary class="admonition-title">
+<p>尝试跨线程使用 Rc / RefCell，会发生什么</p>
+<p><a class="admonition-anchor-link" href="#admonition-尝试跨线程使用-rc--refcell会发生什么"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::{
+    cell::RefCell,
+    rc::Rc,
+    sync::{Arc, Mutex},
+    thread,
+};
+
+// Rc 既不是 Send，也不是 Sync
+#[allow(dead_code, unused_variables)]
+fn rc_is_not_send_and_sync() {
+    let a = Rc::new(1);
+    let b = a.clone();
+    let c = a.clone();
+
+    println!(&quot;{:?} {:?} {:?}&quot;, a, b, c);
+
+    // 无法编译通过
+    // thread::spawn(move || {
+    //     println!(&quot;c= {:?}&quot;, c);
+    // });
+}
+
+#[allow(dead_code)]
+fn refcell_is_send() {
+    let a = RefCell::new(1);
+    thread::spawn(move || {
+        println!(&quot;a= {:?}&quot;, a);
+    });
+}
+
+// RefCell 现在有多个 Arc 持有它，虽然 Arc 是 Send/Sync，但 RefCell 不是 Sync
+#[allow(dead_code, unused_variables)]
+fn refcell_is_not_sync() {
+    let a = Arc::new(RefCell::new(1));
+    let b = a.clone();
+    let c = a.clone();
+
+    println!(&quot;{:?} {:?} {:?}&quot;, a, b, c);
+
+    // 无法编译通过
+    // thread::spawn(move || {
+    //     println!(&quot;c= {:?}&quot;, c);
+    // });
+}
+
+// Arc&lt;Mutext&lt;T&gt;&gt; 可以多线程共享且修改数据
+#[allow(dead_code)]
+fn arc_mutext_is_send_sync() {
+    let a = Arc::new(Mutex::new(1));
+    let b = a.clone();
+    let c = a.clone();
+    let handle = thread::spawn(move || {
+        let mut g = c.lock().unwrap();
+        *g += 1;
+    });
+
+    {
+        let mut g = b.lock().unwrap();
+        *g += 1;
+    }
+
+    handle.join().unwrap();
+    println!(&quot;a= {:?}&quot;, a);
+}
+
+// 无法编译通过
+// fn mutex_guard_is_not_send() {
+//     let mutex = Mutex::new(1);
+//     let guard = mutex.lock().unwrap();
+//     thread::spawn(|| {
+//         println!(&quot;data= {:?}&quot;, guard);
+//     });
+
+//     thread::spawn(move || {
+//         println!(&quot;data= {:?}&quot;, guard);
+//     });
+// }
+
+fn main() {}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-用到的stdthreadspawn" class="admonition info">
+<summary class="admonition-title">
+<p>用到的std::thread::spawn</p>
+<p><a class="admonition-anchor-link" href="#admonition-用到的stdthreadspawn"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub fn spawn&lt;F, T&gt;(f: F) -&gt; JoinHandle&lt;T&gt; 
+where
+    F: FnOnce() -&gt; T,
+    F: Send + 'static,
+    T: Send + 'static,
+</code></pre></pre>
+<hr />
+<p>它的参数是一个闭包，这个闭包需要 Send + ’static：</p>
+<ol>
+<li>’static 意思是闭包捕获的自由变量必须是一个拥有所有权的类型，或者是一个拥有静态生命周期的引用；</li>
+<li>Send 意思是，这些被捕获自由变量的所有权可以从一个线程移动到另一个线程。</li>
+</ol>
+<blockquote>
+<p>从这个接口上，可以得出结论：如果在线程间传递 Rc，是无法编译通过的</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-rc不支持send和sync" class="admonition info">
+<summary class="admonition-title">
+<p>Rc不支持Send和Sync</p>
+<p><a class="admonition-anchor-link" href="#admonition-rc不支持send和sync"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// Rc 既不是 Send，也不是 Sync
+fn rc_is_not_send_and_sync() {
+    let a = Rc::new(1);
+    let b = a.clone();
+    let c = a.clone();
+    thread::spawn(move || {
+        println!(&quot;c= {:?}&quot;, c);
+    });
+}
+</code></pre></pre>
+<hr />
+<h2 id=""><a class="header" href="#"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/14%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1%E7%9A%84trait%EF%BC%9F-4694742.jpg" alt="Rc不支持Send/Sync" /></a></h2>
+<p><a href="https://doc.rust-lang.org/std/rc/struct.Rc.html#impl-Send">Rc 的实现不支持 Send 和 Sync</a></p>
+</div>
+</details>
+<details id="admonition-refcell-可以在线程间转移所有权么" class="admonition info">
+<summary class="admonition-title">
+<p>RefCell 可以在线程间转移所有权么？</p>
+<p><a class="admonition-anchor-link" href="#admonition-refcell-可以在线程间转移所有权么"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">fn refcell_is_send() {
+    let a = RefCell::new(1);
+    thread::spawn(move || {
+        println!(&quot;a= {:?}&quot;, a);
+    });
+}
+</code></pre></pre>
+<hr />
+<blockquote>
+<p><a href="https://doc.rust-lang.org/std/cell/struct.RefCell.html#impl-Send">RefCell 实现了 Send，但没有实现 Sync</a></p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-arc支持sendsync" class="admonition info">
+<summary class="admonition-title">
+<p>Arc支持Send/Sync</p>
+<p><a class="admonition-anchor-link" href="#admonition-arc支持sendsync"></a></p>
+</summary>
+<div>
+<blockquote>
+<p><a href="https://doc.rust-lang.org/std/sync/struct.Arc.html#impl-Send">Arc支持Send/Sync</a></p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+// RefCell 现在有多个 Arc 持有它，虽然 Arc 是 Send/Sync，但 RefCell 不是 Sync
+fn refcell_is_not_sync() {
+    let a = Arc::new(RefCell::new(1));
+    let b = a.clone();
+    let c = a.clone();
+    thread::spawn(move || {
+        println!(&quot;c= {:?}&quot;, c);
+    });
+}
+
+</code></pre></pre>
+<hr />
+<p>因为 Arc 内部的数据是共享的，需要支持 Sync 的数据结构，但是 RefCell 不是 Sync，编译失败。</p>
+</div>
+</details>
+<details id="admonition-在多线程情况下我们只能使用支持-sendsync-的-arc-和-mutex-一起构造一个可以在多线程间共享且可以修改的类型" class="admonition info">
+<summary class="admonition-title">
+<p>在多线程情况下，我们只能使用支持 Send/Sync 的 Arc ，和 Mutex 一起，构造一个可以在多线程间共享且可以修改的类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-在多线程情况下我们只能使用支持-sendsync-的-arc-和-mutex-一起构造一个可以在多线程间共享且可以修改的类型"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::{
+    sync::{Arc, Mutex},
+    thread,
+};
+
+// Arc&lt;Mutex&lt;T&gt;&gt; 可以多线程共享且修改数据
+fn arc_mutext_is_send_sync() {
+    let a = Arc::new(Mutex::new(1));
+    let b = a.clone();
+    let c = a.clone();
+    let handle = thread::spawn(move || {
+        let mut g = c.lock().unwrap();
+        *g += 1;
+    });
+
+    {
+        let mut g = b.lock().unwrap();
+        *g += 1;
+    }
+
+    handle.join().unwrap();
+    println!(&quot;a= {:?}&quot;, a);
+}
+
+fn main() {
+    arc_mutext_is_send_sync();
+}
+</code></pre></pre>
+<hr />
+<p>最后一个标记 trait Unpin，是用于自引用类型的，属于Future trait。</p>
+</div>
+</details>
+<h2 id="类型转换"><a class="header" href="#类型转换">类型转换</a></h2>
+<details id="admonition-对比两种转化方式" class="admonition info">
+<summary class="admonition-title">
+<p>对比两种转化方式</p>
+<p><a class="admonition-anchor-link" href="#admonition-对比两种转化方式"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 第一种方法，为每一种转换提供一个方法
+// 把字符串 s 转换成 Path
+let v = s.to_path();
+// 把字符串 s 转换成 u64
+let v = s.to_u64();
+
+// 第二种方法，为 s 和要转换的类型之间实现一个 Into&lt;T&gt; trait
+// v 的类型根据上下文得出
+let v = s.into();
+// 或者也可以显式地标注 v 的类型
+let v: u64 = s.into();
+</code></pre></pre>
+<hr />
+<p>显然，第二种方法要更好，因为它符合软件开发的开闭原则（Open-Close Principle），</p>
+<blockquote>
+<p>“软件中的对象（类、模块、函数等等）对扩展是开放的，但是对修改是封闭的”。</p>
+</blockquote>
+<ol>
+<li>在第一种方式下，未来每次要添加对新类型的转换，都要重新修改类型 T 的实现</li>
+<li>而第二种方式，我们只需要添加一个对于数据转换 trait 的新实现即可。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-rust-提供了两套不同的-trait" class="admonition info">
+<summary class="admonition-title">
+<p>Rust 提供了两套不同的 trait</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust-提供了两套不同的-trait"></a></p>
+</summary>
+<div>
+<ol>
+<li>值类型到值类型的转换：From / Into / TryFrom / TryInto</li>
+<li>引用类型到引用类型的转换：AsRef / AsMut</li>
+</ol>
+</div>
+</details>
+<h3 id="frominto-值到值"><a class="header" href="#frominto-值到值">From/Into: 值到值</a></h3>
+<details id="admonition-这两种方式是等价的怎么选呢" class="admonition info">
+<summary class="admonition-title">
+<p>这两种方式是等价的，怎么选呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-这两种方式是等价的怎么选呢"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">let s = String::from(&quot;Hello world!&quot;);
+let s: String = &quot;Hello world!&quot;.into();
+</code></pre></pre>
+<hr />
+<p>这两种方式是等价的，怎么选呢？</p>
+<ol>
+<li>From 可以根据上下文做类型推导，使用场景更多；</li>
+<li>而且因为实现了 From 会自动实现 Into，反之不会。</li>
+<li>所以需要的时候，不要去实现 Into，只要实现 From 就好了。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-from-和-into-还是自反的" class="admonition info">
+<summary class="admonition-title">
+<p>From 和 Into 还是自反的</p>
+<p><a class="admonition-anchor-link" href="#admonition-from-和-into-还是自反的"></a></p>
+</summary>
+<div>
+<p>把类型 T 的值转换成类型 T，会直接返回。这是因为标准库有如下的实现：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+// From（以及 Into）是自反的
+impl&lt;T&gt; From&lt;T&gt; for T {
+    fn from(t: T) -&gt; T {
+        t
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-有了-from-和-into很多函数的接口就可以变得灵活" class="admonition info">
+<summary class="admonition-title">
+<p>有了 From 和 Into，很多函数的接口就可以变得灵活</p>
+<p><a class="admonition-anchor-link" href="#admonition-有了-from-和-into很多函数的接口就可以变得灵活"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+
+fn print(v: impl Into&lt;IpAddr&gt;) {
+    println!(&quot;{:?}&quot;, v.into());
+}
+
+fn main() {
+    let v4: Ipv4Addr = &quot;2.2.2.2&quot;.parse().unwrap();
+    let v6: Ipv6Addr = &quot;::1&quot;.parse().unwrap();
+    
+    // IPAddr 实现了 From&lt;[u8; 4]，转换 IPv4 地址
+    print([1, 1, 1, 1]);
+    // IPAddr 实现了 From&lt;[u16; 8]，转换 IPv6 地址
+    print([0xfe80, 0, 0, 0, 0xaede, 0x48ff, 0xfe00, 0x1122]);
+    // IPAddr 实现了 From&lt;Ipv4Addr&gt;
+    print(v4);
+    // IPAddr 实现了 From&lt;Ipv6Addr&gt;
+    print(v6);
+}
+</code></pre></pre>
+<hr />
+<p>函数如果接受一个 IpAddr 为参数，我们可以使用 Into 让更多的类型可以被这个函数使用
+所以，合理地使用 From / Into，可以让代码变得简洁，符合 Rust 可读性强的风格，更符合开闭原则。</p>
+</div>
+</details>
+<h3 id="tryfromtryinto-值到值可能出现错误"><a class="header" href="#tryfromtryinto-值到值可能出现错误">TryFrom/TryInto: 值到值，可能出现错误</a></h3>
+<blockquote>
+<p>注意，如果你的数据类型在转换过程中有可能出现错误，可以使用 TryFrom 和 TryInto.
+它们的用法和 From / Into 一样，只是 trait 内多了一个关联类型 Error，且返回的结果是 Result。</p>
+</blockquote>
+<h3 id="asrefasmut-引用到引用"><a class="header" href="#asrefasmut-引用到引用">AsRef/AsMut: 引用到引用</a></h3>
+<details id="admonition-asrefasmut定义" class="admonition info">
+<summary class="admonition-title">
+<p>AsRef/AsMut定义</p>
+<p><a class="admonition-anchor-link" href="#admonition-asrefasmut定义"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait AsRef&lt;T&gt; where T: ?Sized {
+    fn as_ref(&amp;self) -&gt; &amp;T;
+}
+
+pub trait AsMut&lt;T&gt; where T: ?Sized {
+    fn as_mut(&amp;mut self) -&gt; &amp;mut T;
+}
+</code></pre></pre>
+<hr />
+<p>在 trait 的定义上，都允许 T 使用大小可变的类型，如 str、[u8] 等。
+AsMut 除了使用可变引用生成可变引用外，其它都和 AsRef 一样，所以我们重点看 AsRef</p>
+</div>
+</details>
+<details id="admonition-体验一下-asref-的使用和实现" class="admonition info">
+<summary class="admonition-title">
+<p>体验一下 AsRef 的使用和实现</p>
+<p><a class="admonition-anchor-link" href="#admonition-体验一下-asref-的使用和实现"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[allow(dead_code)]
+enum Language {
+    Rust,
+    TypeScript,
+    Elixir,
+    Haskell,
+}
+
+impl AsRef&lt;str&gt; for Language {
+    fn as_ref(&amp;self) -&gt; &amp;str {
+        match self {
+            Language::Rust =&gt; &quot;Rust&quot;,
+            Language::TypeScript =&gt; &quot;TypeScript&quot;,
+            Language::Elixir =&gt; &quot;Elixir&quot;,
+            Language::Haskell =&gt; &quot;Haskell&quot;,
+        }
+    }
+}
+
+fn print_ref(v: impl AsRef&lt;str&gt;) {
+    println!(&quot;{}&quot;, v.as_ref());
+}
+
+fn main() {
+    let lang = Language::Rust;
+    // &amp;str 实现了 AsRef&lt;str&gt;
+    print_ref(&quot;Hello world!&quot;);
+    // String 实现了 AsRef&lt;str&gt;
+    print_ref(&quot;Hello world!&quot;.to_string());
+    // 我们自己定义的 enum 也实现了 AsRef&lt;str&gt;
+    print_ref(lang);
+}
+</code></pre></pre>
+<hr />
+</div>
+</details>
+<details id="admonition-vas_refclone" class="admonition info">
+<summary class="admonition-title">
+<p>v.as_ref().clone()</p>
+<p><a class="admonition-anchor-link" href="#admonition-vas_refclone"></a></p>
+</summary>
+<div>
+<p>额外说明一下的是:
+如果代码出现 v.as_ref().clone() 这样的语句，也就是说你要对 v 进行引用转换，然后又得到了拥有所有权的值，那么应该实现 From，然后做 v.into()。</p>
+</div>
+</details>
+<h2 id="操作符相关-derefderefmut"><a class="header" href="#操作符相关-derefderefmut">操作符相关: Deref/DerefMut</a></h2>
+<details id="admonition-derefderefmut定义及说明" class="admonition info">
+<summary class="admonition-title">
+<p>Deref/DerefMut定义及说明</p>
+<p><a class="admonition-anchor-link" href="#admonition-derefderefmut定义及说明"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Deref {
+    // 解引用出来的结果类型
+    type Target: ?Sized;
+    fn deref(&amp;self) -&gt; &amp;Self::Target;
+}
+
+pub trait DerefMut: Deref {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut Self::Target;
+}
+</code></pre></pre>
+<hr />
+<p>可以看到，DerefMut “继承”了 Deref，只是它额外提供了一个 deref_mut 方法，用来获取可变的解引用。所以这里重点学习 Deref。</p>
+</div>
+</details>
+<details id="admonition-对于普通的引用解引用很直观" class="admonition info">
+<summary class="admonition-title">
+<p>对于普通的引用，解引用很直观</p>
+<p><a class="admonition-anchor-link" href="#admonition-对于普通的引用解引用很直观"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>对于普通的引用，解引用很直观，因为它只有一个指向值的地址，从这个地址可以获取到所需要的值</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+let mut x = 42;
+let y = &amp;mut x;
+// 解引用，内部调用 DerefMut（其实现就是 *self）
+*y += 1;
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-智能指针来说拿什么域来解引用就不那么直观-看看rc如何实现deref" class="admonition info">
+<summary class="admonition-title">
+<p>智能指针来说，拿什么域来解引用就不那么直观, 看看Rc如何实现Deref</p>
+<p><a class="admonition-anchor-link" href="#admonition-智能指针来说拿什么域来解引用就不那么直观-看看rc如何实现deref"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;T: ?Sized&gt; Deref for Rc&lt;T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;T {
+        &amp;self.inner().value
+    }
+}
+</code></pre></pre>
+<hr />
+<p>可以看到:</p>
+<ol>
+<li>它最终指向了堆上的 RcBox 内部的 value 的地址</li>
+<li>然后如果对其解引用的话，得到了 value 对应的值。</li>
+<li>以下图为例，最终打印出 v = 1。</li>
+<li>从图中还可以看到，Deref 和 DerefMut 是自动调用的，*b 会被展开为 *(b.deref())。</li>
+</ol>
+<hr />
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/14%EF%BD%9C%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%EF%BC%9A%E6%9C%89%E5%93%AA%E4%BA%9B%E5%BF%85%E9%A1%BB%E6%8E%8C%E6%8F%A1%E7%9A%84trait%EF%BC%9F-4696029.jpg" alt="RcBox解引用" /></p>
+</div>
+</details>
+<details id="admonition-在-rust-里绝大多数智能指针都实现了-deref我们也可以为自己的数据结构实现-deref" class="admonition info">
+<summary class="admonition-title">
+<p>在 Rust 里，绝大多数智能指针都实现了 Deref，我们也可以为自己的数据结构实现 Deref</p>
+<p><a class="admonition-anchor-link" href="#admonition-在-rust-里绝大多数智能指针都实现了-deref我们也可以为自己的数据结构实现-deref"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::ops::{Deref, DerefMut};
+
+#[derive(Debug)]
+struct Buffer&lt;T&gt;(Vec&lt;T&gt;);
+
+impl&lt;T&gt; Buffer&lt;T&gt; {
+    pub fn new(v: impl Into&lt;Vec&lt;T&gt;&gt;) -&gt; Self {
+        Self(v.into())
+    }
+}
+
+impl&lt;T&gt; Deref for Buffer&lt;T&gt; {
+    type Target = [T];
+
+    fn deref(&amp;self) -&gt; &amp;Self::Target {
+        &amp;self.0
+    }
+}
+
+impl&lt;T&gt; DerefMut for Buffer&lt;T&gt; {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut Self::Target {
+        &amp;mut self.0
+    }
+}
+
+fn main() {
+    let mut buf = Buffer::new([1, 3, 2, 4]);
+    // 因为实现了 Deref 和 DerefMut，这里 buf 可以直接访问 Vec&lt;T&gt; 的方法
+    // 下面这句相当于：(&amp;mut buf).deref_mut().sort()，也就是 (&amp;mut buf.0).sort()
+    buf.sort();
+    println!(&quot;buf: {:?}&quot;, buf);
+}
+</code></pre></pre>
+<hr />
+<p>但是在这个例子里，数据结构 Buffer 包裹住了 Vec，但这样一来，原本 Vec 实现了的很多方法，现在使用起来就很不方便，需要用 buf.0 来访问。怎么办？
+可以实现 Deref 和 DerefMut，这样在解引用的时候，直接访问到 buf.0，省去了代码的啰嗦和数据结构内部字段的隐藏。</p>
+</div>
+</details>
+<details id="admonition-编译器默认强制做解引用" class="admonition info">
+<summary class="admonition-title">
+<p>编译器默认强制做解引用</p>
+<p><a class="admonition-anchor-link" href="#admonition-编译器默认强制做解引用"></a></p>
+</summary>
+<div>
+<p>在上面代码里，还有一个值得注意的地方：
+写 buf.sort() 的时候，并没有做解引用的操作，为什么会相当于访问了 buf.0.sort() 呢？
+这是因为 sort() 方法第一个参数是 &amp;mut self，此时 Rust 编译器会强制做 Deref/DerefMut 的解引用，所以这相当于 (*(&amp;mut buf)).sort()。</p>
+</div>
+</details>
+<h2 id="其他debugdisplaydefault"><a class="header" href="#其他debugdisplaydefault">其他：Debug/Display/Default</a></h2>
+<details id="admonition-debugdisplaydefalut定义" class="admonition info">
+<summary class="admonition-title">
+<p>Debug/Display/Defalut定义</p>
+<p><a class="admonition-anchor-link" href="#admonition-debugdisplaydefalut定义"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Debug {
+    fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; Result&lt;(), Error&gt;;
+}
+
+pub trait Display {
+    fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; Result&lt;(), Error&gt;;
+}
+</code></pre></pre>
+<hr />
+<p>可以看到，Debug 和 Display 两个 trait 的签名一样，都接受一个 &amp;self 和一个 &amp;mut Formatter。</p>
+<p>那为什么要有两个一样的 trait 呢？</p>
+<p>这是因为:</p>
+<ol>
+<li>Debug 是为开发者调试打印数据结构所设计的</li>
+<li>而 Display 是给用户显示数据结构所设计的</li>
+<li>这也是为什么 Debug trait 的实现可以通过派生宏直接生成，而 Display 必须手工实现(手工决定，自定义如何展现给用户)。</li>
+<li>在使用的时候，Debug 用 {:?} 来打印，Display 用 {} 打印。</li>
+</ol>
+<hr />
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Default {
+    fn default() -&gt; Self;
+}
+</code></pre></pre>
+<hr />
+<p>Default trait 用于为类型提供缺省值:</p>
+<ul>
+<li>它也可以通过 derive 宏 #[derive(Default)] 来生成实现，前提是类型中的每个字段都实现了 Default trait</li>
+<li>在初始化一个数据结构时，我们可以部分初始化，然后剩余的部分使用 Default::default()。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-debugdisplaydefault统一使用例子" class="admonition info">
+<summary class="admonition-title">
+<p>Debug/Display/Default统一使用例子</p>
+<p><a class="admonition-anchor-link" href="#admonition-debugdisplaydefault统一使用例子"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::fmt;
+// struct 可以 derive Default，但我们需要所有字段都实现了 Default
+#[derive(Clone, Debug, Default)]
+struct Developer {
+    name: String,
+    age: u8,
+    lang: Language,
+}
+
+// enum 不能 derive Default
+#[allow(dead_code)]
+#[derive(Clone, Debug)]
+enum Language {
+    Rust,
+    TypeScript,
+    Elixir,
+    Haskell,
+}
+
+// 手工实现 Default
+impl Default for Language {
+    fn default() -&gt; Self {
+        Language::Rust
+    }
+}
+
+impl Developer {
+    pub fn new(name: &amp;str) -&gt; Self {
+        // 用 ..Default::default() 为剩余字段使用缺省值
+        Self {
+            name: name.to_owned(),
+            ..Default::default()
+        }
+    }
+}
+
+impl fmt::Display for Developer {
+    fn fmt(&amp;self, f: &amp;mut fmt::Formatter&lt;'_&gt;) -&gt; fmt::Result {
+        write!(
+            f,
+            &quot;{}({} years old): {:?} developer&quot;,
+            self.name, self.age, self.lang
+        )
+    }
+}
+
+fn main() {
+    // 使用 T::default()
+    let dev1 = Developer::default();
+    // 使用 Default::default()，但此时类型无法通过上下文推断，需要提供类型
+    let dev2: Developer = Default::default();
+    // 使用 T::new
+    let dev3 = Developer::new(&quot;Tyr&quot;);
+    println!(&quot;dev1: {}\\ndev2: {}\\ndev3: {:?}&quot;, dev1, dev2, dev3);
+}
+</code></pre></pre>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="2_3_2_trait_object.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="2_3_4_trait_design.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="2_3_2_trait_object.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="2_3_4_trait_design.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
