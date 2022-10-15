@@ -18,6 +18,18 @@
 
 <!--te-->
 
+## Trait impl的两面派
+
+> 其实从两个相对的角色🎭来看，就可以理解为何trait impl有两种叫法。
+
+### 具体实现
+
+当一个开发者想给类型添加方法的时候，需要先定义trait，再为类型实现trait。
+
+### 设计约束
+
+当一个设计者设计好完整流程后，为了让使用者能够保留一定空间自由度去自定义实现，就可以要求这个类型需要满足某个trait，这就是trait约束
+
 ## 基本练习
 
 ### 支持泛型
@@ -42,6 +54,11 @@ impl<T: ?Sized> StreamExt for T where T: Stream {}
 ### Self和self
 
 > 类比python：Self对应Cls， self两边一样。
+
+> 在闭包中还要结合考虑是否转移所有权：
+- self转移
+- Self不转移
+
 
 ~~~admonish info title='Self和self区别使用, Self其实就是类方法' collapsible=true
 ```rust, editable
