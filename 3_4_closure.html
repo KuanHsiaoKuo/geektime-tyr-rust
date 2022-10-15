@@ -194,21 +194,28 @@
 </ul>
 </li>
 <li><a href="#%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E9%97%AD%E5%8C%85%E8%AE%BE%E8%AE%A1">不同语言的闭包设计</a></li>
-<li><a href="#rust-%E7%9A%84%E9%97%AD%E5%8C%85%E7%B1%BB%E5%9E%8B">Rust 的闭包类型</a>
+<li><a href="#%E4%BB%8Erust-%E7%9A%84%E9%97%AD%E5%8C%85%E7%B1%BB%E5%9E%8B%E5%BC%80%E5%A7%8B%E6%80%9D%E8%80%83">从Rust 的闭包类型开始思考<g-emoji class="g-emoji" alias="thinking" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f914.png">🤔</g-emoji>
+</a>
+<ul>
+<li><a href="#%E4%BD%9C%E4%B8%BA%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0">作为函数的参数</a></li>
+<li><a href="#%E4%BD%9C%E4%B8%BA%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%94%E5%9B%9E">作为函数的返回</a></li>
+<li><a href="#%E4%B8%BA%E9%97%AD%E5%8C%85%E5%AE%9E%E7%8E%B0trait">为闭包实现trait</a></li>
+<li><a href="#%E9%97%AD%E5%8C%85%E6%A0%B9%E6%8D%AE%E4%B8%8D%E5%90%8Ctrait%E7%BA%A6%E6%9D%9F%E8%A1%A8%E7%8E%B0%E4%B8%8D%E5%90%8C%E8%A1%8C%E4%B8%BA">闭包根据不同trait约束表现不同行为</a>
 <ul>
 <li><a href="#fnonce">FnOnce</a></li>
 <li><a href="#%E6%80%8E%E4%B9%88%E7%90%86%E8%A7%A3-fnonce-%E7%9A%84-args-%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0%E5%91%A2">怎么理解 FnOnce 的 Args 泛型参数呢？</a></li>
 <li><a href="#fnmut">FnMut</a></li>
 <li><a href="#fn">Fn</a></li>
-<li><a href="#%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B%E4%B8%89%E7%A7%8D%E9%97%AD%E5%8C%85%E4%BD%BF%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B5%E4%BB%A5%E5%8F%8A%E5%AE%83%E4%BB%AC%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB">总结一下三种闭包使用的情况以及它们之间的关系</a></li>
+<li><a href="#%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B%E4%B8%89%E7%A7%8Dtrait%E9%97%AD%E5%8C%85%E4%BD%BF%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B5%E4%BB%A5%E5%8F%8A%E5%AE%83%E4%BB%AC%E4%B9%8B%E9%97%B4%E7%9A%84%E5%85%B3%E7%B3%BB">总结一下三种trait闭包使用的情况以及它们之间的关系</a></li>
 </ul>
 </li>
-<li><a href="#%E9%97%AD%E5%8C%85%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">闭包的使用场景</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 10:13:53 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 15 10:39:00 UTC 2022 -->
 <!--te-->
 <h2 id="闭包的定义"><a class="header" href="#闭包的定义">闭包的定义</a></h2>
 <details id="admonition-闭包的基本概念" class="admonition info">
@@ -543,23 +550,112 @@ struct Closure4 {
 <p>我们不必为堆内存管理设计 GC、不必为其它资源的回收提供 defer 关键字、不必为并发安全进行诸多限制、也不必为闭包挖空心思搞优化。</p>
 </div>
 </details>
-<h2 id="rust-的闭包类型"><a class="header" href="#rust-的闭包类型">Rust 的闭包类型</a></h2>
+<h2 id="从rust-的闭包类型开始思考"><a class="header" href="#从rust-的闭包类型开始思考">从Rust 的闭包类型开始思考🤔</a></h2>
 <p>现在我们搞明白了闭包究竟是个什么东西，在内存中怎么表示，接下来我们看看 FnOnce / FnMut / Fn 这三种闭包类型有什么区别。</p>
 <blockquote>
-<p>既然闭包是一个匿名结构体类型，就可以有两个思考：</p>
+<p>既然闭包是一个匿名结构体类型，就可以有三个思考：</p>
 </blockquote>
 <ol>
 <li>可以作为函数的参数或返回</li>
-<li>可以对其添加trait实现；事实上，rust已经做了这件事，提供Fn/FnMut/FnOnce这三个</li>
+<li>可以对其添加trait实现；</li>
+<li>可以用在trait约束；事实上，rust已经做了这件事，提供Fn/FnMut/FnOnce这三个</li>
 </ol>
 <ul>
 <li>在声明闭包的时候，我们并不需要指定闭包要满足的约束</li>
 <li>但是当闭包作为函数的参数或者数据结构的一个域时，我们需要告诉调用者，对闭包的约束。</li>
 </ul>
+<p>下面👇一一说明</p>
+<h3 id="作为函数的参数"><a class="header" href="#作为函数的参数">作为函数的参数</a></h3>
+<details id="admonition-在函数的参数中使用闭包" class="admonition info">
+<summary class="admonition-title">
+<p>在函数的参数中使用闭包</p>
+<p><a class="admonition-anchor-link" href="#admonition-在函数的参数中使用闭包"></a></p>
+</summary>
+<div>
+<p>thread::spawn 自不必说，我们熟悉的 Iterator trait 里面大部分函数都接受一个闭包，<a href="https://doc.rust-lang.org/src/core/iter/traits/iterator.rs.html#682-685">比如 map</a>：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn map&lt;B, F&gt;(self, f: F) -&gt; Map&lt;Self, F&gt;
+where
+    Self: Sized,
+    F: FnMut(Self::Item) -&gt; B,
+{
+    Map::new(self, f)
+}
+</code></pre></pre>
+<ol>
+<li>可以看到，Iterator 的 map() 方法接受一个 FnMut</li>
+<li>它的参数是 Self::Item</li>
+<li>返回值是没有约束的泛型参数 B。</li>
+<li>Self::Item 是 Iterator::next() 方法吐出来的数据，被 map 之后，可以得到另一个结果。</li>
+</ol>
+<p>所以在函数的参数中使用闭包，是闭包一种非常典型的用法。</p>
+</div>
+</details>
+<h3 id="作为函数的返回"><a class="header" href="#作为函数的返回">作为函数的返回</a></h3>
+<details id="admonition-在函数的返回值中使用闭包" class="admonition info">
+<summary class="admonition-title">
+<p>在函数的返回值中使用闭包</p>
+<p><a class="admonition-anchor-link" href="#admonition-在函数的返回值中使用闭包"></a></p>
+</summary>
+<div>
+<p>另外闭包也可以作为函数的返回值，举个简单的例子（代码）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::ops::Mul;
+
+fn main() {
+    let c1 = curry(5);
+    println!(&quot;5 multiply 2 is: {}&quot;, c1(2));
+
+    let adder2 = curry(3.14);
+    println!(&quot;pi multiply 4^2 is: {}&quot;, adder2(4. * 4.));
+}
+
+fn curry&lt;T&gt;(x: T) -&gt; impl Fn(T) -&gt; T
+where
+    T: Mul&lt;Output = T&gt; + Copy,
+{
+    move |y| x * y
+}
+</code></pre></pre>
+</div>
+</details>
+<h3 id="为闭包实现trait"><a class="header" href="#为闭包实现trait">为闭包实现trait</a></h3>
+<details id="admonition-为闭包实现某个-trait使其也能表现出其他行为而不仅仅是作为函数被调用" class="admonition info">
+<summary class="admonition-title">
+<p>为闭包实现某个 trait，使其也能表现出其他行为，而不仅仅是作为函数被调用。</p>
+<p><a class="admonition-anchor-link" href="#admonition-为闭包实现某个-trait使其也能表现出其他行为而不仅仅是作为函数被调用"></a></p>
+</summary>
+<div>
+<p>闭包还有一种并不少见，但可能不太容易理解的用法：</p>
+<p>为它实现某个 trait，使其也能表现出其他行为，而不仅仅是作为函数被调用。</p>
+<p>比如说有些接口既可以传入一个结构体，又可以传入一个函数或者闭包。</p>
+<blockquote>
+<p>我们看一个 <a href="https://github.com/hyperium/tonic">tonic（Rust 下的 gRPC 库）</a>的<a href="https://docs.rs/tonic/0.5.2/src/tonic/service/interceptor.rs.html#41-53">例子</a></p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Interceptor {
+    /// Intercept a request before it is sent, optionally cancelling it.
+    fn call(&amp;mut self, request: crate::Request&lt;()&gt;) -&gt; Result&lt;crate::Request&lt;()&gt;, Status&gt;;
+}
+
+impl&lt;F&gt; Interceptor for F
+where
+    F: FnMut(crate::Request&lt;()&gt;) -&gt; Result&lt;crate::Request&lt;()&gt;, Status&gt;,
+{
+    fn call(&amp;mut self, request: crate::Request&lt;()&gt;) -&gt; Result&lt;crate::Request&lt;()&gt;, Status&gt; {
+        self(request)
+    }
+}
+</code></pre></pre>
+<p>在这个例子里，Interceptor 有一个 call 方法，它可以让 gRPC Request 被发送出去之前被修改，一般是添加各种头，比如 Authorization 头。</p>
+<p>我们可以创建一个结构体，为它实现 Interceptor，不过大部分时候 Interceptor 可以直接通过一个闭包函数完成。为了让传入的闭包也能通过 Interceptor::call() 来统一调用，可以为符合某个接口的闭包实现 Interceptor trait。掌握了这种用法，我们就可以通过某些 trait 把特定的结构体和闭包统一起来调用，是不是很神奇。</p>
+</div>
+</details>
+<h3 id="闭包根据不同trait约束表现不同行为"><a class="header" href="#闭包根据不同trait约束表现不同行为">闭包根据不同trait约束表现不同行为</a></h3>
 <blockquote>
 <p>还以 thread::spawn 为例，它要求传入的闭包满足 FnOnce trait。</p>
 </blockquote>
-<h3 id="fnonce"><a class="header" href="#fnonce">FnOnce</a></h3>
+<h4 id="fnonce"><a class="header" href="#fnonce">FnOnce</a></h4>
 <details id="admonition-fnonce定义-例子解析" class="admonition info">
 <summary class="admonition-title">
 <p>FnOnce定义-&gt;例子解析</p>
@@ -633,7 +729,7 @@ fn not_closure(arg: String) -&gt; (String, String) {
 </code></pre></pre>
 </div>
 </details>
-<h3 id="怎么理解-fnonce-的-args-泛型参数呢"><a class="header" href="#怎么理解-fnonce-的-args-泛型参数呢">怎么理解 FnOnce 的 Args 泛型参数呢？</a></h3>
+<h4 id="怎么理解-fnonce-的-args-泛型参数呢"><a class="header" href="#怎么理解-fnonce-的-args-泛型参数呢">怎么理解 FnOnce 的 Args 泛型参数呢？</a></h4>
 <details id="admonition-怎么理解-fnonce-的-args-泛型参数呢" class="admonition info">
 <summary class="admonition-title">
 <p>怎么理解 FnOnce 的 Args 泛型参数呢？</p>
@@ -689,7 +785,7 @@ fn main() {
 </code></pre></pre>
 </div>
 </details>
-<h3 id="fnmut"><a class="header" href="#fnmut">FnMut</a></h3>
+<h4 id="fnmut"><a class="header" href="#fnmut">FnMut</a></h4>
 <details id="admonition-fnmut的定义与例子" class="admonition info">
 <summary class="admonition-title">
 <p>FnMut的定义与例子</p>
@@ -765,7 +861,7 @@ fn call_once(c: impl FnOnce()) {
 </blockquote>
 </div>
 </details>
-<h3 id="fn"><a class="header" href="#fn">Fn</a></h3>
+<h4 id="fn"><a class="header" href="#fn">Fn</a></h4>
 <details id="admonition-fn的定义与例子" class="admonition info">
 <summary class="admonition-title">
 <p>Fn的定义与例子</p>
@@ -820,7 +916,7 @@ fn call_once(arg: u64, c: impl FnOnce(u64) -&gt; u64) -&gt; u64 {
 </code></pre></pre>
 </div>
 </details>
-<h3 id="总结一下三种闭包使用的情况以及它们之间的关系"><a class="header" href="#总结一下三种闭包使用的情况以及它们之间的关系">总结一下三种闭包使用的情况以及它们之间的关系</a></h3>
+<h4 id="总结一下三种trait闭包使用的情况以及它们之间的关系"><a class="header" href="#总结一下三种trait闭包使用的情况以及它们之间的关系">总结一下三种trait闭包使用的情况以及它们之间的关系</a></h4>
 <details id="admonition-总结一下三种闭包使用的情况以及它们之间的关系" class="admonition info">
 <summary class="admonition-title">
 <p>总结一下三种闭包使用的情况以及它们之间的关系</p>
@@ -828,81 +924,6 @@ fn call_once(arg: u64, c: impl FnOnce(u64) -&gt; u64) -&gt; u64 {
 </summary>
 <div>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/19%EF%BD%9C%E9%97%AD%E5%8C%85%EF%BC%9AFnOnce%E3%80%81FnMut%E5%92%8CFn%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E7%B1%BB%E5%9E%8B%EF%BC%9F.jpg" alt="19｜闭包：FnOnce、FnMut和Fn，为什么有这么多类型？" /></p>
-</div>
-</details>
-<h2 id="闭包的使用场景"><a class="header" href="#闭包的使用场景">闭包的使用场景</a></h2>
-<details id="admonition-在函数的参数和返回值中使用闭包" class="admonition info">
-<summary class="admonition-title">
-<p>在函数的参数和返回值中使用闭包</p>
-<p><a class="admonition-anchor-link" href="#admonition-在函数的参数和返回值中使用闭包"></a></p>
-</summary>
-<div>
-<p>thread::spawn 自不必说，我们熟悉的 Iterator trait 里面大部分函数都接受一个闭包，<a href="https://doc.rust-lang.org/src/core/iter/traits/iterator.rs.html#682-685">比如 map</a>：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-fn map&lt;B, F&gt;(self, f: F) -&gt; Map&lt;Self, F&gt;
-where
-    Self: Sized,
-    F: FnMut(Self::Item) -&gt; B,
-{
-    Map::new(self, f)
-}
-</code></pre></pre>
-<ol>
-<li>可以看到，Iterator 的 map() 方法接受一个 FnMut</li>
-<li>它的参数是 Self::Item</li>
-<li>返回值是没有约束的泛型参数 B。</li>
-<li>Self::Item 是 Iterator::next() 方法吐出来的数据，被 map 之后，可以得到另一个结果。</li>
-</ol>
-<p>所以在函数的参数中使用闭包，是闭包一种非常典型的用法。另外闭包也可以作为函数的返回值，举个简单的例子（代码）：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-use std::ops::Mul;
-
-fn main() {
-    let c1 = curry(5);
-    println!(&quot;5 multiply 2 is: {}&quot;, c1(2));
-
-    let adder2 = curry(3.14);
-    println!(&quot;pi multiply 4^2 is: {}&quot;, adder2(4. * 4.));
-}
-
-fn curry&lt;T&gt;(x: T) -&gt; impl Fn(T) -&gt; T
-where
-    T: Mul&lt;Output = T&gt; + Copy,
-{
-    move |y| x * y
-}
-</code></pre></pre>
-</div>
-</details>
-<details id="admonition-为闭包实现某个-trait使其也能表现出其他行为而不仅仅是作为函数被调用" class="admonition info">
-<summary class="admonition-title">
-<p>为闭包实现某个 trait，使其也能表现出其他行为，而不仅仅是作为函数被调用。</p>
-<p><a class="admonition-anchor-link" href="#admonition-为闭包实现某个-trait使其也能表现出其他行为而不仅仅是作为函数被调用"></a></p>
-</summary>
-<div>
-<p>最后，闭包还有一种并不少见，但可能不太容易理解的用法：</p>
-<p>为它实现某个 trait，使其也能表现出其他行为，而不仅仅是作为函数被调用。</p>
-<p>比如说有些接口既可以传入一个结构体，又可以传入一个函数或者闭包。</p>
-<blockquote>
-<p>我们看一个 <a href="https://github.com/hyperium/tonic">tonic（Rust 下的 gRPC 库）</a>的<a href="https://docs.rs/tonic/0.5.2/src/tonic/service/interceptor.rs.html#41-53">例子</a></p>
-</blockquote>
-<pre><pre class="playground"><code class="language-rust  editable">
-pub trait Interceptor {
-    /// Intercept a request before it is sent, optionally cancelling it.
-    fn call(&amp;mut self, request: crate::Request&lt;()&gt;) -&gt; Result&lt;crate::Request&lt;()&gt;, Status&gt;;
-}
-
-impl&lt;F&gt; Interceptor for F
-where
-    F: FnMut(crate::Request&lt;()&gt;) -&gt; Result&lt;crate::Request&lt;()&gt;, Status&gt;,
-{
-    fn call(&amp;mut self, request: crate::Request&lt;()&gt;) -&gt; Result&lt;crate::Request&lt;()&gt;, Status&gt; {
-        self(request)
-    }
-}
-</code></pre></pre>
-<p>在这个例子里，Interceptor 有一个 call 方法，它可以让 gRPC Request 被发送出去之前被修改，一般是添加各种头，比如 Authorization 头。</p>
-<p>我们可以创建一个结构体，为它实现 Interceptor，不过大部分时候 Interceptor 可以直接通过一个闭包函数完成。为了让传入的闭包也能通过 Interceptor::call() 来统一调用，可以为符合某个接口的闭包实现 Interceptor trait。掌握了这种用法，我们就可以通过某些 trait 把特定的结构体和闭包统一起来调用，是不是很神奇。</p>
 </div>
 </details>
 
