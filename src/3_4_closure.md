@@ -313,19 +313,106 @@ Rust / Swift / Kotlin iterator 函数式编程的性能测试：
 我们不必为堆内存管理设计 GC、不必为其它资源的回收提供 defer 关键字、不必为并发安全进行诸多限制、也不必为闭包挖空心思搞优化。
 ~~~
 
-## Rust 的闭包类型
+## 从Rust 的闭包类型开始思考🤔
 
 现在我们搞明白了闭包究竟是个什么东西，在内存中怎么表示，接下来我们看看 FnOnce / FnMut / Fn 这三种闭包类型有什么区别。
 
-> 既然闭包是一个匿名结构体类型，就可以有两个思考：
+> 既然闭包是一个匿名结构体类型，就可以有三个思考：
 1. 可以作为函数的参数或返回
-2. 可以对其添加trait实现；事实上，rust已经做了这件事，提供Fn/FnMut/FnOnce这三个
+2. 可以对其添加trait实现；
+3. 可以用在trait约束；事实上，rust已经做了这件事，提供Fn/FnMut/FnOnce这三个
 - 在声明闭包的时候，我们并不需要指定闭包要满足的约束
 - 但是当闭包作为函数的参数或者数据结构的一个域时，我们需要告诉调用者，对闭包的约束。
 
+下面👇一一说明
+
+### 作为函数的参数
+
+~~~admonish info title="在函数的参数中使用闭包" collapsible=true
+thread::spawn 自不必说，我们熟悉的 Iterator trait 里面大部分函数都接受一个闭包，[比如 map](https://doc.rust-lang.org/src/core/iter/traits/iterator.rs.html#682-685)：
+```rust, editable
+
+fn map<B, F>(self, f: F) -> Map<Self, F>
+where
+    Self: Sized,
+    F: FnMut(Self::Item) -> B,
+{
+    Map::new(self, f)
+}
+```
+
+1. 可以看到，Iterator 的 map() 方法接受一个 FnMut
+2. 它的参数是 Self::Item
+3. 返回值是没有约束的泛型参数 B。
+4. Self::Item 是 Iterator::next() 方法吐出来的数据，被 map 之后，可以得到另一个结果。
+
+所以在函数的参数中使用闭包，是闭包一种非常典型的用法。
+~~~
+
+### 作为函数的返回
+
+~~~admonish info title="在函数的返回值中使用闭包" collapsible=true
+另外闭包也可以作为函数的返回值，举个简单的例子（代码）：
+
+```rust, editable
+
+use std::ops::Mul;
+
+fn main() {
+    let c1 = curry(5);
+    println!("5 multiply 2 is: {}", c1(2));
+
+    let adder2 = curry(3.14);
+    println!("pi multiply 4^2 is: {}", adder2(4. * 4.));
+}
+
+fn curry<T>(x: T) -> impl Fn(T) -> T
+where
+    T: Mul<Output = T> + Copy,
+{
+    move |y| x * y
+}
+```
+~~~
+
+### 为闭包实现trait
+
+~~~admonish info title="为闭包实现某个 trait，使其也能表现出其他行为，而不仅仅是作为函数被调用。" collapsible=true
+闭包还有一种并不少见，但可能不太容易理解的用法：
+
+为它实现某个 trait，使其也能表现出其他行为，而不仅仅是作为函数被调用。
+
+比如说有些接口既可以传入一个结构体，又可以传入一个函数或者闭包。
+
+> 我们看一个 [tonic（Rust 下的 gRPC 库）](https://github.com/hyperium/tonic)的[例子](https://docs.rs/tonic/0.5.2/src/tonic/service/interceptor.rs.html#41-53)
+
+```rust, editable
+
+pub trait Interceptor {
+    /// Intercept a request before it is sent, optionally cancelling it.
+    fn call(&mut self, request: crate::Request<()>) -> Result<crate::Request<()>, Status>;
+}
+
+impl<F> Interceptor for F
+where
+    F: FnMut(crate::Request<()>) -> Result<crate::Request<()>, Status>,
+{
+    fn call(&mut self, request: crate::Request<()>) -> Result<crate::Request<()>, Status> {
+        self(request)
+    }
+}
+```
+
+在这个例子里，Interceptor 有一个 call 方法，它可以让 gRPC Request 被发送出去之前被修改，一般是添加各种头，比如 Authorization 头。
+
+我们可以创建一个结构体，为它实现 Interceptor，不过大部分时候 Interceptor 可以直接通过一个闭包函数完成。为了让传入的闭包也能通过 Interceptor::call() 来统一调用，可以为符合某个接口的闭包实现 Interceptor trait。掌握了这种用法，我们就可以通过某些 trait 把特定的结构体和闭包统一起来调用，是不是很神奇。
+~~~
+
+### 闭包根据不同trait约束表现不同行为
+
 > 还以 thread::spawn 为例，它要求传入的闭包满足 FnOnce trait。
 
-### FnOnce
+#### FnOnce
 
 ~~~admonish info title="FnOnce定义->例子解析" collapsible=true
 先来看 FnOnce。它的[定义](https://doc.rust-lang.org/std/ops/trait.FnOnce.html)如下：
@@ -402,7 +489,7 @@ fn not_closure(arg: String) -> (String, String) {
 
 ~~~
 
-### 怎么理解 FnOnce 的 Args 泛型参数呢？
+#### 怎么理解 FnOnce 的 Args 泛型参数呢？
 
 ~~~admonish info title="怎么理解 FnOnce 的 Args 泛型参数呢？" collapsible=true
 Args 又是怎么和 FnOnce 的约束，比如 FnOnce(String) 这样的参数匹配呢？感兴趣的同学可以看下面的例子，它（不完全）模拟了 FnOnce 中闭包的使用（代码）：
@@ -456,7 +543,7 @@ fn main() {
 
 ~~~
 
-### FnMut
+#### FnMut
 
 ~~~admonish info title="FnMut的定义与例子" collapsible=true
 理解了 FnOnce，我们再来看 FnMut，[它的定义如下](https://doc.rust-lang.org/std/ops/trait.FnMut.html)：
@@ -528,7 +615,7 @@ fn call_once(c: impl FnOnce()) {
 > 这里也展示了，c 和 c1 这两个符合 FnMut 的闭包，能作为 FnOnce 来调用。我们在代码中也确认了，FnMut 可以被多次调用，这是因为 call_mut() 使用的是 &mut self，不移动所有权。
 ~~~
 
-### Fn
+#### Fn
 
 ~~~admonish info title="Fn的定义与例子" collapsible=true
 最后我们来看看 Fn trait。[它的定义如下](https://doc.rust-lang.org/std/ops/trait.Fn.html)：
@@ -584,85 +671,9 @@ fn call_once(arg: u64, c: impl FnOnce(u64) -> u64) -> u64 {
 
 ~~~
 
-### 总结一下三种闭包使用的情况以及它们之间的关系
+#### 总结一下三种trait闭包使用的情况以及它们之间的关系
 
 ~~~admonish info title="总结一下三种闭包使用的情况以及它们之间的关系" collapsible=true
 ![19｜闭包：FnOnce、FnMut和Fn，为什么有这么多类型？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/19%EF%BD%9C%E9%97%AD%E5%8C%85%EF%BC%9AFnOnce%E3%80%81FnMut%E5%92%8CFn%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E8%BF%99%E4%B9%88%E5%A4%9A%E7%B1%BB%E5%9E%8B%EF%BC%9F.jpg)
-~~~
-
-## 闭包的使用场景
-
-~~~admonish info title="在函数的参数和返回值中使用闭包" collapsible=true
-thread::spawn 自不必说，我们熟悉的 Iterator trait 里面大部分函数都接受一个闭包，[比如 map](https://doc.rust-lang.org/src/core/iter/traits/iterator.rs.html#682-685)：
-```rust, editable
-
-fn map<B, F>(self, f: F) -> Map<Self, F>
-where
-    Self: Sized,
-    F: FnMut(Self::Item) -> B,
-{
-    Map::new(self, f)
-}
-```
-
-1. 可以看到，Iterator 的 map() 方法接受一个 FnMut
-2. 它的参数是 Self::Item
-3. 返回值是没有约束的泛型参数 B。
-4. Self::Item 是 Iterator::next() 方法吐出来的数据，被 map 之后，可以得到另一个结果。
-
-所以在函数的参数中使用闭包，是闭包一种非常典型的用法。另外闭包也可以作为函数的返回值，举个简单的例子（代码）：
-
-```rust, editable
-
-use std::ops::Mul;
-
-fn main() {
-    let c1 = curry(5);
-    println!("5 multiply 2 is: {}", c1(2));
-
-    let adder2 = curry(3.14);
-    println!("pi multiply 4^2 is: {}", adder2(4. * 4.));
-}
-
-fn curry<T>(x: T) -> impl Fn(T) -> T
-where
-    T: Mul<Output = T> + Copy,
-{
-    move |y| x * y
-}
-```
-~~~
-
-~~~admonish info title="为闭包实现某个 trait，使其也能表现出其他行为，而不仅仅是作为函数被调用。" collapsible=true
-最后，闭包还有一种并不少见，但可能不太容易理解的用法：
-
-为它实现某个 trait，使其也能表现出其他行为，而不仅仅是作为函数被调用。
-
-比如说有些接口既可以传入一个结构体，又可以传入一个函数或者闭包。
-
-> 我们看一个 [tonic（Rust 下的 gRPC 库）](https://github.com/hyperium/tonic)的[例子](https://docs.rs/tonic/0.5.2/src/tonic/service/interceptor.rs.html#41-53)
-
-```rust, editable
-
-pub trait Interceptor {
-    /// Intercept a request before it is sent, optionally cancelling it.
-    fn call(&mut self, request: crate::Request<()>) -> Result<crate::Request<()>, Status>;
-}
-
-impl<F> Interceptor for F
-where
-    F: FnMut(crate::Request<()>) -> Result<crate::Request<()>, Status>,
-{
-    fn call(&mut self, request: crate::Request<()>) -> Result<crate::Request<()>, Status> {
-        self(request)
-    }
-}
-```
-
-在这个例子里，Interceptor 有一个 call 方法，它可以让 gRPC Request 被发送出去之前被修改，一般是添加各种头，比如 Authorization 头。
-
-我们可以创建一个结构体，为它实现 Interceptor，不过大部分时候 Interceptor 可以直接通过一个闭包函数完成。为了让传入的闭包也能通过 Interceptor::call() 来统一调用，可以为符合某个接口的闭包实现 Interceptor trait。掌握了这种用法，我们就可以通过某些 trait 把特定的结构体和闭包统一起来调用，是不是很神奇。
-
-
 ~~~
 
