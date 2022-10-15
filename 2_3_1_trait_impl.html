@@ -185,6 +185,12 @@
 <ul>
 <li><a href="#trait-impl">Trait Impl</a>
 <ul>
+<li><a href="#trait-impl%E7%9A%84%E4%B8%A4%E9%9D%A2%E6%B4%BE">Trait impl的两面派</a>
+<ul>
+<li><a href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0">具体实现</a></li>
+<li><a href="#%E8%AE%BE%E8%AE%A1%E7%BA%A6%E6%9D%9F">设计约束</a></li>
+</ul>
+</li>
 <li><a href="#%E5%9F%BA%E6%9C%AC%E7%BB%83%E4%B9%A0">基本练习</a>
 <ul>
 <li><a href="#%E6%94%AF%E6%8C%81%E6%B3%9B%E5%9E%8B">支持泛型</a></li>
@@ -208,8 +214,16 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 10:38:55 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 15 10:50:46 UTC 2022 -->
 <!--te-->
+<h2 id="trait-impl的两面派"><a class="header" href="#trait-impl的两面派">Trait impl的两面派</a></h2>
+<blockquote>
+<p>其实从两个相对的角色🎭来看，就可以理解为何trait impl有两种叫法。</p>
+</blockquote>
+<h3 id="具体实现"><a class="header" href="#具体实现">具体实现</a></h3>
+<p>当一个开发者想给类型添加方法的时候，需要先定义trait，再为类型实现trait。</p>
+<h3 id="设计约束"><a class="header" href="#设计约束">设计约束</a></h3>
+<p>当一个设计者设计好完整流程后，为了让使用者能够保留一定空间自由度去自定义实现，就可以要求这个类型需要满足某个trait，这就是trait约束</p>
 <h2 id="基本练习"><a class="header" href="#基本练习">基本练习</a></h2>
 <h3 id="支持泛型"><a class="header" href="#支持泛型">支持泛型</a></h3>
 <details id="admonition-版本一支持数字相加" class="admonition info">
@@ -273,6 +287,13 @@ fn main() {
 <blockquote>
 <p>类比python：Self对应Cls， self两边一样。</p>
 </blockquote>
+<blockquote>
+<p>在闭包中还要结合考虑是否转移所有权：</p>
+</blockquote>
+<ul>
+<li>self转移</li>
+<li>Self不转移</li>
+</ul>
 <details id="admonition-self和self区别使用-self其实就是类方法" class="admonition info">
 <summary class="admonition-title">
 <p>Self和self区别使用, Self其实就是类方法</p>
