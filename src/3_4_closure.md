@@ -96,8 +96,9 @@ fn main() {
 > A closure expression produces a closure value with a unique, anonymous type that cannot be written out. A closure type is approximately equivalent to a struct which contains the captured variables.
 ---
 闭包是一种匿名类型，一旦声明，就会产生一个新的类型，但这个类型无法被其它地方使用。这个类型就像一个结构体，会包含所有捕获的变量。
+~~~
 
-所以闭包类似一个特殊的结构体？
+~~~admonish question title="所以闭包类似一个特殊的结构体？" collapsible=true
 
 为了搞明白这一点，我们得写段代码探索一下，建议你跟着敲一遍认真思考（代码）：
 
@@ -136,7 +137,9 @@ fn main() {
     )
 }
 ```
+~~~
 
+~~~admonish question title="查看上面代码的5个闭包得出结论" collapsible=true
 > 分别生成了 5 个闭包：
 
 1. c1 没有参数，也没捕获任何变量，从代码输出可以看到，c1 长度为 0；
@@ -220,7 +223,8 @@ struct Closure4 {
 }
 ```
 
-不过，对于 closure 类型来说，编译器知道像函数一样调用闭包 c4() 是合法的，并且知道执行 c4() 时，代码应该跳转到什么地址来执行。在执行过程中，如果遇到 name、table，可以从自己的数据结构中获取。
+不过，对于 closure 类型来说，编译器知道像函数一样调用闭包 c4() 是合法的，并且知道执行 c4() 时，代码应该跳转到什么地址来执行。
+在执行过程中，如果遇到 name、table，可以从自己的数据结构中获取。
 
 那么多想一步，闭包捕获变量的顺序，和其内存结构的顺序是一致的么？
 
@@ -313,9 +317,13 @@ Rust / Swift / Kotlin iterator 函数式编程的性能测试：
 
 现在我们搞明白了闭包究竟是个什么东西，在内存中怎么表示，接下来我们看看 FnOnce / FnMut / Fn 这三种闭包类型有什么区别。
 
-在声明闭包的时候，我们并不需要指定闭包要满足的约束，但是当闭包作为函数的参数或者数据结构的一个域时，我们需要告诉调用者，对闭包的约束。
+> 既然闭包是一个匿名结构体类型，就可以有两个思考：
+1. 可以作为函数的参数或返回
+2. 可以对其添加trait实现；事实上，rust已经做了这件事，提供Fn/FnMut/FnOnce这三个
+- 在声明闭包的时候，我们并不需要指定闭包要满足的约束
+- 但是当闭包作为函数的参数或者数据结构的一个域时，我们需要告诉调用者，对闭包的约束。
 
-还以 thread::spawn 为例，它要求传入的闭包满足 FnOnce trait。
+> 还以 thread::spawn 为例，它要求传入的闭包满足 FnOnce trait。
 
 ### FnOnce
 
