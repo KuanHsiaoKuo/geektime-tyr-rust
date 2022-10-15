@@ -191,9 +191,10 @@
 <li><a href="#%E5%8C%BF%E5%90%8D%E7%BB%93%E6%9E%84%E4%BD%93-%E9%BB%98%E8%AE%A4%E5%80%9F%E7%94%A8move%E8%BD%AC%E7%A7%BB">匿名结构体： 默认借用，move转移</a></li>
 <li><a href="#%E9%97%AD%E5%8C%85%E5%A4%A7%E5%B0%8F%E5%8F%AA%E8%B7%9F%E6%8D%95%E8%8E%B7%E7%9A%84%E5%8F%98%E9%87%8F%E6%9C%89%E5%85%B3">闭包大小只跟捕获的变量有关</a></li>
 <li><a href="#%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80">内存布局</a></li>
+<li><a href="#%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E9%97%AD%E5%8C%85%E8%AE%BE%E8%AE%A1">不同语言的闭包设计</a></li>
+<li><a href="#rust%E7%9A%84%E8%AE%BE%E8%AE%A1%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E9%97%AD%E5%8C%85%E6%80%A7%E8%83%BD">Rust的设计如何保证闭包性能</a></li>
 </ul>
 </li>
-<li><a href="#%E4%B8%8D%E5%90%8C%E8%AF%AD%E8%A8%80%E7%9A%84%E9%97%AD%E5%8C%85%E8%AE%BE%E8%AE%A1">不同语言的闭包设计</a></li>
 <li><a href="#%E4%BB%8Erust-%E7%9A%84%E9%97%AD%E5%8C%85%E7%B1%BB%E5%9E%8B%E5%BC%80%E5%A7%8B%E6%80%9D%E8%80%83">从Rust 的闭包类型开始思考<g-emoji class="g-emoji" alias="thinking" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f914.png">🤔</g-emoji>
 </a>
 <ul>
@@ -215,7 +216,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 10:50:48 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 15 10:54:45 UTC 2022 -->
 <!--te-->
 <h2 id="闭包的定义"><a class="header" href="#闭包的定义">闭包的定义</a></h2>
 <details id="admonition-闭包的基本概念" class="admonition info">
@@ -495,7 +496,7 @@ struct Closure4 {
 </div>
 </details>
 <p>看完 Rust 闭包的内存结构，你是不是想说“就这”，没啥独特之处吧？但是对比其他语言，结合接下来我的解释，你再仔细想想就会有一种“这怎么可能”的惊讶。</p>
-<h2 id="不同语言的闭包设计"><a class="header" href="#不同语言的闭包设计">不同语言的闭包设计</a></h2>
+<h3 id="不同语言的闭包设计"><a class="header" href="#不同语言的闭包设计">不同语言的闭包设计</a></h3>
 <details id="admonition-其他语言闭包设计有什么问题" class="admonition info">
 <summary class="admonition-title">
 <p>其他语言闭包设计有什么问题？</p>
@@ -521,6 +522,7 @@ struct Closure4 {
 </ol>
 </div>
 </details>
+<h3 id="rust的设计如何保证闭包性能"><a class="header" href="#rust的设计如何保证闭包性能">Rust的设计如何保证闭包性能</a></h3>
 <details id="admonition-为何rust可以保证闭包的性能与函数差不多-匿名结构体借用-or-转移所有权" class="admonition info">
 <summary class="admonition-title">
 <p>为何Rust可以保证闭包的性能与函数差不多: 匿名结构体、借用 or 转移所有权</p>
