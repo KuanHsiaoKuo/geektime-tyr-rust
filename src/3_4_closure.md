@@ -7,7 +7,8 @@
       * [匿名结构体： 默认借用，move转移](#匿名结构体-默认借用move转移)
       * [闭包大小只跟捕获的变量有关](#闭包大小只跟捕获的变量有关)
       * [内存布局](#内存布局)
-   * [不同语言的闭包设计](#不同语言的闭包设计)
+      * [不同语言的闭包设计](#不同语言的闭包设计)
+      * [Rust的设计如何保证闭包性能](#rust的设计如何保证闭包性能)
    * [从Rust 的闭包类型开始思考<g-emoji class="g-emoji" alias="thinking" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f914.png">🤔</g-emoji>](#从rust-的闭包类型开始思考)
       * [作为函数的参数](#作为函数的参数)
       * [作为函数的返回](#作为函数的返回)
@@ -20,7 +21,7 @@
          * [总结一下三种trait闭包使用的情况以及它们之间的关系](#总结一下三种trait闭包使用的情况以及它们之间的关系)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 10:50:48 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 15 10:54:45 UTC 2022 -->
 
 <!--te-->
 
