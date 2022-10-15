@@ -8,16 +8,19 @@
       * [闭包大小只跟捕获的变量有关](#闭包大小只跟捕获的变量有关)
       * [内存布局](#内存布局)
    * [不同语言的闭包设计](#不同语言的闭包设计)
-   * [Rust 的闭包类型](#rust-的闭包类型)
-      * [FnOnce](#fnonce)
-      * [怎么理解 FnOnce 的 Args 泛型参数呢？](#怎么理解-fnonce-的-args-泛型参数呢)
-      * [FnMut](#fnmut)
-      * [Fn](#fn)
-      * [总结一下三种闭包使用的情况以及它们之间的关系](#总结一下三种闭包使用的情况以及它们之间的关系)
-   * [闭包的使用场景](#闭包的使用场景)
+   * [从Rust 的闭包类型开始思考<g-emoji class="g-emoji" alias="thinking" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f914.png">🤔</g-emoji>](#从rust-的闭包类型开始思考)
+      * [作为函数的参数](#作为函数的参数)
+      * [作为函数的返回](#作为函数的返回)
+      * [为闭包实现trait](#为闭包实现trait)
+      * [闭包根据不同trait约束表现不同行为](#闭包根据不同trait约束表现不同行为)
+         * [FnOnce](#fnonce)
+         * [怎么理解 FnOnce 的 Args 泛型参数呢？](#怎么理解-fnonce-的-args-泛型参数呢)
+         * [FnMut](#fnmut)
+         * [Fn](#fn)
+         * [总结一下三种trait闭包使用的情况以及它们之间的关系](#总结一下三种trait闭包使用的情况以及它们之间的关系)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 10:13:53 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 15 10:39:00 UTC 2022 -->
 
 <!--te-->
 
