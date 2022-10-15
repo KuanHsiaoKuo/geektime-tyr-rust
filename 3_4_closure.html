@@ -208,7 +208,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 03:44:50 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 15 10:13:53 UTC 2022 -->
 <!--te-->
 <h2 id="闭包的定义"><a class="header" href="#闭包的定义">闭包的定义</a></h2>
 <details id="admonition-闭包的基本概念" class="admonition info">
@@ -310,7 +310,14 @@ fn main() {
 </blockquote>
 <hr />
 <p>闭包是一种匿名类型，一旦声明，就会产生一个新的类型，但这个类型无法被其它地方使用。这个类型就像一个结构体，会包含所有捕获的变量。</p>
+</div>
+</details>
+<details id="admonition-所以闭包类似一个特殊的结构体" class="admonition question">
+<summary class="admonition-title">
 <p>所以闭包类似一个特殊的结构体？</p>
+<p><a class="admonition-anchor-link" href="#admonition-所以闭包类似一个特殊的结构体"></a></p>
+</summary>
+<div>
 <p>为了搞明白这一点，我们得写段代码探索一下，建议你跟着敲一遍认真思考（代码）：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 use std::{collections::HashMap, mem::size_of_val};
@@ -346,6 +353,14 @@ fn main() {
     )
 }
 </code></pre></pre>
+</div>
+</details>
+<details id="admonition-查看上面代码的5个闭包得出结论" class="admonition question">
+<summary class="admonition-title">
+<p>查看上面代码的5个闭包得出结论</p>
+<p><a class="admonition-anchor-link" href="#admonition-查看上面代码的5个闭包得出结论"></a></p>
+</summary>
+<div>
 <blockquote>
 <p>分别生成了 5 个闭包：</p>
 </blockquote>
@@ -441,7 +456,8 @@ struct Closure4 {
     table: HashMap&lt;&amp;str, &amp;str&gt; // (RandomState(16)|mask|ctrl|left|len)=48字节
 }
 </code></pre></pre>
-<p>不过，对于 closure 类型来说，编译器知道像函数一样调用闭包 c4() 是合法的，并且知道执行 c4() 时，代码应该跳转到什么地址来执行。在执行过程中，如果遇到 name、table，可以从自己的数据结构中获取。</p>
+<p>不过，对于 closure 类型来说，编译器知道像函数一样调用闭包 c4() 是合法的，并且知道执行 c4() 时，代码应该跳转到什么地址来执行。
+在执行过程中，如果遇到 name、table，可以从自己的数据结构中获取。</p>
 <p>那么多想一步，闭包捕获变量的顺序，和其内存结构的顺序是一致的么？</p>
 <p>的确如此，如果我们调整闭包里使用 name1 和 table 的顺序：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
@@ -529,8 +545,20 @@ struct Closure4 {
 </details>
 <h2 id="rust-的闭包类型"><a class="header" href="#rust-的闭包类型">Rust 的闭包类型</a></h2>
 <p>现在我们搞明白了闭包究竟是个什么东西，在内存中怎么表示，接下来我们看看 FnOnce / FnMut / Fn 这三种闭包类型有什么区别。</p>
-<p>在声明闭包的时候，我们并不需要指定闭包要满足的约束，但是当闭包作为函数的参数或者数据结构的一个域时，我们需要告诉调用者，对闭包的约束。</p>
+<blockquote>
+<p>既然闭包是一个匿名结构体类型，就可以有两个思考：</p>
+</blockquote>
+<ol>
+<li>可以作为函数的参数或返回</li>
+<li>可以对其添加trait实现；事实上，rust已经做了这件事，提供Fn/FnMut/FnOnce这三个</li>
+</ol>
+<ul>
+<li>在声明闭包的时候，我们并不需要指定闭包要满足的约束</li>
+<li>但是当闭包作为函数的参数或者数据结构的一个域时，我们需要告诉调用者，对闭包的约束。</li>
+</ul>
+<blockquote>
 <p>还以 thread::spawn 为例，它要求传入的闭包满足 FnOnce trait。</p>
+</blockquote>
 <h3 id="fnonce"><a class="header" href="#fnonce">FnOnce</a></h3>
 <details id="admonition-fnonce定义-例子解析" class="admonition info">
 <summary class="admonition-title">
