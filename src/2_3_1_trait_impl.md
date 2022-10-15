@@ -2,6 +2,9 @@
 
 <!--ts-->
 * [Trait Impl](#trait-impl)
+   * [Trait impl的两面派](#trait-impl的两面派)
+      * [具体实现](#具体实现)
+      * [设计约束](#设计约束)
    * [基本练习](#基本练习)
       * [支持泛型](#支持泛型)
       * [支持继承](#支持继承)
@@ -14,7 +17,7 @@
       * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 10:38:55 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 15 10:50:46 UTC 2022 -->
 
 <!--te-->
 
