@@ -1,29 +1,30 @@
 # 并发原语
 
 <!--ts-->
+
 * [并发原语](#并发原语)
 * [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
 * [工作模式一、自由竞争: Atomic &amp; Mutex](#工作模式一自由竞争-atomic--mutex)
-   * [Atomic解决独占问题](#atomic解决独占问题)
+    * [Atomic解决独占问题](#atomic解决独占问题)
 * [工作模式二、限制顺序并发: map/reduce](#工作模式二限制顺序并发-mapreduce)
-   * [Atomic还存在2个问题](#atomic还存在2个问题)
-   * [用CAS解决问题1: 在互斥的基础上添加顺序](#用cas解决问题1-在互斥的基础上添加顺序)
-   * [用ordering解决问题2： 限制CPU顺序](#用ordering解决问题2-限制cpu顺序)
-   * [Atomic还有什么用](#atomic还有什么用)
-   * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
-   * [Atomic和Mutex的联系](#atomic和mutex的联系)
+    * [Atomic还存在2个问题](#atomic还存在2个问题)
+    * [用CAS解决问题1: 在互斥的基础上添加顺序](#用cas解决问题1-在互斥的基础上添加顺序)
+    * [用ordering解决问题2： 限制CPU顺序](#用ordering解决问题2-限制cpu顺序)
+    * [Atomic还有什么用](#atomic还有什么用)
+    * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
+    * [Atomic和Mutex的联系](#atomic和mutex的联系)
 * [工作模式三、限制依赖并发：DAG 模式](#工作模式三限制依赖并发dag-模式)
-   * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
-   * [condvar介绍与使用](#condvar介绍与使用)
-   * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
-      * [Channel](#channel)
-         * [Channel分类](#channel分类)
-      * [Actor](#actor)
-      * [Channel与Actor对比](#channel与actor对比)
+    * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
+    * [condvar介绍与使用](#condvar介绍与使用)
+    * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
+        * [Channel](#channel)
+            * [Channel分类](#channel分类)
+        * [Actor](#actor)
+        * [Channel与Actor对比](#channel与actor对比)
 * [自己实现一个基本的MPSC Channel](#自己实现一个基本的mpsc-channel)
-   * [测试驱动的设计](#测试驱动的设计)
-   * [实现 MPSC channel](#实现-mpsc-channel)
-   * [回顾测试驱动开发](#回顾测试驱动开发)
+    * [测试驱动的设计](#测试驱动的设计)
+    * [实现 MPSC channel](#实现-mpsc-channel)
+    * [回顾测试驱动开发](#回顾测试驱动开发)
 * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
@@ -72,6 +73,10 @@ DAG 模式，把工作切成不相交的、有依赖关系的子任务，然后�
 - 用分治的思想把问题拆解成正交的子问题
 - 然后组合合适的并发模式来处理这些子问题。
 ~~~
+
+# 常见并发模型梳理，也就是并发原语
+
+- [What are concurrency primitives? - Quora](https://www.quora.com/What-are-concurrency-primitives)
 
 ~~~admonish question title="在这些并发模式背后，都有哪些并发原语可以为我们所用呢" collapsible=true
 在这些并发模式背后，都有哪些并发原语可以为我们所用呢：
