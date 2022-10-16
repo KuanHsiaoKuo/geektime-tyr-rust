@@ -186,13 +186,12 @@
 <li><a href="#v-%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%BC%82%E6%AD%A5">V 并发与异步</a>
 <ul>
 <li><a href="#%E5%8C%BA%E5%88%86%E5%B9%B6%E5%8F%91%E4%B8%8E%E5%B9%B6%E8%A1%8C">区分并发与并行</a></li>
-<li><a href="#%E5%B9%B6%E5%8F%91%E7%9A%84%E9%9A%BE%E7%82%B9%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E5%92%8C%E6%A0%B8%E5%BF%83">并发的难点、工作模式和核心</a></li>
 <li><a href="#%E5%B9%B6%E5%8F%91%E5%8E%9F%E8%AF%AD%E4%B8%8E%E5%BC%82%E6%AD%A5%E7%9A%84%E5%85%B3%E7%B3%BB">并发原语与异步的关系</a></li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct 16 04:10:02 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 16 12:20:25 UTC 2022 -->
 <!--te-->
 <h2 id="区分并发与并行"><a class="header" href="#区分并发与并行">区分并发与并行</a></h2>
 <details id="admonition-再次区分并发与并行" class="admonition info">
@@ -208,36 +207,6 @@
 <li>并行是一种同时执行很多事情的手段。</li>
 </ul>
 <p>我们把要做的事情放在多个线程中，或者多个异步任务中处理，这是并发的能力。在多核多 CPU 的机器上同时运行这些线程或者异步任务，是并行的手段。可以说，并发是为并行赋能。当我们具备了并发的能力，并行就是水到渠成的事情。</p>
-</div>
-</details>
-<h2 id="并发的难点工作模式和核心"><a class="header" href="#并发的难点工作模式和核心">并发的难点、工作模式和核心</a></h2>
-<details id="admonition-处理并发的难点在哪里衍生出哪些工作模式核心是什么" class="admonition info">
-<summary class="admonition-title">
-<p>处理并发的难点在哪里？衍生出哪些工作模式？核心是什么</p>
-<p><a class="admonition-anchor-link" href="#admonition-处理并发的难点在哪里衍生出哪些工作模式核心是什么"></a></p>
-</summary>
-<div>
-<p>其实有很多和并发相关的内容。比如用 std::thread 来创建线程、用 std::sync 下的并发原语（Mutex）来处理并发过程中的同步问题、用 Send/Sync trait 来保证并发的安全等等。</p>
-<p>在处理并发的过程中，难点并不在于如何创建多个线程来分配工作，在于如何在这些并发的任务中进行同步。</p>
-<p>我们来看并发状态下几种常见的工作模式：自由竞争模式、map/reduce 模式、DAG 模式：</p>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/33%EF%BD%9C%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9A%E4%BB%8Eatomics%E5%88%B0Channel%EF%BC%8CRust%E9%83%BD%E6%8F%90%E4%BE%9B%E4%BA%86%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%EF%BC%9F-4950283.jpg" alt="33｜并发处理（上）：从atomics到Channel，Rust都提供了什么工具？" /></p>
-<hr />
-<ol>
-<li>在自由竞争模式下，多个并发任务会竞争同一个临界区的访问权。任务之间在何时、以何种方式去访问临界区，是不确定的，或者说是最为灵活的，只要在进入临界区时获得独占访问即可。</li>
-</ol>
-<ul>
-<li>Atomic &amp; Mutex</li>
-</ul>
-<ol start="2">
-<li>在自由竞争的基础上，我们可以限制并发的同步模式，典型的有 map/reduce 模式和 DAG 模式：</li>
-</ol>
-<ul>
-<li>map/reduce 模式，把工作打散，按照相同的处理完成后，再按照一定的顺序将结果组织起来；</li>
-<li>DAG 模式，把工作切成不相交的、有依赖关系的子任务，然后按依赖关系并发执行。</li>
-</ul>
-<blockquote>
-<p>这三种基本模式组合起来，可以处理非常复杂的并发场景。所以，当我们处理复杂问题的时候，应该先厘清其脉络，用分治的思想把问题拆解成正交的子问题，然后组合合适的并发模式来处理这些子问题。</p>
-</blockquote>
 </div>
 </details>
 <h2 id="并发原语与异步的关系"><a class="header" href="#并发原语与异步的关系">并发原语与异步的关系</a></h2>

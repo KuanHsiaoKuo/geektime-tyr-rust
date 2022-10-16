@@ -185,9 +185,10 @@
 <ul>
 <li><a href="#%E5%B9%B6%E5%8F%91%E5%8E%9F%E8%AF%AD">并发原语</a>
 <ul>
-<li><a href="#atomic">Atomic</a>
+<li><a href="#%E5%B9%B6%E5%8F%91%E7%9A%84%E9%9A%BE%E7%82%B9%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F%E5%92%8C%E6%A0%B8%E5%BF%83">并发的难点、工作模式和核心</a></li>
+<li><a href="#atomic">Atomic</a></li>
+<li><a href="#%E4%BB%8E%E7%8B%AC%E5%8D%A0%E5%BC%80%E5%A7%8Batomic">从独占开始：Atomic</a>
 <ul>
-<li><a href="#%E4%BB%8E%E9%94%81%E5%BC%80%E5%A7%8B">从锁开始</a></li>
 <li><a href="#atomiccas">Atomic+CAS</a></li>
 <li><a href="#ordering">ordering</a></li>
 </ul>
@@ -214,9 +215,47 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct 16 04:10:01 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 16 12:20:24 UTC 2022 -->
 <!--te-->
-<details id="admonition-在这些并发模式背后都有哪些并发原语可以为我们所用呢" class="admonition info">
+<h2 id="并发的难点工作模式和核心"><a class="header" href="#并发的难点工作模式和核心">并发的难点、工作模式和核心</a></h2>
+<details id="admonition-处理并发的难点在哪里" class="admonition info">
+<summary class="admonition-title">
+<p>处理并发的难点在哪里？</p>
+<p><a class="admonition-anchor-link" href="#admonition-处理并发的难点在哪里"></a></p>
+</summary>
+<div>
+<p>其实有很多和并发相关的内容。比如用 std::thread 来创建线程、用 std::sync 下的并发原语（Mutex）来处理并发过程中的同步问题、用 Send/Sync trait 来保证并发的安全等等。</p>
+<p>在处理并发的过程中，难点并不在于如何创建多个线程来分配工作，在于如何在这些并发的任务中进行同步。</p>
+</div>
+</details>
+<details id="admonition-衍生出哪些工作模式它们的核心是什么" class="admonition question">
+<summary class="admonition-title">
+<p>衍生出哪些工作模式？它们的核心是什么？</p>
+<p><a class="admonition-anchor-link" href="#admonition-衍生出哪些工作模式它们的核心是什么"></a></p>
+</summary>
+<div>
+<p>我们来看并发状态下几种常见的工作模式：自由竞争模式、map/reduce 模式、DAG 模式</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/33%EF%BD%9C%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9A%E4%BB%8Eatomics%E5%88%B0Channel%EF%BC%8CRust%E9%83%BD%E6%8F%90%E4%BE%9B%E4%BA%86%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%EF%BC%9F-4950283.jpg" alt="33｜并发处理（上）：从atomics到Channel，Rust都提供了什么工具？" /></p>
+<hr />
+<ol>
+<li>在自由竞争模式下，多个并发任务会竞争同一个临界区的访问权。任务之间在何时、以何种方式去访问临界区，是不确定的，或者说是最为灵活的，只要在进入临界区时获得独占访问即可。</li>
+</ol>
+<ul>
+<li>Atomic &amp; Mutex</li>
+</ul>
+<ol start="2">
+<li>在自由竞争的基础上，我们可以限制并发的同步模式，典型的有 map/reduce 模式和 DAG 模式：</li>
+</ol>
+<ul>
+<li>map/reduce 模式，把工作打散，按照相同的处理完成后，再按照一定的顺序将结果组织起来；</li>
+<li>DAG 模式，把工作切成不相交的、有依赖关系的子任务，然后按依赖关系并发执行。</li>
+</ul>
+<blockquote>
+<p>这三种基本模式组合起来，可以处理非常复杂的并发场景。所以，当我们处理复杂问题的时候，应该先厘清其脉络，用分治的思想把问题拆解成正交的子问题，然后组合合适的并发模式来处理这些子问题。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-在这些并发模式背后都有哪些并发原语可以为我们所用呢" class="admonition question">
 <summary class="admonition-title">
 <p>在这些并发模式背后，都有哪些并发原语可以为我们所用呢</p>
 <p><a class="admonition-anchor-link" href="#admonition-在这些并发模式背后都有哪些并发原语可以为我们所用呢"></a></p>
@@ -234,11 +273,11 @@
 </details>
 <h2 id="atomic"><a class="header" href="#atomic">Atomic</a></h2>
 <p>Atomic 是所有并发原语的基础，它为并发任务的同步奠定了坚实的基础。</p>
-<h3 id="从锁开始"><a class="header" href="#从锁开始">从锁开始</a></h3>
-<details id="admonition-互斥锁会导致乱序" class="admonition info">
+<h2 id="从独占开始atomic"><a class="header" href="#从独占开始atomic">从独占开始：Atomic</a></h2>
+<details id="admonition-互斥锁解决独占问题" class="admonition info">
 <summary class="admonition-title">
-<p>互斥锁会导致乱序</p>
-<p><a class="admonition-anchor-link" href="#admonition-互斥锁会导致乱序"></a></p>
+<p>互斥锁解决独占问题</p>
+<p><a class="admonition-anchor-link" href="#admonition-互斥锁解决独占问题"></a></p>
 </summary>
 <div>
 <p>谈到同步，相信你首先会想到锁，所以在具体介绍 atomic 之前，我们从最基本的锁该如何实现讲起。自由竞争模式下，我们需要用互斥锁来保护某个临界区，使进入临界区的任务拥有独占访问的权限。</p>
@@ -310,6 +349,14 @@ fn main() {
 <p>这段代码模拟了 Mutex 的实现，它的核心部分是 lock() 方法。</p>
 </blockquote>
 <p>我们之前说过，Mutex 在调用 lock() 后，会得到一个 MutexGuard 的 RAII 结构，这里为了简便起见，要求调用者传入一个闭包，来处理加锁后的事务。在 lock() 方法里，拿不到锁的并发任务会一直 spin，拿到锁的任务可以干活，干完活后会解锁，这样之前 spin 的任务会竞争到锁，进入临界区。</p>
+</div>
+</details>
+<details id="admonition-但互斥锁不能解决顺序同步问题" class="admonition info">
+<summary class="admonition-title">
+<p>但互斥锁不能解决顺序同步问题</p>
+<p><a class="admonition-anchor-link" href="#admonition-但互斥锁不能解决顺序同步问题"></a></p>
+</summary>
+<div>
 <blockquote>
 <p>这样的实现看上去似乎问题不大，但是你细想，它有好几个问题：</p>
 </blockquote>
@@ -333,14 +380,16 @@ fn main() {
 <blockquote>
 <p>这里再强调一下 unsafe 代码需要足够严谨，需要非常有经验的工程师去审查，这段代码之所以破快了并发安全性，是因为我们错误地认为：为 Lock<T> 实现 Sync，是安全的。</p>
 </blockquote>
-<p>为了解决上面这段代码的问题，我们必须在 CPU 层面做一些保证，让某些操作成为原子操作。</p>
 </div>
 </details>
+<blockquote>
+<p>为了解决上面这段代码的问题，我们必须在 CPU 层面做一些保证，让某些操作成为原子操作。</p>
+</blockquote>
 <h3 id="atomiccas"><a class="header" href="#atomiccas">Atomic+CAS</a></h3>
-<details id="admonition-使用atomiccas确保原子操作顺序l" class="admonition info">
+<details id="admonition-使用atomiccas确保原子操作顺序" class="admonition info">
 <summary class="admonition-title">
-<p>使用Atomic+CAS确保原子操作顺序l</p>
-<p><a class="admonition-anchor-link" href="#admonition-使用atomiccas确保原子操作顺序l"></a></p>
+<p>使用Atomic+CAS确保原子操作顺序</p>
+<p><a class="admonition-anchor-link" href="#admonition-使用atomiccas确保原子操作顺序"></a></p>
 </summary>
 <div>
 <p>最基础的保证是：CAS</p>
