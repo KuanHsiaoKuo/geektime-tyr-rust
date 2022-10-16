@@ -185,6 +185,7 @@
 <ul>
 <li><a href="#asyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84">async/await内部是怎么实现的？</a>
 <ul>
+<li><a href="#futureasyncawait%E7%9A%84%E8%81%94%E5%8A%A8%E7%90%86%E8%A7%A3">Future、Async/Await的联动理解</a></li>
 <li><a href="#contextpin">Context、Pin</a></li>
 <li><a href="#contextwaker-waker-%E7%9A%84%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6">Context::waker: Waker 的调用机制</a></li>
 <li><a href="#async-%E7%A9%B6%E7%AB%9F%E7%94%9F%E6%88%90%E4%BA%86%E4%BB%80%E4%B9%88">async 究竟生成了什么？</a></li>
@@ -198,24 +199,32 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 10:54:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 16 02:54:09 UTC 2022 -->
 <!--te-->
-<details id="admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解" class="admonition info">
-<summary class="admonition-title">
+<h2 id="futureasyncawait的联动理解"><a class="header" href="#futureasyncawait的联动理解">Future、Async/Await的联动理解</a></h2>
+<div id="admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解" class="admonition info">
+<div class="admonition-title">
 <p>对 Future 和 async/await 的基本概念有一个比较扎实的理解</p>
 <p><a class="admonition-anchor-link" href="#admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解"></a></p>
-</summary>
+</div>
 <div>
 <p>对 Future 和 async/await 的基本概念有一个比较扎实的理解:</p>
 <ol>
-<li>知道在什么情况下该使用 Future</li>
-<li>什么情况下该使用 Thread</li>
-<li>executor 和 reactor 是怎么联动最终让 Future 得到了一个结果。</li>
+<li>知道在什么情况下该使用 Future, 什么情况下该使用 Thread</li>
+<li><a href="5_2_future_async_await.html#%E6%80%8E%E4%B9%88%E7%94%A8-future-%E5%81%9A%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86">executor 和 reactor 是怎么联动最终让 Future 得到了一个结果。</a></li>
 </ol>
 </div>
-</details>
-<p>然而，我们并不清楚为什么 async fn 或者 async block 就能够产生 Future，也并不明白 Future 是怎么被 executor 处理的。继续深入下去，看看 async/await
-这两个关键词究竟施了什么样的魔法，能够让一切如此简单又如此自然地运转起来。</p>
+</div>
+<blockquote>
+<p>然而:</p>
+</blockquote>
+<ol>
+<li>我们并不清楚为什么 async fn 或者 async block 就能够产生 Future</li>
+<li>也并不明白 Future 是怎么被 executor 处理的。</li>
+</ol>
+<blockquote>
+<p>继续深入下去，看看 async/await 这两个关键词究竟施了什么样的魔法，能够让一切如此简单又如此自然地运转起来。</p>
+</blockquote>
 <h2 id="contextpin"><a class="header" href="#contextpin">Context、Pin</a></h2>
 <details id="admonition-从future定义中的pin和context开始" class="admonition info">
 <summary class="admonition-title">
