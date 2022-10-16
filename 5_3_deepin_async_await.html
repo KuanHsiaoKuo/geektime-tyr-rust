@@ -183,25 +183,48 @@
                 <h1 id="asyncawait内部是怎么实现的"><a class="header" href="#asyncawait内部是怎么实现的">async/await内部是怎么实现的？</a></h1>
 <!--ts-->
 <ul>
-<li><a href="#asyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84">async/await内部是怎么实现的？</a>
-<ul>
+<li><a href="#asyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84">async/await内部是怎么实现的？</a></li>
 <li><a href="#futureasyncawait%E7%9A%84%E8%81%94%E5%8A%A8%E7%90%86%E8%A7%A3">Future、Async/Await的联动理解</a></li>
-<li><a href="#contextpin">Context、Pin</a></li>
-<li><a href="#contextwaker-waker-%E7%9A%84%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6">Context::waker: Waker 的调用机制</a></li>
-<li><a href="#async-%E7%A9%B6%E7%AB%9F%E7%94%9F%E6%88%90%E4%BA%86%E4%BB%80%E4%B9%88">async 究竟生成了什么？</a></li>
-<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-pin">为什么需要 Pin？</a></li>
-<li><a href="#%E8%87%AA%E5%BC%95%E7%94%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">自引用数据结构</a></li>
-<li><a href="#unpin">Unpin</a></li>
+<li><a href="#%E9%97%AE%E9%A2%98%E4%B8%80async-%E4%BA%A7%E7%94%9F%E7%9A%84-future-%E7%A9%B6%E7%AB%9F%E6%98%AF%E4%BB%80%E4%B9%88%E7%B1%BB%E5%9E%8B">问题一：async 产生的 Future 究竟是什么类型？</a></li>
+<li><a href="#%E9%97%AE%E9%A2%98%E4%BA%8Cfuture-%E6%98%AF%E6%80%8E%E4%B9%88%E8%A2%AB-executor-%E5%A4%84%E7%90%86%E7%9A%84">问题二：Future 是怎么被 executor 处理的</a>
+<ul>
+<li><a href="#%E5%86%8D%E5%BA%A6%E6%B7%B1%E5%85%A5future-trait-contextpin">再度深入Future Trait： Context、Pin</a></li>
+<li><a href="#contextwaker-waker-%E7%9A%84%E8%B0%83%E7%94%A8%E6%9C%BA%E5%88%B6">Context::waker: Waker 的调用机制</a>
+<ul>
+<li><a href="#context%E5%8C%85%E5%90%ABwaker">Context包含Waker</a></li>
+<li><a href="#waker%E5%8C%85%E5%90%ABvtable%E8%AE%B0%E5%BD%95%E5%9B%9E%E8%B0%83">Waker包含Vtable记录回调</a></li>
+</ul>
+</li>
+<li><a href="#future-%E6%98%AF%E6%80%8E%E4%B9%88%E8%A2%AB-executor-%E5%A4%84%E7%90%86%E7%9A%84">Future 是怎么被 executor 处理的</a>
+<ul>
+<li><a href="#%E4%B8%8D%E6%96%ADpool">不断pool</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0future-trait%E5%8C%B9%E9%85%8D%E4%B8%8D%E5%90%8C%E9%80%BB%E8%BE%91">实现Future trait匹配不同逻辑</a></li>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B%E5%85%B6%E5%AE%9E%E6%98%AF%E4%B8%80%E4%B8%AA%E7%8A%B6%E6%80%81%E6%9C%BA">实现过程其实是一个状态机</a></li>
+</ul>
+</li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81-pin">为什么需要 Pin？</a>
+<ul>
+<li><a href="#%E5%BC%82%E6%AD%A5%E4%BB%A3%E7%A0%81%E4%BC%9A%E5%87%BA%E7%8E%B0%E8%87%AA%E5%BC%95%E7%94%A8%E7%BB%93%E6%9E%84">异步代码会出现自引用结构</a></li>
+<li><a href="#%E8%87%AA%E5%BC%95%E7%94%A8%E7%BB%93%E6%9E%84%E7%9A%84%E9%97%AE%E9%A2%98">自引用结构的问题</a></li>
+<li><a href="#pin%E5%B0%B1%E6%98%AF%E4%B8%BA%E4%BA%86%E8%A7%A3%E5%86%B3%E8%BF%99%E4%B8%AA%E9%97%AE%E9%A2%98">Pin就是为了解决这个问题</a></li>
+</ul>
+</li>
+<li><a href="#%E8%81%94%E6%83%B3unpin">联想Unpin</a>
+<ul>
+<li><a href="#unpin%E5%A3%B0%E6%98%8E%E5%8F%AF%E4%BB%A5%E7%A7%BB%E5%8A%A8">Unpin声明可以移动</a></li>
+<li><a href="#unpin">!Unpin</a></li>
+<li><a href="#unpin%E4%B8%8Epin%E7%9A%84%E5%85%B3%E7%B3%BB">Unpin与Pin的关系</a></li>
 <li><a href="#boxt%E7%9A%84unpin%E6%80%9D%E8%80%83">Box&lt;T&gt;的Unpin思考</a></li>
-<li><a href="#async-%E4%BA%A7%E7%94%9F%E7%9A%84-future-%E7%A9%B6%E7%AB%9F%E6%98%AF%E4%BB%80%E4%B9%88%E7%B1%BB%E5%9E%8B">async 产生的 Future 究竟是什么类型？</a></li>
-<li><a href="#%E5%9B%9E%E9%A1%BE%E6%95%B4%E7%90%86future%E7%9A%84contextpinunpin%E4%BB%A5%E5%8F%8Aasyncawait">回顾整理Future的Context、Pin/Unpin，以及async/await</a></li>
 </ul>
 </li>
 </ul>
+</li>
+<li><a href="#%E5%9B%9E%E9%A1%BE%E6%95%B4%E7%90%86future%E7%9A%84contextpinunpin%E4%BB%A5%E5%8F%8Aasyncawait">回顾整理Future的Context、Pin/Unpin，以及async/await</a></li>
+</ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct 16 02:58:02 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 16 04:10:02 UTC 2022 -->
 <!--te-->
-<h2 id="futureasyncawait的联动理解"><a class="header" href="#futureasyncawait的联动理解">Future、Async/Await的联动理解</a></h2>
+<h1 id="futureasyncawait的联动理解"><a class="header" href="#futureasyncawait的联动理解">Future、Async/Await的联动理解</a></h1>
 <div id="admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解" class="admonition info">
 <div class="admonition-title">
 <p>对 Future 和 async/await 的基本概念有一个比较扎实的理解</p>
@@ -225,7 +248,96 @@
 <blockquote>
 <p>继续深入下去，看看 async/await 这两个关键词究竟施了什么样的魔法，能够让一切如此简单又如此自然地运转起来。</p>
 </blockquote>
-<h2 id="contextpin"><a class="header" href="#contextpin">Context、Pin</a></h2>
+<h1 id="问题一async-产生的-future-究竟是什么类型"><a class="header" href="#问题一async-产生的-future-究竟是什么类型">问题一：async 产生的 Future 究竟是什么类型？</a></h1>
+<details id="admonition-rust中future是一个traitasync返回的是一个实现了future的genfuture类型" class="admonition info">
+<summary class="admonition-title">
+<p>Rust中Future是一个trait，async返回的是一个实现了Future的GenFuture类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust中future是一个traitasync返回的是一个实现了future的genfuture类型"></a></p>
+</summary>
+<div>
+<p>现在，我们对 Future 的接口有了一个完整的认识，也知道 async 关键字的背后都发生了什么事情：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Future {
+    type Output;
+    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
+}
+</code></pre></pre>
+<p>那么，当你写一个 async fn 或者使用了一个 async block 时，究竟得到了一个什么类型的数据呢？比如：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+let fut = async { 42 };
+</code></pre></pre>
+<p>你肯定能拍着胸脯说，这个我知道，不就是 impl Future&lt;Output = i32&gt; 么？</p>
+<p>对，但是 impl Future 不是一个具体的类型啊，我们讲过，它相当于 T: Future，那么这个 T 究竟是什么呢？</p>
+<p>我们来写段代码探索一下（代码）：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn main() {
+    let fut = async { 42 };
+
+    println!(&quot;type of fut is: {}&quot;, get_type_name(&amp;fut));
+}
+
+fn get_type_name&lt;T&gt;(_: &amp;T) -&gt; &amp;'static str {
+    std::any::type_name::&lt;T&gt;()
+}
+</code></pre></pre>
+<p>它的输出如下：</p>
+<pre><code class="language-shell">
+type of fut is: core::future::from_generator::GenFuture&lt;xxx::main::{{closure}}&gt;
+</code></pre>
+<p>实现 Future trait 的是一个叫 GenFuture 的结构，它内部有一个闭包。猜测这个闭包是 async { 42 } 产生的？</p>
+</div>
+</details>
+<details id="admonition-genfuture-这里颇似python的yield如何变成协程的过程" class="admonition info">
+<summary class="admonition-title">
+<p>GenFuture: 这里颇似python的yield如何变成协程的过程。</p>
+<p><a class="admonition-anchor-link" href="#admonition-genfuture-这里颇似python的yield如何变成协程的过程"></a></p>
+</summary>
+<div>
+<p>我们看 GenFuture 的定义（感兴趣可以在 Rust 源码中搜 from_generator），可以看到它是一个泛型结构，内部数据 T 要满足 Generator trait：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+struct GenFuture&lt;T: Generator&lt;ResumeTy, Yield = ()&gt;&gt;(T);
+
+pub trait Generator&lt;R = ()&gt; {
+    type Yield;
+    type Return;
+    fn resume(
+        self: Pin&lt;&amp;mut Self&gt;, 
+        arg: R
+    ) -&gt; GeneratorState&lt;Self::Yield, Self::Return&gt;;
+}
+</code></pre></pre>
+<p><a href="https://doc.rust-lang.org/std/ops/trait.Generator.html">Generator</a> 是 Rust nightly 的一个 trait，还没有进入到标准库。大致看看官网展示的例子，它是怎么用的：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+#![feature(generators, generator_trait)]
+
+use std::ops::{Generator, GeneratorState};
+use std::pin::Pin;
+
+fn main() {
+    let mut generator = || {
+        yield 1;
+        return &quot;foo&quot;
+    };
+
+    match Pin::new(&amp;mut generator).resume(()) {
+        GeneratorState::Yielded(1) =&gt; {}
+        _ =&gt; panic!(&quot;unexpected return from resume&quot;),
+    }
+    match Pin::new(&amp;mut generator).resume(()) {
+        GeneratorState::Complete(&quot;foo&quot;) =&gt; {}
+        _ =&gt; panic!(&quot;unexpected return from resume&quot;),
+    }
+}
+</code></pre></pre>
+<ol>
+<li>可以看到，如果你创建一个闭包，里面有 yield 关键字，就会得到一个 Generator。</li>
+<li>如果你在 Python 中使用过 yield，二者其实非常类似。</li>
+<li>因为 Generator 是一个还没进入到稳定版的功能，大致了解一下就行，以后等它的 API 稳定后再仔细研究。</li>
+</ol>
+</div>
+</details>
+<h1 id="问题二future-是怎么被-executor-处理的"><a class="header" href="#问题二future-是怎么被-executor-处理的">问题二：Future 是怎么被 executor 处理的</a></h1>
+<h2 id="再度深入future-trait-contextpin"><a class="header" href="#再度深入future-trait-contextpin">再度深入Future Trait： Context、Pin</a></h2>
 <details id="admonition-从future定义中的pin和context开始" class="admonition info">
 <summary class="admonition-title">
 <p>从Future定义中的Pin和Context开始</p>
@@ -242,6 +354,7 @@ pub trait Future {
 </div>
 </details>
 <h2 id="contextwaker-waker-的调用机制"><a class="header" href="#contextwaker-waker-的调用机制">Context::waker: Waker 的调用机制</a></h2>
+<h3 id="context包含waker"><a class="header" href="#context包含waker">Context包含Waker</a></h3>
 <details id="admonition-context-就是-waker-的一个封装" class="admonition info">
 <summary class="admonition-title">
 <p>Context 就是 Waker 的一个封装</p>
@@ -263,6 +376,15 @@ pub struct Context&lt;'a&gt; {
 }
 </code></pre></pre>
 <p>所以，Context 就是 Waker 的一个封装。</p>
+</div>
+</details>
+<h3 id="waker包含vtable记录回调"><a class="header" href="#waker包含vtable记录回调">Waker包含Vtable记录回调</a></h3>
+<details id="admonition-rawwakervtable" class="admonition info">
+<summary class="admonition-title">
+<p>RawWakerVTable</p>
+<p><a class="admonition-anchor-link" href="#admonition-rawwakervtable"></a></p>
+</summary>
+<div>
 <p>如果你去看 Waker 的定义和相关的代码，会发现它非常抽象，内部使用了一个 vtable 来允许各种各样的 waker 的行为：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 pub struct RawWakerVTable {
@@ -304,18 +426,19 @@ impl Waker {
 </div>
 </details>
 <p>不过，虽然我们开发时会使用 tokio，但阅读、理解代码时，我建议看 futures 库，比如 waker vtable 的定义。futures 库还有一个简单的 executor，也非常适合进一步通过代码理解 executor 的原理。</p>
-<h2 id="async-究竟生成了什么"><a class="header" href="#async-究竟生成了什么">async 究竟生成了什么？</a></h2>
-<p>我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &amp;self / &amp;mut self，可是 poll() 却使用了 Pin&lt;&amp;mut self&gt;，为什么？</p>
-<details id="admonition-rust-在编译-async-fn-或者-async-block-时就会生成类似的状态机的实现" class="admonition info">
+<h2 id="future-是怎么被-executor-处理的"><a class="header" href="#future-是怎么被-executor-处理的">Future 是怎么被 executor 处理的</a></h2>
+<h3 id="不断pool"><a class="header" href="#不断pool">不断pool</a></h3>
+<details id="admonition-不断poll匹配状态执行不同逻辑" class="admonition info">
 <summary class="admonition-title">
-<p>Rust 在编译 async fn 或者 async block 时，就会生成类似的状态机的实现</p>
-<p><a class="admonition-anchor-link" href="#admonition-rust-在编译-async-fn-或者-async-block-时就会生成类似的状态机的实现"></a></p>
+<p>不断poll，匹配状态执行不同逻辑</p>
+<p><a class="admonition-anchor-link" href="#admonition-不断poll匹配状态执行不同逻辑"></a></p>
 </summary>
 <div>
 <p>为了讲明白 Pin，我们得往前追踪一步，看看产生 Future 的一个 async block/fn 内部究竟生成了什么样的代码？来看下面这个简单的 async 函数：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 async fn write_hello_file_async(name: &amp;str) -&gt; anyhow::Result&lt;()&gt; {
     let mut file = fs::File::create(name).await?;
+    // 这里其实就类似python的yield from
     file.write_all(b&quot;hello world!&quot;).await?;
 
     Ok(())
@@ -339,7 +462,18 @@ match write_hello_file_async.poll(cx) {
     Poll::Pending =&gt; return Poll::Pending
 }
 </code></pre></pre>
+</div>
+</details>
+<blockquote>
 <p>这是单个 await 的处理方法，那更加复杂的，一个函数中有若干个 await，该怎么处理呢？</p>
+</blockquote>
+<h3 id="实现future-trait匹配不同逻辑"><a class="header" href="#实现future-trait匹配不同逻辑">实现Future trait匹配不同逻辑</a></h3>
+<details id="admonition-匹配的不同操作逻辑需要在future-trait里面实现" class="admonition info">
+<summary class="admonition-title">
+<p>匹配的不同操作逻辑，需要在Future trait里面实现</p>
+<p><a class="admonition-anchor-link" href="#admonition-匹配的不同操作逻辑需要在future-trait里面实现"></a></p>
+</summary>
+<div>
 <p>以前面write_hello_file_async 函数的内部实现为例，显然，我们只有在处理完 create()，才能处理 write_all()，所以，应该是类似这样的代码：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 let fut = fs::File::create(name);
@@ -390,7 +524,15 @@ fn write_hello_file_async(name: &amp;str) -&gt; WriteHelloFile {
 }
 </code></pre></pre>
 <p>这样，我们就把刚才的 write_hello_file_async 异步函数，转化成了一个返回 WriteHelloFile Future 的函数。</p>
-<p>来看这个 Future 如何实现（详细注释了）：</p>
+</div>
+</details>
+<h3 id="实现过程其实是一个状态机"><a class="header" href="#实现过程其实是一个状态机">实现过程其实是一个状态机</a></h3>
+<details id="admonition-来看这个-future-如何实现详细注释了状态机" class="admonition info">
+<summary class="admonition-title">
+<p>来看这个 Future 如何实现（详细注释了）：状态机</p>
+<p><a class="admonition-anchor-link" href="#admonition-来看这个-future-如何实现详细注释了状态机"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">
 impl Future for WriteHelloFile {
     type Output = Result&lt;(), std::io::Error&gt;;
@@ -431,9 +573,16 @@ impl Future for WriteHelloFile {
     }
 }
 </code></pre></pre>
+</div>
+</details>
+<details id="admonition--这个-future-完整实现的内部结构-其实就是一个状态机的迁移" class="admonition info">
+<summary class="admonition-title">
 <blockquote>
 <p>这个 Future 完整实现的内部结构 ，其实就是一个状态机的迁移。</p>
 </blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--这个-future-完整实现的内部结构-其实就是一个状态机的迁移"></a></p>
+</summary>
+<div>
 <p>这段（伪）代码和之前异步函数是等价的：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 async fn write_hello_file_async(name: &amp;str) -&gt; anyhow::Result&lt;()&gt; {
@@ -448,12 +597,14 @@ async fn write_hello_file_async(name: &amp;str) -&gt; anyhow::Result&lt;()&gt; {
 </blockquote>
 </div>
 </details>
-<p>好搞明白这个问题，回到 pin 。刚才我们手写状态机代码的过程，能帮你理解为什么会需要 Pin 这个问题。</p>
 <h2 id="为什么需要-pin"><a class="header" href="#为什么需要-pin">为什么需要 Pin？</a></h2>
-<details id="admonition-什么场景下会出现自引用数据结构有什么问题需要pin解决" class="admonition info">
+<p>我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &amp;self / &amp;mut self，可是 poll() 却使用了 Pin&lt;&amp;mut self&gt;，为什么？
+好搞明白这个问题，回到 pin 。刚才我们手写状态机代码的过程，能帮你理解为什么会需要 Pin 这个问题。</p>
+<h3 id="异步代码会出现自引用结构"><a class="header" href="#异步代码会出现自引用结构">异步代码会出现自引用结构</a></h3>
+<details id="admonition-什么场景下会出现自引用数据结构" class="admonition question">
 <summary class="admonition-title">
-<p>什么场景下会出现自引用数据结构？有什么问题需要pin解决？</p>
-<p><a class="admonition-anchor-link" href="#admonition-什么场景下会出现自引用数据结构有什么问题需要pin解决"></a></p>
+<p>什么场景下会出现自引用数据结构？</p>
+<p><a class="admonition-anchor-link" href="#admonition-什么场景下会出现自引用数据结构"></a></p>
 </summary>
 <div>
 <p>在上面实现 Future 的状态机中，我们引用了 file 这样一个局部变量：</p>
@@ -491,48 +642,20 @@ struct AwaitingWriteData {
 <li>然后在 WriteHelloFile 中引用它。</li>
 <li>此时，在同一个数据结构内部，fut 指向了对 file 的引用，这样的数据结构，叫自引用结构（Self-Referential Structure）。</li>
 </ol>
-<blockquote>
-<p>自引用结构有一个很大的问题是：一旦它被移动，原本的指针就会指向旧的地址。</p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961729.jpg" alt="39｜异步处理：asyncawait内部是怎么实现的？" /></p>
-<p>所以需要有某种机制来保证这种情况不会发生。</p>
-<p>Pin 就是为这个目的而设计的一个数据结构: 我们可以 Pin 住指向一个 Future 的指针</p>
-<p>看文稿中 Pin 的声明：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-pub struct Pin&lt;P&gt; {
-    pointer: P,
-}
-
-impl&lt;P: Deref&gt; Deref for Pin&lt;P&gt; {
-    type Target = P::Target;
-    fn deref(&amp;self) -&gt; &amp;P::Target {
-        Pin::get_ref(Pin::as_ref(self))
-    }
-}
-
-impl&lt;P: DerefMut&lt;Target: Unpin&gt;&gt; DerefMut for Pin&lt;P&gt; {
-    fn deref_mut(&amp;mut self) -&gt; &amp;mut P::Target {
-        Pin::get_mut(Pin::as_mut(self))
-    }
-}
-</code></pre></pre>
-<ol>
-<li>Pin 拿住的是一个可以解引用成 T 的指针类型 P，而不是直接拿原本的类型 T。</li>
-<li>所以，对于 Pin 而言，你看到的都是 Pin&lt;Box<T>&gt;、Pin&lt;&amp;mut T&gt;，但不会是 Pin<T>。</li>
-<li>因为 Pin 的目的是，把 T 的内存位置锁住，从而避免移动后自引用类型带来的引用失效问题。</li>
-</ol>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961721.jpg" alt="39｜异步处理：asyncawait内部是怎么实现的？" /></p>
-<p>这样数据结构可以正常访问，但是你无法直接拿到原来的数据结构进而移动它。</p>
 </div>
 </details>
-<h2 id="自引用数据结构"><a class="header" href="#自引用数据结构">自引用数据结构</a></h2>
-<details id="admonition-举例说明自引用类型存在什么潜在危害" class="admonition bug">
+<blockquote>
+<p>可以说，异步代码这种状态机情况下，容易出现自引用结构</p>
+</blockquote>
+<blockquote>
+<p>当然，自引用数据结构并非只在异步代码里出现，只不过异步代码在内部生成用状态机表述的 Future 时，很容易产生自引用结构。</p>
+</blockquote>
+<details id="admonition-我们看一个和-future-无关的例子代码" class="admonition bug">
 <summary class="admonition-title">
-<p>举例说明自引用类型存在什么潜在危害</p>
-<p><a class="admonition-anchor-link" href="#admonition-举例说明自引用类型存在什么潜在危害"></a></p>
+<p>我们看一个和 Future 无关的例子（代码）：</p>
+<p><a class="admonition-anchor-link" href="#admonition-我们看一个和-future-无关的例子代码"></a></p>
 </summary>
 <div>
-<p>当然，自引用数据结构并非只在异步代码里出现，只不过异步代码在内部生成用状态机表述的 Future 时，很容易产生自引用结构。我们看一个和 Future 无关的例子（代码）：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 #[derive(Debug)]
 struct SelfReference {
@@ -649,17 +772,71 @@ fn main() {
 </blockquote>
 </div>
 </details>
-<details id="admonition-使用pin之后如何解决问题" class="admonition info">
+<h3 id="自引用结构的问题"><a class="header" href="#自引用结构的问题">自引用结构的问题</a></h3>
+<details id="admonition-自引用结构有什么问题" class="admonition info">
+<summary class="admonition-title">
+<p>自引用结构有什么问题？</p>
+<p><a class="admonition-anchor-link" href="#admonition-自引用结构有什么问题"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>自引用结构有一个很大的问题是：一旦它被移动，原本的指针就会指向旧的地址。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961729.jpg" alt="39｜异步处理：asyncawait内部是怎么实现的？" /></p>
+</div>
+</details>
+<blockquote>
+<p>所以需要有某种机制来保证这种情况不会发生。</p>
+</blockquote>
+<h3 id="pin就是为了解决这个问题"><a class="header" href="#pin就是为了解决这个问题">Pin就是为了解决这个问题</a></h3>
+<details id="admonition-pin定义就是解决这个问题" class="admonition question">
+<summary class="admonition-title">
+<p>Pin定义就是解决这个问题?</p>
+<p><a class="admonition-anchor-link" href="#admonition-pin定义就是解决这个问题"></a></p>
+</summary>
+<div>
+<p>Pin 就是为这个目的而设计的一个数据结构: 我们可以 Pin 住指向一个 Future 的指针</p>
+<p>看文稿中 Pin 的声明：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub struct Pin&lt;P&gt; {
+    pointer: P,
+}
+
+impl&lt;P: Deref&gt; Deref for Pin&lt;P&gt; {
+    type Target = P::Target;
+    fn deref(&amp;self) -&gt; &amp;P::Target {
+        Pin::get_ref(Pin::as_ref(self))
+    }
+}
+
+impl&lt;P: DerefMut&lt;Target: Unpin&gt;&gt; DerefMut for Pin&lt;P&gt; {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut P::Target {
+        Pin::get_mut(Pin::as_mut(self))
+    }
+}
+</code></pre></pre>
+<ol>
+<li>Pin 拿住的是一个可以解引用成 T 的指针类型 P，而不是直接拿原本的类型 T。</li>
+<li>所以，对于 Pin 而言，你看到的都是 Pin&lt;Box<T>&gt;、Pin&lt;&amp;mut T&gt;，但不会是 Pin<T>。</li>
+<li>因为 Pin 的目的是，把 T 的内存位置锁住，从而避免移动后自引用类型带来的引用失效问题。</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961721.jpg" alt="39｜异步处理：asyncawait内部是怎么实现的？" /></p>
+<p>这样数据结构可以正常访问，但是你无法直接拿到原来的数据结构进而移动它。</p>
+</div>
+</details>
+<blockquote>
+<p>所以，Pin 的出现，对解决这类问题很关键，如果你试图移动被 Pin 住的数据结构:</p>
+</blockquote>
+<ul>
+<li>要么，编译器会通过编译错误阻止你；</li>
+<li>要么，你强行使用 unsafe Rust，自己负责其安全性。</li>
+</ul>
+<details id="admonition-使用pin之后如何解决问题" class="admonition question">
 <summary class="admonition-title">
 <p>使用pin之后如何解决问题</p>
 <p><a class="admonition-anchor-link" href="#admonition-使用pin之后如何解决问题"></a></p>
 </summary>
 <div>
-<p>所以，Pin 的出现，对解决这类问题很关键，如果你试图移动被 Pin 住的数据结构:</p>
-<ul>
-<li>要么，编译器会通过编译错误阻止你；</li>
-<li>要么，你强行使用 unsafe Rust，自己负责其安全性。</li>
-</ul>
 <p>我们来看使用 Pin 后如何避免移动带来的问题：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 use std::{marker::PhantomPinned, pin::Pin};
@@ -736,18 +913,29 @@ fn move_it(data: SelfReference) {
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961106.jpg" alt="39｜异步处理：asyncawait内部是怎么实现的？" /></p>
 </div>
 </details>
-<h2 id="unpin"><a class="header" href="#unpin">Unpin</a></h2>
+<h2 id="联想unpin"><a class="header" href="#联想unpin">联想Unpin</a></h2>
+<p>学习了 Pin，不知道你有没有想起 Unpin 。</p>
+<p>那么，Unpin 是做什么的？</p>
+<h3 id="unpin声明可以移动"><a class="header" href="#unpin声明可以移动">Unpin声明可以移动</a></h3>
 <details id="admonition-了解pin的作用后unpin有什么用" class="admonition info">
 <summary class="admonition-title">
 <p>了解pin的作用后，Unpin有什么用？</p>
 <p><a class="admonition-anchor-link" href="#admonition-了解pin的作用后unpin有什么用"></a></p>
 </summary>
 <div>
-<p>学习了 Pin，不知道你有没有想起 Unpin 。</p>
-<p>那么，Unpin 是做什么的？</p>
-<p>Pin 是为了让某个数据结构无法合法地移动，而 Unpin 则相当于声明数据结构是可以移动的，它的作用类似于 Send / Sync，通过类型约束来告诉编译器哪些行为是合法的、哪些不是。</p>
+<p>Pin 是为了让某个数据结构无法合法地移动，而 Unpin 则相当于声明数据结构是可以移动的.</p>
+<blockquote>
+<p>它的作用类似于 Send / Sync，通过类型约束来告诉编译器哪些行为是合法的、哪些不是。</p>
+</blockquote>
 <p>在 Rust 中，绝大多数数据结构都是可以移动的，所以它们都自动实现了 <a href="https://doc.rust-lang.org/std/marker/trait.Unpin.html">Unpin</a>。</p>
-<p>即便这些结构被 Pin 包裹，它们依旧可以进行移动，比如：</p>
+</div>
+</details>
+<details id="admonition-声明unpin的结构即使被-pin-包裹它们依旧可以进行移动比如" class="admonition info">
+<summary class="admonition-title">
+<p>声明Unpin的结构即使被 Pin 包裹，它们依旧可以进行移动，比如：</p>
+<p><a class="admonition-anchor-link" href="#admonition-声明unpin的结构即使被-pin-包裹它们依旧可以进行移动比如"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">
 use std::mem;
 use std::pin::Pin;
@@ -760,13 +948,30 @@ let mut pinned_string = Pin::new(&amp;mut string);
 // but that is only possible because `String` implements `Unpin`.
 mem::replace(&amp;mut *pinned_string, &quot;other&quot;.to_string());
 </code></pre></pre>
-<p>当我们不希望一个数据结构被移动，可以使用 !Unpin。在 Rust 里，实现了 !Unpin 的，除了内部结构（比如 Future），主要就是 PhantomPinned：</p>
+</div>
+</details>
+<h3 id="unpin"><a class="header" href="#unpin">!Unpin</a></h3>
+<details id="admonition-当我们不希望一个数据结构被移动可以使用-unpin" class="admonition info">
+<summary class="admonition-title">
+<p>当我们不希望一个数据结构被移动，可以使用 !Unpin。</p>
+<p><a class="admonition-anchor-link" href="#admonition-当我们不希望一个数据结构被移动可以使用-unpin"></a></p>
+</summary>
+<div>
+<p>在 Rust 里，实现了 !Unpin 的，除了内部结构（比如 Future），主要就是 PhantomPinned：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 pub struct PhantomPinned;
 impl !Unpin for PhantomPinned {}
 </code></pre></pre>
 <p>所以，如果你希望你的数据结构不能被移动，可以为其添加 PhantomPinned 字段来隐式声明 !Unpin。</p>
+</div>
+</details>
+<h3 id="unpin与pin的关系"><a class="header" href="#unpin与pin的关系">Unpin与Pin的关系</a></h3>
+<details id="admonition-当数据结构满足-unpin-时创建-pin-以及使用-pin主要是-derefmut都可以使用安全接口否则需要使用-unsafe-接口" class="admonition info">
+<summary class="admonition-title">
 <p>当数据结构满足 Unpin 时，创建 Pin 以及使用 Pin（主要是 DerefMut）都可以使用安全接口，否则，需要使用 unsafe 接口：</p>
+<p><a class="admonition-anchor-link" href="#admonition-当数据结构满足-unpin-时创建-pin-以及使用-pin主要是-derefmut都可以使用安全接口否则需要使用-unsafe-接口"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">
 // 如果实现了 Unpin，可以通过安全接口创建和进行 DerefMut
 impl&lt;P: Deref&lt;Target: Unpin&gt;&gt; Pin&lt;P&gt; {
@@ -799,7 +1004,7 @@ impl&lt;P: Deref&gt; Pin&lt;P&gt; {
 </code></pre></pre>
 </div>
 </details>
-<h2 id="boxt的unpin思考"><a class="header" href="#boxt的unpin思考">Box&lt;T&gt;的Unpin思考</a></h2>
+<h3 id="boxt的unpin思考"><a class="header" href="#boxt的unpin思考">Box&lt;T&gt;的Unpin思考</a></h3>
 <details id="admonition-如果一个数据结构-t-unpin我们为其生成-box那么-box-是-unpin-还是-unpin-的" class="admonition info">
 <summary class="admonition-title">
 <p>如果一个数据结构 T: !Unpin，我们为其生成 Box<T>，那么 Box<T> 是 Unpin 还是 !Unpin 的？</p>
@@ -809,87 +1014,7 @@ impl&lt;P: Deref&gt; Pin&lt;P&gt; {
 <p>Box<T>是Unpin，因为Box<T>实现了Unpin trait</p>
 </div>
 </details>
-<h2 id="async-产生的-future-究竟是什么类型"><a class="header" href="#async-产生的-future-究竟是什么类型">async 产生的 Future 究竟是什么类型？</a></h2>
-<details id="admonition-rust中future是一个traitasync返回的是一个实现了future的genfuture类型这里颇似python的yield如何变成协程的过程" class="admonition info">
-<summary class="admonition-title">
-<p>Rust中Future是一个trait，async返回的是一个实现了Future的GenFuture类型。这里颇似python的yield如何变成协程的过程。</p>
-<p><a class="admonition-anchor-link" href="#admonition-rust中future是一个traitasync返回的是一个实现了future的genfuture类型这里颇似python的yield如何变成协程的过程"></a></p>
-</summary>
-<div>
-<p>现在，我们对 Future 的接口有了一个完整的认识，也知道 async 关键字的背后都发生了什么事情：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-pub trait Future {
-    type Output;
-    fn poll(self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Self::Output&gt;;
-}
-</code></pre></pre>
-<p>那么，当你写一个 async fn 或者使用了一个 async block 时，究竟得到了一个什么类型的数据呢？比如：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-let fut = async { 42 };
-</code></pre></pre>
-<p>你肯定能拍着胸脯说，这个我知道，不就是 impl Future&lt;Output = i32&gt; 么？</p>
-<p>对，但是 impl Future 不是一个具体的类型啊，我们讲过，它相当于 T: Future，那么这个 T 究竟是什么呢？</p>
-<p>我们来写段代码探索一下（代码）：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-fn main() {
-    let fut = async { 42 };
-
-    println!(&quot;type of fut is: {}&quot;, get_type_name(&amp;fut));
-}
-
-fn get_type_name&lt;T&gt;(_: &amp;T) -&gt; &amp;'static str {
-    std::any::type_name::&lt;T&gt;()
-}
-</code></pre></pre>
-<p>它的输出如下：</p>
-<pre><code class="language-shell">
-type of fut is: core::future::from_generator::GenFuture&lt;xxx::main::{{closure}}&gt;
-</code></pre>
-<p>实现 Future trait 的是一个叫 GenFuture 的结构，它内部有一个闭包。猜测这个闭包是 async { 42 } 产生的？</p>
-<p>我们看 GenFuture 的定义（感兴趣可以在 Rust 源码中搜 from_generator），可以看到它是一个泛型结构，内部数据 T 要满足 Generator trait：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-struct GenFuture&lt;T: Generator&lt;ResumeTy, Yield = ()&gt;&gt;(T);
-
-pub trait Generator&lt;R = ()&gt; {
-    type Yield;
-    type Return;
-    fn resume(
-        self: Pin&lt;&amp;mut Self&gt;, 
-        arg: R
-    ) -&gt; GeneratorState&lt;Self::Yield, Self::Return&gt;;
-}
-</code></pre></pre>
-<p><a href="https://doc.rust-lang.org/std/ops/trait.Generator.html">Generator</a> 是 Rust nightly 的一个 trait，还没有进入到标准库。大致看看官网展示的例子，它是怎么用的：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-#![feature(generators, generator_trait)]
-
-use std::ops::{Generator, GeneratorState};
-use std::pin::Pin;
-
-fn main() {
-    let mut generator = || {
-        yield 1;
-        return &quot;foo&quot;
-    };
-
-    match Pin::new(&amp;mut generator).resume(()) {
-        GeneratorState::Yielded(1) =&gt; {}
-        _ =&gt; panic!(&quot;unexpected return from resume&quot;),
-    }
-    match Pin::new(&amp;mut generator).resume(()) {
-        GeneratorState::Complete(&quot;foo&quot;) =&gt; {}
-        _ =&gt; panic!(&quot;unexpected return from resume&quot;),
-    }
-}
-</code></pre></pre>
-<ol>
-<li>可以看到，如果你创建一个闭包，里面有 yield 关键字，就会得到一个 Generator。</li>
-<li>如果你在 Python 中使用过 yield，二者其实非常类似。</li>
-<li>因为 Generator 是一个还没进入到稳定版的功能，大致了解一下就行，以后等它的 API 稳定后再仔细研究。</li>
-</ol>
-</div>
-</details>
-<h2 id="回顾整理future的contextpinunpin以及asyncawait"><a class="header" href="#回顾整理future的contextpinunpin以及asyncawait">回顾整理Future的Context、Pin/Unpin，以及async/await</a></h2>
+<h1 id="回顾整理future的contextpinunpin以及asyncawait"><a class="header" href="#回顾整理future的contextpinunpin以及asyncawait">回顾整理Future的Context、Pin/Unpin，以及async/await</a></h1>
 <details id="admonition-回顾整理future的contextpinunpin以及asyncawait" class="admonition info">
 <summary class="admonition-title">
 <p>回顾整理Future的Context、Pin/Unpin，以及async/await</p>

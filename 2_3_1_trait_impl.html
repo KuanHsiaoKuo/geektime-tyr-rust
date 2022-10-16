@@ -214,14 +214,26 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct 16 02:58:00 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 16 04:09:54 UTC 2022 -->
 <!--te-->
 <h2 id="trait-impl的两面派"><a class="header" href="#trait-impl的两面派">Trait impl的两面派</a></h2>
 <blockquote>
 <p>其实从两个相对的角色🎭来看，就可以理解为何trait impl有两种叫法。</p>
 </blockquote>
 <h3 id="具体实现"><a class="header" href="#具体实现">具体实现</a></h3>
-<p>当一个开发者想给类型添加方法的时候，需要先定义trait，再为类型实现trait。</p>
+<p>当一个开发者想给类型添加方法的时候，需要先定义trait，再为类型实现trait指定方法。</p>
+<details id="admonition-专门对比一下impl和trait-impl" class="admonition info">
+<summary class="admonition-title">
+<p>专门对比一下impl和trait impl</p>
+<p><a class="admonition-anchor-link" href="#admonition-专门对比一下impl和trait-impl"></a></p>
+</summary>
+<div>
+<ol>
+<li>impl更加自由，可以impl TypeName这样的方式给类型定义任意方法</li>
+<li>impl <trait> for <type> 这样的方式限定实现指定接口方法</li>
+</ol>
+</div>
+</details>
 <h3 id="设计约束"><a class="header" href="#设计约束">设计约束</a></h3>
 <p>当一个设计者设计好完整流程后，为了让使用者能够保留一定空间自由度去自定义实现，就可以要求这个类型需要满足某个trait，这就是trait约束</p>
 <h2 id="基本练习"><a class="header" href="#基本练习">基本练习</a></h2>
