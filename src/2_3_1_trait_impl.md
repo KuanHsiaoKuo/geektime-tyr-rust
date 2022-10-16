@@ -1,20 +1,21 @@
 # Trait Impl
 
 <!--ts-->
+
 * [Trait Impl](#trait-impl)
-   * [Trait impl的两面派](#trait-impl的两面派)
-      * [具体实现](#具体实现)
-      * [设计约束](#设计约束)
-   * [基本练习](#基本练习)
-      * [支持泛型](#支持泛型)
-      * [支持继承](#支持继承)
-      * [Self和self](#self和self)
-   * [递进练习trait使用场景](#递进练习trait使用场景)
-      * [基础使用：具体类型实现](#基础使用具体类型实现)
-      * [进阶使用](#进阶使用)
-         * [泛型实现+trait约束](#泛型实现trait约束)
-         * [trait带有泛型参数+trait约束](#trait带有泛型参数trait约束)
-      * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
+    * [Trait impl的两面派](#trait-impl的两面派)
+        * [具体实现](#具体实现)
+        * [设计约束](#设计约束)
+    * [基本练习](#基本练习)
+        * [支持泛型](#支持泛型)
+        * [支持继承](#支持继承)
+        * [Self和self](#self和self)
+    * [递进练习trait使用场景](#递进练习trait使用场景)
+        * [基础使用：具体类型实现](#基础使用具体类型实现)
+        * [进阶使用](#进阶使用)
+            * [泛型实现+trait约束](#泛型实现trait约束)
+            * [trait带有泛型参数+trait约束](#trait带有泛型参数trait约束)
+        * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun Oct 16 02:58:00 UTC 2022 -->
@@ -27,7 +28,12 @@
 
 ### 具体实现
 
-当一个开发者想给类型添加方法的时候，需要先定义trait，再为类型实现trait。
+当一个开发者想给类型添加方法的时候，需要先定义trait，再为类型实现trait指定方法。
+
+~~~admonish info title='专门对比一下impl和trait impl' collapsible=true
+1. impl更加自由，可以impl TypeName这样的方式给类型定义任意方法
+2. impl <trait> for <type> 这样的方式限定实现指定接口方法
+~~~
 
 ### 设计约束
 
@@ -59,9 +65,9 @@ impl<T: ?Sized> StreamExt for T where T: Stream {}
 > 类比python：Self对应Cls， self两边一样。
 
 > 在闭包中还要结合考虑是否转移所有权：
+
 - self转移
 - Self不转移
-
 
 ~~~admonish info title='Self和self区别使用, Self其实就是类方法' collapsible=true
 ```rust, editable

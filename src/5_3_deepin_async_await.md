@@ -1,24 +1,25 @@
 # async/await内部是怎么实现的？
 
 <!--ts-->
+
 * [async/await内部是怎么实现的？](#asyncawait内部是怎么实现的)
-   * [Future、Async/Await的联动理解](#futureasyncawait的联动理解)
-   * [Context、Pin](#contextpin)
-   * [Context::waker: Waker 的调用机制](#contextwaker-waker-的调用机制)
-   * [async 究竟生成了什么？](#async-究竟生成了什么)
-   * [为什么需要 Pin？](#为什么需要-pin)
-   * [自引用数据结构](#自引用数据结构)
-   * [Unpin](#unpin)
-   * [Box&lt;T&gt;的Unpin思考](#boxt的unpin思考)
-   * [async 产生的 Future 究竟是什么类型？](#async-产生的-future-究竟是什么类型)
-   * [回顾整理Future的Context、Pin/Unpin，以及async/await](#回顾整理future的contextpinunpin以及asyncawait)
+    * [Future、Async/Await的联动理解](#futureasyncawait的联动理解)
+    * [Context、Pin](#contextpin)
+    * [Context::waker: Waker 的调用机制](#contextwaker-waker-的调用机制)
+    * [async 究竟生成了什么？](#async-究竟生成了什么)
+    * [为什么需要 Pin？](#为什么需要-pin)
+    * [自引用数据结构](#自引用数据结构)
+    * [Unpin](#unpin)
+    * [Box&lt;T&gt;的Unpin思考](#boxt的unpin思考)
+    * [async 产生的 Future 究竟是什么类型？](#async-产生的-future-究竟是什么类型)
+    * [回顾整理Future的Context、Pin/Unpin，以及async/await](#回顾整理future的contextpinunpin以及asyncawait)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sun Oct 16 02:58:02 UTC 2022 -->
 
 <!--te-->
 
-## Future、Async/Await的联动理解
+# Future、Async/Await的联动理解
 
 ~~~admonish info title="对 Future 和 async/await 的基本概念有一个比较扎实的理解" collapsible=false
 对 Future 和 async/await 的基本概念有一个比较扎实的理解:
@@ -33,7 +34,106 @@
 
 > 继续深入下去，看看 async/await 这两个关键词究竟施了什么样的魔法，能够让一切如此简单又如此自然地运转起来。
 
-## Context、Pin
+# 问题一：async 产生的 Future 究竟是什么类型？
+
+~~~admonish info title="Rust中Future是一个trait，async返回的是一个实现了Future的GenFuture类型" collapsible=true
+现在，我们对 Future 的接口有了一个完整的认识，也知道 async 关键字的背后都发生了什么事情：
+
+```rust, editable
+
+pub trait Future {
+    type Output;
+    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output>;
+}
+```
+
+那么，当你写一个 async fn 或者使用了一个 async block 时，究竟得到了一个什么类型的数据呢？比如：
+
+```rust, editable
+
+let fut = async { 42 };
+```
+
+你肯定能拍着胸脯说，这个我知道，不就是 impl Future<Output = i32> 么？
+
+对，但是 impl Future 不是一个具体的类型啊，我们讲过，它相当于 T: Future，那么这个 T 究竟是什么呢？
+
+我们来写段代码探索一下（代码）：
+
+```rust, editable
+
+fn main() {
+    let fut = async { 42 };
+
+    println!("type of fut is: {}", get_type_name(&fut));
+}
+
+fn get_type_name<T>(_: &T) -> &'static str {
+    std::any::type_name::<T>()
+}
+```
+
+它的输出如下：
+
+```shell
+
+type of fut is: core::future::from_generator::GenFuture<xxx::main::{{closure}}>
+```
+
+实现 Future trait 的是一个叫 GenFuture 的结构，它内部有一个闭包。猜测这个闭包是 async { 42 } 产生的？
+~~~
+
+~~~admonish info title="GenFuture: 这里颇似python的yield如何变成协程的过程。" collapsible=true
+我们看 GenFuture 的定义（感兴趣可以在 Rust 源码中搜 from_generator），可以看到它是一个泛型结构，内部数据 T 要满足 Generator trait：
+
+```rust, editable
+
+struct GenFuture<T: Generator<ResumeTy, Yield = ()>>(T);
+
+pub trait Generator<R = ()> {
+    type Yield;
+    type Return;
+    fn resume(
+        self: Pin<&mut Self>, 
+        arg: R
+    ) -> GeneratorState<Self::Yield, Self::Return>;
+}
+```
+
+[Generator](https://doc.rust-lang.org/std/ops/trait.Generator.html) 是 Rust nightly 的一个 trait，还没有进入到标准库。大致看看官网展示的例子，它是怎么用的：
+
+```rust, editable
+
+#![feature(generators, generator_trait)]
+
+use std::ops::{Generator, GeneratorState};
+use std::pin::Pin;
+
+fn main() {
+    let mut generator = || {
+        yield 1;
+        return "foo"
+    };
+
+    match Pin::new(&mut generator).resume(()) {
+        GeneratorState::Yielded(1) => {}
+        _ => panic!("unexpected return from resume"),
+    }
+    match Pin::new(&mut generator).resume(()) {
+        GeneratorState::Complete("foo") => {}
+        _ => panic!("unexpected return from resume"),
+    }
+}
+```
+
+1. 可以看到，如果你创建一个闭包，里面有 yield 关键字，就会得到一个 Generator。
+2. 如果你在 Python 中使用过 yield，二者其实非常类似。
+3. 因为 Generator 是一个还没进入到稳定版的功能，大致了解一下就行，以后等它的 API 稳定后再仔细研究。
+~~~
+
+# 问题二：Future 是怎么被 executor 处理的
+
+## 再度深入Future Trait： Context、Pin
 
 ~~~admonish info title="从Future定义中的Pin和Context开始" collapsible=true
 提前说明一下，我们会继续围绕着 Future 这个简约却又并不简单的接口，来探讨一些原理性的东西，主要是 Context 和 Pin 这两个结构：
@@ -48,6 +148,8 @@ pub trait Future {
 ~~~
 
 ## Context::waker: Waker 的调用机制
+
+### Context包含Waker
 
 ~~~admonish info title="Context 就是 Waker 的一个封装" collapsible=true
 先来看这个接口的 Context 是个什么东西。
@@ -68,7 +170,11 @@ pub struct Context<'a> {
 ```
 
 所以，Context 就是 Waker 的一个封装。
+~~~
 
+### Waker包含Vtable记录回调
+
+~~~admonish info title="RawWakerVTable" collapsible=true
 如果你去看 Waker 的定义和相关的代码，会发现它非常抽象，内部使用了一个 vtable 来允许各种各样的 waker 的行为：
 
 ```rust, editable
@@ -114,17 +220,18 @@ impl Waker {
 
 不过，虽然我们开发时会使用 tokio，但阅读、理解代码时，我建议看 futures 库，比如 waker vtable 的定义。futures 库还有一个简单的 executor，也非常适合进一步通过代码理解 executor 的原理。
 
-## async 究竟生成了什么？
+## Future 是怎么被 executor 处理的
 
-我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &self / &mut self，可是 poll() 却使用了 Pin<&mut self>，为什么？
+### 不断pool
 
-~~~admonish info title="Rust 在编译 async fn 或者 async block 时，就会生成类似的状态机的实现" collapsible=true
+~~~admonish info title="不断poll，匹配状态执行不同逻辑" collapsible=true
 为了讲明白 Pin，我们得往前追踪一步，看看产生 Future 的一个 async block/fn 内部究竟生成了什么样的代码？来看下面这个简单的 async 函数：
 
 ```rust, editable
 
 async fn write_hello_file_async(name: &str) -> anyhow::Result<()> {
     let mut file = fs::File::create(name).await?;
+    // 这里其实就类似python的yield from
     file.write_all(b"hello world!").await?;
 
     Ok(())
@@ -151,8 +258,13 @@ match write_hello_file_async.poll(cx) {
     Poll::Pending => return Poll::Pending
 }
 ```
+~~~
 
-这是单个 await 的处理方法，那更加复杂的，一个函数中有若干个 await，该怎么处理呢？
+> 这是单个 await 的处理方法，那更加复杂的，一个函数中有若干个 await，该怎么处理呢？
+
+### 实现Future trait匹配不同逻辑
+
+~~~admonish info title="匹配的不同操作逻辑，需要在Future trait里面实现" collapsible=true
 
 以前面write_hello_file_async 函数的内部实现为例，显然，我们只有在处理完 create()，才能处理 write_all()，所以，应该是类似这样的代码：
 
@@ -209,8 +321,12 @@ fn write_hello_file_async(name: &str) -> WriteHelloFile {
 ```
 
 这样，我们就把刚才的 write_hello_file_async 异步函数，转化成了一个返回 WriteHelloFile Future 的函数。
+~~~
 
-来看这个 Future 如何实现（详细注释了）：
+### 实现过程其实是一个状态机
+
+~~~admonish info title="来看这个 Future 如何实现（详细注释了）：状态机" collapsible=true
+
 
 ```rust, editable
 
@@ -253,8 +369,9 @@ impl Future for WriteHelloFile {
     }
 }
 ```
+~~~
 
-> 这个 Future 完整实现的内部结构 ，其实就是一个状态机的迁移。
+~~~admonish info title=" > 这个 Future 完整实现的内部结构 ，其实就是一个状态机的迁移。" collapsible=true
 
 这段（伪）代码和之前异步函数是等价的：
 
@@ -269,13 +386,17 @@ async fn write_hello_file_async(name: &str) -> anyhow::Result<()> {
 ```
 
 > Rust 在编译 async fn 或者 async block 时，就会生成类似的状态机的实现。你可以看到，看似简单的异步处理，内部隐藏了一套并不难理解、但是写起来很生硬很啰嗦的状态机管理代码。
-~~~
 
-好搞明白这个问题，回到 pin 。刚才我们手写状态机代码的过程，能帮你理解为什么会需要 Pin 这个问题。
+~~~
 
 ## 为什么需要 Pin？
 
-~~~admonish info title="什么场景下会出现自引用数据结构？有什么问题需要pin解决？" collapsible=true
+我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &self / &mut self，可是 poll() 却使用了 Pin<&mut self>，为什么？
+好搞明白这个问题，回到 pin 。刚才我们手写状态机代码的过程，能帮你理解为什么会需要 Pin 这个问题。
+
+### 异步代码会出现自引用结构
+
+~~~admonish question title="什么场景下会出现自引用数据结构？" collapsible=true
 在上面实现 Future 的状态机中，我们引用了 file 这样一个局部变量：
 
 ```rust, editable
@@ -316,50 +437,13 @@ struct AwaitingWriteData {
 1. 可以生成一个 AwaitingWriteData 数据结构，把 file 和 fut 都放进去
 2. 然后在 WriteHelloFile 中引用它。
 3. 此时，在同一个数据结构内部，fut 指向了对 file 的引用，这样的数据结构，叫自引用结构（Self-Referential Structure）。
-
-> 自引用结构有一个很大的问题是：一旦它被移动，原本的指针就会指向旧的地址。
-
-![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961729.jpg)
-
-所以需要有某种机制来保证这种情况不会发生。
-
-Pin 就是为这个目的而设计的一个数据结构: 我们可以 Pin 住指向一个 Future 的指针
-
-看文稿中 Pin 的声明：
-
-```rust, editable
-
-pub struct Pin<P> {
-    pointer: P,
-}
-
-impl<P: Deref> Deref for Pin<P> {
-    type Target = P::Target;
-    fn deref(&self) -> &P::Target {
-        Pin::get_ref(Pin::as_ref(self))
-    }
-}
-
-impl<P: DerefMut<Target: Unpin>> DerefMut for Pin<P> {
-    fn deref_mut(&mut self) -> &mut P::Target {
-        Pin::get_mut(Pin::as_mut(self))
-    }
-}
-```
-
-1. Pin 拿住的是一个可以解引用成 T 的指针类型 P，而不是直接拿原本的类型 T。
-2. 所以，对于 Pin 而言，你看到的都是 Pin<Box<T>>、Pin<&mut T>，但不会是 Pin<T>。
-3. 因为 Pin 的目的是，把 T 的内存位置锁住，从而避免移动后自引用类型带来的引用失效问题。
-
-![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961721.jpg)
-
-这样数据结构可以正常访问，但是你无法直接拿到原来的数据结构进而移动它。
 ~~~
 
-## 自引用数据结构
+> 可以说，异步代码这种状态机情况下，容易出现自引用结构
 
-~~~admonish bug title="举例说明自引用类型存在什么潜在危害" collapsible=true
-当然，自引用数据结构并非只在异步代码里出现，只不过异步代码在内部生成用状态机表述的 Future 时，很容易产生自引用结构。我们看一个和 Future 无关的例子（代码）：
+> 当然，自引用数据结构并非只在异步代码里出现，只不过异步代码在内部生成用状态机表述的 Future 时，很容易产生自引用结构。
+
+~~~admonish bug title="我们看一个和 Future 无关的例子（代码）：" collapsible=true
 ```rust, editable
 
 #[derive(Debug)]
@@ -484,10 +568,60 @@ fn main() {
 > 现在你应该了解到在 Rust 下，自引用类型带来的潜在危害了吧。
 ~~~
 
-~~~admonish info title="使用pin之后如何解决问题" collapsible=true
-所以，Pin 的出现，对解决这类问题很关键，如果你试图移动被 Pin 住的数据结构:
+### 自引用结构的问题
+
+~~~admonish info title="自引用结构有什么问题？" collapsible=true
+> 自引用结构有一个很大的问题是：一旦它被移动，原本的指针就会指向旧的地址。
+
+![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961729.jpg)
+~~~
+
+> 所以需要有某种机制来保证这种情况不会发生。
+
+### Pin就是为了解决这个问题
+
+~~~admonish question title="Pin定义就是解决这个问题?" collapsible=true
+
+Pin 就是为这个目的而设计的一个数据结构: 我们可以 Pin 住指向一个 Future 的指针
+
+看文稿中 Pin 的声明：
+
+```rust, editable
+
+pub struct Pin<P> {
+    pointer: P,
+}
+
+impl<P: Deref> Deref for Pin<P> {
+    type Target = P::Target;
+    fn deref(&self) -> &P::Target {
+        Pin::get_ref(Pin::as_ref(self))
+    }
+}
+
+impl<P: DerefMut<Target: Unpin>> DerefMut for Pin<P> {
+    fn deref_mut(&mut self) -> &mut P::Target {
+        Pin::get_mut(Pin::as_mut(self))
+    }
+}
+```
+
+1. Pin 拿住的是一个可以解引用成 T 的指针类型 P，而不是直接拿原本的类型 T。
+2. 所以，对于 Pin 而言，你看到的都是 Pin<Box<T>>、Pin<&mut T>，但不会是 Pin<T>。
+3. 因为 Pin 的目的是，把 T 的内存位置锁住，从而避免移动后自引用类型带来的引用失效问题。
+
+![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961721.jpg)
+
+这样数据结构可以正常访问，但是你无法直接拿到原来的数据结构进而移动它。
+~~~
+
+> 所以，Pin 的出现，对解决这类问题很关键，如果你试图移动被 Pin 住的数据结构:
+
 - 要么，编译器会通过编译错误阻止你；
 - 要么，你强行使用 unsafe Rust，自己负责其安全性。
+
+~~~admonish question title="使用pin之后如何解决问题" collapsible=true
+
 
 我们来看使用 Pin 后如何避免移动带来的问题：
 
@@ -569,18 +703,24 @@ fn move_it(data: SelfReference) {
 ![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F-4961106.jpg)
 ~~~
 
-## Unpin
+## 联想Unpin
 
-~~~admonish info title="了解pin的作用后，Unpin有什么用？" collapsible=true
 学习了 Pin，不知道你有没有想起 Unpin 。
 
 那么，Unpin 是做什么的？
 
-Pin 是为了让某个数据结构无法合法地移动，而 Unpin 则相当于声明数据结构是可以移动的，它的作用类似于 Send / Sync，通过类型约束来告诉编译器哪些行为是合法的、哪些不是。
+### Unpin声明可以移动
+
+~~~admonish info title="了解pin的作用后，Unpin有什么用？" collapsible=true
+
+Pin 是为了让某个数据结构无法合法地移动，而 Unpin 则相当于声明数据结构是可以移动的.
+
+> 它的作用类似于 Send / Sync，通过类型约束来告诉编译器哪些行为是合法的、哪些不是。
 
 在 Rust 中，绝大多数数据结构都是可以移动的，所以它们都自动实现了 [Unpin](https://doc.rust-lang.org/std/marker/trait.Unpin.html)。
+~~~
 
-即便这些结构被 Pin 包裹，它们依旧可以进行移动，比如：
+~~~admonish info title="声明Unpin的结构即使被 Pin 包裹，它们依旧可以进行移动，比如：" collapsible=true
 
 ```rust, editable
 
@@ -595,8 +735,12 @@ let mut pinned_string = Pin::new(&mut string);
 // but that is only possible because `String` implements `Unpin`.
 mem::replace(&mut *pinned_string, "other".to_string());
 ```
+~~~
 
-当我们不希望一个数据结构被移动，可以使用 !Unpin。在 Rust 里，实现了 !Unpin 的，除了内部结构（比如 Future），主要就是 PhantomPinned：
+### !Unpin
+
+~~~admonish info title="当我们不希望一个数据结构被移动，可以使用 !Unpin。" collapsible=true
+在 Rust 里，实现了 !Unpin 的，除了内部结构（比如 Future），主要就是 PhantomPinned：
 
 ```rust, editable
 
@@ -605,8 +749,11 @@ impl !Unpin for PhantomPinned {}
 ```
 
 所以，如果你希望你的数据结构不能被移动，可以为其添加 PhantomPinned 字段来隐式声明 !Unpin。
+~~~
 
-当数据结构满足 Unpin 时，创建 Pin 以及使用 Pin（主要是 DerefMut）都可以使用安全接口，否则，需要使用 unsafe 接口：
+### Unpin与Pin的关系
+
+~~~admonish info title="当数据结构满足 Unpin 时，创建 Pin 以及使用 Pin（主要是 DerefMut）都可以使用安全接口，否则，需要使用 unsafe 接口：" collapsible=true
 
 ```rust, editable
 
@@ -641,108 +788,13 @@ impl<P: Deref> Pin<P> {
 ```
 ~~~
 
-## Box\<T>的Unpin思考
+### Box\<T>的Unpin思考
 
 ~~~admonish info title="如果一个数据结构 T: !Unpin，我们为其生成 Box<T>，那么 Box<T> 是 Unpin 还是 !Unpin 的？" collapsible=true
 Box<T>是Unpin，因为Box<T>实现了Unpin trait
 ~~~
 
-## async 产生的 Future 究竟是什么类型？
-
-~~~admonish info title="Rust中Future是一个trait，async返回的是一个实现了Future的GenFuture类型。这里颇似python的yield如何变成协程的过程。" collapsible=true
-现在，我们对 Future 的接口有了一个完整的认识，也知道 async 关键字的背后都发生了什么事情：
-
-```rust, editable
-
-pub trait Future {
-    type Output;
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output>;
-}
-```
-
-那么，当你写一个 async fn 或者使用了一个 async block 时，究竟得到了一个什么类型的数据呢？比如：
-
-```rust, editable
-
-let fut = async { 42 };
-```
-
-你肯定能拍着胸脯说，这个我知道，不就是 impl Future<Output = i32> 么？
-
-对，但是 impl Future 不是一个具体的类型啊，我们讲过，它相当于 T: Future，那么这个 T 究竟是什么呢？
-
-我们来写段代码探索一下（代码）：
-
-```rust, editable
-
-fn main() {
-    let fut = async { 42 };
-
-    println!("type of fut is: {}", get_type_name(&fut));
-}
-
-fn get_type_name<T>(_: &T) -> &'static str {
-    std::any::type_name::<T>()
-}
-```
-
-它的输出如下：
-
-```shell
-
-type of fut is: core::future::from_generator::GenFuture<xxx::main::{{closure}}>
-```
-
-实现 Future trait 的是一个叫 GenFuture 的结构，它内部有一个闭包。猜测这个闭包是 async { 42 } 产生的？
-
-我们看 GenFuture 的定义（感兴趣可以在 Rust 源码中搜 from_generator），可以看到它是一个泛型结构，内部数据 T 要满足 Generator trait：
-
-```rust, editable
-
-struct GenFuture<T: Generator<ResumeTy, Yield = ()>>(T);
-
-pub trait Generator<R = ()> {
-    type Yield;
-    type Return;
-    fn resume(
-        self: Pin<&mut Self>, 
-        arg: R
-    ) -> GeneratorState<Self::Yield, Self::Return>;
-}
-```
-
-[Generator](https://doc.rust-lang.org/std/ops/trait.Generator.html) 是 Rust nightly 的一个 trait，还没有进入到标准库。大致看看官网展示的例子，它是怎么用的：
-
-```rust, editable
-
-#![feature(generators, generator_trait)]
-
-use std::ops::{Generator, GeneratorState};
-use std::pin::Pin;
-
-fn main() {
-    let mut generator = || {
-        yield 1;
-        return "foo"
-    };
-
-    match Pin::new(&mut generator).resume(()) {
-        GeneratorState::Yielded(1) => {}
-        _ => panic!("unexpected return from resume"),
-    }
-    match Pin::new(&mut generator).resume(()) {
-        GeneratorState::Complete("foo") => {}
-        _ => panic!("unexpected return from resume"),
-    }
-}
-```
-
-1. 可以看到，如果你创建一个闭包，里面有 yield 关键字，就会得到一个 Generator。
-2. 如果你在 Python 中使用过 yield，二者其实非常类似。
-3. 因为 Generator 是一个还没进入到稳定版的功能，大致了解一下就行，以后等它的 API 稳定后再仔细研究。
-~~~
-
-## 回顾整理Future的Context、Pin/Unpin，以及async/await
+# 回顾整理Future的Context、Pin/Unpin，以及async/await
 
 ~~~admonish info title="回顾整理Future的Context、Pin/Unpin，以及async/await" collapsible=true
 ![39｜异步处理：asyncawait内部是怎么实现的？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/39%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9Aasyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F.jpg)
