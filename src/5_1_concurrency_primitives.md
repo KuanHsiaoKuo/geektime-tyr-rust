@@ -2,8 +2,9 @@
 
 <!--ts-->
 * [并发原语](#并发原语)
+   * [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
    * [Atomic](#atomic)
-      * [从锁开始](#从锁开始)
+   * [从独占开始：Atomic](#从独占开始atomic)
       * [Atomic+CAS](#atomiccas)
       * [ordering](#ordering)
    * [Mutex](#mutex)
@@ -20,7 +21,7 @@
    * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct 16 04:10:01 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 16 12:20:24 UTC 2022 -->
 
 <!--te-->
 

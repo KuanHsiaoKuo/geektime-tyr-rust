@@ -3,11 +3,10 @@
 <!--ts-->
 * [V 并发与异步](#v-并发与异步)
    * [区分并发与并行](#区分并发与并行)
-   * [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
    * [并发原语与异步的关系](#并发原语与异步的关系)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct 16 04:10:02 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 16 12:20:25 UTC 2022 -->
 
 <!--te-->
 
