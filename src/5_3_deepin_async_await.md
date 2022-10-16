@@ -22,7 +22,7 @@
 
 ~~~admonish info title="对 Future 和 async/await 的基本概念有一个比较扎实的理解" collapsible=false
 对 Future 和 async/await 的基本概念有一个比较扎实的理解:
-1. 知道在什么情况下该使用 Future, 什么情况下该使用 Thread
+1. [知道在什么情况下该使用 Future, 什么情况下该使用 Thread](5_2_future_async_await.html#使用-future-的注意事项)
 2. [executor 和 reactor 是怎么联动最终让 Future 得到了一个结果。](5_2_future_async_await.html#怎么用-future-做异步处理)
 ~~~
 
