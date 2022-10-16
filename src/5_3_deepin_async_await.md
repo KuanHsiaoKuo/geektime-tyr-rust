@@ -1,31 +1,37 @@
 # async/await内部是怎么实现的？
 
 <!--ts-->
+
 * [async/await内部是怎么实现的？](#asyncawait内部是怎么实现的)
-   * [Context、Pin](#contextpin)
-   * [Context::waker: Waker 的调用机制](#contextwaker-waker-的调用机制)
-   * [async 究竟生成了什么？](#async-究竟生成了什么)
-   * [为什么需要 Pin？](#为什么需要-pin)
-   * [自引用数据结构](#自引用数据结构)
-   * [Unpin](#unpin)
-   * [Box&lt;T&gt;的Unpin思考](#boxt的unpin思考)
-   * [async 产生的 Future 究竟是什么类型？](#async-产生的-future-究竟是什么类型)
-   * [回顾整理Future的Context、Pin/Unpin，以及async/await](#回顾整理future的contextpinunpin以及asyncawait)
+    * [Context、Pin](#contextpin)
+    * [Context::waker: Waker 的调用机制](#contextwaker-waker-的调用机制)
+    * [async 究竟生成了什么？](#async-究竟生成了什么)
+    * [为什么需要 Pin？](#为什么需要-pin)
+    * [自引用数据结构](#自引用数据结构)
+    * [Unpin](#unpin)
+    * [Box&lt;T&gt;的Unpin思考](#boxt的unpin思考)
+    * [async 产生的 Future 究竟是什么类型？](#async-产生的-future-究竟是什么类型)
+    * [回顾整理Future的Context、Pin/Unpin，以及async/await](#回顾整理future的contextpinunpin以及asyncawait)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sat Oct 15 10:54:47 UTC 2022 -->
 
 <!--te-->
 
-~~~admonish info title="对 Future 和 async/await 的基本概念有一个比较扎实的理解" collapsible=true
+## Future、Async/Await的联动理解
+
+~~~admonish info title="对 Future 和 async/await 的基本概念有一个比较扎实的理解" collapsible=false
 对 Future 和 async/await 的基本概念有一个比较扎实的理解:
-1. 知道在什么情况下该使用 Future
-2. 什么情况下该使用 Thread
-3. executor 和 reactor 是怎么联动最终让 Future 得到了一个结果。
+1. 知道在什么情况下该使用 Future, 什么情况下该使用 Thread
+2. [executor 和 reactor 是怎么联动最终让 Future 得到了一个结果。](5_2_future_async_await.html#怎么用-future-做异步处理)
 ~~~
 
-然而，我们并不清楚为什么 async fn 或者 async block 就能够产生 Future，也并不明白 Future 是怎么被 executor 处理的。继续深入下去，看看 async/await
-这两个关键词究竟施了什么样的魔法，能够让一切如此简单又如此自然地运转起来。
+> 然而:
+
+1. 我们并不清楚为什么 async fn 或者 async block 就能够产生 Future
+2. 也并不明白 Future 是怎么被 executor 处理的。
+
+> 继续深入下去，看看 async/await 这两个关键词究竟施了什么样的魔法，能够让一切如此简单又如此自然地运转起来。
 
 ## Context、Pin
 

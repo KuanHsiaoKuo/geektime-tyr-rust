@@ -1,19 +1,20 @@
 # Future
 
 <!--ts-->
+
 * [Future](#future)
-   * [actor是有栈协程，Future是无栈协程](#actor是有栈协程future是无栈协程)
-   * [Rust的Future](#rust的future)
-   * [Future和async/await](#future和asyncawait)
-   * [为什么需要 Future？](#为什么需要-future)
-   * [深入思路](#深入思路)
-   * [深入了解](#深入了解)
-   * [executor](#executor)
-   * [reactor pattern](#reactor-pattern)
-   * [怎么用 Future 做异步处理？](#怎么用-future-做异步处理)
-   * [使用 Future 的注意事项](#使用-future-的注意事项)
-   * [对比线程学习Future](#对比线程学习future)
-   * [为什么标准库的 Mutex 不能跨越 await？](#为什么标准库的-mutex-不能跨越-await)
+    * [actor是有栈协程，Future是无栈协程](#actor是有栈协程future是无栈协程)
+    * [Rust的Future](#rust的future)
+    * [Future和async/await](#future和asyncawait)
+    * [为什么需要 Future？](#为什么需要-future)
+    * [深入思路](#深入思路)
+    * [深入了解](#深入了解)
+    * [executor](#executor)
+    * [reactor pattern](#reactor-pattern)
+    * [怎么用 Future 做异步处理？](#怎么用-future-做异步处理)
+    * [使用 Future 的注意事项](#使用-future-的注意事项)
+    * [对比线程学习Future](#对比线程学习future)
+    * [为什么标准库的 Mutex 不能跨越 await？](#为什么标准库的-mutex-不能跨越-await)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sat Oct 15 10:54:47 UTC 2022 -->
@@ -28,7 +29,7 @@
 
 ## Rust的Future
 
-~~~admonish info title="Rust 的 Future 跟 JavaScript 的 Promise、Python的Future非常相似" collapsible=true
+~~~admonish tip title="Rust 的 Future 跟 JavaScript 的 Promise、Python的Future非常相似" collapsible=true
 其实 Rust 的 Future 跟 JavaScript 的 Promise 非常类似。
 
 如果你熟悉 JavaScript，应该熟悉 Promise 的概念，它代表了在未来的某个时刻才能得到的结果的值，Promise 一般存在三个状态；
@@ -41,7 +42,9 @@
 
 ## Future和async/await
 
-~~~admonish info title="一般而言，async/await和Future是什么关系" collapsible=true
+### 二者是什么关系？
+
+~~~admonish question title="一般而言，async/await和Future是什么关系" collapsible=true
 讲到这里估计你也看出来了，谈 Future 的时候，我们总会谈到 async/await。
 
 一般而言：
@@ -51,20 +54,24 @@
 4. 它们使用状态机将 Promise/Future 这样的结构包装起来进行处理。
 ~~~
 
-## 为什么需要 Future？
+### 为什么需要Future，那不用async/await有什么问题？
 
-~~~admonish info title="为什么需要Future，那不用async/await有什么问题？" collapsible=true
-首先，谈一谈为什么需要 Future 这样的并发结构。
+~~~admonish question title="CPU的算力不能尽情施展" collapsible=true
 
-在 Future 出现之前，我们的 Rust 代码都是同步的。也就是说：
+> 在 Future 出现之前，我们的 Rust 代码都是同步的。也就是说：
+
 1. 当你执行一个函数，CPU 处理完函数中的每一个指令才会返回。
 2. 如果这个函数里有 IO 的操作，实际上，操作系统会把函数对应的线程挂起，放在一个等待队列中
 3. 直到 IO 操作完成，才恢复这个线程，并从挂起的位置继续执行下去。
 
 > 这个模型非常简单直观，代码是一行一行执行的，开发者并不需要考虑哪些操作会阻塞，哪些不会，只关心他的业务逻辑就好。
 
-> 然而，随着 CPU 技术的不断发展，新世纪应用软件的主要矛盾不再是 CPU 算力不足，而是过于充沛的 CPU 算力和提升缓慢的 IO 速度之间的矛盾。如果有大量的 IO 操作，你的程序大部分时间并没有在运算，而是在不断地等待 IO。
+> 然而，随着 CPU 技术的不断发展，情况大有不同：
+- 新世纪应用软件的主要矛盾不再是 CPU 算力不足，而是过于充沛的 CPU 算力和提升缓慢的 IO 速度之间的矛盾。
+- 如果有大量的 IO 操作，你的程序大部分时间并没有在运算，而是在不断地等待 IO。
+~~~
 
+~~~admonish info title="1. 同步版本读写多个文件" collapsible=true
 ```rust, editable
 
 use anyhow::Result;
@@ -108,9 +115,12 @@ fn toml2yaml(content: &str) -> Result<String> {
 ![38｜异步处理：Future是什么？它和asyncawait是什么关系？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F-4959308.jpg)
 
 当然，你会辩解，在读文件的过程中，我们不得不等待，因为 toml2yaml 函数的执行有赖于读取文件的结果。
+~~~
 
-嗯没错，但是，这里还有很大的 CPU 浪费：我们读完第一个文件才开始读第二个文件，有没有可能两个文件同时读取呢？这样总共等待的时间是 max(time_for_file1, time_for_file2)，而非 time_for_file1 + time_for_file2 。
+> 这里还有很大的 CPU 浪费：
+> 我们读完第一个文件才开始读第二个文件，有没有可能两个文件同时读取呢？这样总共等待的时间是 max(time_for_file1, time_for_file2)，而非 time_for_file1 + time_for_file2 。
 
+~~~admonish info title="2. 多线程版本读写文件，类似await" collapsible=true
 这并不难，我们可以把文件读取和写入的操作放入单独的线程中执行，比如（代码）：
 
 ```rust, editable
@@ -185,7 +195,9 @@ fn toml2yaml(content: &str) -> Result<String> {
 }
 ```
 > 这样，读取或者写入多个文件的过程并发执行，使等待的时间大大缩短。
+~~~
 
+~~~admonish warn title="多线程版本读写文件会存在很大的资源调度浪费, 所以需要async/await" collapsible=true
 1. 但是，如果要同时读取 100 个文件呢？
 - 显然，创建 100 个线程来做这样的事情不是一个好主意。
 - 在操作系统中，线程的数量是有限的，创建 / 阻塞 / 唤醒 / 销毁线程，都涉及不少的动作
@@ -215,8 +227,11 @@ fn toml2yaml(content: &str) -> Result<String> {
 > 这些事情，统统交给开发者做显然是不合理的。所以，Rust 提供了相应处理手段 async/await ：
 - async 来方便地生成 Future
 - await 来触发 Future 的调度和执行。
----
-我们看看，同样的任务，如何用 async/await 更高效地处理（代码）：
+~~~
+
+~~~admonish info title="3. async/await版本更高效读写文件" collapsible=true
+
+> 我们看看，同样的任务，如何用 async/await 更高效地处理（代码）：
 
 ```rust, editable
 
@@ -254,7 +269,9 @@ fn toml2yaml(content: &str) -> Result<String> {
     Ok(serde_yaml::to_string(&value)?)
 }
 ```
-在这段代码里:
+
+> 在这段代码里:
+
 1. 我们使用了 tokio::fs，而不是 std::fs
 2. tokio::fs 的文件操作都会返回一个 Future，然后可以 join 这些 Future，得到它们运行后的结果。
 3. join / try_join 是用来轮询多个 Future 的宏:
@@ -263,10 +280,22 @@ fn toml2yaml(content: &str) -> Result<String> {
 - 直到所有 Future 产生结果。
 
 > 整个等待文件读取的时间是 max(time_for_file1, time_for_file2)，性能和使用线程的版本几乎一致，但是消耗的资源（主要是线程）要少很多。
+~~~
 
 建议你好好对比这三个版本的代码，写一写，运行一下，感受它们的处理逻辑。
 
-注意在最后的 async/await 的版本中，我们不能把代码写成这样：
+~~~admonish warn title="3.1 注意在最后的 async/await 的版本中，我们不能把代码写成这样：" collapsible=true
+
+- try_join!轮询，加入事件循环才有上下文切换：
+
+```rust, editable
+    // 读取 Cargo.toml，IO 操作 1
+    let f1 = fs::read_to_string("./Cargo.toml");
+    // 读取 Cargo.lock，IO 操作 2
+    let f2 = fs::read_to_string("./Cargo.lock");
+    let (content1, content2) = try_join!(f1, f2)?;
+```
+- 单独await，还是要等待，这与多线程版本效果一样：
 
 ```rust, editable
 
@@ -275,28 +304,17 @@ let content1 = fs::read_to_string("./Cargo.toml").await?;
 // 读取 Cargo.lock，IO 操作 2
 let content1 = fs::read_to_string("./Cargo.lock").await?;
 ```
-这样写的话，和第一版同步的版本没有区别，因为 await 会运行 Future 直到 Future 执行结束，所以依旧是先读取 Cargo.toml，再读取 Cargo.lock，并没有达到并发的效果。
+这样写的话，和第一版同步的版本没有区别:
+- 因为 await 会运行 Future 直到 Future 执行结束，所以依旧是先读取 Cargo.toml，再读取 Cargo.lock，并没有达到并发的效果。
 ~~~
 
-## 深入思路
-
-~~~admonish info title="从async fn了解到future的思路" collapsible=true
-1. 拆解 async fn 有点奇怪的返回值结构
-2. 我们学习了 Reactor pattern
-3. 大致了解了 tokio 如何通过 executor 和 reactor 共同作用，完成 Future 的调度、执行、阻塞，以及唤醒。这是一个完整的循环，直到 Future 返回 Poll::Ready(T)。
-~~~
-
-## 深入了解
+## 从async fn深入了解Reactor Pattern
 
 好，了解了 Future 在软件开发中的必要性，来深入研究一下 Future/async/await。
 
-~~~admonish info title="异步函数（async fn）其实是语法糖，它有等价函数写法。" collapsible=true
-在前面代码撰写过程中，不知道你有没有发现，异步函数（async fn）的返回值是一个奇怪的 impl Future<Output> 的结构：
+### 首先看看Future的定义
 
-![38｜异步处理：Future是什么？它和asyncawait是什么关系？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F.png)
-
-> 我们知道，一般会用 impl 关键字为数据结构实现 trait，也就是说接在 impl 关键字后面的东西是一个 trait，所以，显然 Future 是一个 trait，并且还有一个关联类型 Output。
-
+~~~admonish info title="Future Trait: Output + fn poll" collapsible=true
 来看 [Future 的定义](https://doc.rust-lang.org/std/future/trait.Future.html)：
 
 ```rust, editable
@@ -318,8 +336,27 @@ pub enum Poll<T> {
 4. 当 Future 返回 Ready 状态时，Future 对应的值已经得到，此时可以返回了。
 
 > 你看，这样一个简单的数据结构，就托起了庞大的 Rust 异步 async/await 处理的生态。
+~~~
 
-回到 async fn 的返回值我们接着说，显然它是一个 impl Future.
+### 然后看看async fn这个语法糖
+
+~~~admonish info title="从async fn了解到future的思路" collapsible=true
+1. 拆解 async fn 有点奇怪的返回值结构
+2. 我们学习了 Reactor pattern
+3. 大致了解了 tokio 如何通过 executor 和 reactor 共同作用，完成 Future 的调度、执行、阻塞，以及唤醒。
+4. 这是一个完整的循环，直到 Future 返回 Poll::Ready(T)。
+~~~
+
+~~~admonish info title="异步函数（async fn）其实是语法糖，它有等价函数写法: async fn '封装' 生命周期标注+返回值约束 " collapsible=true
+在前面代码撰写过程中，不知道你有没有发现，异步函数（async fn）的返回值是一个奇怪的 impl Future<Output> 的结构：
+
+![38｜异步处理：Future是什么？它和asyncawait是什么关系？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F.png)
+
+> 我们知道:
+
+- 一般会用 impl 关键字为数据结构实现 trait，也就是说接在 impl 关键字后面的东西是一个 trait
+- 所以，显然 Future 是一个 trait，并且还有一个关联类型 Output。
+- 也就是说，这里已经知道f1、f2是一个实现了Future的类型
 
 > 那么如果我们给一个普通的函数返回 impl Future<Output>，它的行为和 async fn 是不是一致呢？
 
@@ -356,12 +393,16 @@ fn say_hello2<'fut>(name: &'fut str) -> impl Future<Output = usize> + 'fut {
     }
 }
 ```
-> 运行这段代码你会发现，say_hello1 和 say_hello2 是等价的，二者都可以使用 await 来执行，也可以将其提供给一个 executor 来执行。
+> 运行这段代码你会发现:
+1. say_hello1 和 say_hello2 是等价的, 区别有两个：
+- say_hello1使用async fn语法糖
+- say_hello2就是它对应的繁琐写法：生命周期标注+返回值约束
+2. 二者都可以使用 await 来执行, 也可以将其提供给一个 executor 来执行。
 ~~~
 
-## executor
+### 异步的本质其实就是 executor
 
-~~~admonish info title="executor是什么-> Rust如何支持->Rust常用的executor有哪些？" collapsible=true
+~~~admonish question title="1. executor是什么" collapsible=true
 这里我们见到了一个新的名词：executor。
 
 什么是 executor？
@@ -371,12 +412,15 @@ fn say_hello2<'fut>(name: &'fut str) -> impl Future<Output = usize> + 'fut {
 3. 但操作系统不会去调度用户态的协程（比如 Future），所以任何使用了协程来处理并发的程序，都需要有一个 executor 来负责协程的调度。
 
 很多在语言层面支持协程的编程语言，比如 Golang / Erlang，都自带一个用户态的调度器。
+~~~
 
+~~~admonish question title="2. Rust如何支持？" collapsible=true
 Rust 虽然也提供 Future 这样的协程，但它在语言层面并不提供 executor，把要不要使用 executor 和使用什么样的 executor 的自主权交给了开发者。
 - 好处是，当我的代码中不需要使用协程时，不需要引入任何运行时；
 - 而需要使用协程时，可以在生态系统中选择最合适我应用的 executor。
+~~~
 
----
+~~~admonish question title="3. Rust常用的executor有哪些" collapsible=true
 
 常见的 executor 有：
 
@@ -385,13 +429,16 @@ Rust 虽然也提供 Future 这样的协程，但它在语言层面并不提供 
 3. [async-std](https://github.com/async-rs/async-std) 提供的 executor，和 tokio 类似；
 4. [smol 提供的 async-executor](https://github.com/smol-rs/smol)，主要提供了 block_on。
 
-注意，上面的代码我们混用了 #[tokio::main] 和 futures:executor::block_on，这只是为了展示 Future 使用的不同方式，在正式代码里，不建议混用不同的 executor，会降低程序的性能，还可能引发奇怪的问题。
+> 注意，上面的代码我们混用了 #[tokio::main] 和 futures:executor::block_on，
+> 这只是为了展示 Future 使用的不同方式，在正式代码里，不建议混用不同的 executor，会降低程序的性能，还可能引发奇怪的问题。
 ~~~
 
-## reactor pattern
+### executor和reactor都是reactor pattern(事件循环)的组成部分
 
-~~~admonish info title="Reactor Pattern如何组成？" collapsible=true
-当我们谈到 executor 时，就不得不提 reactor，它俩都是 Reactor Pattern 的组成部分，作为构建高性能事件驱动系统的一个很典型模式，Reactor pattern 它包含三部分：
+~~~admonish question title="Reactor Pattern如何组成？" collapsible=true
+当我们谈到 executor 时，就不得不提 reactor，它俩都是 Reactor Pattern 的组成部分。
+
+> 作为构建高性能事件驱动系统的一个很典型模式，Reactor pattern 它包含三部分：
 
 1. task，待处理的任务
 
@@ -401,18 +448,20 @@ Rust 虽然也提供 Future 这样的协程，但它在语言层面并不提供 
 
 维护等待运行的任务（ready queue），以及被阻塞的任务（wait queue）；
 
-3. reactor，维护事件队列。
+3. reactor，维护事件队列
 
 当事件来临时，通知 executor 唤醒某个任务等待运行。
+~~~
 
+~~~admonish question title="Reactor Pattern如何运行" collapsible=true
 - executor 会调度执行待处理的任务，当任务无法继续进行却又没有完成时，它会挂起任务，并设置好合适的唤醒条件。
 - 之后，如果 reactor 得到了满足条件的事件，它会唤醒之前挂起的任务，然后 executor 就有机会继续执行这个任务。
 - 这样一直循环下去，直到任务执行完毕。
 ~~~
 
-## 怎么用 Future 做异步处理？
+### executor 和 reactor 是怎么联动最终让 Future 得到了一个结果?
 
-~~~admonish info title="Rust如何基于Reactor pattern使用Future做异步处理" collapsible=true
+~~~admonish question title="Rust如何基于Reactor pattern使用Future做异步处理" collapsible=true
 理解了 Reactor pattern 后，Rust 使用 Future 做异步处理的整个结构就清晰了，我们以 tokio 为例：
 
 1. async/await 提供语法层面的支持
@@ -427,8 +476,9 @@ Rust 虽然也提供 Future 这样的协程，但它在语言层面并不提供 
 整个流程如下：
 
 ![38｜异步处理：Future是什么？它和asyncawait是什么关系？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/38%EF%BD%9C%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86%EF%BC%9AFuture%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%AE%83%E5%92%8Casyncawait%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F.jpg)
----
-我们以一个具体的代码示例来进一步理解这个过程（代码）：
+~~~
+
+~~~admonish question title="我们以一个具体的代码示例来进一步理解这个过程（代码）：" collapsible=true
 
 ```rust, editable
 
@@ -491,12 +541,12 @@ Connection closed by foreign host.
 
 ## 使用 Future 的注意事项
 
-~~~admonish info title="使用Future处理异步任务的三个注意事项" collapsible=true
 目前我们已经基本明白 Future 运行的基本原理了，也可以在程序的不同部分自如地使用 Future/async/await 来进行异步处理。
 
 但是要注意，不是所有的应用场景都适合用 async/await，在使用的时候，有一些不容易注意到的坑需要我们妥善考虑。
 
-1. 处理计算密集型任务时
+~~~admonish warn title="1. 处理计算密集型任务时" collapsible=true
+
 
 当你要处理的任务是 CPU 密集型，而非 IO 密集型，更适合使用线程，而非 Future。
 
@@ -528,8 +578,10 @@ async fn main() -> Result<()> {
 ```
 
 task 1 里有一个死循环，你可以把它想象成是执行时间很长又不包括 IO 处理的代码。运行这段代码，你会发现，task 2 没有机会得到执行。这是因为 task 1 不执行结束，或者不让出 CPU，task 2 没有机会被调度。
+~~~
 
-2. 异步代码中使用 Mutex 时
+~~~admonish warn title="2. 异步代码中使用 Mutex 时" collapsible=true
+
 
 大部分时候，标准库的 Mutex 可以用在异步代码中，而且，这是推荐的用法。
 
@@ -585,8 +637,17 @@ async fn main() -> Result<()> {
 - 前面讲过，因为 tokio 实现了 work-stealing 调度，Future 有可能在不同的线程中执行，普通的 MutexGuard 编译直接就会出错，所以需要使用 tokio 的 Mutex。[更多信息可以看文档](https://docs.rs/tokio/1.13.0/tokio/sync/struct.Mutex.html)。
 
 > 在这个例子里，我们又见识到了 Rust 编译器的伟大之处：如果一件事，它觉得你不能做，会通过编译器错误阻止你，而不是任由编译通过，然后让程序在运行过程中听天由命，让你无休止地和捉摸不定的并发 bug 斗争。
+~~~
 
-3. 在线程和异步任务间做同步时
+~~~admonish question title="想想看，为什么标准库的 Mutex 不能跨越 await？" collapsible=true
+
+你可以把文中使用 tokio::sync::Mutex 的代码改成使用 std::sync::Mutex，并对使用的接口做相应的改动（把 lock().await 改成 lock().unwrap()），看看编译器会报什么错。
+
+对着错误提示，你明白为什么了么？
+~~~
+
+~~~admonish warn title="3. 在线程和异步任务间做同步时" collapsible=true
+
 
 在一个复杂的应用程序中，会兼有计算密集和 IO 密集的任务。
 
@@ -741,13 +802,6 @@ fn task_async() -> impl Future<Output = usize> {
     }
 }
 ```
-
 ~~~
 
-## 为什么标准库的 Mutex 不能跨越 await？
 
-想想看，为什么标准库的 Mutex 不能跨越 await？
-
-你可以把文中使用 tokio::sync::Mutex 的代码改成使用 std::sync::Mutex，并对使用的接口做相应的改动（把 lock().await 改成 lock().unwrap()），看看编译器会报什么错。
-
-对着错误提示，你明白为什么了么？
