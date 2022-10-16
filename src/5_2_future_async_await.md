@@ -1,23 +1,23 @@
 # Future
 
 <!--ts-->
-
 * [Future](#future)
-    * [actor是有栈协程，Future是无栈协程](#actor是有栈协程future是无栈协程)
-    * [Rust的Future](#rust的future)
-    * [Future和async/await](#future和asyncawait)
-    * [为什么需要 Future？](#为什么需要-future)
-    * [深入思路](#深入思路)
-    * [深入了解](#深入了解)
-    * [executor](#executor)
-    * [reactor pattern](#reactor-pattern)
-    * [怎么用 Future 做异步处理？](#怎么用-future-做异步处理)
-    * [使用 Future 的注意事项](#使用-future-的注意事项)
-    * [对比线程学习Future](#对比线程学习future)
-    * [为什么标准库的 Mutex 不能跨越 await？](#为什么标准库的-mutex-不能跨越-await)
+   * [actor是有栈协程，Future是无栈协程](#actor是有栈协程future是无栈协程)
+   * [Rust的Future](#rust的future)
+   * [Future和async/await](#future和asyncawait)
+      * [二者是什么关系？](#二者是什么关系)
+      * [为什么需要Future，那不用async/await有什么问题？](#为什么需要future那不用asyncawait有什么问题)
+   * [从async fn深入了解Reactor Pattern](#从async-fn深入了解reactor-pattern)
+      * [首先看看Future的定义](#首先看看future的定义)
+      * [然后看看async fn这个语法糖](#然后看看async-fn这个语法糖)
+      * [异步的本质其实就是 executor](#异步的本质其实就是-executor)
+      * [executor和reactor都是reactor pattern(事件循环)的组成部分](#executor和reactor都是reactor-pattern事件循环的组成部分)
+      * [executor 和 reactor 是怎么联动最终让 Future 得到了一个结果?](#executor-和-reactor-是怎么联动最终让-future-得到了一个结果)
+   * [使用 Future 的注意事项](#使用-future-的注意事项)
+   * [对比线程学习Future](#对比线程学习future)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 15 10:54:47 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 16 02:54:09 UTC 2022 -->
 
 <!--te-->
 
