@@ -234,7 +234,7 @@
 <li><a href="#%E5%B0%8F%E7%BB%93%E4%B8%80%E4%B8%8B%E5%90%84%E7%A7%8D%E5%B9%B6%E5%8F%91%E5%8E%9F%E8%AF%AD%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">小结一下各种并发原语的使用场景</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 17 08:50:28 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 17 08:54:26 UTC 2022 -->
 <!--te-->
 <h1 id="并发的难点工作模式和核心"><a class="header" href="#并发的难点工作模式和核心">并发的难点、工作模式和核心</a></h1>
 <details id="admonition-处理并发的难点在哪里" class="admonition info">
@@ -920,8 +920,11 @@ fn main() {
 <p><a class="admonition-anchor-link" href="#admonition-atomicmutexsemaphore的联系"></a></p>
 </summary>
 <div>
-<p>我们前面也讲过，线程的上下文切换代价很大，所以频繁将线程挂起再唤醒，会降低整个系统的效率。所以很多 Mutex 具体的实现会将 SpinLock（确切地说是 spin wait）和线程挂起结合使用：
+<p>我们前面也讲过，线程的上下文切换代价很大，所以频繁将线程挂起再唤醒，会降低整个系统的效率。</p>
+<blockquote>
+<p>所以很多 Mutex 具体的实现会将 SpinLock（确切地说是 spin wait）和线程挂起结合使用：
 线程的 lock 请求如果拿不到会先尝试 spin 一会，然后再挂起添加到等待队列。</p>
+</blockquote>
 <p>Rust 下的 <a href="https://github.com/Amanieu/parking_lot">parking_lot </a>就是这样实现的。</p>
 <p>当然，这样实现会带来公平性的问题：</p>
 <ol>
@@ -935,10 +938,32 @@ fn main() {
 <blockquote>
 <p>你可以把 Mutex 想象成一个粒度更大的 atomic，只不过这个 atomic 无法由 CPU 保证，而是通过软件算法来实现。</p>
 </blockquote>
-<p>两个基本的并发原语 Atomic 和 Mutex。Atomic 是一切并发同步的基础，通过 CPU 提供特殊的 CAS 指令，操作系统和应用软件可以构建更加高层的并发原语，比如 SpinLock 和 Mutex。</p>
-<p>SpinLock 和 Mutex 最大的不同是，使用 SpinLock，线程在忙等（busy wait），而使用 Mutex lock，线程在等待锁的时候会被调度出去，等锁可用时再被调度回来。</p>
-<p>听上去 SpinLock 似乎效率很低，其实不是，这要具体看锁的临界区大小。如果临界区要执行的代码很少，那么和 Mutex lock 带来的上下文切换（context switch）相比，SpinLock 是值得的。在 Linux Kernel 中，很多时候我们只能使用 SpinLock。</p>
-<p>至于操作系统里另一个重要的概念信号量（semaphore），你可以认为是 Mutex 更通用的表现形式。比如在新冠疫情下，图书馆要控制同时在馆内的人数，如果满了，其他人就必须排队，出来一个才能再进一个。这里，如果总人数限制为 1，就是 Mutex，如果 &gt; 1，就是 semaphore。</p>
+<blockquote>
+<p>两个基本的并发原语 Atomic 和 Mutex:</p>
+</blockquote>
+<ul>
+<li>Atomic 是一切并发同步的基础</li>
+<li>通过 CPU 提供特殊的 CAS 指令，操作系统和应用软件可以构建更加高层的并发原语，比如 SpinLock 和 Mutex。</li>
+</ul>
+<blockquote>
+<p>SpinLock 和 Mutex 最大的不同是:</p>
+</blockquote>
+<ul>
+<li>使用 SpinLock，线程在忙等（busy wait）</li>
+<li>而使用 Mutex lock，线程在等待锁的时候会被调度出去，等锁可用时再被调度回来。</li>
+</ul>
+<blockquote>
+<p>听上去 SpinLock 似乎效率很低，其实不是，这要具体看锁的临界区大小。</p>
+</blockquote>
+<ul>
+<li>如果临界区要执行的代码很少，那么和 Mutex lock 带来的上下文切换（context switch）相比，SpinLock 是值得的。</li>
+<li>在 Linux Kernel 中，很多时候我们只能使用 SpinLock。</li>
+</ul>
+<blockquote>
+<p>至于操作系统里另一个重要的概念信号量（semaphore），你可以认为是 Mutex 更通用的表现形式。</p>
+</blockquote>
+<p>比如在新冠疫情下，图书馆要控制同时在馆内的人数，如果满了，其他人就必须排队，出来一个才能再进一个。
+这里，如果总人数限制为 1，就是 Mutex，如果 &gt; 1，就是 semaphore。</p>
 </div>
 </details>
 <h1 id="工作模式三限制依赖并发dag-模式"><a class="header" href="#工作模式三限制依赖并发dag-模式">工作模式三、限制依赖并发：DAG 模式</a></h1>
