@@ -1,32 +1,33 @@
 # 并发原语
 
 <!--ts-->
+
 * [并发原语](#并发原语)
 * [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
 * [常见并发模型梳理，也就是并发原语](#常见并发模型梳理也就是并发原语)
 * [工作模式一、自由竞争: Atomic &amp; Mutex](#工作模式一自由竞争-atomic--mutex)
-   * [Atomic解决独占问题](#atomic解决独占问题)
+    * [Atomic解决独占问题](#atomic解决独占问题)
 * [工作模式二、限制顺序并发: map/reduce](#工作模式二限制顺序并发-mapreduce)
-   * [Atomic还存在2个问题](#atomic还存在2个问题)
-   * [用CAS操作+Ordering解决两个问题](#用cas操作ordering解决两个问题)
-      * [CAS操作解决问题1](#cas操作解决问题1)
-      * [Ordering解决问题2：CAS需要Ordering参数说明操作的内存顺序](#ordering解决问题2cas需要ordering参数说明操作的内存顺序)
-      * [解决过程](#解决过程)
-   * [Atomic还有什么用](#atomic还有什么用)
-   * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
-   * [Atomic和Mutex的联系](#atomic和mutex的联系)
+    * [Atomic还存在2个问题](#atomic还存在2个问题)
+    * [用CAS操作+Ordering解决两个问题](#用cas操作ordering解决两个问题)
+        * [CAS操作解决问题1](#cas操作解决问题1)
+        * [Ordering解决问题2：CAS需要Ordering参数说明操作的内存顺序](#ordering解决问题2cas需要ordering参数说明操作的内存顺序)
+        * [解决过程](#解决过程)
+    * [Atomic还有什么用](#atomic还有什么用)
+    * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
+    * [Atomic和Mutex的联系](#atomic和mutex的联系)
 * [工作模式三、限制依赖并发：DAG 模式](#工作模式三限制依赖并发dag-模式)
-   * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
-   * [condvar介绍与使用](#condvar介绍与使用)
-   * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
-      * [Channel](#channel)
-         * [Channel分类](#channel分类)
-      * [Actor](#actor)
-      * [Channel与Actor对比](#channel与actor对比)
+    * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
+    * [condvar介绍与使用](#condvar介绍与使用)
+    * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
+        * [Channel](#channel)
+            * [Channel分类](#channel分类)
+        * [Actor](#actor)
+        * [Channel与Actor对比](#channel与actor对比)
 * [自己实现一个基本的MPSC Channel](#自己实现一个基本的mpsc-channel)
-   * [测试驱动的设计](#测试驱动的设计)
-   * [实现 MPSC channel](#实现-mpsc-channel)
-   * [回顾测试驱动开发](#回顾测试驱动开发)
+    * [测试驱动的设计](#测试驱动的设计)
+    * [实现 MPSC channel](#实现-mpsc-channel)
+    * [回顾测试驱动开发](#回顾测试驱动开发)
 * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
@@ -581,7 +582,9 @@ Atomic 虽然可以处理自由竞争模式下加锁的需求，但毕竟用起�
 ## Atomic和Mutex的联系
 
 ~~~admonish info title="Atomic、Mutex、semaphore的联系" collapsible=true
-我们前面也讲过，线程的上下文切换代价很大，所以频繁将线程挂起再唤醒，会降低整个系统的效率。所以很多 Mutex 具体的实现会将 SpinLock（确切地说是 spin wait）和线程挂起结合使用：
+我们前面也讲过，线程的上下文切换代价很大，所以频繁将线程挂起再唤醒，会降低整个系统的效率。
+
+> 所以很多 Mutex 具体的实现会将 SpinLock（确切地说是 spin wait）和线程挂起结合使用：
 线程的 lock 请求如果拿不到会先尝试 spin 一会，然后再挂起添加到等待队列。
 
 Rust 下的 [parking_lot ](https://github.com/Amanieu/parking_lot)就是这样实现的。
@@ -597,13 +600,22 @@ Mutex 的实现依赖于 CPU 提供的 atomic。
 
 > 你可以把 Mutex 想象成一个粒度更大的 atomic，只不过这个 atomic 无法由 CPU 保证，而是通过软件算法来实现。
 
-两个基本的并发原语 Atomic 和 Mutex。Atomic 是一切并发同步的基础，通过 CPU 提供特殊的 CAS 指令，操作系统和应用软件可以构建更加高层的并发原语，比如 SpinLock 和 Mutex。
+> 两个基本的并发原语 Atomic 和 Mutex:
+- Atomic 是一切并发同步的基础
+- 通过 CPU 提供特殊的 CAS 指令，操作系统和应用软件可以构建更加高层的并发原语，比如 SpinLock 和 Mutex。
 
-SpinLock 和 Mutex 最大的不同是，使用 SpinLock，线程在忙等（busy wait），而使用 Mutex lock，线程在等待锁的时候会被调度出去，等锁可用时再被调度回来。
+> SpinLock 和 Mutex 最大的不同是:
+- 使用 SpinLock，线程在忙等（busy wait）
+- 而使用 Mutex lock，线程在等待锁的时候会被调度出去，等锁可用时再被调度回来。
 
-听上去 SpinLock 似乎效率很低，其实不是，这要具体看锁的临界区大小。如果临界区要执行的代码很少，那么和 Mutex lock 带来的上下文切换（context switch）相比，SpinLock 是值得的。在 Linux Kernel 中，很多时候我们只能使用 SpinLock。
+> 听上去 SpinLock 似乎效率很低，其实不是，这要具体看锁的临界区大小。
+- 如果临界区要执行的代码很少，那么和 Mutex lock 带来的上下文切换（context switch）相比，SpinLock 是值得的。
+- 在 Linux Kernel 中，很多时候我们只能使用 SpinLock。
 
-至于操作系统里另一个重要的概念信号量（semaphore），你可以认为是 Mutex 更通用的表现形式。比如在新冠疫情下，图书馆要控制同时在馆内的人数，如果满了，其他人就必须排队，出来一个才能再进一个。这里，如果总人数限制为 1，就是 Mutex，如果 > 1，就是 semaphore。
+> 至于操作系统里另一个重要的概念信号量（semaphore），你可以认为是 Mutex 更通用的表现形式。
+
+比如在新冠疫情下，图书馆要控制同时在馆内的人数，如果满了，其他人就必须排队，出来一个才能再进一个。
+这里，如果总人数限制为 1，就是 Mutex，如果 > 1，就是 semaphore。
 ~~~
 
 # 工作模式三、限制依赖并发：DAG 模式
