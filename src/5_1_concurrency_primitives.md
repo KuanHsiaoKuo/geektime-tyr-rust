@@ -1,30 +1,31 @@
 # 并发原语
 
 <!--ts-->
+
 * [并发原语](#并发原语)
 * [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
 * [常见并发模型梳理，也就是并发原语](#常见并发模型梳理也就是并发原语)
 * [工作模式一、自由竞争: Atomic &amp; Mutex](#工作模式一自由竞争-atomic--mutex)
-   * [Atomic解决独占问题](#atomic解决独占问题)
+    * [Atomic解决独占问题](#atomic解决独占问题)
 * [工作模式二、限制顺序并发: map/reduce](#工作模式二限制顺序并发-mapreduce)
-   * [Atomic还存在2个问题](#atomic还存在2个问题)
-   * [用CAS解决问题1: 在互斥的基础上添加顺序](#用cas解决问题1-在互斥的基础上添加顺序)
-   * [用ordering解决问题2： 限制CPU顺序](#用ordering解决问题2-限制cpu顺序)
-   * [Atomic还有什么用](#atomic还有什么用)
-   * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
-   * [Atomic和Mutex的联系](#atomic和mutex的联系)
+    * [Atomic还存在2个问题](#atomic还存在2个问题)
+    * [用CAS解决问题1: 在互斥的基础上添加顺序](#用cas解决问题1-在互斥的基础上添加顺序)
+    * [用ordering解决问题2： 限制CPU顺序](#用ordering解决问题2-限制cpu顺序)
+    * [Atomic还有什么用](#atomic还有什么用)
+    * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
+    * [Atomic和Mutex的联系](#atomic和mutex的联系)
 * [工作模式三、限制依赖并发：DAG 模式](#工作模式三限制依赖并发dag-模式)
-   * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
-   * [condvar介绍与使用](#condvar介绍与使用)
-   * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
-      * [Channel](#channel)
-         * [Channel分类](#channel分类)
-      * [Actor](#actor)
-      * [Channel与Actor对比](#channel与actor对比)
+    * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
+    * [condvar介绍与使用](#condvar介绍与使用)
+    * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
+        * [Channel](#channel)
+            * [Channel分类](#channel分类)
+        * [Actor](#actor)
+        * [Channel与Actor对比](#channel与actor对比)
 * [自己实现一个基本的MPSC Channel](#自己实现一个基本的mpsc-channel)
-   * [测试驱动的设计](#测试驱动的设计)
-   * [实现 MPSC channel](#实现-mpsc-channel)
-   * [回顾测试驱动开发](#回顾测试驱动开发)
+    * [测试驱动的设计](#测试驱动的设计)
+    * [实现 MPSC channel](#实现-mpsc-channel)
+    * [回顾测试驱动开发](#回顾测试驱动开发)
 * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
@@ -202,19 +203,67 @@ fn main() {
 
 > 为了解决上面这段代码的问题，我们必须在 CPU 层面做一些保证，让某些操作成为原子操作。
 
-## 用CAS解决问题1: 在互斥的基础上添加顺序
+## 用CAS操作+Ordering解决两个问题
+
+因为 CAS 和 ordering 都是系统级的操作，所以这里描述的 Ordering 的用途在各种语言中都大同小异。
+对于 Rust 来说，它的 atomic 原语[继承于 C++](https://en.cppreference.com/w/cpp/atomic/memory_order)。
+如果读 Rust 的文档你感觉云里雾里，那么 C++ 关于 ordering 的文档要清晰得多。
+
+### CAS操作解决问题1
 
 ~~~admonish question title="CAS是什么？" collapsible=true
-> 最基础的保证是：CAS
 
 可以通过一条指令读取某个内存地址，判断其值是否等于某个前置值，如果相等，将其修改为新的值。
 
-这就是 Compare-and-swap 操作，简称CAS。它是操作系统的几乎所有并发原语的基石，使得我们能实现一个可以正常工作的锁。
+这就是 Compare-and-swap 操作，简称CAS。
+
+> 它是操作系统的几乎所有并发原语的基石，使得我们能实现一个可以正常工作的锁。
+
+Rust专门为`std::sync::atomic`中的数据结构提供了CAS操作方法compare_exhange
 ~~~
+
+### Ordering解决问题2：CAS需要Ordering参数说明操作的内存顺序
+
+~~~admonish info title="Ordering枚举体说明: 对锁的5个操作" collapsible=true
+这就是这个函数里额外的两个和 [Ordering](https://doc.rust-lang.org/std/sync/atomic/enum.Ordering.html) 有关的奇怪参数。
+
+```rust, editable
+
+pub enum Ordering {
+    Relaxed,
+    Release,
+    Acquire,
+    AcqRel,
+    SeqCst,
+}
+```
+
+> 文档里解释了几种 Ordering 的用途，稍稍扩展一下。
+
+1. 第一个 Relaxed，这是最宽松的规则，它对编译器和 CPU 不做任何限制，可以乱序执行。
+
+2. Release，当我们写入数据（比如上面代码里的 store）的时候，如果用了 Release order，那么：
+- 对于当前线程，任何读取或写入操作都不能被乱序排在这个 store 之后。
+- 也就是说，在下面的例子里，CPU 或者编译器不能把 **3 挪到 **4 之后执行。
+
+3. 对于其它线程，如果使用了 Acquire 来读取这个 atomic 的数据， 那么它们看到的是修改后的结果。
+- 下面代码我们在 compare_exchange 里使用了 Acquire 来读取，所以能保证读到最新的值。
+- 而 Acquire 是当我们读取数据的时候，如果用了 Acquire order，那么：
+    - 对于当前线程，任何读取或者写入操作都不能被乱序排在这个读取之前。在下面的例子里，CPU 或者编译器不能把 **3 挪到 **1 之前执行。
+    - 对于其它线程，如果使用了 Release 来修改数据，那么，修改的值对当前线程可见。
+
+4. 第四个 AcqRel 是 Acquire 和 Release 的结合，同时拥有 Acquire 和 Release 的保证。
+- 这个一般用在 fetch_xxx 上，比如你要对一个 atomic 自增 1，你希望这个操作之前和之后的读取或写入操作不会被乱序，并且操作的结果对其它线程可见。
+
+5. 最后的 SeqCst 是最严格的 ordering，除了 AcqRel 的保证外，它还保证所有线程看到的所有 SeqCst 操作的顺序是一致的。
+
+~~~
+
+### 解决过程
 
 > 所以，刚才的代码，我们可以把一开始的循环改成：
 
-~~~admonish info title="Atomic+CAS: 使用Atomic+CAS确保原子操作顺序" collapsible=true
+~~~admonish info title="Atomic+CAS+ordering: 确保原子操作顺序" collapsible=true
 
 ```rust, editable
 
@@ -227,7 +276,8 @@ while self
 1. 如果 locked 当前的值是 false，就将其改成 true。
 2. 这整个操作在一条指令里完成，不会被其它线程打断或者修改；
 3. 如果 locked 的当前值不是 false，那么就会返回错误，我们会在此不停 spin，直到前置条件得到满足。
-4. 这里，compare_exchange 是 Rust 提供的 CAS 操作，它会被编译成 CPU 的对应 CAS 指令。
+
+- 这里，compare_exchange 是 Rust 提供的 CAS 操作，它会被编译成 CPU 的对应 CAS 指令。
 
 > 当这句执行成功后，locked 必然会被改变为 true，我们成功拿到了锁，而任何其他线程都会在这句话上 spin。
 
@@ -240,9 +290,10 @@ self.locked.store(false, Ordering::Release);
 ~~~
 
 当然，为了配合这样的改动，我们还需要把 locked 从 bool 改成 AtomicBool。
-在 Rust 里，std::sync::atomic 有大量的 atomic 数据结构，对应各种基础结构。
 
-~~~admonish info title="我们看使用了 AtomicBool 的新实现（代码）：" collapsible=true
+> 在 Rust 里，std::sync::atomic 有大量的 atomic 数据结构，对应各种基础结构。
+
+~~~admonish info title="AtomicBool+compare_exchange+Ordering参数：我们看使用了 AtomicBool 的新实现（代码）：" collapsible=true
 
 ```rust, editable
 
@@ -319,51 +370,25 @@ fn main() {
 
 可以看到:
 
-1. 通过使用 compare_exchange ，规避了问题1
-2. 但对于和编译器 /CPU 自动优化相关的问题2，我们还需要一些额外处理。
-
-## 用ordering解决问题2： 限制CPU顺序
-
-~~~admonish info title="Ordering枚举体说明" collapsible=true
-这就是这个函数里额外的两个和 [Ordering](https://doc.rust-lang.org/std/sync/atomic/enum.Ordering.html) 有关的奇怪参数。
-
-```rust, editable
-
-pub enum Ordering {
-    Relaxed,
-    Release,
-    Acquire,
-    AcqRel,
-    SeqCst,
-}
+~~~admonish info title="1. 通过使用 compare_exchange+Ordering ，规避了同时拿到锁和CPU乱序这两个问题" collapsible=true
+- 之前：
+```rust
+// 如果没拿到锁，就一直 spin
+while *self.locked.borrow() != false {} // **1
 ```
 
-> 文档里解释了几种 Ordering 的用途，稍稍扩展一下。
-
-1. 第一个 Relaxed，这是最宽松的规则，它对编译器和 CPU 不做任何限制，可以乱序执行。
-2. Release，当我们写入数据（比如上面代码里的 store）的时候，如果用了 Release order，那么：
-- 对于当前线程，任何读取或写入操作都不能被乱序排在这个 store 之后。
-- 也就是说，在上面的例子里，CPU 或者编译器不能把 **3 挪到 **4 之后执行。
-
-3. 对于其它线程，如果使用了 Acquire 来读取这个 atomic 的数据， 那么它们看到的是修改后的结果。
-- 上面代码我们在 compare_exchange 里使用了 Acquire 来读取，所以能保证读到最新的值。
-- 而 Acquire 是当我们读取数据的时候，如果用了 Acquire order，那么：
-- 对于当前线程，任何读取或者写入操作都不能被乱序排在这个读取之前。在上面的例子里，CPU 或者编译器不能把 **3 挪到 **1 之前执行。
-- 对于其它线程，如果使用了 Release 来修改数据，那么，修改的值对当前线程可见。
-
-4. 第四个 AcqRel 是 Acquire 和 Release 的结合，同时拥有 Acquire 和 Release 的保证。
-- 这个一般用在 fetch_xxx 上，比如你要对一个 atomic 自增 1，你希望这个操作之前和之后的读取或写入操作不会被乱序，并且操作的结果对其它线程可见。
-
-5. 最后的 SeqCst 是最严格的 ordering，除了 AcqRel 的保证外，它还保证所有线程看到的所有 SeqCst 操作的顺序是一致的。
-
+- 使用compare_exchange
+```rust
+// 如果没拿到锁，就一直 spin
+while self
+.locked
+.compare_exchange(false, true, Ordering::Acquire, Ordering::Relaxed)
+.is_err()
+{} // **1
+```
 ~~~
 
-因为 CAS 和 ordering 都是系统级的操作，所以这里描述的 Ordering 的用途在各种语言中都大同小异。对于 Rust 来说，它的 atomic
-原语[继承于 C++](https://en.cppreference.com/w/cpp/atomic/memory_order)。如果读 Rust 的文档你感觉云里雾里，那么 C++ 关于 ordering 的文档要清晰得多。
-
-~~~admonish info title="用ordering对Atomic背后的CAS进行获取锁的优化" collapsible=true
-其实上面获取锁的 spin 过程性能不够好，更好的方式是这样处理一下：
-
+~~~admonish info title="2. 其实上面获取锁的 spin 过程性能不够好，更好的方式是这样处理一下：" collapsible=true
 ```rust, editable
 
 while self
@@ -376,6 +401,7 @@ while self
     while self.locked.load(Ordering::Relaxed) == true {}
 }
 ```
+
 注意，我们在 while loop 里，又嵌入了一个 loop。
 1. 这是因为 CAS 是个代价比较高的操作，它需要获得对应内存的独占访问（exclusive access）
 2. 我们希望失败的时候只是简单读取 atomic 的状态，只有符合条件的时候再去做独占访问，进行 CAS。
