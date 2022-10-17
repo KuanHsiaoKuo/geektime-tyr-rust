@@ -24,7 +24,7 @@
          * [Channel分类](#channel分类)
       * [Actor](#actor)
       * [Channel/Actor对比与联系](#channelactor对比与联系)
-   * [至于async/await，又是另一个故事](#至于asyncawait又是另一个故事)
+* [至于async/await，又是另一个故事](#至于asyncawait又是另一个故事)
 * [自己实现一个基本的MPSC Channel](#自己实现一个基本的mpsc-channel)
    * [测试驱动的设计](#测试驱动的设计)
    * [实现 MPSC channel](#实现-mpsc-channel)
@@ -32,7 +32,7 @@
 * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 17 09:54:11 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 17 09:56:59 UTC 2022 -->
 
 <!--te-->
 
