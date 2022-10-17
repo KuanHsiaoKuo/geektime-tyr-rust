@@ -12,6 +12,7 @@
       * [CAS操作解决问题1](#cas操作解决问题1)
       * [Ordering解决问题2：CAS需要Ordering参数说明操作的内存顺序](#ordering解决问题2cas需要ordering参数说明操作的内存顺序)
       * [解决过程](#解决过程)
+      * [临界区优化](#临界区优化)
    * [Atomic还有什么用](#atomic还有什么用)
    * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
    * [Atomic和Mutex的联系](#atomic和mutex的联系)
@@ -30,7 +31,7 @@
 * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 17 08:47:29 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 17 08:50:28 UTC 2022 -->
 
 <!--te-->
 
