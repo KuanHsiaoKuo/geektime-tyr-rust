@@ -1,6 +1,38 @@
 # 并发原语
 
 <!--ts-->
+* [并发原语](#并发原语)
+* [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
+* [常见并发模型梳理，也就是并发原语](#常见并发模型梳理也就是并发原语)
+* [工作模式一、自由竞争: Atomic &amp; Mutex](#工作模式一自由竞争-atomic--mutex)
+   * [Atomic解决独占问题](#atomic解决独占问题)
+* [工作模式二、限制顺序并发: map/reduce](#工作模式二限制顺序并发-mapreduce)
+   * [Atomic还存在2个问题](#atomic还存在2个问题)
+   * [用CAS操作+Ordering解决两个问题](#用cas操作ordering解决两个问题)
+      * [CAS操作解决问题1](#cas操作解决问题1)
+      * [Ordering解决问题2：CAS需要Ordering参数说明操作的内存顺序](#ordering解决问题2cas需要ordering参数说明操作的内存顺序)
+      * [解决过程](#解决过程)
+      * [临界区优化](#临界区优化)
+   * [Atomic还有什么用](#atomic还有什么用)
+   * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
+   * [Atomic和Mutex的联系](#atomic和mutex的联系)
+* [工作模式三、限制依赖并发：DAG 模式](#工作模式三限制依赖并发dag-模式)
+   * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
+   * [condvar介绍与使用](#condvar介绍与使用)
+   * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
+      * [Channel](#channel)
+         * [Channel分类](#channel分类)
+      * [Actor](#actor)
+      * [Channel与Actor对比](#channel与actor对比)
+* [自己实现一个基本的MPSC Channel](#自己实现一个基本的mpsc-channel)
+   * [测试驱动的设计](#测试驱动的设计)
+   * [实现 MPSC channel](#实现-mpsc-channel)
+   * [回顾测试驱动开发](#回顾测试驱动开发)
+* [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Mon Oct 17 08:54:26 UTC 2022 -->
+
 <!--te-->
 
 # 并发的难点、工作模式和核心
