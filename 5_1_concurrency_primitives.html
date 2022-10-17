@@ -199,6 +199,7 @@
 <li><a href="#cas%E6%93%8D%E4%BD%9C%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%981">CAS操作解决问题1</a></li>
 <li><a href="#ordering%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%982cas%E9%9C%80%E8%A6%81ordering%E5%8F%82%E6%95%B0%E8%AF%B4%E6%98%8E%E6%93%8D%E4%BD%9C%E7%9A%84%E5%86%85%E5%AD%98%E9%A1%BA%E5%BA%8F">Ordering解决问题2：CAS需要Ordering参数说明操作的内存顺序</a></li>
 <li><a href="#%E8%A7%A3%E5%86%B3%E8%BF%87%E7%A8%8B">解决过程</a></li>
+<li><a href="#%E4%B8%B4%E7%95%8C%E5%8C%BA%E4%BC%98%E5%8C%96">临界区优化</a></li>
 </ul>
 </li>
 <li><a href="#atomic%E8%BF%98%E6%9C%89%E4%BB%80%E4%B9%88%E7%94%A8">Atomic还有什么用</a></li>
@@ -233,7 +234,7 @@
 <li><a href="#%E5%B0%8F%E7%BB%93%E4%B8%80%E4%B8%8B%E5%90%84%E7%A7%8D%E5%B9%B6%E5%8F%91%E5%8E%9F%E8%AF%AD%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">小结一下各种并发原语的使用场景</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 17 08:47:29 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 17 08:50:28 UTC 2022 -->
 <!--te-->
 <h1 id="并发的难点工作模式和核心"><a class="header" href="#并发的难点工作模式和核心">并发的难点、工作模式和核心</a></h1>
 <details id="admonition-处理并发的难点在哪里" class="admonition info">
@@ -667,12 +668,10 @@ fn main() {
 </div>
 </details>
 <p>可以看到:</p>
-<details id="admonition-1-通过使用-compare_exchangeordering-规避了同时拿到锁和cpu乱序这两个问题" class="admonition info">
+<details id="admonition-通过使用-compare_exchangeordering-规避了同时拿到锁和cpu乱序这两个问题" class="admonition info">
 <summary class="admonition-title">
-<ol>
-<li>通过使用 compare_exchange+Ordering ，规避了同时拿到锁和CPU乱序这两个问题</li>
-</ol>
-<p><a class="admonition-anchor-link" href="#admonition-1-通过使用-compare_exchangeordering-规避了同时拿到锁和cpu乱序这两个问题"></a></p>
+<p>通过使用 compare_exchange+Ordering ，规避了同时拿到锁和CPU乱序这两个问题</p>
+<p><a class="admonition-anchor-link" href="#admonition-通过使用-compare_exchangeordering-规避了同时拿到锁和cpu乱序这两个问题"></a></p>
 </summary>
 <div>
 <ul>
@@ -699,12 +698,11 @@ while self
 </span></code></pre></pre>
 </div>
 </details>
-<details id="admonition-2-其实上面获取锁的-spin-过程性能不够好更好的方式是这样处理一下" class="admonition info">
+<h3 id="临界区优化"><a class="header" href="#临界区优化">临界区优化</a></h3>
+<details id="admonition-其实上面获取锁的-spin-过程性能不够好更好的方式是这样处理一下" class="admonition info">
 <summary class="admonition-title">
-<ol start="2">
-<li>其实上面获取锁的 spin 过程性能不够好，更好的方式是这样处理一下：</li>
-</ol>
-<p><a class="admonition-anchor-link" href="#admonition-2-其实上面获取锁的-spin-过程性能不够好更好的方式是这样处理一下"></a></p>
+<p>其实上面获取锁的 spin 过程性能不够好，更好的方式是这样处理一下：</p>
+<p><a class="admonition-anchor-link" href="#admonition-其实上面获取锁的-spin-过程性能不够好更好的方式是这样处理一下"></a></p>
 </summary>
 <div>
 <pre><pre class="playground"><code class="language-rust  editable">
@@ -724,9 +722,14 @@ while self
 <li>我们希望失败的时候只是简单读取 atomic 的状态，只有符合条件的时候再去做独占访问，进行 CAS。</li>
 <li>所以，看上去多做了一层循环，实际代码的效率更高。</li>
 </ol>
-<blockquote>
+</div>
+</details>
+<details id="admonition-以下是两个线程同步的过程一开始-t1-拿到锁t2-spin之后-t1-释放锁t2-进入到临界区执行" class="admonition info">
+<summary class="admonition-title">
 <p>以下是两个线程同步的过程，一开始 t1 拿到锁、t2 spin，之后 t1 释放锁、t2 进入到临界区执行：</p>
-</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition-以下是两个线程同步的过程一开始-t1-拿到锁t2-spin之后-t1-释放锁t2-进入到临界区执行"></a></p>
+</summary>
+<div>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/33%EF%BD%9C%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9A%E4%BB%8Eatomics%E5%88%B0Channel%EF%BC%8CRust%E9%83%BD%E6%8F%90%E4%BE%9B%E4%BA%86%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%EF%BC%9F-4950274.jpg" alt="33｜并发处理（上）：从atomics到Channel，Rust都提供了什么工具？" /></p>
 </div>
 </details>
