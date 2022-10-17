@@ -370,7 +370,7 @@ fn main() {
 
 可以看到:
 
-~~~admonish info title="1. 通过使用 compare_exchange+Ordering ，规避了同时拿到锁和CPU乱序这两个问题" collapsible=true
+~~~admonish info title="通过使用 compare_exchange+Ordering ，规避了同时拿到锁和CPU乱序这两个问题" collapsible=true
 - 之前：
 ```rust
 // 如果没拿到锁，就一直 spin
@@ -388,7 +388,9 @@ while self
 ```
 ~~~
 
-~~~admonish info title="2. 其实上面获取锁的 spin 过程性能不够好，更好的方式是这样处理一下：" collapsible=true
+### 临界区优化
+
+~~~admonish info title="其实上面获取锁的 spin 过程性能不够好，更好的方式是这样处理一下：" collapsible=true
 ```rust, editable
 
 while self
@@ -406,10 +408,9 @@ while self
 1. 这是因为 CAS 是个代价比较高的操作，它需要获得对应内存的独占访问（exclusive access）
 2. 我们希望失败的时候只是简单读取 atomic 的状态，只有符合条件的时候再去做独占访问，进行 CAS。
 3. 所以，看上去多做了一层循环，实际代码的效率更高。
+~~~
 
-
-> 以下是两个线程同步的过程，一开始 t1 拿到锁、t2 spin，之后 t1 释放锁、t2 进入到临界区执行：
-
+~~~admonish info title="以下是两个线程同步的过程，一开始 t1 拿到锁、t2 spin，之后 t1 释放锁、t2 进入到临界区执行：" collapsible=true
 ![33｜并发处理（上）：从atomics到Channel，Rust都提供了什么工具？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/33%EF%BD%9C%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%EF%BC%88%E4%B8%8A%EF%BC%89%EF%BC%9A%E4%BB%8Eatomics%E5%88%B0Channel%EF%BC%8CRust%E9%83%BD%E6%8F%90%E4%BE%9B%E4%BA%86%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%EF%BC%9F-4950274.jpg)
 ~~~
 
