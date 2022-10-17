@@ -925,7 +925,7 @@ async fn main() -> Result<()> {
 - Rust的异步编程主要使用async模型：
   [Why Async? - Asynchronous Programming in Rust](https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html#async-vs-other-concurrency-models)
 
-## 至于async/await，又是另一个故事
+# 至于async/await，又是另一个故事
 
 - [async/await异步模型是否优于stackful coroutine模型？ - 知乎](https://www.zhihu.com/question/65647171)
 - [白话并发模型和异步编程范式 · Joey's Tech Notes & Blogs](https://code2life.top/2021/05/31/0062-concurrent-model-async-programming/)
