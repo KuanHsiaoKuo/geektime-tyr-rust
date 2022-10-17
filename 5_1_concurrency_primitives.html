@@ -219,9 +219,10 @@
 </ul>
 </li>
 <li><a href="#actor">Actor</a></li>
-<li><a href="#channel%E4%B8%8Eactor%E5%AF%B9%E6%AF%94">Channel与Actor对比</a></li>
+<li><a href="#channelactor%E5%AF%B9%E6%AF%94%E4%B8%8E%E8%81%94%E7%B3%BB">Channel/Actor对比与联系</a></li>
 </ul>
 </li>
+<li><a href="#%E8%87%B3%E4%BA%8Easyncawait%E5%8F%88%E6%98%AF%E5%8F%A6%E4%B8%80%E4%B8%AA%E6%95%85%E4%BA%8B">至于async/await，又是另一个故事</a></li>
 </ul>
 </li>
 <li><a href="#%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E5%9F%BA%E6%9C%AC%E7%9A%84mpsc-channel">自己实现一个基本的MPSC Channel</a>
@@ -234,7 +235,7 @@
 <li><a href="#%E5%B0%8F%E7%BB%93%E4%B8%80%E4%B8%8B%E5%90%84%E7%A7%8D%E5%B9%B6%E5%8F%91%E5%8E%9F%E8%AF%AD%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">小结一下各种并发原语的使用场景</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 17 08:54:26 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 17 09:54:11 UTC 2022 -->
 <!--te-->
 <h1 id="并发的难点工作模式和核心"><a class="header" href="#并发的难点工作模式和核心">并发的难点、工作模式和核心</a></h1>
 <details id="admonition-处理并发的难点在哪里" class="admonition info">
@@ -325,9 +326,16 @@
 <div>
 <p>在这些并发模式背后，都有哪些并发原语可以为我们所用呢：</p>
 <ol>
-<li>Atomic</li>
-<li>Mutex</li>
-<li>Condvar</li>
+<li>Atomic：原子锁</li>
+<li>Mutex：互斥锁</li>
+<li>Condvar：条件变量</li>
+</ol>
+<ul>
+<li>条件变量表示阻塞线程的能力，使其在等待事件发生时不消耗 CPU 时间。</li>
+<li>条件变量通常与布尔谓词(条件)和互斥锁相关联。</li>
+<li>在确定线程必须阻塞之前，始终在互斥锁内部验证谓词。</li>
+</ul>
+<ol start="4">
 <li>Channel </li>
 <li>Actor model</li>
 </ol>
@@ -974,11 +982,29 @@ fn main() {
 <p><a class="admonition-anchor-link" href="#admonition-atomic和mutex主要用于哪种工作模式基于什么需求提出condvar原语"></a></p>
 </summary>
 <div>
-<p>对于并发状态下这三种常见的工作模式：自由竞争模式、map/reduce 模式、DAG 模式，我们的难点是如何在这些并发的任务中进行同步。atomic / Mutex 解决了自由竞争模式下并发任务的同步问题，也能够很好地解决 map/reduce 模式下的同步问题，因为此时同步只发生在 map 和 reduce 两个阶段。</p>
+<p>对于并发状态下这三种常见的工作模式：</p>
+<ul>
+<li>自由竞争模式</li>
+<li>map/reduce 模式</li>
+<li>DAG 模式</li>
+</ul>
+<p>我们的难点是如何在这些并发的任务中进行同步:</p>
+<ul>
+<li>atomic / Mutex 解决了自由竞争模式下并发任务的同步问题</li>
+<li>也能够很好地解决 map/reduce 模式下的同步问题，因为此时同步只发生在 map 和 reduce 两个阶段。</li>
+</ul>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/34%EF%BD%9C%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89%EF%BC%9A%E4%BB%8Eatomics%E5%88%B0Channel%EF%BC%8CRust%E9%83%BD%E6%8F%90%E4%BE%9B%E4%BA%86%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%EF%BC%9F-4951814.jpg" alt="34｜并发处理（下）：从atomics到Channel，Rust都提供了什么工具？" /></p>
+<blockquote>
 <p>然而，它们没有解决一个更高层次的问题，也就是 DAG 模式：如果这种访问需要按照一定顺序进行或者前后有依赖关系，该怎么做？</p>
-<p>这个问题的典型场景是生产者 - 消费者模式：生产者生产出来内容后，需要有机制通知消费者可以消费。比如 socket 上有数据了，通知处理线程来处理数据，处理完成之后，再通知 socket 收发的线程发送数据。</p>
+</blockquote>
+<p>这个问题的典型场景是生产者 - 消费者模式：</p>
+<ol>
+<li>生产者生产出来内容后，需要有机制通知消费者可以消费。</li>
+<li>比如 socket 上有数据了，通知处理线程来处理数据，处理完成之后，再通知 socket 收发的线程发送数据。</li>
+</ol>
+<blockquote>
 <p>所以，操作系统还提供了 Condvar。</p>
+</blockquote>
 </div>
 </details>
 <h2 id="condvar介绍与使用"><a class="header" href="#condvar介绍与使用">condvar介绍与使用</a></h2>
@@ -1021,10 +1047,11 @@ fn main() {
         }
     });
 
-    // 等待工作线程的通知
     let (lock, cvar) = &amp;*pair;
+    // 使用互斥锁作为变量
     let mut started = lock.lock().unwrap();
     while !*started {
+        // 等待工作线程的通知
         started = cvar.wait(started).unwrap();
     }
     eprintln!(&quot;Worker started!&quot;);
@@ -1035,9 +1062,10 @@ fn main() {
 <p>这段代码通过 condvar，我们实现了 worker 线程在执行到一定阶段后通知主线程，然后主线程再做一些事情。</p>
 </li>
 <li>
-<p>这里，我们使用了一个 Mutex 作为互斥条件，然后在 <a href="https://doc.rust-lang.org/src/std/sync/condvar.rs.html#184-191">cvar.wait() </a>中传入这个 Mutex。这个接口需要一个 MutexGuard，以便于知道需要唤醒哪个 Mutex 下等待的线程：</p>
+<p>这里，我们使用了一个 Mutex 作为互斥条件，然后在 <a href="https://doc.rust-lang.org/src/std/sync/condvar.rs.html#184-191">cvar.wait() </a>中传入这个 Mutex。</p>
 </li>
 </ol>
+<p>这个接口需要一个 MutexGuard，以便于知道需要唤醒哪个 Mutex 下等待的线程：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 pub fn wait&lt;'a, T&gt;(
     &amp;self,
@@ -1107,20 +1135,24 @@ pub fn wait&lt;'a, T&gt;(
 <p>根据 Channel 读者和写者的数量，Channel 又可以分为：</p>
 <ul>
 <li>
-<p>SPSC：Single-Producer Single-Consumer，单生产者，单消费者。最简单，可以不依赖于 Mutex，只用 atomics 就可以实现。</p>
+<p>SPSC：Single-Producer Single-Consumer
+单生产者，单消费者。最简单，可以不依赖于 Mutex，只用 atomics 就可以实现。</p>
 </li>
 <li>
-<p>SPMC：Single-Producer Multi-Consumer，单生产者，多消费者。需要在消费者这侧读取时加锁。</p>
+<p>SPMC：Single-Producer Multi-Consumer
+单生产者，多消费者。需要在消费者这侧读取时加锁。</p>
 </li>
 <li>
-<p>MPSC：Multi-Producer Single-Consumer，多生产者，单消费者。需要在生产者这侧写入时加锁。</p>
+<p>MPSC：Multi-Producer Single-Consumer
+多生产者，单消费者。需要在生产者这侧写入时加锁。</p>
 </li>
 <li>
-<p>MPMC：Multi-Producer Multi-Consumer。多生产者，多消费者。需要在生产者写入或者消费者读取时加锁。</p>
+<p>MPMC：Multi-Producer Multi-Consumer
+多生产者，多消费者。需要在生产者写入或者消费者读取时加锁。</p>
 </li>
 </ul>
 <blockquote>
-<p>在众多 Channel 类型中，使用最广的是 MPSC channel，多生产者，单消费者，因为往往我们希望通过单消费者来保证，用于处理消息的数据结构有独占的写访问。</p>
+<p>在众多 Channel 类型中，使用最广的是 MPSC channel, 因为往往我们希望通过单消费者来保证，用于处理消息的数据结构有独占的写访问。</p>
 </blockquote>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/34%EF%BD%9C%E5%B9%B6%E5%8F%91%E5%A4%84%E7%90%86%EF%BC%88%E4%B8%8B%EF%BC%89%EF%BC%9A%E4%BB%8Eatomics%E5%88%B0Channel%EF%BC%8CRust%E9%83%BD%E6%8F%90%E4%BE%9B%E4%BA%86%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%EF%BC%9F.jpg" alt="34｜并发处理（下）：从atomics到Channel，Rust都提供了什么工具？" /></p>
 <p>比如，<a href="https://github.com/tyrchen/xunmi/blob/master/src/indexer.rs#L50">在 xunmi 的实现中</a>: </p>
@@ -1271,7 +1303,18 @@ async fn main() -&gt; Result&lt;()&gt; {
 </blockquote>
 </div>
 </details>
-<h3 id="channel与actor对比"><a class="header" href="#channel与actor对比">Channel与Actor对比</a></h3>
+<h3 id="channelactor对比与联系"><a class="header" href="#channelactor对比与联系">Channel/Actor对比与联系</a></h3>
+<ul>
+<li><a href="https://homepages.inf.ed.ac.uk/slindley/papers/acca.pdf">Mixing Metaphors: Actors as Channels and Channels as Actors</a><a href="x-devonthink-item://E0179117-18AC-4BBC-B1B0-B0A96895F745">dt链接</a></li>
+<li><a href="https://cstheory.stackexchange.com/questions/184/whats-the-difference-between-the-actor-model-of-concurrency-and-communicating-s">What’s the difference between the Actor Model of Concurrency and Communicating Sequential Processes - Theoretical Computer Science Stack Exchange</a></li>
+<li>Rust的异步编程主要使用async模型：
+<a href="https://rust-lang.github.io/async-book/01_getting_started/02_why_async.html#async-vs-other-concurrency-models">Why Async? - Asynchronous Programming in Rust</a></li>
+</ul>
+<h2 id="至于asyncawait又是另一个故事"><a class="header" href="#至于asyncawait又是另一个故事">至于async/await，又是另一个故事</a></h2>
+<ul>
+<li><a href="https://www.zhihu.com/question/65647171">async/await异步模型是否优于stackful coroutine模型？ - 知乎</a></li>
+<li><a href="https://code2life.top/2021/05/31/0062-concurrent-model-async-programming/">白话并发模型和异步编程范式 · Joey’s Tech Notes &amp; Blogs</a></li>
+</ul>
 <h1 id="自己实现一个基本的mpsc-channel"><a class="header" href="#自己实现一个基本的mpsc-channel">自己实现一个基本的MPSC Channel</a></h1>
 <p>之前我们谈论了如何在搜索引擎的 Index writer 上使用 MPSC channel：</p>
 <ol>
