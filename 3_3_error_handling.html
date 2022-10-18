@@ -195,14 +195,18 @@
 <li><a href="#result">Result</a></li>
 </ul>
 </li>
-<li><a href="#2-%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8panic-%E5%92%8C-catch_unwind">2. 抛出异常：panic! 和 catch_unwind</a>
+<li><a href="#2-%E4%BD%BF%E7%94%A8%E5%BC%82%E5%B8%B8">2. 使用异常</a>
+<ul>
+<li><a href="#21-%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8panic-%E5%92%8C-catch_unwind">2.1 抛出异常：panic! 和 catch_unwind</a>
 <ul>
 <li><a href="#panic">panic!</a></li>
 <li><a href="#catch_uwind">catch_uwind</a></li>
 </ul>
 </li>
-<li><a href="#3-%E6%8D%95%E8%8E%B7%E5%BC%82%E5%B8%B8%E6%93%8D%E4%BD%9C%E7%AC%A6">3. 捕获异常：?操作符</a></li>
-<li><a href="#4-%E5%87%BD%E6%95%B0%E5%BC%8F%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86-mapmap_errand_then">4. 函数式错误处理: map/map_err/and_then</a></li>
+<li><a href="#22-%E6%8D%95%E8%8E%B7%E5%BC%82%E5%B8%B8%E6%93%8D%E4%BD%9C%E7%AC%A6">2.2 捕获异常：?操作符</a></li>
+</ul>
+</li>
+<li><a href="#3-%E5%87%BD%E6%95%B0%E5%BC%8F%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86-mapmap_errand_then">3. 函数式错误处理: map/map_err/and_then</a></li>
 </ul>
 </li>
 <li><a href="#error-trait-%E5%92%8C%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%BD%AC%E6%8D%A2">Error trait 和错误类型的转换</a></li>
@@ -210,7 +214,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Oct 18 09:27:25 UTC 2022 -->
+<!-- Added by: runner, at: Tue Oct 18 14:01:41 UTC 2022 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
 <details id="admonition-错误处理包含这么几部分" class="admonition info">
@@ -274,12 +278,12 @@ func Fread(file *File, b []byte) (n int, err error)
 </ul>
 </div>
 </details>
-<details id="admonition-2-使用异常" class="admonition info">
+<details id="admonition-2-使用异常-抛出异常捕获异常" class="admonition info">
 <summary class="admonition-title">
 <ol start="2">
-<li>使用异常</li>
+<li>使用异常: 抛出异常+捕获异常</li>
 </ol>
-<p><a class="admonition-anchor-link" href="#admonition-2-使用异常"></a></p>
+<p><a class="admonition-anchor-link" href="#admonition-2-使用异常-抛出异常捕获异常"></a></p>
 </summary>
 <div>
 <p>因为返回值不利于错误的传播，有诸多限制，Java 等很多语言使用异常来处理错误。</p>
@@ -410,8 +414,9 @@ pub enum Result&lt;T, E&gt; {
 <p>这里，如果我们调用 read_file 函数时，直接丢弃返回值，由于 #[must_use] 的标注，Rust 编译器报警，要求我们使用其返回值。</p>
 </div>
 </details>
-<h3 id="2-抛出异常panic-和-catch_unwind"><a class="header" href="#2-抛出异常panic-和-catch_unwind">2. 抛出异常：panic! 和 catch_unwind</a></h3>
-<h4 id="panic"><a class="header" href="#panic">panic!</a></h4>
+<h3 id="2-使用异常"><a class="header" href="#2-使用异常">2. 使用异常</a></h3>
+<h4 id="21-抛出异常panic-和-catch_unwind"><a class="header" href="#21-抛出异常panic-和-catch_unwind">2.1 抛出异常：panic! 和 catch_unwind</a></h4>
+<h5 id="panic"><a class="header" href="#panic">panic!</a></h5>
 <details id="admonition-rust-也提供了特殊的异常处理能力-panic和catch_unwind" class="admonition info">
 <summary class="admonition-title">
 <p>Rust 也提供了特殊的异常处理能力: panic!和catch_unwind</p>
@@ -433,7 +438,7 @@ let params: NoiseParams = &quot;Noise_XX_25519_AESGCM_SHA256&quot;.parse().unwra
 <blockquote>
 <p>如果开发者不小心把协议变量写错了，最佳的方式是立刻 panic! 出来，让错误立刻暴露，以便解决这个问题。</p>
 </blockquote>
-<h4 id="catch_uwind"><a class="header" href="#catch_uwind">catch_uwind</a></h4>
+<h5 id="catch_uwind"><a class="header" href="#catch_uwind">catch_uwind</a></h5>
 <details id="admonition-catch_unwind-有些场景下我们也希望能够像异常处理那样能够栈回溯把环境恢复到捕获异常的上下文" class="admonition info">
 <summary class="admonition-title">
 <p>catch_unwind(): 有些场景下，我们也希望能够像异常处理那样能够栈回溯，把环境恢复到捕获异常的上下文。</p>
@@ -481,7 +486,7 @@ fn main() {
 </ol>
 </div>
 </details>
-<h3 id="3-捕获异常操作符"><a class="header" href="#3-捕获异常操作符">3. 捕获异常：?操作符</a></h3>
+<h4 id="22-捕获异常操作符"><a class="header" href="#22-捕获异常操作符">2.2 捕获异常：?操作符</a></h4>
 <details id="admonition--操作符的由来" class="admonition info">
 <summary class="admonition-title">
 <p>? 操作符的由来</p>
@@ -532,7 +537,7 @@ fut
 <p>虽然 ? 操作符使用起来非常方便，但你要注意在不同的错误类型之间是无法直接使用的，需要实现 From trait 在二者之间建立起转换的桥梁，这会带来额外的麻烦。</p>
 </div>
 </details>
-<h3 id="4-函数式错误处理-mapmap_errand_then"><a class="header" href="#4-函数式错误处理-mapmap_errand_then">4. 函数式错误处理: map/map_err/and_then</a></h3>
+<h3 id="3-函数式错误处理-mapmap_errand_then"><a class="header" href="#3-函数式错误处理-mapmap_errand_then">3. 函数式错误处理: map/map_err/and_then</a></h3>
 <details id="admonition-map--map_err--and_then-使用函数式错误处理" class="admonition info">
 <summary class="admonition-title">
 <p>map / map_err / and_then: 使用函数式错误处理</p>
