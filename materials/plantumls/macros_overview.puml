@@ -1,9 +1,9 @@
 @startuml
 title 两类四种宏对比\n（具体内容看详细版泳道图）
 |cargo| Cargo.toml
-|#AntiqueWhite|d| src/<对应抽取字段与方法定义>.rs
+|#AntiqueWhite|d| src/\n<抽取字段与方法定义>.rs
 |lib| src/lib.rs
-|call| examples/调用代码
+|call| examples/\n调用代码
 |lib|
 start
 :定义声明宏;
@@ -31,10 +31,12 @@ start
 : 手工抽取TokenStream定义派生宏;
 : 打开过程宏;
 |d|
-:使用anyhow与askama抽取TokenStream中的信息
+:使用anyhow与askama抽取
+TokenStream中的信息
 ====
 1. 分别定义BuilderContext和Fd
-2. BuilderContext处理jinja模版数据结构
+2. BuilderContext处理:
+        jinja模版数据结构
 3. Fd描述每个field;
 #AAAAAA:templates/builder.j2\n\n编写与tokenstream\n对应的jinja2模版;
 |d|
@@ -62,7 +64,8 @@ start
 : syn/quote抽取TokenStream\n为DeriveInput定义派生宏;
 : 打开过程宏;
 |d|
-:使用syn与quote抽取 TokenStream中的信息
+:使用syn与quote抽取
+TokenStream中的信息
 ====
 1. 同样定义BuilderContext和Fd;
 :不需要自己手动定义
@@ -90,7 +93,8 @@ start
 : syn/quote抽取TokenStream\n为DeriveInput定义属性宏;
 : 打开过程宏;
 |d|
-:使用syn与quote抽取 TokenStream中的信息
+:使用syn与quote抽取
+TokenStream中的信息
 ====
 1. 定义Opts、Fd、BuilderContext
 2. 比起派生宏，多了Opts用于捕获Fd的属性;
