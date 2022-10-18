@@ -1,21 +1,22 @@
 # 三、错误处理
 
 <!--ts-->
-
 * [三、错误处理](#三错误处理)
-    * [错误处理包含这么几部分](#错误处理包含这么几部分)
-    * [错误处理的主流方法](#错误处理的主流方法)
-    * [Rust 的错误处理](#rust-的错误处理)
-        * [Option/Result错误类型处理](#optionresult错误类型处理)
-        * [Option](#option)
-        * [Result](#result)
-        * [? 操作符](#-操作符)
-        * [函数式错误处理](#函数式错误处理)
-        * [panic! 和 catch_unwind](#panic-和-catch_unwind)
-        * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
+   * [错误处理包含这么几部分](#错误处理包含这么几部分)
+   * [错误处理的主流方法](#错误处理的主流方法)
+   * [Rust 的错误处理](#rust-的错误处理)
+      * [1. 使用类型系统：Option/Result错误类型处理](#1-使用类型系统optionresult错误类型处理)
+         * [Option](#option)
+         * [Result](#result)
+      * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
+         * [panic!](#panic)
+         * [catch_uwind](#catch_uwind)
+      * [3. 捕获异常：?操作符](#3-捕获异常操作符)
+      * [4. 函数式错误处理: map/map_err/and_then](#4-函数式错误处理-mapmap_errand_then)
+   * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Oct 18 09:07:23 UTC 2022 -->
+<!-- Added by: runner, at: Tue Oct 18 09:27:25 UTC 2022 -->
 
 <!--te-->
 
