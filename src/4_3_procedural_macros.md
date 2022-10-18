@@ -1,6 +1,23 @@
 # 过程宏
 
 <!--ts-->
+* [过程宏](#过程宏)
+   * [手工定义图](#手工定义图)
+   * [Cargo.toml添加proc-macro声明](#cargotoml添加proc-macro声明)
+   * [函数宏](#函数宏)
+   * [派生宏:](#派生宏)
+      * [常用派生宏](#常用派生宏)
+         * [#[derive(Debug)]](#derivedebug)
+      * [手工实现builder模式](#手工实现builder模式)
+         * [实现效果：链式调用](#实现效果链式调用)
+         * [派生宏思路](#派生宏思路)
+      * [自动实现：使用syn/quote可以不用自己定义模版](#自动实现使用synquote可以不用自己定义模版)
+   * [过程属性宏: proc_macro_derive(macro_name, attributes(attr_name))](#过程属性宏-proc_macro_derivemacro_name-attributesattr_name)
+      * [使用syn/quote定义属性宏](#使用synquote定义属性宏)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Tue Oct 18 06:45:23 UTC 2022 -->
+
 <!--te-->
 
 ## 手工定义图

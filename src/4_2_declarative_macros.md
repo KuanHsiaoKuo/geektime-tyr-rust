@@ -1,6 +1,19 @@
 # 声明宏
 
 <!--ts-->
+* [声明宏](#声明宏)
+   * [Rust常用声明宏](#rust常用声明宏)
+      * [println!](#println)
+      * [writeln!](#writeln)
+      * [eprintln!](#eprintln)
+   * [示例](#示例)
+      * [声明宏示意图](#声明宏示意图)
+      * [macro_rules!定义与使用](#macro_rules定义与使用)
+   * [声明宏用到的参数类型](#声明宏用到的参数类型)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Tue Oct 18 06:45:22 UTC 2022 -->
+
 <!--te-->
 
 ## Rust常用声明宏

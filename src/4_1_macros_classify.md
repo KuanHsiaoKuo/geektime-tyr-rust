@@ -1,6 +1,19 @@
 # 宏的分类
 
 <!--ts-->
+* [宏的分类](#宏的分类)
+   * [使用泳道图](#使用泳道图)
+   * [表格](#表格)
+   * [声明宏(declarative macros): macro_rules!(bang)](#声明宏declarative-macros-macro_rulesbang)
+   * [声明宏的缺陷，而后有了过程宏](#声明宏的缺陷而后有了过程宏)
+   * [过程宏：深度定制与生成代码](#过程宏深度定制与生成代码)
+      * [1. 函数宏](#1-函数宏)
+      * [2. 属性宏](#2-属性宏)
+      * [3. 派生宏](#3-派生宏)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Tue Oct 18 06:45:22 UTC 2022 -->
+
 <!--te-->
 
 ## 使用泳道图
