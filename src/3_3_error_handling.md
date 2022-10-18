@@ -1,15 +1,16 @@
 # 三、错误处理
 
 <!--ts-->
+
 * [三、错误处理](#三错误处理)
-   * [错误处理包含这么几部分](#错误处理包含这么几部分)
-   * [错误处理的主流方法](#错误处理的主流方法)
-   * [Rust 的错误处理](#rust-的错误处理)
-      * [Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型。](#rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型)
-      * [? 操作符](#-操作符)
-      * [函数式错误处理](#函数式错误处理)
-      * [panic! 和 catch_unwind](#panic-和-catch_unwind)
-      * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
+    * [错误处理包含这么几部分](#错误处理包含这么几部分)
+    * [错误处理的主流方法](#错误处理的主流方法)
+    * [Rust 的错误处理](#rust-的错误处理)
+        * [Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型。](#rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型)
+        * [? 操作符](#-操作符)
+        * [函数式错误处理](#函数式错误处理)
+        * [panic! 和 catch_unwind](#panic-和-catch_unwind)
+        * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Tue Oct 18 08:07:35 UTC 2022 -->
@@ -278,10 +279,13 @@ Ok(data)
 
 let params: NoiseParams = "Noise_XX_25519_AESGCM_SHA256".parse().unwrap();
 ```
+~~~
 
-如果开发者不小心把协议变量写错了，最佳的方式是立刻 panic! 出来，让错误立刻暴露，以便解决这个问题。
----
-有些场景下，我们也希望能够像异常处理那样能够栈回溯，把环境恢复到捕获异常的上下文。Rust 标准库下提供了 catch_unwind() ，把调用栈回溯到 catch_unwind 这一刻，作用和其它语言的 try {…} catch {…} 一样。见如下代码：
+> 如果开发者不小心把协议变量写错了，最佳的方式是立刻 panic! 出来，让错误立刻暴露，以便解决这个问题。
+>
+
+~~~admonish info title="catch_unwind(): 有些场景下，我们也希望能够像异常处理那样能够栈回溯，把环境恢复到捕获异常的上下文。" collapsible=true
+Rust 标准库下提供了 catch_unwind() ，把调用栈回溯到 catch_unwind 这一刻，作用和其它语言的 try {…} catch {…} 一样。见如下代码：
 ```rust, editable
 
 use std::panic;
@@ -298,12 +302,18 @@ fn main() {
     println!("panic captured: {:#?}", result);
 }
 ```
+~~~
 
-当然，和异常处理一样，并不意味着你可以滥用这一特性，我想，这也是 Rust 把抛出异常称作 panic! ，而捕获异常称作 catch_unwind 的原因，让初学者望而生畏，不敢轻易使用。这也是一个不错的用户体验。
+> 当然，和异常处理一样，并不意味着你可以滥用这一特性.
+> 我想这也是 Rust 把抛出异常称作 panic! ，而捕获异常称作 catch_unwind 的原因:让初学者望而生畏，不敢轻易使用。这也是一个不错的用户体验。
 
+~~~admonish question title="catch_unwind 在哪些场景下非常有用:" collapsible=true
 catch_unwind 在某些场景下非常有用:
-1. 比如你在使用 Rust 为 erlang VM 撰写 NIF，你不希望 Rust 代码中的任何 panic! 导致 erlang VM 崩溃。因为崩溃是一个非常不好的体验，它违背了 erlang 的设计原则：process 可以 let it crash，但错误代码不该导致 VM 崩溃。
-2. 此刻，你就可以把 Rust 代码整个封装在 catch_unwind() 函数所需要传入的闭包中。这样，一旦任何代码中，包括第三方 crates 的代码，含有能够导致 panic! 的代码，都会被捕获，并被转换为一个 Result。
+1. 比如你在使用 Rust 为 erlang VM 撰写 NIF，你不希望 Rust 代码中的任何 panic! 导致 erlang VM 崩溃。
+因为崩溃是一个非常不好的体验，它违背了 erlang 的设计原则：process 可以 let it crash，但错误代码不该导致 VM 崩溃。
+
+2. 此刻，你就可以把 Rust 代码整个封装在 catch_unwind() 函数所需要传入的闭包中。
+这样，一旦任何代码中，包括第三方 crates 的代码，含有能够导致 panic! 的代码，都会被捕获，并被转换为一个 Result。
 ~~~
 
 ### Error trait 和错误类型的转换
