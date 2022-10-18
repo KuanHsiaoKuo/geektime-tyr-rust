@@ -1,0 +1,422 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>声明宏 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="4_1_macros_classify.html"><strong aria-hidden="true">4.4.1.</strong> 宏分类</a></li><li class="chapter-item expanded "><a href="4_2_declarative_macros.html" class="active"><strong aria-hidden="true">4.4.2.</strong> 声明宏</a></li><li class="chapter-item "><a href="4_3_procedural_macros.html"><strong aria-hidden="true">4.4.3.</strong> 过程宏</a></li></ol></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="声明宏"><a class="header" href="#声明宏">声明宏</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8F">声明宏</a>
+<ul>
+<li><a href="#rust%E5%B8%B8%E7%94%A8%E5%A3%B0%E6%98%8E%E5%AE%8F">Rust常用声明宏</a>
+<ul>
+<li><a href="#println">println!</a></li>
+<li><a href="#writeln">writeln!</a></li>
+<li><a href="#eprintln">eprintln!</a></li>
+</ul>
+</li>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a>
+<ul>
+<li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8F%E7%A4%BA%E6%84%8F%E5%9B%BE">声明宏示意图</a></li>
+<li><a href="#macro_rules%E5%AE%9A%E4%B9%89%E4%B8%8E%E4%BD%BF%E7%94%A8">macro_rules!定义与使用</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A3%B0%E6%98%8E%E5%AE%8F%E7%94%A8%E5%88%B0%E7%9A%84%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B">声明宏用到的参数类型</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Tue Oct 18 06:45:22 UTC 2022 -->
+<!--te-->
+<h2 id="rust常用声明宏"><a class="header" href="#rust常用声明宏">Rust常用声明宏</a></h2>
+<h3 id="println"><a class="header" href="#println">println!</a></h3>
+<ul>
+<li><a href="https://doc.rust-lang.org/std/macro.println.html">println in std - Rust</a></li>
+<li><a href="https://blog.csdn.net/jiangjkd/article/details/120994956">Rust声明宏println剖析_一线coder的博客-CSDN博客_rust 声明宏</a></li>
+</ul>
+<details id="admonition-println使用示例" class="admonition info">
+<summary class="admonition-title">
+<p>println!使用示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-println使用示例"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[macro_export]
+#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+#[allow_internal_unstable(print_internals, format_args_nl)]
+macro_rules! println {
+    () =&gt; ($crate::print!(&quot;\n&quot;));
+    ($($arg:tt)*) =&gt; ({
+        $crate::io::_print($crate::format_args_nl!($($arg)*));
+    })
+}
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
+<h3 id="writeln"><a class="header" href="#writeln">writeln!</a></h3>
+<blockquote>
+<p>可以将内容输入到指定文件</p>
+</blockquote>
+<ul>
+<li><a href="https://doc.rust-lang.org/std/macro.writeln.html">writeln in std - Rust</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/148945862">rust入门笔记—翻译rust write！宏 - 知乎</a></li>
+</ul>
+<pre><code class="language-shell">cargo run --example raw_command &gt; examples/raw_command_output.txt
+</code></pre>
+<h3 id="eprintln"><a class="header" href="#eprintln">eprintln!</a></h3>
+<ul>
+<li><a href="https://doc.rust-lang.org/std/macro.eprintln.html">eprintln in std - Rust</a></li>
+</ul>
+<h2 id="示例"><a class="header" href="#示例">示例</a></h2>
+<h3 id="声明宏示意图"><a class="header" href="#声明宏示意图">声明宏示意图</a></h3>
+<details id="admonition-声明宏定义使用流程图" class="admonition info">
+<summary class="admonition-title">
+<p>声明宏定义使用流程图</p>
+<p><a class="admonition-anchor-link" href="#admonition-声明宏定义使用流程图"></a></p>
+</summary>
+<div>
+<figure><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="633px" preserveAspectRatio="none" style="width:474px;height:633px;background:#FFFFFF;" version="1.1" viewBox="0 0 474 633" width="474px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="26.2969" id="_title" style="stroke:none;stroke-width:1.0;" width="136" x="167.5" y="15"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="126" x="172.5" y="32.9951">声明宏定义使用流程</text><ellipse cx="51" cy="57.2969" fill="#222222" rx="10" ry="10" style="stroke:#222222;stroke-width:1.0;"/><path d="M101,77.2969 L101,389.9531 L462,389.9531 L462,87.2969 L452,77.2969 L101,77.2969 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M452,77.2969 L452,87.2969 L462,87.2969 L452,77.2969 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="12" x="107" y="94.3638">1.</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="99" x="123" y="94.3638">[macro_export]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="149" x="107" y="109.4966">macro_rules! my_vec {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="299" x="123" y="124.6294">// 没带任何参数的 my_vec，我们创建一个空的 vec</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="324" x="123" y="139.7622">// 注意，由于宏要在调用的地方展开，我们无法预测调用</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="316" x="123" y="154.895">// 者的环境是否已经 做了相关的 use，所以我们使用的</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="194" x="123" y="170.0278">// 代码最好带着完整的命名空间。</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="48" x="123" y="185.1606">() =&gt; {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="125" x="139" y="200.2935">std::vec::Vec::new()</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="12" x="123" y="215.4263">};</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="162" x="123" y="230.5591">// 处理 my_vec![1, 2, 3, 4]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="133" x="123" y="245.6919">($($el:expr),*) =&gt; ({</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="205" x="139" y="260.8247">let mut v = std::vec::Vec::new();</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="100" x="139" y="275.9575">$(v.push($el);)*</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="139" y="291.0903">v</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="17" x="123" y="306.2231">});</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="138" x="123" y="321.356">// 处理 my_vec![0; 10]</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="155" x="123" y="336.4888">($el:expr; $n:expr) =&gt; {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="180" x="139" y="351.6216">std::vec::from_elem($el, $n)</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="123" y="366.7544">}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="107" y="381.8872">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="11" y="216.6406"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="21" y="237.7793">定义声明宏</text><path d="M101,399.9531 L101,621.8125 L318,621.8125 L318,409.9531 L308,399.9531 L101,399.9531 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M308,399.9531 L308,409.9531 L318,409.9531 L308,399.9531 " fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70" x="107" y="417.02">fn main() {</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="144" x="123" y="432.1528">let mut v = my_vec![];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="64" x="123" y="447.2856">v.push(1);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="159" x="123" y="462.4185">// 调用时可以使用 [], (), {}</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="177" x="123" y="477.5513">let _v = my_vec!(1, 2, 3, 4);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="177" x="123" y="492.6841">let _v = my_vec![1, 2, 3, 4];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="180" x="123" y="507.8169">let v = my_vec! {1, 2, 3, 4};</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="522.9497">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="4" x="107" y="538.0825"> </text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="553.2153">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="123" y="568.3481">//</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="146" x="123" y="583.481">let v = my_vec![1; 10];</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="111" x="123" y="598.6138">println!("{:?}", v);</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="107" y="613.7466">}</text><rect fill="#F1F1F1" height="33.9688" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="80" x="11" y="493.8984"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="60" x="21" y="515.0371">使用声明宏</text><line style="stroke:#181818;stroke-width:1.0;" x1="51" x2="51" y1="67.2969" y2="216.6406"/><polygon fill="#181818" points="47,206.6406,51,216.6406,55,206.6406,51,210.6406" style="stroke:#181818;stroke-width:1.0;"/><line style="stroke:#181818;stroke-width:1.0;" x1="51" x2="51" y1="250.6094" y2="493.8984"/><polygon fill="#181818" points="47,483.8984,51,493.8984,55,483.8984,51,487.8984" style="stroke:#181818;stroke-width:1.0;"/></g></svg></figure>
+</div>
+</details>
+<h3 id="macro_rules定义与使用"><a class="header" href="#macro_rules定义与使用">macro_rules!定义与使用</a></h3>
+<details id="admonition-macro_rules定义示例" class="admonition info">
+<summary class="admonition-title">
+<p>macro_rules!定义示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-macro_rules定义示例"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">#[macro_export]
+macro_rules! my_vec {
+    // 没带任何参数的 my_vec，我们创建一个空的 vec
+    // 注意，由于宏要在调用的地方展开，我们无法预测调用
+    // 者的环境是否已经 做了相关的 use，所以我们使用的
+    // 代码最好带着完整的命名空间。
+    () =&gt; {
+        std::vec::Vec::new()
+    };
+    // 处理 my_vec![1, 2, 3, 4]
+    ($($el:expr),*) =&gt; ({
+        let mut v = std::vec::Vec::new();
+        $(v.push($el);)*
+        v
+    });
+    // 处理 my_vec![0; 10]
+    ($el:expr; $n:expr) =&gt; {
+        std::vec::from_elem($el, $n)
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-elexpr-" class="admonition info">
+<summary class="admonition-title">
+<p>$($el:expr), *)</p>
+<p><a class="admonition-anchor-link" href="#admonition-elexpr-"></a></p>
+</summary>
+<div>
+<ol>
+<li>在声明宏中，条件捕获的参数使用 $ 开头的标识符来声明。</li>
+<li>每个参数都需要提供类型，这里<code>expr</code>代表表达式，所以 $el:expr 是说把匹配到的表达式命名为 $el。</li>
+<li>$(…),* 告诉编译器可以匹配任意多个以逗号分隔的表达式，然后捕获到的每一个表达式可以用 $el 来访问。</li>
+<li>由于匹配的时候匹配到一个 $(…)* （我们可以不管分隔符），在执行的代码块中，我们也要相应地使用 $(…)* 展开。</li>
+<li>所以这句 $(v.push($el);)* 相当于匹配出多少个 $el就展开多少句 push 语句。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-macro_rules使用示例" class="admonition info">
+<summary class="admonition-title">
+<p>macro_rules!使用示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-macro_rules使用示例"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">fn main() {
+    let mut v = my_vec![];
+    v.push(1);
+    // 调用时可以使用 [], (), {}
+    let _v = my_vec!(1, 2, 3, 4);
+    let _v = my_vec![1, 2, 3, 4];
+    let v = my_vec! {1, 2, 3, 4};
+    println!(&quot;{:?}&quot;, v);
+
+    println!(&quot;{:?}&quot;, v);
+    //
+    let v = my_vec![1; 10];
+    println!(&quot;{:?}&quot;, v);
+}
+</code></pre></pre>
+</div>
+</details>
+<h2 id="声明宏用到的参数类型"><a class="header" href="#声明宏用到的参数类型">声明宏用到的参数类型</a></h2>
+<details id="admonition-类型列表" class="admonition info">
+<summary class="admonition-title">
+<p>类型列表</p>
+<p><a class="admonition-anchor-link" href="#admonition-类型列表"></a></p>
+</summary>
+<div>
+<ol>
+<li>item，比如一个函数、结构体、模块等。 </li>
+<li>block，代码块。比如一系列由花括号包裹的表达式和语句。 </li>
+<li>stmt，语句。比如一个赋值语句。 </li>
+<li>pat，模式。 </li>
+<li>expr，表达式。刚才的例子使用过了。 </li>
+<li>ty，类型。比如 Vec。 </li>
+<li>ident，标识符。比如一个变量名。 </li>
+<li>path，路径。比如：foo、::std::mem::replace、transmute::&lt;_, int&gt;。 </li>
+<li>meta，元数据。一般是在 #[…] 和 #![…] 属性内部的数据。 </li>
+<li>tt，单个的 token 树。 </li>
+<li>vis，可能为空的一个 Visibility 修饰符。比如 pub、pub(crate)</li>
+</ol>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="4_1_macros_classify.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="4_3_procedural_macros.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="4_1_macros_classify.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="4_3_procedural_macros.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
