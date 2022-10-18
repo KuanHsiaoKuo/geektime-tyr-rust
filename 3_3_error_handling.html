@@ -189,7 +189,9 @@
 <li><a href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E7%9A%84%E4%B8%BB%E6%B5%81%E6%96%B9%E6%B3%95">错误处理的主流方法</a></li>
 <li><a href="#rust-%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">Rust 的错误处理</a>
 <ul>
-<li><a href="#rust-%E5%81%B7%E5%B8%88-haskell%E6%9E%84%E5%BB%BA%E4%BA%86%E5%AF%B9%E6%A0%87-maybe-%E7%9A%84-option-%E7%B1%BB%E5%9E%8B%E5%92%8C-%E5%AF%B9%E6%A0%87-either-%E7%9A%84-result-%E7%B1%BB%E5%9E%8B">Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型。</a></li>
+<li><a href="#optionresult%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B%E5%A4%84%E7%90%86">Option/Result错误类型处理</a></li>
+<li><a href="#option">Option</a></li>
+<li><a href="#result">Result</a></li>
 <li><a href="#-%E6%93%8D%E4%BD%9C%E7%AC%A6">? 操作符</a></li>
 <li><a href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">函数式错误处理</a></li>
 <li><a href="#panic-%E5%92%8C-catch_unwind">panic! 和 catch_unwind</a></li>
@@ -200,7 +202,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Oct 18 08:14:15 UTC 2022 -->
+<!-- Added by: runner, at: Tue Oct 18 09:07:23 UTC 2022 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
 <details id="admonition-错误处理包含这么几部分" class="admonition info">
@@ -337,7 +339,7 @@ void transition(...) {
 </details>
 <h2 id="rust-的错误处理"><a class="header" href="#rust-的错误处理">Rust 的错误处理</a></h2>
 <p>由于诞生的年代比较晚，Rust 有机会从已有的语言中学习到各种错误处理的优劣。对于 Rust 来说，目前的几种方式相比而言，最佳的方法是，使用类型系统来构建主要的错误处理流程。</p>
-<h3 id="rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型"><a class="header" href="#rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型">Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型。</a></h3>
+<h3 id="optionresult错误类型处理"><a class="header" href="#optionresult错误类型处理">Option/Result错误类型处理</a></h3>
 <details id="admonition-rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型" class="admonition info">
 <summary class="admonition-title">
 <p>Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型</p>
@@ -345,9 +347,15 @@ void transition(...) {
 </summary>
 <div>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F-4895260.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
-<ul>
-<li>Option 是一个 enum，其定义如下：</li>
-</ul>
+</div>
+</details>
+<h3 id="option"><a class="header" href="#option">Option</a></h3>
+<details id="admonition-option-是一个-enum其定义如下" class="admonition info">
+<summary class="admonition-title">
+<p>Option 是一个 enum，其定义如下：</p>
+<p><a class="admonition-anchor-link" href="#admonition-option-是一个-enum其定义如下"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">
 pub enum Option&lt;T&gt; {
     None,
@@ -357,9 +365,15 @@ pub enum Option&lt;T&gt; {
 <blockquote>
 <p>它可以承载有值 / 无值这种最简单的错误类型。</p>
 </blockquote>
-<ul>
-<li>Result 是一个更加复杂的 enum，其定义如下：</li>
-</ul>
+</div>
+</details>
+<h3 id="result"><a class="header" href="#result">Result</a></h3>
+<details id="admonition-result-是一个更加复杂的-enum其定义如下" class="admonition info">
+<summary class="admonition-title">
+<p>Result 是一个更加复杂的 enum，其定义如下：</p>
+<p><a class="admonition-anchor-link" href="#admonition-result-是一个更加复杂的-enum其定义如下"></a></p>
+</summary>
+<div>
 <pre><pre class="playground"><code class="language-rust  editable">
 #[must_use = &quot;this `Result` may be an `Err` variant, which should be handled&quot;]
 pub enum Result&lt;T, E&gt; {
@@ -370,7 +384,20 @@ pub enum Result&lt;T, E&gt; {
 <blockquote>
 <p>当函数出错时，可以返回 Err(E)，否则 Ok(T)。</p>
 </blockquote>
-<p>我们看到，Result 类型声明时还有个 must_use 的标注，编译器会对有 must_use 标注的所有类型做特殊处理：如果该类型对应的值没有被显式使用，则会告警。这样，保证错误被妥善处理。如下图所示：</p>
+</div>
+</details>
+<details id="admonition-result-类型声明时还有个-must_use-的标注" class="admonition info">
+<summary class="admonition-title">
+<p>Result 类型声明时还有个 must_use 的标注</p>
+<p><a class="admonition-anchor-link" href="#admonition-result-类型声明时还有个-must_use-的标注"></a></p>
+</summary>
+<div>
+<p>我们看到，Result 类型声明时还有个 must_use 的标注</p>
+<blockquote>
+<p>编译器会对有 must_use 标注的所有类型做特殊处理：</p>
+</blockquote>
+<p>如果该类型对应的值没有被显式使用，则会告警。这样，保证错误被妥善处理。</p>
+<p>如下图所示：</p>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/e2100e3f17a9587c4d4bf50523c10653.png" alt="img" /></p>
 <p>这里，如果我们调用 read_file 函数时，直接丢弃返回值，由于 #[must_use] 的标注，Rust 编译器报警，要求我们使用其返回值。</p>
 </div>
