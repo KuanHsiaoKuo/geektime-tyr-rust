@@ -189,20 +189,28 @@
 <li><a href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E7%9A%84%E4%B8%BB%E6%B5%81%E6%96%B9%E6%B3%95">错误处理的主流方法</a></li>
 <li><a href="#rust-%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">Rust 的错误处理</a>
 <ul>
-<li><a href="#optionresult%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B%E5%A4%84%E7%90%86">Option/Result错误类型处理</a></li>
+<li><a href="#1-%E4%BD%BF%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9Foptionresult%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B%E5%A4%84%E7%90%86">1. 使用类型系统：Option/Result错误类型处理</a>
+<ul>
 <li><a href="#option">Option</a></li>
 <li><a href="#result">Result</a></li>
-<li><a href="#-%E6%93%8D%E4%BD%9C%E7%AC%A6">? 操作符</a></li>
-<li><a href="#%E5%87%BD%E6%95%B0%E5%BC%8F%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">函数式错误处理</a></li>
-<li><a href="#panic-%E5%92%8C-catch_unwind">panic! 和 catch_unwind</a></li>
+</ul>
+</li>
+<li><a href="#2-%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8panic-%E5%92%8C-catch_unwind">2. 抛出异常：panic! 和 catch_unwind</a>
+<ul>
+<li><a href="#panic">panic!</a></li>
+<li><a href="#catch_uwind">catch_uwind</a></li>
+</ul>
+</li>
+<li><a href="#3-%E6%8D%95%E8%8E%B7%E5%BC%82%E5%B8%B8%E6%93%8D%E4%BD%9C%E7%AC%A6">3. 捕获异常：?操作符</a></li>
+<li><a href="#4-%E5%87%BD%E6%95%B0%E5%BC%8F%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86-mapmap_errand_then">4. 函数式错误处理: map/map_err/and_then</a></li>
+</ul>
+</li>
 <li><a href="#error-trait-%E5%92%8C%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%BD%AC%E6%8D%A2">Error trait 和错误类型的转换</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Oct 18 09:07:23 UTC 2022 -->
+<!-- Added by: runner, at: Tue Oct 18 09:27:25 UTC 2022 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
 <details id="admonition-错误处理包含这么几部分" class="admonition info">
@@ -339,7 +347,7 @@ void transition(...) {
 </details>
 <h2 id="rust-的错误处理"><a class="header" href="#rust-的错误处理">Rust 的错误处理</a></h2>
 <p>由于诞生的年代比较晚，Rust 有机会从已有的语言中学习到各种错误处理的优劣。对于 Rust 来说，目前的几种方式相比而言，最佳的方法是，使用类型系统来构建主要的错误处理流程。</p>
-<h3 id="optionresult错误类型处理"><a class="header" href="#optionresult错误类型处理">Option/Result错误类型处理</a></h3>
+<h3 id="1-使用类型系统optionresult错误类型处理"><a class="header" href="#1-使用类型系统optionresult错误类型处理">1. 使用类型系统：Option/Result错误类型处理</a></h3>
 <details id="admonition-rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型" class="admonition info">
 <summary class="admonition-title">
 <p>Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型</p>
@@ -349,7 +357,7 @@ void transition(...) {
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F-4895260.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
 </div>
 </details>
-<h3 id="option"><a class="header" href="#option">Option</a></h3>
+<h4 id="option"><a class="header" href="#option">Option</a></h4>
 <details id="admonition-option-是一个-enum其定义如下" class="admonition info">
 <summary class="admonition-title">
 <p>Option 是一个 enum，其定义如下：</p>
@@ -367,7 +375,7 @@ pub enum Option&lt;T&gt; {
 </blockquote>
 </div>
 </details>
-<h3 id="result"><a class="header" href="#result">Result</a></h3>
+<h4 id="result"><a class="header" href="#result">Result</a></h4>
 <details id="admonition-result-是一个更加复杂的-enum其定义如下" class="admonition info">
 <summary class="admonition-title">
 <p>Result 是一个更加复杂的 enum，其定义如下：</p>
@@ -402,80 +410,8 @@ pub enum Result&lt;T, E&gt; {
 <p>这里，如果我们调用 read_file 函数时，直接丢弃返回值，由于 #[must_use] 的标注，Rust 编译器报警，要求我们使用其返回值。</p>
 </div>
 </details>
-<h3 id="-操作符"><a class="header" href="#-操作符">? 操作符</a></h3>
-<details id="admonition--操作符的由来" class="admonition info">
-<summary class="admonition-title">
-<p>? 操作符的由来</p>
-<p><a class="admonition-anchor-link" href="#admonition--操作符的由来"></a></p>
-</summary>
-<div>
-<p>这虽然可以极大避免遗忘错误的显示处理，但如果我们并不关心错误，只需要传递错误，还是会写出像 C 或者 Golang 一样比较冗余的代码。怎么办？</p>
-<p>好在 Rust 除了有强大的类型系统外，还具备元编程的能力。早期 Rust 提供了 try! 宏来简化错误的显式处理，后来为了进一步提升用户体验，try! 被进化成 ? 操作符。</p>
-<p>所以在 Rust 代码中，如果你只想传播错误，不想就地处理，可以用 ? 操作符，比如（代码）:</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-use std::fs::File;
-use std::io::Read;
-
-fn read_file(name: &amp;str) -&gt; Result&lt;String, std::io::Error&gt; {
-  let mut f = File::open(name)?;
-  let mut contents = String::new();
-  f.read_to_string(&amp;mut contents)?;
-  Ok(contents)
-}
-</code></pre></pre>
-<blockquote>
-<p>通过 ? 操作符，Rust 让错误传播的代价和异常处理不相上下，同时又避免了异常处理的诸多问题。</p>
-</blockquote>
-<hr />
-<p>? 操作符内部被展开成类似这样的代码：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-match result {
-  Ok(v) =&gt; v,
-  Err(e) =&gt; return Err(e.into())
-}
-</code></pre></pre>
-<blockquote>
-<p>所以，我们可以方便地写出类似这样的代码，简洁易懂，可读性很强：</p>
-</blockquote>
-<pre><pre class="playground"><code class="language-rust  editable">
-fut
-  .await?
-  .process()?
-  .next()
-  .await?;
-</code></pre></pre>
-<p>整个代码的执行流程如下：</p>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F-4895239.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
-<p>虽然 ? 操作符使用起来非常方便，但你要注意在不同的错误类型之间是无法直接使用的，需要实现 From trait 在二者之间建立起转换的桥梁，这会带来额外的麻烦。</p>
-</div>
-</details>
-<h3 id="函数式错误处理"><a class="header" href="#函数式错误处理">函数式错误处理</a></h3>
-<details id="admonition-map--map_err--and_then-使用函数式错误处理" class="admonition info">
-<summary class="admonition-title">
-<p>map / map_err / and_then: 使用函数式错误处理</p>
-<p><a class="admonition-anchor-link" href="#admonition-map--map_err--and_then-使用函数式错误处理"></a></p>
-</summary>
-<div>
-<p>Rust 还为 Option 和 Result 提供了大量的辅助函数，如 map / map_err / and_then，你可以很方便地处理数据结构中部分情况。如下图所示：</p>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
-<p>通过这些函数，你可以很方便地对错误处理引入 <a href="https://www.slideshare.net/ScottWlaschin/railway-oriented-programming">Railroad oriented programming 范式</a>。比如用户注册的流程，你需要校验用户输入，对数据进行处理，转换，然后存入数据库中。你可以这么撰写这个流程：</p>
-<pre><pre class="playground"><code class="language-rust  editable">
-Ok(data)
-  .and_then(validate)
-  .and_then(process)
-  .map(transform)
-  .and_then(store)
-  .map_error(...)
-</code></pre></pre>
-<blockquote>
-<p>执行流程如下图所示：</p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/image-20221004225336162.png" alt="image-20221004225336162" /></p>
-<p>此外，Option 和 Result 的互相转换也很方换，这也得益于 Rust 构建的强大的函数式编程的能力。</p>
-</div>
-</details>
-<p>我们可以看到，无论是通过 ? 操作符，还是函数式编程进行错误处理，Rust 都力求让错误处理灵活高效，让开发者使用起来简单直观。</p>
-<h3 id="panic-和-catch_unwind"><a class="header" href="#panic-和-catch_unwind">panic! 和 catch_unwind</a></h3>
+<h3 id="2-抛出异常panic-和-catch_unwind"><a class="header" href="#2-抛出异常panic-和-catch_unwind">2. 抛出异常：panic! 和 catch_unwind</a></h3>
+<h4 id="panic"><a class="header" href="#panic">panic!</a></h4>
 <details id="admonition-rust-也提供了特殊的异常处理能力-panic和catch_unwind" class="admonition info">
 <summary class="admonition-title">
 <p>Rust 也提供了特殊的异常处理能力: panic!和catch_unwind</p>
@@ -483,7 +419,11 @@ Ok(data)
 </summary>
 <div>
 <p>使用 Option 和 Result 是 Rust 中处理错误的首选，绝大多数时候我们也应该使用，但 Rust 也提供了特殊的异常处理能力。</p>
-<p>在 Rust 看来，一旦你需要抛出异常，那抛出的一定是严重的错误。所以，Rust 跟 Golang 一样，使用了诸如 panic! 这样的字眼警示开发者：想清楚了再使用我。在使用 Option 和 Result 类型时，开发者也可以对其 unwarp() 或者 expect()，强制把 Option<T> 和 Result&lt;T, E&gt; 转换成 T，如果无法完成这种转换，也会 panic! 出来。</p>
+<blockquote>
+<p>在 Rust 看来，一旦你需要抛出异常，那抛出的一定是严重的错误。</p>
+</blockquote>
+<p>所以，Rust 跟 Golang 一样，使用了诸如 panic! 这样的字眼警示开发者：想清楚了再使用我。</p>
+<p>在使用 Option 和 Result 类型时，开发者也可以对其 unwarp() 或者 expect()，强制把 Option<T> 和 Result&lt;T, E&gt; 转换成 T，如果无法完成这种转换，也会 panic! 出来。</p>
 <p>一般而言，panic! 是不可恢复或者不想恢复的错误，我们希望在此刻，程序终止运行并得到崩溃信息。比如下面的代码，它解析<a href="https://noiseprotocol.org/noise.html#protocol-names-and-modifiers"> noise protocol</a>的协议变量：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 let params: NoiseParams = &quot;Noise_XX_25519_AESGCM_SHA256&quot;.parse().unwrap();
@@ -493,6 +433,7 @@ let params: NoiseParams = &quot;Noise_XX_25519_AESGCM_SHA256&quot;.parse().unwra
 <blockquote>
 <p>如果开发者不小心把协议变量写错了，最佳的方式是立刻 panic! 出来，让错误立刻暴露，以便解决这个问题。</p>
 </blockquote>
+<h4 id="catch_uwind"><a class="header" href="#catch_uwind">catch_uwind</a></h4>
 <details id="admonition-catch_unwind-有些场景下我们也希望能够像异常处理那样能够栈回溯把环境恢复到捕获异常的上下文" class="admonition info">
 <summary class="admonition-title">
 <p>catch_unwind(): 有些场景下，我们也希望能够像异常处理那样能够栈回溯，把环境恢复到捕获异常的上下文。</p>
@@ -540,7 +481,87 @@ fn main() {
 </ol>
 </div>
 </details>
-<h3 id="error-trait-和错误类型的转换"><a class="header" href="#error-trait-和错误类型的转换">Error trait 和错误类型的转换</a></h3>
+<h3 id="3-捕获异常操作符"><a class="header" href="#3-捕获异常操作符">3. 捕获异常：?操作符</a></h3>
+<details id="admonition--操作符的由来" class="admonition info">
+<summary class="admonition-title">
+<p>? 操作符的由来</p>
+<p><a class="admonition-anchor-link" href="#admonition--操作符的由来"></a></p>
+</summary>
+<div>
+<p>这虽然可以极大避免遗忘错误的显示处理，但如果我们并不关心错误，只需要传递错误，还是会写出像 C 或者 Golang 一样比较冗余的代码。怎么办？</p>
+<p>好在 Rust 除了有强大的类型系统外，还具备元编程的能力：</p>
+<ul>
+<li>早期 Rust 提供了 try! 宏来简化错误的显式处理</li>
+<li>后来为了进一步提升用户体验，try! 被进化成 ? 操作符。</li>
+</ul>
+<p>所以在 Rust 代码中，如果你只想传播错误，不想就地处理，可以用 ? 操作符，比如（代码）:</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::fs::File;
+use std::io::Read;
+
+fn read_file(name: &amp;str) -&gt; Result&lt;String, std::io::Error&gt; {
+  let mut f = File::open(name)?;
+  let mut contents = String::new();
+  f.read_to_string(&amp;mut contents)?;
+  Ok(contents)
+}
+</code></pre></pre>
+<blockquote>
+<p>通过 ? 操作符，Rust 让错误传播的代价和异常处理不相上下，同时又避免了异常处理的诸多问题。</p>
+</blockquote>
+<hr />
+<p>? 操作符内部被展开成类似这样的代码：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+match result {
+  Ok(v) =&gt; v,
+  Err(e) =&gt; return Err(e.into())
+}
+</code></pre></pre>
+<blockquote>
+<p>所以，我们可以方便地写出类似这样的代码，简洁易懂，可读性很强：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+fut
+  .await?
+  .process()?
+  .next()
+  .await?;
+</code></pre></pre>
+<p>整个代码的执行流程如下：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F-4895239.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
+<p>虽然 ? 操作符使用起来非常方便，但你要注意在不同的错误类型之间是无法直接使用的，需要实现 From trait 在二者之间建立起转换的桥梁，这会带来额外的麻烦。</p>
+</div>
+</details>
+<h3 id="4-函数式错误处理-mapmap_errand_then"><a class="header" href="#4-函数式错误处理-mapmap_errand_then">4. 函数式错误处理: map/map_err/and_then</a></h3>
+<details id="admonition-map--map_err--and_then-使用函数式错误处理" class="admonition info">
+<summary class="admonition-title">
+<p>map / map_err / and_then: 使用函数式错误处理</p>
+<p><a class="admonition-anchor-link" href="#admonition-map--map_err--and_then-使用函数式错误处理"></a></p>
+</summary>
+<div>
+<p>Rust 还为 Option 和 Result 提供了大量的辅助函数，如 map / map_err / and_then，你可以很方便地处理数据结构中部分情况。如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
+<p>通过这些函数，你可以很方便地对错误处理引入 <a href="https://www.slideshare.net/ScottWlaschin/railway-oriented-programming">Railroad oriented programming 范式</a>。</p>
+<blockquote>
+<p>比如用户注册的流程，你需要校验用户输入，对数据进行处理，转换，然后存入数据库中。你可以这么撰写这个流程：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+Ok(data)
+  .and_then(validate)
+  .and_then(process)
+  .map(transform)
+  .and_then(store)
+  .map_error(...)
+</code></pre></pre>
+<blockquote>
+<p>执行流程如下图所示：</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/image-20221004225336162.png" alt="image-20221004225336162" /></p>
+<p>此外，Option 和 Result 的互相转换也很方换，这也得益于 Rust 构建的强大的函数式编程的能力。</p>
+</div>
+</details>
+<p>我们可以看到，无论是通过 ? 操作符，还是函数式编程进行错误处理，Rust 都力求让错误处理灵活高效，让开发者使用起来简单直观。</p>
+<h2 id="error-trait-和错误类型的转换"><a class="header" href="#error-trait-和错误类型的转换">Error trait 和错误类型的转换</a></h2>
 <details id="admonition-使用error-trait自定义错误类型" class="admonition info">
 <summary class="admonition-title">
 <p>使用Error trait自定义错误类型</p>
