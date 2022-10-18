@@ -8,15 +8,16 @@
       * [1. 使用类型系统：Option/Result错误类型处理](#1-使用类型系统optionresult错误类型处理)
          * [Option](#option)
          * [Result](#result)
-      * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
-         * [panic!](#panic)
-         * [catch_uwind](#catch_uwind)
-      * [3. 捕获异常：?操作符](#3-捕获异常操作符)
-      * [4. 函数式错误处理: map/map_err/and_then](#4-函数式错误处理-mapmap_errand_then)
+      * [2. 使用异常](#2-使用异常)
+         * [2.1 抛出异常：panic! 和 catch_unwind](#21-抛出异常panic-和-catch_unwind)
+            * [panic!](#panic)
+            * [catch_uwind](#catch_uwind)
+         * [2.2 捕获异常：?操作符](#22-捕获异常操作符)
+      * [3. 函数式错误处理: map/map_err/and_then](#3-函数式错误处理-mapmap_errand_then)
    * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Oct 18 09:27:25 UTC 2022 -->
+<!-- Added by: runner, at: Tue Oct 18 14:01:41 UTC 2022 -->
 
 <!--te-->
 

@@ -12,7 +12,7 @@
       * [trait的好处](#trait的好处)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Oct 18 09:27:29 UTC 2022 -->
+<!-- Added by: runner, at: Tue Oct 18 14:01:46 UTC 2022 -->
 
 <!--te-->
 
