@@ -1,15 +1,16 @@
 # 三、错误处理
 
 <!--ts-->
+
 * [三、错误处理](#三错误处理)
-   * [错误处理包含这么几部分](#错误处理包含这么几部分)
-   * [错误处理的主流方法](#错误处理的主流方法)
-   * [Rust 的错误处理](#rust-的错误处理)
-      * [Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型。](#rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型)
-      * [? 操作符](#-操作符)
-      * [函数式错误处理](#函数式错误处理)
-      * [panic! 和 catch_unwind](#panic-和-catch_unwind)
-      * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
+    * [错误处理包含这么几部分](#错误处理包含这么几部分)
+    * [错误处理的主流方法](#错误处理的主流方法)
+    * [Rust 的错误处理](#rust-的错误处理)
+        * [Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型。](#rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型)
+        * [? 操作符](#-操作符)
+        * [函数式错误处理](#函数式错误处理)
+        * [panic! 和 catch_unwind](#panic-和-catch_unwind)
+        * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Tue Oct 18 08:14:15 UTC 2022 -->
@@ -147,14 +148,15 @@ void transition(...) {
 
 由于诞生的年代比较晚，Rust 有机会从已有的语言中学习到各种错误处理的优劣。对于 Rust 来说，目前的几种方式相比而言，最佳的方法是，使用类型系统来构建主要的错误处理流程。
 
-### Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型。
+### Option/Result错误类型处理
 
 ~~~admonish info title="Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型" collapsible=true
 ![18｜错误处理：为什么Rust的错误处理与众不同？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F-4895260.jpg)
+~~~
 
+### Option
 
-- Option 是一个 enum，其定义如下：
-
+~~~admonish info title="Option 是一个 enum，其定义如下：" collapsible=true
 ```rust, editable
 
 pub enum Option<T> {
@@ -162,10 +164,13 @@ pub enum Option<T> {
     Some(T),
 }
 ```
+
 > 它可以承载有值 / 无值这种最简单的错误类型。
+~~~
 
-- Result 是一个更加复杂的 enum，其定义如下：
+### Result
 
+~~~admonish info title="Result 是一个更加复杂的 enum，其定义如下：" collapsible=true
 ```rust, editable
 
 #[must_use = "this `Result` may be an `Err` variant, which should be handled"]
@@ -176,8 +181,16 @@ pub enum Result<T, E> {
 ```
 
 > 当函数出错时，可以返回 Err(E)，否则 Ok(T)。
+~~~
 
-我们看到，Result 类型声明时还有个 must_use 的标注，编译器会对有 must_use 标注的所有类型做特殊处理：如果该类型对应的值没有被显式使用，则会告警。这样，保证错误被妥善处理。如下图所示：
+~~~admonish info title="Result 类型声明时还有个 must_use 的标注" collapsible=true
+我们看到，Result 类型声明时还有个 must_use 的标注
+
+> 编译器会对有 must_use 标注的所有类型做特殊处理：
+
+如果该类型对应的值没有被显式使用，则会告警。这样，保证错误被妥善处理。
+
+如下图所示：
 
 ![img](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/e2100e3f17a9587c4d4bf50523c10653.png)
 
