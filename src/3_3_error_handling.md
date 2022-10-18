@@ -85,7 +85,7 @@ Golang 这样，区分开错误返回和正常返回，相对 C 来说进了一�
 
 ~~~
 
-~~~admonish info title="2. 使用异常" collapsible=true
+~~~admonish info title="2. 使用异常: 抛出异常+捕获异常" collapsible=true
 因为返回值不利于错误的传播，有诸多限制，Java 等很多语言使用异常来处理错误。
 
 你可以把异常看成一种关注点分离（Separation of Concerns）：
@@ -200,9 +200,11 @@ pub enum Result<T, E> {
 这里，如果我们调用 read_file 函数时，直接丢弃返回值，由于 #[must_use] 的标注，Rust 编译器报警，要求我们使用其返回值。
 ~~~
 
-### 2. 抛出异常：panic! 和 catch_unwind
+### 2. 使用异常
 
-#### panic!
+#### 2.1 抛出异常：panic! 和 catch_unwind
+
+##### panic!
 
 ~~~admonish info title="Rust 也提供了特殊的异常处理能力: panic!和catch_unwind" collapsible=true
 使用 Option 和 Result 是 Rust 中处理错误的首选，绝大多数时候我们也应该使用，但 Rust 也提供了特殊的异常处理能力。
@@ -223,7 +225,7 @@ let params: NoiseParams = "Noise_XX_25519_AESGCM_SHA256".parse().unwrap();
 
 > 如果开发者不小心把协议变量写错了，最佳的方式是立刻 panic! 出来，让错误立刻暴露，以便解决这个问题。
 
-#### catch_uwind
+##### catch_uwind
 
 ~~~admonish info title="catch_unwind(): 有些场景下，我们也希望能够像异常处理那样能够栈回溯，把环境恢复到捕获异常的上下文。" collapsible=true
 Rust 标准库下提供了 catch_unwind() ，把调用栈回溯到 catch_unwind 这一刻，作用和其它语言的 try {…} catch {…} 一样。见如下代码：
@@ -257,7 +259,7 @@ catch_unwind 在某些场景下非常有用:
 这样，一旦任何代码中，包括第三方 crates 的代码，含有能够导致 panic! 的代码，都会被捕获，并被转换为一个 Result。
 ~~~
 
-### 3. 捕获异常：?操作符
+#### 2.2 捕获异常：?操作符
 
 ~~~admonish info title="? 操作符的由来" collapsible=true
 这虽然可以极大避免遗忘错误的显示处理，但如果我们并不关心错误，只需要传递错误，还是会写出像 C 或者 Golang 一样比较冗余的代码。怎么办？
@@ -311,7 +313,7 @@ fut
 虽然 ? 操作符使用起来非常方便，但你要注意在不同的错误类型之间是无法直接使用的，需要实现 From trait 在二者之间建立起转换的桥梁，这会带来额外的麻烦。
 ~~~
 
-### 4. 函数式错误处理: map/map_err/and_then
+### 3. 函数式错误处理: map/map_err/and_then
 
 ~~~admonish info title="map / map_err / and_then: 使用函数式错误处理" collapsible=true
 Rust 还为 Option 和 Result 提供了大量的辅助函数，如 map / map_err / and_then，你可以很方便地处理数据结构中部分情况。如下图所示：
