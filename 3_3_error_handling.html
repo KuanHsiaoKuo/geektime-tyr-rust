@@ -200,7 +200,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Tue Oct 18 08:07:35 UTC 2022 -->
+<!-- Added by: runner, at: Tue Oct 18 08:14:15 UTC 2022 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
 <details id="admonition-错误处理包含这么几部分" class="admonition info">
@@ -461,8 +461,18 @@ Ok(data)
 <pre><pre class="playground"><code class="language-rust  editable">
 let params: NoiseParams = &quot;Noise_XX_25519_AESGCM_SHA256&quot;.parse().unwrap();
 </code></pre></pre>
-<h2 id="如果开发者不小心把协议变量写错了最佳的方式是立刻-panic-出来让错误立刻暴露以便解决这个问题"><a class="header" href="#如果开发者不小心把协议变量写错了最佳的方式是立刻-panic-出来让错误立刻暴露以便解决这个问题">如果开发者不小心把协议变量写错了，最佳的方式是立刻 panic! 出来，让错误立刻暴露，以便解决这个问题。</a></h2>
-<p>有些场景下，我们也希望能够像异常处理那样能够栈回溯，把环境恢复到捕获异常的上下文。Rust 标准库下提供了 catch_unwind() ，把调用栈回溯到 catch_unwind 这一刻，作用和其它语言的 try {…} catch {…} 一样。见如下代码：</p>
+</div>
+</details>
+<blockquote>
+<p>如果开发者不小心把协议变量写错了，最佳的方式是立刻 panic! 出来，让错误立刻暴露，以便解决这个问题。</p>
+</blockquote>
+<details id="admonition-catch_unwind-有些场景下我们也希望能够像异常处理那样能够栈回溯把环境恢复到捕获异常的上下文" class="admonition info">
+<summary class="admonition-title">
+<p>catch_unwind(): 有些场景下，我们也希望能够像异常处理那样能够栈回溯，把环境恢复到捕获异常的上下文。</p>
+<p><a class="admonition-anchor-link" href="#admonition-catch_unwind-有些场景下我们也希望能够像异常处理那样能够栈回溯把环境恢复到捕获异常的上下文"></a></p>
+</summary>
+<div>
+<p>Rust 标准库下提供了 catch_unwind() ，把调用栈回溯到 catch_unwind 这一刻，作用和其它语言的 try {…} catch {…} 一样。见如下代码：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 use std::panic;
 
@@ -478,11 +488,28 @@ fn main() {
     println!(&quot;panic captured: {:#?}&quot;, result);
 }
 </code></pre></pre>
-<p>当然，和异常处理一样，并不意味着你可以滥用这一特性，我想，这也是 Rust 把抛出异常称作 panic! ，而捕获异常称作 catch_unwind 的原因，让初学者望而生畏，不敢轻易使用。这也是一个不错的用户体验。</p>
+</div>
+</details>
+<blockquote>
+<p>当然，和异常处理一样，并不意味着你可以滥用这一特性.
+我想这也是 Rust 把抛出异常称作 panic! ，而捕获异常称作 catch_unwind 的原因:让初学者望而生畏，不敢轻易使用。这也是一个不错的用户体验。</p>
+</blockquote>
+<details id="admonition-catch_unwind-在哪些场景下非常有用" class="admonition question">
+<summary class="admonition-title">
+<p>catch_unwind 在哪些场景下非常有用:</p>
+<p><a class="admonition-anchor-link" href="#admonition-catch_unwind-在哪些场景下非常有用"></a></p>
+</summary>
+<div>
 <p>catch_unwind 在某些场景下非常有用:</p>
 <ol>
-<li>比如你在使用 Rust 为 erlang VM 撰写 NIF，你不希望 Rust 代码中的任何 panic! 导致 erlang VM 崩溃。因为崩溃是一个非常不好的体验，它违背了 erlang 的设计原则：process 可以 let it crash，但错误代码不该导致 VM 崩溃。</li>
-<li>此刻，你就可以把 Rust 代码整个封装在 catch_unwind() 函数所需要传入的闭包中。这样，一旦任何代码中，包括第三方 crates 的代码，含有能够导致 panic! 的代码，都会被捕获，并被转换为一个 Result。</li>
+<li>
+<p>比如你在使用 Rust 为 erlang VM 撰写 NIF，你不希望 Rust 代码中的任何 panic! 导致 erlang VM 崩溃。
+因为崩溃是一个非常不好的体验，它违背了 erlang 的设计原则：process 可以 let it crash，但错误代码不该导致 VM 崩溃。</p>
+</li>
+<li>
+<p>此刻，你就可以把 Rust 代码整个封装在 catch_unwind() 函数所需要传入的闭包中。
+这样，一旦任何代码中，包括第三方 crates 的代码，含有能够导致 panic! 的代码，都会被捕获，并被转换为一个 Result。</p>
+</li>
 </ol>
 </div>
 </details>
