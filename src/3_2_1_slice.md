@@ -1,18 +1,21 @@
 # 切片
 
 <!--ts-->
-
 * [切片](#切片)
-    * [array vs vector](#array-vs-vector)
-    * [Vec&lt;T&gt; 和 &amp;[T]](#vect-和-t)
-    * [解引用](#解引用)
-    * [切片和迭代器 Iterator](#切片和迭代器-iterator)
-    * [特殊的切片：&amp;str](#特殊的切片str)
-    * [Box&lt;[T]&gt;](#boxt)
-    * [常用切片对比图](#常用切片对比图)
+   * [切片到底是什么](#切片到底是什么)
+      * [切片的三个特点](#切片的三个特点)
+      * [切片的三种访问方式](#切片的三种访问方式)
+      * [切片与数据的关系](#切片与数据的关系)
+      * [常用切片对比图](#常用切片对比图)
+   * [array vs vector](#array-vs-vector)
+   * [Vec&lt;T&gt; 和 &amp;[T]](#vect-和-t)
+   * [解引用：转为切片类型](#解引用转为切片类型)
+   * [切片和迭代器 Iterator](#切片和迭代器-iterator)
+   * [特殊的切片：&amp;str](#特殊的切片str)
+   * [Box&lt;[T]&gt;](#boxt)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Oct 19 08:52:58 UTC 2022 -->
+<!-- Added by: runner, at: Wed Oct 19 09:21:21 UTC 2022 -->
 
 <!--te-->
 
