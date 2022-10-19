@@ -22,12 +22,12 @@
 
 ## 哈希表还是列表
 
-我们知道，哈希表和列表类似，都用于处理需要随机访问的数据结构, 但还有不同选择
+我们知道，哈希表和列表类似，都用于处理需要随机访问的数据结构, 但还有不同选择:
 
-~~~admonish info title="哈希表和列表的选择" collapsible=true
 - 如果数据结构的输入和输出能一一对应，那么可以使用列表，
 - 如果无法一一对应，那么就需要使用哈希表。
 
+~~~admonish info title="哈希表和列表的选择图" collapsible=true
 ![17｜数据结构：软件系统核心部件哈希表，内存如何布局？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882989.jpg)
 ~~~
 
