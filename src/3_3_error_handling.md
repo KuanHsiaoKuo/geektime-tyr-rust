@@ -1,20 +1,21 @@
 # 三、错误处理
 
 <!--ts-->
+
 * [三、错误处理](#三错误处理)
-   * [错误处理包含这么几部分](#错误处理包含这么几部分)
-   * [错误处理的主流方法](#错误处理的主流方法)
-   * [Rust 的错误处理](#rust-的错误处理)
-      * [1. 使用类型系统：Option/Result错误类型处理](#1-使用类型系统optionresult错误类型处理)
-         * [Option](#option)
-         * [Result](#result)
-      * [2. 使用异常](#2-使用异常)
-         * [2.1 抛出异常：panic! 和 catch_unwind](#21-抛出异常panic-和-catch_unwind)
-            * [panic!](#panic)
-            * [catch_uwind](#catch_uwind)
-         * [2.2 捕获异常：?操作符](#22-捕获异常操作符)
-      * [3. 函数式错误处理: map/map_err/and_then](#3-函数式错误处理-mapmap_errand_then)
-   * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
+    * [错误处理包含这么几部分](#错误处理包含这么几部分)
+    * [错误处理的主流方法](#错误处理的主流方法)
+    * [Rust 的错误处理](#rust-的错误处理)
+        * [1. 使用类型系统：Option/Result错误类型处理](#1-使用类型系统optionresult错误类型处理)
+            * [Option](#option)
+            * [Result](#result)
+        * [2. 使用异常](#2-使用异常)
+            * [2.1 抛出异常：panic! 和 catch_unwind](#21-抛出异常panic-和-catch_unwind)
+                * [panic!](#panic)
+                * [catch_uwind](#catch_uwind)
+            * [2.2 捕获异常：?操作符](#22-捕获异常操作符)
+        * [3. 函数式错误处理: map/map_err/and_then](#3-函数式错误处理-mapmap_errand_then)
+    * [Error trait 和错误类型的转换](#error-trait-和错误类型的转换)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Tue Oct 18 14:01:41 UTC 2022 -->
@@ -29,7 +30,7 @@
 语言优秀的错误处理能力，会大大减少错误处理对整体流程的破坏，让我们写代码更行云流水，读起来心智负担也更小。
 
 
-对我们开发者来说，错误处理包含这么几部分：
+> 对我们开发者来说，错误处理包含这么几部分：
 
 1. 错误捕获后，可以立刻处理
 2. 也可以延迟到不得不处理的地方再处理，这就涉及到错误的传播（propagate）。
@@ -44,9 +45,15 @@
 
 ## 错误处理的主流方法
 
-~~~admonish info title="1. 使用返回值（错误码）" collapsible=true
+### 1. 使用返回值（错误码）
 
-使用返回值来表征错误，是最古老也是最实用的一种方式，它的使用范围很广，从函数返回值，到操作系统的系统调用的错误码 errno、进程退出的错误码 retval，甚至 HTTP API 的状态码，都能看到这种方法的身影。
+~~~admonish info title="使用返回值来表征错误，是最古老也是最实用的一种方式." collapsible=true
+它的使用范围很广:
+- 从函数返回值
+- 到操作系统的系统调用的错误码 errno
+- 进程退出的错误码 retval
+- 甚至 HTTP API 的状态码
+- 都能看到这种方法的身影。
 
 > 举个例子，在 C 语言中，如果 fopen(filename) 无法打开文件，会返回 NULL，调用者通过判断返回值是否为 NULL，来进行相应的错误处理。
 
@@ -57,10 +64,16 @@
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 ```
 
-单看这个接口，我们很难直观了解，当读文件出错时，错误是如何返回的。从文档中，我们得知，如果返回的 size_t 和传入的 size_t 不一致，那么要么发生了错误，要么是读到文件尾（EOF），调用者要进一步通过 ferror 才能得到更详细的错误。
+单看这个接口，我们很难直观了解，当读文件出错时，错误是如何返回的:
+1. 从文档中，我们得知，如果返回的 size_t 和传入的 size_t 不一致
+2. 那么要么发生了错误，要么是读到文件尾（EOF）
+3. 调用者要进一步通过 ferror 才能得到更详细的错误。
 
-像 C 这样，通过返回值携带错误信息，有很多局限。返回值有它原本的语义，强行把错误类型嵌入到返回值原本的语义中，需要全面且实时更新的文档，来确保开发者能正确区别对待，正常返回和错误返回。
+像 C 这样，通过返回值携带错误信息，有很多局限:
+1. 返回值有它原本的语义，强行把错误类型嵌入到返回值原本的语义中，需要全面且实时更新的文档，来确保开发者能正确区别对待，正常返回和错误返回。
+~~~
 
+~~~admonish info title="Golang 对其做了扩展，在函数返回的时候，可以专门携带一个错误对象, 区分开错误返回和正常返回" collapsible=true
 所以 Golang 对其做了扩展，在函数返回的时候，可以专门携带一个错误对象。比如上文的 fread，在 Golang 下可以这么定义：
 
 ```go
@@ -69,8 +82,13 @@ func Fread(file *File, b []byte) (n int, err error)
 ```
 
 Golang 这样，区分开错误返回和正常返回，相对 C 来说进了一大步。
+~~~
 
-> 但是使用返回值的方式，始终有个致命的问题：在调用者调用时，错误就必须得到处理或者显式的传播。
+~~~admonish question title="但是使用返回值的方式，始终有个致命的问题" collapsible=true
+
+> 但是使用返回值的方式，始终有个致命的问题：
+
+`在调用者调用时，错误就必须得到处理或者显式的传播。`
 
 如果函数 A 调用了函数 B，在 A 返回错误的时候，就要把 B 的错误转换成 A 的错误，显示出来。如下图所示：
 
@@ -78,16 +96,19 @@ Golang 这样，区分开错误返回和正常返回，相对 C 来说进了一�
 
 这样写出来的代码会非常冗长，对我们开发者的用户体验不太好。如果不处理，又会丢掉这个错误信息，造成隐患。
 
-另外，大部分生产环境下的错误是嵌套的。一个 SQL 执行过程中抛出的错误，可能是服务器出错，而更深层次的错误可能是，连接数据库服务器的 TLS session 状态异常。
+> 另外，大部分生产环境下的错误是嵌套的:
+1. 一个 SQL 执行过程中抛出的错误，可能是服务器出错，而更深层次的错误可能是，连接数据库服务器的 TLS session 状态异常。
+2. 其实知道服务器出错之外，我们更需要清楚服务器出错的内在原因。
 
-其实知道服务器出错之外，我们更需要清楚服务器出错的内在原因。
-- 因为服务器出错这个表层错误会提供给最终用户，而出错的深层原因要提供给我们自己，服务的维护者。
-- 但是这样的嵌套错误在 C / Golang 都是很难完美表述的。
-
+> 因为服务器出错这个表层错误会提供给最终用户，而出错的深层原因要提供给我们自己，服务的维护者。
+> 但是这样的嵌套错误在 C / Golang 都是很难完美表述的。
 ~~~
 
-~~~admonish info title="2. 使用异常: 抛出异常+捕获异常" collapsible=true
-因为返回值不利于错误的传播，有诸多限制，Java 等很多语言使用异常来处理错误。
+### 2. 使用异常: 抛出异常+捕获异常
+
+> 因为返回值不利于错误的传播，有诸多限制，Java 等很多语言使用异常来处理错误。
+
+~~~admonish info title="关注点分离" collapsible=true
 
 你可以把异常看成一种关注点分离（Separation of Concerns）：
 1. 错误的产生和错误的处理完全被分隔开
@@ -117,18 +138,21 @@ void transition(...) {
 ```
 
 试想, 如果在创建新的背景时失败，抛出异常，会跳过后续的处理流程，一路栈回溯到 try catch 的代码，那么，这里锁住的 mutex 无法得到释放，而已有的背景被清空，新的背景没有创建，程序进入到一个奇怪的状态。
+~~~
 
-确实在大多数情况下，用异常更容易写代码，但当异常安全无法保证时，程序的正确性会受到很大的挑战。因此，你在使用异常处理时，需要特别注意异常安全，尤其是在并发环境下。
+~~~admonish info title="异常的限制：异常安全+异常滥用" collapsible=true
+> 确实在大多数情况下，用异常更容易写代码，但当异常安全无法保证时，程序的正确性会受到很大的挑战。因此，你在使用异常处理时，需要特别注意异常安全，尤其是在并发环境下。
 
 异常处理另外一个比较严重的问题是：开发者会滥用异常。只要有错误，不论是否严重、是否可恢复，都一股脑抛个异常。到了需要的地方，捕获一下了之。殊不知，异常处理的开销要比处理返回值大得多，滥用会有很多额外的开销。
 ~~~
 
-~~~admonish info title="3. 使用类型系统" collapsible=true
+### 3. 使用类型系统
 
 第三种错误处理的方法就是使用类型系统。其实，在使用返回值处理错误的时候，我们已经看到了类型系统的雏形。
 
 错误信息既然可以通过已有的类型携带，或者通过多返回值的方式提供，那么通过类型来表征错误，使用一个内部包含正常返回类型和错误返回类型的复合类型，通过类型系统来强制错误的处理和传递，是不是可以达到更好的效果呢？
 
+~~~admonish info title="Haskell 的 Maybe 和 Either 类型" collapsible=true
 的确如此。这种方式被大量使用在有强大类型系统支持的函数式编程语言中，如 Haskell/Scala/Swift。其中最典型的包含了错误类型的复合类型是 Haskell 的 Maybe 和 Either 类型。
 
 - Maybe 类型允许数据包含一个值（Just）或者没有值（Nothing），这对简单的不需要类型的错误很有用。还是以打开文件为例，如果我们只关心成功打开文件的句柄，那么 Maybe 就足够了。
@@ -138,7 +162,9 @@ void transition(...) {
 ![18｜错误处理：为什么Rust的错误处理与众不同？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F-4895260.jpg)
 
 > 我们可以看到，这种方法依旧是通过返回值返回错误，但是错误被包裹在一个完整的、必须处理的类型中，比 Golang 的方法更安全。
+~~~
 
+~~~admonish question title="比起返回错误，类型系统有什么好处？" collapsible=true
 我们前面提到，使用返回值返回错误的一大缺点是，错误需要被调用者立即处理或者显式传递。
 
 但是使用 Maybe / Either 这样的类型来处理错误的好处是，我们可以用函数式编程的方法简化错误的处理，比如 map、fold等函数，让代码相对不那么冗余。
@@ -260,7 +286,63 @@ catch_unwind 在某些场景下非常有用:
 这样，一旦任何代码中，包括第三方 crates 的代码，含有能够导致 panic! 的代码，都会被捕获，并被转换为一个 Result。
 ~~~
 
-#### 2.2 捕获异常：?操作符
+#### 2.2 使用Error trait自定义异常类型
+
+> 我们可以定义我们自己的数据类型，然后为其实现 Error trait。
+
+~~~admonish info title="使用Error trait自定义错误类型" collapsible=true
+上文中，我们讲到 Result<T, E> 里 E 是一个代表错误的数据类型。为了规范这个代表错误的数据类型的行为，Rust 定义了 Error trait：
+
+```rust, editable
+
+pub trait Error: Debug + Display {
+    fn source(&self) -> Option<&(dyn Error + 'static)> { ... }
+    fn backtrace(&self) -> Option<&Backtrace> { ... }
+    fn description(&self) -> &str { ... }
+    fn cause(&self) -> Option<&dyn Error> { ... }
+}
+```
+~~~
+
+> 不过，这样的工作已经有人替我们简化了：我们可以使用 thiserror和 anyhow来简化这个步骤。
+
+~~~admonish info title="使用thiserror和anyhow简化步骤" collapsible=true
+- thiserror 提供了一个派生宏（derive macro）来简化错误类型的定义，比如：
+
+```rust, editable
+
+use thiserror::Error;
+#[derive(Error, Debug)]
+#[non_exhaustive]
+pub enum DataStoreError {
+    #[error("data store disconnected")]
+    Disconnect(#[from] io::Error),
+    #[error("the data for key `{0}` is not available")]
+    Redaction(String),
+    #[error("invalid header (expected {expected:?}, found {found:?})")]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error("unknown data store error")]
+    Unknown,
+}
+```
+
+如果你在撰写一个 Rust 库，那么 thiserror 可以很好地协助你对这个库里所有可能发生的错误进行建模。
+
+1. anyhow 实现了 anyhow::Error 和任意符合 Error trait 的错误类型之间的转换，让你可以使用 ? 操作符，不必再手工转换错误类型。
+2. anyhow 还可以让你很容易地抛出一些临时的错误，而不必费力定义错误类型，当然，我们不提倡滥用这个能力。
+~~~
+
+> 作为一名严肃的开发者，我非常建议你在开发前:
+
+- 先用类似 thiserror 的库定义好你项目中主要的错误类型
+- 并随着项目的深入，不断增加新的错误类型，让系统中所有的潜在错误都无所遁形。
+
+#### 2.3 捕获异常
+
+##### 2.3.1 ?操作符
 
 ~~~admonish info title="? 操作符的由来" collapsible=true
 这虽然可以极大避免遗忘错误的显示处理，但如果我们并不关心错误，只需要传递错误，还是会写出像 C 或者 Golang 一样比较冗余的代码。怎么办？
@@ -314,7 +396,7 @@ fut
 虽然 ? 操作符使用起来非常方便，但你要注意在不同的错误类型之间是无法直接使用的，需要实现 From trait 在二者之间建立起转换的桥梁，这会带来额外的麻烦。
 ~~~
 
-### 3. 函数式错误处理: map/map_err/and_then
+##### 2.3.2 函数式错误处理: map/map_err/and_then
 
 ~~~admonish info title="map / map_err / and_then: 使用函数式错误处理" collapsible=true
 Rust 还为 Option 和 Result 提供了大量的辅助函数，如 map / map_err / and_then，你可以很方便地处理数据结构中部分情况。如下图所示：
@@ -326,7 +408,6 @@ Rust 还为 Option 和 Result 提供了大量的辅助函数，如 map / map_err
 > 比如用户注册的流程，你需要校验用户输入，对数据进行处理，转换，然后存入数据库中。你可以这么撰写这个流程：
 
 ```rust, editable
-
 Ok(data)
   .and_then(validate)
   .and_then(process)
@@ -338,60 +419,9 @@ Ok(data)
 > 执行流程如下图所示：
 
 ![image-20221004225336162](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/image-20221004225336162.png)
+~~~
 
 此外，Option 和 Result 的互相转换也很方换，这也得益于 Rust 构建的强大的函数式编程的能力。
-~~~
 
-我们可以看到，无论是通过 ? 操作符，还是函数式编程进行错误处理，Rust 都力求让错误处理灵活高效，让开发者使用起来简单直观。
+> 我们可以看到，无论是通过 ? 操作符，还是函数式编程进行错误处理，Rust 都力求让错误处理灵活高效，让开发者使用起来简单直观。
 
-## Error trait 和错误类型的转换
-
-~~~admonish info title="使用Error trait自定义错误类型" collapsible=true
-上文中，我们讲到 Result<T, E> 里 E 是一个代表错误的数据类型。为了规范这个代表错误的数据类型的行为，Rust 定义了 Error trait：
-
-```rust, editable
-
-pub trait Error: Debug + Display {
-    fn source(&self) -> Option<&(dyn Error + 'static)> { ... }
-    fn backtrace(&self) -> Option<&Backtrace> { ... }
-    fn description(&self) -> &str { ... }
-    fn cause(&self) -> Option<&dyn Error> { ... }
-}
-```
-
-我们可以定义我们自己的数据类型，然后为其实现 Error trait。
-~~~
-
-~~~admonish info title="使用thiserror和anyhow简化步骤" collapsible=true
-不过，这样的工作已经有人替我们简化了：我们可以使用 thiserror和 anyhow来简化这个步骤。
-
-- thiserror 提供了一个派生宏（derive macro）来简化错误类型的定义，比如：
-
-```rust, editable
-
-use thiserror::Error;
-#[derive(Error, Debug)]
-#[non_exhaustive]
-pub enum DataStoreError {
-    #[error("data store disconnected")]
-    Disconnect(#[from] io::Error),
-    #[error("the data for key `{0}` is not available")]
-    Redaction(String),
-    #[error("invalid header (expected {expected:?}, found {found:?})")]
-    InvalidHeader {
-        expected: String,
-        found: String,
-    },
-    #[error("unknown data store error")]
-    Unknown,
-}
-```
-
-如果你在撰写一个 Rust 库，那么 thiserror 可以很好地协助你对这个库里所有可能发生的错误进行建模。
-
-- anyhow 实现了 anyhow::Error 和任意符合 Error trait 的错误类型之间的转换，让你可以使用 ? 操作符，不必再手工转换错误类型。
-> anyhow 还可以让你很容易地抛出一些临时的错误，而不必费力定义错误类型，当然，我们不提倡滥用这个能力。
-
-作为一名严肃的开发者，我非常建议你在开发前，先用类似 thiserror 的库定义好你项目中主要的错误类型，并随着项目的深入，不断增加新的错误类型，让系统中所有的潜在错误都无所遁形。
-
-~~~
