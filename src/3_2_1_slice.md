@@ -1,6 +1,18 @@
 # 切片
 
 <!--ts-->
+* [切片](#切片)
+   * [array vs vector](#array-vs-vector)
+   * [Vec&lt;T&gt; 和 &amp;[T]](#vect-和-t)
+   * [解引用](#解引用)
+   * [切片和迭代器 Iterator](#切片和迭代器-iterator)
+   * [特殊的切片：&amp;str](#特殊的切片str)
+   * [Box&lt;[T]&gt;](#boxt)
+   * [常用切片对比图](#常用切片对比图)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Wed Oct 19 08:52:58 UTC 2022 -->
+
 <!--te-->
 
 ~~~admonish tip title="切片到底是什么" collapsible=true
