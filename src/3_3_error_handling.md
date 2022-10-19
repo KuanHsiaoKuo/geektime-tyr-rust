@@ -1,28 +1,30 @@
 # 三、错误处理
 
 <!--ts-->
-
 * [三、错误处理](#三错误处理)
-    * [错误处理包含这么几部分](#错误处理包含这么几部分)
-    * [错误处理的主流方法](#错误处理的主流方法)
-        * [1. 使用返回值（错误码）](#1-使用返回值错误码)
-        * [2. 使用异常: 抛出异常+捕获异常](#2-使用异常-抛出异常捕获异常)
-        * [3. 使用类型系统](#3-使用类型系统)
-    * [Rust 的错误处理](#rust-的错误处理)
-        * [1. 使用类型系统：Option/Result错误类型处理](#1-使用类型系统optionresult错误类型处理)
-            * [Option](#option)
-            * [Result](#result)
-        * [2. 使用异常](#2-使用异常)
-            * [2.1 抛出异常：panic! 和 catch_unwind](#21-抛出异常panic-和-catch_unwind)
-                * [panic!](#panic)
-                * [catch_uwind](#catch_uwind)
-            * [2.2 使用Error trait自定义异常类型](#22-使用error-trait自定义异常类型)
-            * [2.3 捕获异常](#23-捕获异常)
-                * [2.3.1 ?操作符](#231-操作符)
-                * [2.3.2 函数式错误处理: map/map_err/and_then](#232-函数式错误处理-mapmap_errand_then)
+* [错误处理包含这么几部分](#错误处理包含这么几部分)
+* [错误处理的主流方法](#错误处理的主流方法)
+   * [1. 使用返回值（错误码）](#1-使用返回值错误码)
+   * [2. 使用异常: 抛出异常+捕获异常](#2-使用异常-抛出异常捕获异常)
+   * [3. 使用类型系统](#3-使用类型系统)
+* [Rust 的错误处理](#rust-的错误处理)
+   * [1. 使用类型系统：Option/Result错误类型处理](#1-使用类型系统optionresult错误类型处理)
+      * [Option](#option)
+      * [Result](#result)
+   * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
+      * [panic!抛出异常: 不可/不想恢复](#panic抛出异常-不可不想恢复)
+      * [catch_uwind捕获异常：崩溃后恢复上下文](#catch_uwind捕获异常崩溃后恢复上下文)
+   * [3. 自定义异常类型](#3-自定义异常类型)
+      * [3.1 使用Error trait](#31-使用error-trait)
+      * [3.2 使用thiserror简化](#32-使用thiserror简化)
+      * [3.3 使用anyhow扩展？操作符](#33-使用anyhow扩展操作符)
+      * [3.4 让错误无所遁形](#34-让错误无所遁形)
+   * [4. 捕获异常](#4-捕获异常)
+      * [4.1 ?操作符](#41-操作符)
+      * [4.2 函数式错误处理: map/map_err/and_then](#42-函数式错误处理-mapmap_errand_then)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Oct 19 02:12:19 UTC 2022 -->
+<!-- Added by: runner, at: Wed Oct 19 03:20:17 UTC 2022 -->
 
 <!--te-->
 
