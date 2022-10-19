@@ -1,23 +1,25 @@
 # 哈希表
 
 <!--ts-->
-
 * [哈希表](#哈希表)
-    * [哈希表还是列表](#哈希表还是列表)
-    * [Rust 的哈希表](#rust-的哈希表)
-    * [<a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" style="max-width: 100%;"></a>](#-1)
-    * [HashMap 的数据结构](#hashmap-的数据结构)
-    * [HashMap 的基本使用方法](#hashmap-的基本使用方法)
-    * [HashMap 的内存布局](#hashmap-的内存布局)
-    * [ctrl 表](#ctrl-表)
-    * [哈希表重新分配与增长](#哈希表重新分配与增长)
-    * [删除一个值](#删除一个值)
-    * [让自定义的数据结构做 Hash key](#让自定义的数据结构做-hash-key)
-    * [HashSet / BTreeMap / BTreeSet](#hashset--btreemap--btreeset)
-    * [为什么 Rust 的 HashMap 要默认采用加密安全的哈希算法？](#为什么-rust-的-hashmap-要默认采用加密安全的哈希算法)
+   * [哈希表还是列表](#哈希表还是列表)
+   * [Rust 的哈希表](#rust-的哈希表)
+      * [哈希表核心冲突](#哈希表核心冲突)
+      * [解决冲突的方法](#解决冲突的方法)
+      * [HashMap数据结构](#hashmap数据结构)
+      * [HashMap 的基本使用方法](#hashmap-的基本使用方法)
+      * [HashMap 的内存布局](#hashmap-的内存布局)
+   * [ctrl 表](#ctrl-表)
+      * [主要目的与设计](#主要目的与设计)
+      * [通过ctrl表查询](#通过ctrl表查询)
+      * [通过ctrl表新增：重新分配与增长](#通过ctrl表新增重新分配与增长)
+      * [通过ctrl表删除一个值](#通过ctrl表删除一个值)
+   * [让自定义的数据结构做 Hash key](#让自定义的数据结构做-hash-key)
+   * [HashSet / BTreeMap / BTreeSet](#hashset--btreemap--btreeset)
+   * [为什么 Rust 的 HashMap 要默认采用加密安全的哈希算法？](#为什么-rust-的-hashmap-要默认采用加密安全的哈希算法)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Oct 19 09:31:54 UTC 2022 -->
+<!-- Added by: runner, at: Wed Oct 19 11:46:36 UTC 2022 -->
 
 <!--te-->
 
