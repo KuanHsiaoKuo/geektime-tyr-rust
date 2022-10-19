@@ -1,0 +1,865 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>哈希表 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a></li><li class="chapter-item expanded "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_2_1_slice.html"><strong aria-hidden="true">4.3.2.1.</strong> 切片</a></li><li class="chapter-item expanded "><a href="3_2_2_hash.html" class="active"><strong aria-hidden="true">4.3.2.2.</strong> 哈希表</a></li></ol></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="4_1_macros_classify.html"><strong aria-hidden="true">4.4.1.</strong> 宏分类</a></li><li class="chapter-item "><a href="4_2_declarative_macros.html"><strong aria-hidden="true">4.4.2.</strong> 声明宏</a></li><li class="chapter-item "><a href="4_3_procedural_macros.html"><strong aria-hidden="true">4.4.3.</strong> 过程宏</a></li></ol></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="哈希表"><a class="header" href="#哈希表">哈希表</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E5%93%88%E5%B8%8C%E8%A1%A8">哈希表</a>
+<ul>
+<li><a href="#%E5%93%88%E5%B8%8C%E8%A1%A8%E8%BF%98%E6%98%AF%E5%88%97%E8%A1%A8">哈希表还是列表</a></li>
+<li><a href="#rust-%E7%9A%84%E5%93%88%E5%B8%8C%E8%A1%A8">Rust 的哈希表</a></li>
+<li><a href="#-1"><a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" style="max-width: 100%;"></a>
+</a></li>
+<li><a href="#hashmap-%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">HashMap 的数据结构</a></li>
+<li><a href="#hashmap-%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95">HashMap 的基本使用方法</a></li>
+<li><a href="#hashmap-%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80">HashMap 的内存布局</a></li>
+<li><a href="#ctrl-%E8%A1%A8">ctrl 表</a></li>
+<li><a href="#%E5%93%88%E5%B8%8C%E8%A1%A8%E9%87%8D%E6%96%B0%E5%88%86%E9%85%8D%E4%B8%8E%E5%A2%9E%E9%95%BF">哈希表重新分配与增长</a></li>
+<li><a href="#%E5%88%A0%E9%99%A4%E4%B8%80%E4%B8%AA%E5%80%BC">删除一个值</a></li>
+<li><a href="#%E8%AE%A9%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%81%9A-hash-key">让自定义的数据结构做 Hash key</a></li>
+<li><a href="#hashset--btreemap--btreeset">HashSet / BTreeMap / BTreeSet</a></li>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88-rust-%E7%9A%84-hashmap-%E8%A6%81%E9%BB%98%E8%AE%A4%E9%87%87%E7%94%A8%E5%8A%A0%E5%AF%86%E5%AE%89%E5%85%A8%E7%9A%84%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95">为什么 Rust 的 HashMap 要默认采用加密安全的哈希算法？</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Wed Oct 19 08:52:59 UTC 2022 -->
+<!--te-->
+<h2 id="哈希表还是列表"><a class="header" href="#哈希表还是列表">哈希表还是列表</a></h2>
+<p>我们知道，哈希表和列表类似，都用于处理需要随机访问的数据结构, 但还有不同选择</p>
+<details id="admonition-哈希表和列表的选择" class="admonition info">
+<summary class="admonition-title">
+<p>哈希表和列表的选择</p>
+<p><a class="admonition-anchor-link" href="#admonition-哈希表和列表的选择"></a></p>
+</summary>
+<div>
+<ul>
+<li>如果数据结构的输入和输出能一一对应，那么可以使用列表，</li>
+<li>如果无法一一对应，那么就需要使用哈希表。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882989.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" /></p>
+</div>
+</details>
+<h2 id="rust-的哈希表"><a class="header" href="#rust-的哈希表">Rust 的哈希表</a></h2>
+<details id="admonition-哈希表的核心特点与解决" class="admonition info">
+<summary class="admonition-title">
+<p>哈希表的核心特点与解决</p>
+<p><a class="admonition-anchor-link" href="#admonition-哈希表的核心特点与解决"></a></p>
+</summary>
+<div>
+<p>哈希表最核心的特点就是：巨量的可能输入和有限的哈希表容量。这就会引发哈希冲突，也就是两个或者多个输入的哈希被映射到了同一个位置，所以我们要能够处理哈希冲突。</p>
+<p>要解决冲突，首先可以通过更好的、分布更均匀的哈希函数，以及使用更大的哈希表来缓解冲突，但无法完全解决，所以我们还需要使用冲突解决机制。</p>
+</div>
+</details>
+<p>如何解决冲突？</p>
+<p>理论上，主要的冲突解决机制有链地址法（chaining）和开放寻址法（open addressing）。</p>
+<ul>
+<li>链地址法，我们比较熟悉，就是把落在同一个哈希上的数据用单链表或者双链表连接起来。这样在查找的时候，先找到对应的哈希桶（hash bucket），然后再在冲突链上挨个比较，直到找到匹配的项。</li>
+</ul>
+<blockquote>
+<p>冲突链处理哈希冲突非常直观，很容易理解和撰写代码，但缺点是哈希表和冲突链使用了不同的内存，对缓存不友好。</p>
+</blockquote>
+<hr />
+<h2 id=""><a class="header" href="#"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882976.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" /></a></h2>
+<ul>
+<li>
+<p>开放寻址法把整个哈希表看做一个大数组，不引入额外的内存，当冲突产生时，按照一定的规则把数据插入到其它空闲的位置。比如线性探寻（linear probing）在出现哈希冲突时，不断往后探寻，直到找到空闲的位置插入。</p>
+</li>
+<li>
+<p>而二次探查，理论上是在冲突发生时，不断探寻哈希位置加减 n 的二次方，找到空闲的位置插入，我们看图，更容易理解：</p>
+</li>
+</ul>
+<hr />
+<h2 id="-1"><a class="header" href="#-1"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" /></a></h2>
+<blockquote>
+<p>图中示意是理论上的处理方法，实际为了性能会有很多不同的处理。</p>
+</blockquote>
+<h2 id="hashmap-的数据结构"><a class="header" href="#hashmap-的数据结构">HashMap 的数据结构</a></h2>
+<details id="admonition-深入rust哈希表的数据结构hashmap-hashbrown-rawtable" class="admonition info">
+<summary class="admonition-title">
+<p>深入Rust哈希表的数据结构：HashMap-&gt;hashbrown-&gt;RawTable</p>
+<p><a class="admonition-anchor-link" href="#admonition-深入rust哈希表的数据结构hashmap-hashbrown-rawtable"></a></p>
+</summary>
+<div>
+<p>我们来看看 Rust 哈希表的数据结构是什么样子的，打开标准库的 <a href="https://doc.rust-lang.org/src/std/collections/hash/map.rs.html#206-208">源代码</a>：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use hashbrown::hash_map as base;
+
+#[derive(Clone)]
+pub struct RandomState {
+    k0: u64,
+    k1: u64,
+}
+
+pub struct HashMap&lt;K, V, S = RandomState&gt; {
+    base: base::HashMap&lt;K, V, S&gt;,
+}
+</code></pre></pre>
+<hr />
+<p>可以看到，HashMap 有三个泛型参数:</p>
+<ol>
+<li>K 和 V 代表 key / value 的类型</li>
+<li>S 是哈希算法的状态，它默认是 RandomState，占两个 u64。</li>
+</ol>
+<blockquote>
+<p>RandomState 使用 SipHash 作为缺省的哈希算法，它是一个加密安全的哈希函数（cryptographically secure hashing）。</p>
+</blockquote>
+<p>从定义中还能看到，Rust 的 HashMap 复用了 hashbrown 的 HashMap: 
+hashbrown 是 Rust 下对 <a href="https://abseil.io/blog/20180927-swisstables">Google Swiss Table</a> 的一个改进版实现，我们<a href="https://docs.rs/hashbrown/0.11.2/src/hashbrown/map.rs.html#192-195">打开 hashbrown 的代码</a>，看它的结构：</p>
+<pre><pre class="playground"><code class="language-rust  editable">pub struct HashMap&lt;K, V, S = DefaultHashBuilder, A: Allocator + Clone = Global&gt; {
+    pub(crate) hash_builder: S,
+    pub(crate) table: RawTable&lt;(K, V), A&gt;,
+}
+</code></pre></pre>
+<hr />
+<p>可以看到，HashMap 里有两个域:</p>
+<ol>
+<li>一个是 hash_builder，类型是刚才我们提到的标准库使用的 RandomState</li>
+<li>还有一个是具体的 RawTable：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub struct RawTable&lt;T, A: Allocator + Clone = Global&gt; {
+    table: RawTableInner&lt;A&gt;,
+    // Tell dropck that we own instances of T.
+    marker: PhantomData&lt;T&gt;,
+}
+
+struct RawTableInner&lt;A&gt; {
+    // Mask to get an index from a hash value. The value is one less than the
+    // number of buckets in the table.
+    bucket_mask: usize,
+
+    // [Padding], T1, T2, ..., Tlast, C1, C2, ...
+    //                                ^ points here
+    ctrl: NonNull&lt;u8&gt;,
+
+    // Number of elements that can be inserted before we need to grow the table
+    growth_left: usize,
+
+    // Number of elements in the table, only really used by len()
+    items: usize,
+
+    alloc: A,
+}
+</code></pre></pre>
+<p>RawTable 中，实际上有意义的数据结构是 RawTableInner:</p>
+<blockquote>
+<p>前四个字段很重要：</p>
+</blockquote>
+<ol>
+<li>usize 的 bucket_mask，是哈希表中哈希桶的数量减一；</li>
+<li>名字叫 ctrl 的指针，它指向哈希表堆内存末端的 ctrl 区；</li>
+<li>usize 的字段 growth_left，指哈希表在下次自动增长前还能存储多少数据；</li>
+<li>Usize 的 items，表明哈希表现在有多少数据。</li>
+</ol>
+<blockquote>
+<p>这里最后的 alloc 字段，和 RawTable 的 marker 一样，只是一个用来占位的类型，它用来分配在堆上的内存。</p>
+</blockquote>
+</div>
+</details>
+<h2 id="hashmap-的基本使用方法"><a class="header" href="#hashmap-的基本使用方法">HashMap 的基本使用方法</a></h2>
+<details id="admonition-hashmap基本使用方法" class="admonition info">
+<summary class="admonition-title">
+<p>HashMap基本使用方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-hashmap基本使用方法"></a></p>
+</summary>
+<div>
+<p>数据结构搞清楚，我们再看具体使用方法。Rust 哈希表的使用很简单，它提供了一系列很方便的方法，使用起来和其它语言非常类似，你只要看看文档，就很容易理解。</p>
+<blockquote>
+<p>我们来写段代码，尝试一下（代码）：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::collections::HashMap;
+
+fn main() {
+    let mut map = HashMap::new();
+    explain(&quot;empty&quot;, &amp;map);
+
+    map.insert('a', 1);
+    explain(&quot;added 1&quot;, &amp;map);
+
+    map.insert('b', 2);
+    map.insert('c', 3);
+    explain(&quot;added 3&quot;, &amp;map);
+
+    map.insert('d', 4);
+    explain(&quot;added 4&quot;, &amp;map);
+
+    // get 时需要使用引用，并且也返回引用
+    assert_eq!(map.get(&amp;'a'), Some(&amp;1));
+    assert_eq!(map.get_key_value(&amp;'b'), Some((&amp;'b', &amp;2)));
+
+    map.remove(&amp;'a');
+    // 删除后就找不到了
+    assert_eq!(map.contains_key(&amp;'a'), false);
+    assert_eq!(map.get(&amp;'a'), None);
+    explain(&quot;removed&quot;, &amp;map);
+    // shrink 后哈希表变小
+    map.shrink_to_fit();
+    explain(&quot;shrinked&quot;, &amp;map);
+}
+
+fn explain&lt;K, V&gt;(name: &amp;str, map: &amp;HashMap&lt;K, V&gt;) {
+    println!(&quot;{}: len: {}, cap: {}&quot;, name, map.len(), map.capacity());
+}
+</code></pre></pre>
+<hr />
+<ol>
+<li>可以看到，当 HashMap::new() 时，它并没有分配空间，容量为零</li>
+<li>随着哈希表不断插入数据，它会以 2 的幂减一的方式增长，最小是 3。</li>
+<li>当删除表中的数据时，原有的表大小不变，只有显式地调用 shrink_to_fit，才会让哈希表变小。</li>
+</ol>
+</div>
+</details>
+<h2 id="hashmap-的内存布局"><a class="header" href="#hashmap-的内存布局">HashMap 的内存布局</a></h2>
+<details id="admonition-ctrl表的变化借助stdmemtransmute查看内存布局" class="admonition info">
+<summary class="admonition-title">
+<p>ctrl表的变化：借助std::mem::transmute查看内存布局</p>
+<p><a class="admonition-anchor-link" href="#admonition-ctrl表的变化借助stdmemtransmute查看内存布局"></a></p>
+</summary>
+<div>
+<p>通过 HashMap 的公开接口无法看到 HashMap 在内存中是如何布局，还是需要借助 std::mem::transmute 方法，来把数据结构打出来。</p>
+<blockquote>
+<p>我们把刚才的代码改一改（代码）：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::collections::HashMap;
+
+fn main() {
+    let map = HashMap::new();
+    let mut map = explain(&quot;empty&quot;, map);
+
+    map.insert('a', 1);
+    let mut map = explain(&quot;added 1&quot;, map);
+    map.insert('b', 2);
+    map.insert('c', 3);
+
+    let mut map = explain(&quot;added 3&quot;, map);
+
+    map.insert('d', 4);
+
+    let mut map = explain(&quot;added 4&quot;, map);
+
+    map.remove(&amp;'a');
+
+    explain(&quot;final&quot;, map);
+}
+
+// HashMap 结构有两个 u64 的 RandomState，然后是四个 usize，
+// 分别是 bucket_mask, ctrl, growth_left 和 items
+// 我们 transmute 打印之后，再 transmute 回去
+fn explain&lt;K, V&gt;(name: &amp;str, map: HashMap&lt;K, V&gt;) -&gt; HashMap&lt;K, V&gt; {
+    let arr: [usize; 6] = unsafe { std::mem::transmute(map) };
+    println!(
+        &quot;{}: bucket_mask 0x{:x}, ctrl 0x{:x}, growth_left: {}, items: {}&quot;,
+        name, arr[2], arr[3], arr[4], arr[5]
+    );
+    unsafe { std::mem::transmute(arr) }
+}
+</code></pre></pre>
+<hr />
+<p>运行之后，可以看到：</p>
+<pre><code class="language-shell">empty: bucket_mask 0x0, ctrl 0x1056df820, growth_left: 0, items: 0
+
+added 1: bucket_mask 0x3, ctrl 0x7fa0d1405e30, growth_left: 2, items: 1
+
+added 3: bucket_mask 0x3, ctrl 0x7fa0d1405e30, growth_left: 0, items: 3
+
+added 4: bucket_mask 0x7, ctrl 0x7fa0d1405e90, growth_left: 3, items: 4
+
+final: bucket_mask 0x7, ctrl 0x7fa0d1405e90, growth_left: 4, items: 3
+</code></pre>
+<blockquote>
+<p>发现在运行的过程中，ctrl 对应的堆地址发生了改变。</p>
+</blockquote>
+<ul>
+<li>在我的 OS X 下，一开始哈希表为空，ctrl 地址看上去是一个 TEXT/RODATA 段的地址，应该是指向了一个默认的空表地址；</li>
+<li>插入第一个数据后，哈希表分配了 4 个 bucket，ctrl 地址发生改变；</li>
+<li>在插入三个数据后，growth_left 为零</li>
+<li>再插入时，哈希表重新分配，ctrl 地址继续改变。</li>
+</ul>
+<blockquote>
+<p>在探索 HashMap 数据结构时，说过 ctrl 是一个指向哈希表堆地址末端 ctrl 区的地址，所以我们可以通过这个地址，计算出哈希表堆地址的起始地址。</p>
+</blockquote>
+<p>因为哈希表有 8 个 bucket（0x7 + 1），每个 bucket 大小是 key（char） + value（i32） 的大小，也就是 8 个字节，所以一共是 64 个字节。
+对于这个例子，通过 ctrl 地址减去 64，就可以得到哈希表的堆内存起始地址。然后，我们可以用 rust-gdb / rust-lldb 来打印这个内存。</p>
+<blockquote>
+<p>可以用 Linux 下的 rust-gdb 设置断点，依次查看哈希表有一个、三个、四个值，以及删除一个值的状态：</p>
+</blockquote>
+<pre><code class="language-shell">
+❯ rust-gdb ~/.target/debug/hashmap2
+GNU gdb (Ubuntu 9.2-0ubuntu2) 9.2
+...
+(gdb) b hashmap2.rs:32
+Breakpoint 1 at 0xa43e: file src/hashmap2.rs, line 32.
+(gdb) r
+Starting program: /home/tchen/.target/debug/hashmap2
+...
+# 最初的状态，哈希表为空
+empty: bucket_mask 0x0, ctrl 0x555555597be0, growth_left: 0, items: 0
+
+Breakpoint 1, hashmap2::explain (name=..., map=...) at src/hashmap2.rs:32
+32      unsafe { std::mem::transmute(arr) }
+(gdb) c
+Continuing.
+# 插入了一个元素后，bucket 有 4 个（0x3+1），堆地址起始位置 0x5555555a7af0 - 4*8(0x20)
+added 1: bucket_mask 0x3, ctrl 0x5555555a7af0, growth_left: 2, items: 1
+
+Breakpoint 1, hashmap2::explain (name=..., map=...) at src/hashmap2.rs:32
+32      unsafe { std::mem::transmute(arr) }
+(gdb) x /12x 0x5555555a7ad0
+0x5555555a7ad0:  0x00000061  0x00000001  0x00000000  0x00000000
+0x5555555a7ae0:  0x00000000  0x00000000  0x00000000  0x00000000
+0x5555555a7af0:  0x0affffff  0xffffffff  0xffffffff  0xffffffff
+(gdb) c
+Continuing.
+# 插入了三个元素后，哈希表没有剩余空间，堆地址起始位置不变 0x5555555a7af0 - 4*8(0x20)
+added 3: bucket_mask 0x3, ctrl 0x5555555a7af0, growth_left: 0, items: 3
+
+Breakpoint 1, hashmap2::explain (name=..., map=...) at src/hashmap2.rs:32
+32      unsafe { std::mem::transmute(arr) }
+(gdb) x /12x 0x5555555a7ad0
+0x5555555a7ad0:  0x00000061  0x00000001  0x00000062  0x00000002
+0x5555555a7ae0:  0x00000000  0x00000000  0x00000063  0x00000003
+0x5555555a7af0:  0x0a72ff02  0xffffffff  0xffffffff  0xffffffff
+(gdb) c
+Continuing.
+# 插入第四个元素后，哈希表扩容，堆地址起始位置变为 0x5555555a7b50 - 8*8(0x40)
+added 4: bucket_mask 0x7, ctrl 0x5555555a7b50, growth_left: 3, items: 4
+
+Breakpoint 1, hashmap2::explain (name=..., map=...) at src/hashmap2.rs:32
+32      unsafe { std::mem::transmute(arr) }
+(gdb) x /20x 0x5555555a7b10
+0x5555555a7b10:  0x00000061  0x00000001  0x00000000  0x00000000
+0x5555555a7b20:  0x00000064  0x00000004  0x00000063  0x00000003
+0x5555555a7b30:  0x00000000  0x00000000  0x00000062  0x00000002
+0x5555555a7b40:  0x00000000  0x00000000  0x00000000  0x00000000
+0x5555555a7b50:  0xff72ffff  0x0aff6502  0xffffffff  0xffffffff
+(gdb) c
+Continuing.
+# 删除 a 后，剩余 4 个位置。注意 ctrl bit 的变化，以及 0x61 0x1 并没有被清除
+final: bucket_mask 0x7, ctrl 0x5555555a7b50, growth_left: 4, items: 3
+
+Breakpoint 1, hashmap2::explain (name=..., map=...) at src/hashmap2.rs:32
+32      unsafe { std::mem::transmute(arr) }
+(gdb) x /20x 0x5555555a7b10
+0x5555555a7b10:  0x00000061  0x00000001  0x00000000  0x00000000
+0x5555555a7b20:  0x00000064  0x00000004  0x00000063  0x00000003
+0x5555555a7b30:  0x00000000  0x00000000  0x00000062  0x00000002
+0x5555555a7b40:  0x00000000  0x00000000  0x00000000  0x00000000
+0x5555555a7b50:  0xff72ffff  0xffff6502  0xffffffff  0xffffffff
+</code></pre>
+<hr />
+<p>这段输出蕴藏了很多信息，结合示意图来仔细梳理。</p>
+<ol>
+<li>首先，插入第一个元素 ‘a’: 1 后，哈希表的内存布局如下：</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882958.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" /></p>
+<ul>
+<li>key ‘a’ 的 hash 和 bucket_mask 0x3 运算后得到第 0 个位置插入。</li>
+<li>同时，这个 hash 的头 7 位取出来，在 ctrl 表中对应的位置，也就是第 0 个字节，把这个值写入。</li>
+</ul>
+<p>要理解这个步骤，关键就是要搞清楚这个 ctrl 表是什么。</p>
+</div>
+</details>
+<h2 id="ctrl-表"><a class="header" href="#ctrl-表">ctrl 表</a></h2>
+<details id="admonition-ctrl-表的主要目的与设计" class="admonition info">
+<summary class="admonition-title">
+<p>ctrl 表的主要目的与设计</p>
+<p><a class="admonition-anchor-link" href="#admonition-ctrl-表的主要目的与设计"></a></p>
+</summary>
+<div>
+<p>ctrl 表的主要目的是快速查找。它的设计非常优雅，值得我们学习。</p>
+<p>一张 ctrl 表里:</p>
+<ul>
+<li>有若干个 128bit 或者说 16 个字节的分组（group）</li>
+<li>group 里的每个字节叫 ctrl byte，对应一个 bucket，那么一个 group 对应 16 个 bucket。</li>
+<li>如果一个 bucket 对应的 ctrl byte 首位不为 1，就表示这个 ctrl byte 被使用；</li>
+<li>如果所有位都是 1，或者说这个字节是 0xff，那么它是空闲的。</li>
+</ul>
+<blockquote>
+<p>一组 control byte 的整个 128 bit 的数据，可以通过一条指令被加载进来，然后和某个值进行 mask，找到它所在的位置。这就是HashMap的 SIMD 查表。</p>
+</blockquote>
+<blockquote>
+<p>我们知道，现代 CPU 都支持单指令多数据集的操作，而 Rust 充分利用了 CPU 这种能力，一条指令可以让多个相关的数据载入到缓存中处理，大大加快查表的速度。所以，Rust 的哈希表查询的效率非常高。</p>
+</blockquote>
+<p>具体怎么操作，我们来看 HashMap 是如何通过 ctrl 表来进行数据查询的。</p>
+<blockquote>
+<p>假设这张表里已经添加了一些数据，我们现在要查找 key 为 ‘c’ 的数据：</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882948.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" /></p>
+<ol>
+<li>把 h 跟 bucket_mask 做与，得到一个值，图中是 139；</li>
+<li>拿着这个 139，找到对应的 ctrl group 的起始位置，因为 ctrl group 以 16 为一组，所以这里找到 128；</li>
+<li>用 SIMD 指令加载从 128 对应地址开始的 16 个字节；</li>
+<li>对 hash 取头 7 个 bit，然后和刚刚取出的 16 个字节一起做与，找到对应的匹配，如果找到了，它（们）很大概率是要找的值；</li>
+<li>如果不是，那么以二次探查（以 16 的倍数不断累积）的方式往后查找，直到找到为止。</li>
+</ol>
+<blockquote>
+<p>所以，当 HashMap 插入和删除数据，以及因此导致重新分配的时候，主要工作就是在维护这张 ctrl 表和数据的对应。</p>
+</blockquote>
+<blockquote>
+<p>因为 ctrl 表是所有操作最先触及的内存，所以，在 HashMap 的结构中，堆内存的指针直接指向 ctrl 表，而不是指向堆内存的起始位置，这样可以减少一次内存的访问。</p>
+</blockquote>
+</div>
+</details>
+<h2 id="哈希表重新分配与增长"><a class="header" href="#哈希表重新分配与增长">哈希表重新分配与增长</a></h2>
+<details id="admonition-插入三个元素后没有剩余空间的哈希表在加入-d-4-时hash-map是如何增长的" class="admonition info">
+<summary class="admonition-title">
+<p>插入三个元素后没有剩余空间的哈希表，在加入 ‘d’: 4 时，hash map是如何增长的</p>
+<p><a class="admonition-anchor-link" href="#admonition-插入三个元素后没有剩余空间的哈希表在加入-d-4-时hash-map是如何增长的"></a></p>
+</summary>
+<div>
+<p>在插入第一条数据后，哈希表只有 4 个 bucket，所以只有头 4 个字节的 ctrl 表有用。随着哈希表的增长，bucket 不够，就会导致重新分配。由于 bucket_mask 永远比 bucket 数量少 1，所以插入三个元素后就会重新分配。</p>
+<p>根据 rust-gdb 中得到的信息，我们看插入三个元素后没有剩余空间的哈希表，在加入 ‘d’: 4 时，是如何增长的: </p>
+<ol>
+<li>首先，哈希表会按幂扩容，从 4 个 bucket 扩展到 8 个 bucket。</li>
+</ol>
+<p>这会导致分配新的堆内存，然后原来的 ctrl table 和对应的 kv 数据会被移动到新的内存中。</p>
+<ul>
+<li>这个例子里因为 char 和 i32 实现了 Copy trait，所以是拷贝；</li>
+<li>如果 key 的类型是 String，那么只有 String 的 24 个字节 (ptr|cap|len) 的结构被移动，String 的实际内存不需要变动。</li>
+<li>在移动的过程中，会涉及哈希的重分配。</li>
+<li>从下图可以看到，‘a’ / ‘c’ 的相对位置和它们的 ctrl byte 没有变化，但重新做 hash 后，‘b’ 的 ctrl byte 和位置都发生了变化：</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882903-4882936.jpg" alt="" /></p>
+</div>
+</details>
+<h2 id="删除一个值"><a class="header" href="#删除一个值">删除一个值</a></h2>
+<details id="admonition-哈希表删除时内存如何释放" class="admonition info">
+<summary class="admonition-title">
+<p>哈希表删除时内存如何释放？</p>
+<p><a class="admonition-anchor-link" href="#admonition-哈希表删除时内存如何释放"></a></p>
+</summary>
+<div>
+<p>明白了哈希表是如何增长的，我们再来看删除的时候会发生什么。</p>
+<p>当要在哈希表中删除一个值时，整个过程和查找类似:</p>
+<ol>
+<li>先要找到要被删除的 key 所在的位置。</li>
+<li>在找到具体位置后，并不需要实际清除内存，只需要将它的 ctrl byte 设回 0xff（或者标记成删除状态）。这样，这个 bucket 就可以被再次使用了</li>
+</ol>
+<blockquote>
+<p>这里有一个问题，当 key/value 有额外的内存时，比如 String，它的内存不会立即回收，只有在下一次对应的 bucket 被使用时，让 HashMap 不再拥有这个 String 的所有权之后，这个 String 的内存才被回收。我们看下面的示意图：</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882903.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" /></p>
+<p>一般来说，这并不会带来什么问题，顶多是内存占用率稍高一些。但某些极端情况下，比如在哈希表中添加大量内容，又删除大量内容后运行，这时你可以通过 shrink_to_fit / shrink_to 释放掉不需要的内存。</p>
+</div>
+</details>
+<h2 id="让自定义的数据结构做-hash-key"><a class="header" href="#让自定义的数据结构做-hash-key">让自定义的数据结构做 Hash key</a></h2>
+<details id="admonition-自定义数据结构需要实现hashpartialeqeq这三个trait" class="admonition info">
+<summary class="admonition-title">
+<p>自定义数据结构需要实现Hash、PartialEq、Eq这三个trait</p>
+<p><a class="admonition-anchor-link" href="#admonition-自定义数据结构需要实现hashpartialeqeq这三个trait"></a></p>
+</summary>
+<div>
+<p>有时候，我们需要让自定义的数据结构成为 HashMap 的 key。此时，要使用到三个 trait：<a href="https://doc.rust-lang.org/std/hash/trait.Hash.html">Hash</a>、<a href="https://doc.rust-lang.org/std/cmp/trait.PartialEq.html">PartialEq</a>、<a href="https://doc.rust-lang.org/std/cmp/trait.Eq.html">Eq</a>，不过这三个 trait 都可以通过派生宏自动生成。其中：</p>
+<ol>
+<li>实现了 Hash ，可以让数据结构计算哈希；</li>
+<li>实现了 PartialEq/Eq，可以让数据结构进行相等和不相等的比较。</li>
+<li>Eq 实现了比较的自反性（a == a）、对称性（a == b 则 b == a）以及传递性（a == b，b == c，则 a == c）</li>
+<li>PartialEq 没有实现自反性。</li>
+</ol>
+<p>我们可以写个例子，看看自定义数据结构如何支持 HashMap：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::{
+    collections::{hash_map::DefaultHasher, HashMap},
+    hash::{Hash, Hasher},
+};
+
+// 如果要支持 Hash，可以用 #[derive(Hash)]，前提是每个字段都实现了 Hash
+// 如果要能作为 HashMap 的 key，还需要 PartialEq 和 Eq
+#[derive(Debug, Hash, PartialEq, Eq)]
+struct Student&lt;'a&gt; {
+    name: &amp;'a str,
+    age: u8,
+}
+
+impl&lt;'a&gt; Student&lt;'a&gt; {
+    pub fn new(name: &amp;'a str, age: u8) -&gt; Self {
+        Self { name, age }
+    }
+}
+fn main() {
+    let mut hasher = DefaultHasher::new();
+    let student = Student::new(&quot;Tyr&quot;, 18);
+    // 实现了 Hash 的数据结构可以直接调用 hash 方法
+    student.hash(&amp;mut hasher);
+    let mut map = HashMap::new();
+    // 实现了 Hash / PartialEq / Eq 的数据结构可以作为 HashMap 的 key
+    map.insert(student, vec![&quot;Math&quot;, &quot;Writing&quot;]);
+    println!(&quot;hash: 0x{:x}, map: {:?}&quot;, hasher.finish(), map);
+}
+</code></pre></pre>
+</div>
+</details>
+<h2 id="hashset--btreemap--btreeset"><a class="header" href="#hashset--btreemap--btreeset">HashSet / BTreeMap / BTreeSet</a></h2>
+<details id="admonition-hashset只用于确认存在存放无序集合" class="admonition info">
+<summary class="admonition-title">
+<p>HashSet只用于确认存在，存放无序集合</p>
+<p><a class="admonition-anchor-link" href="#admonition-hashset只用于确认存在存放无序集合"></a></p>
+</summary>
+<div>
+<p>有时我们只需要简单确认元素是否在集合中，如果用 HashMap 就有些浪费空间了。这时可以用 HashSet，它就是简化的 HashMap，可以用来存放无序的集合，定义直接是 HashMap&lt;K, ()&gt;：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use hashbrown::hash_set as base;
+
+pub struct HashSet&lt;T, S = RandomState&gt; {
+    base: base::HashSet&lt;T, S&gt;,
+}
+
+pub struct HashSet&lt;T, S = DefaultHashBuilder, A: Allocator + Clone = Global&gt; {
+    pub(crate) map: HashMap&lt;T, (), S, A&gt;,
+}
+</code></pre></pre>
+<blockquote>
+<p>使用 HashSet 查看一个元素是否属于集合的效率非常高。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-btreemap和btreeset都是用于查找存放有序集合" class="admonition info">
+<summary class="admonition-title">
+<p>BTreeMap和BTreeSet都是用于查找，存放有序集合</p>
+<p><a class="admonition-anchor-link" href="#admonition-btreemap和btreeset都是用于查找存放有序集合"></a></p>
+</summary>
+<div>
+<p>BTreeMap 是内部使用 <a href="https://en.wikipedia.org/wiki/B-tree">B-tree</a> 来组织哈希表的数据结构。另外 BTreeSet 和 HashSet 类似，是 BTreeMap 的简化版，可以用来存放有序集合。
+我们这里重点看下 BTreeMap，它的数据结构如下：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub struct BTreeMap&lt;K, V&gt; {
+    root: Option&lt;Root&lt;K, V&gt;&gt;,
+    length: usize,
+}
+
+pub type Root&lt;K, V&gt; = NodeRef&lt;marker::Owned, K, V, marker::LeafOrInternal&gt;;
+
+pub struct NodeRef&lt;BorrowType, K, V, Type&gt; {
+    height: usize,
+    node: NonNull&lt;LeafNode&lt;K, V&gt;&gt;,
+    _marker: PhantomData&lt;(BorrowType, Type)&gt;,
+}
+
+struct LeafNode&lt;K, V&gt; {
+    parent: Option&lt;NonNull&lt;InternalNode&lt;K, V&gt;&gt;&gt;,
+    parent_idx: MaybeUninit&lt;u16&gt;,
+    len: u16,
+    keys: [MaybeUninit&lt;K&gt;; CAPACITY],
+    vals: [MaybeUninit&lt;V&gt;; CAPACITY],
+}
+
+struct InternalNode&lt;K, V&gt; {
+    data: LeafNode&lt;K, V&gt;,
+    edges: [MaybeUninit&lt;BoxedNode&lt;K, V&gt;&gt;; 2 * B],
+}
+</code></pre></pre>
+<blockquote>
+<p>和 HashMap 不同的是，BTreeMap 是有序的。我们看个例子（代码）:</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::collections::BTreeMap;
+
+fn main() {
+    let map = BTreeMap::new();
+    let mut map = explain(&quot;empty&quot;, map);
+
+    for i in 0..16usize {
+        map.insert(format!(&quot;Tyr {}&quot;, i), i);
+    }
+
+    let mut map = explain(&quot;added&quot;, map);
+
+    map.remove(&quot;Tyr 1&quot;);
+
+    let map = explain(&quot;remove 1&quot;, map);
+
+    for item in map.iter() {
+        println!(&quot;{:?}&quot;, item);
+    }
+}
+
+// BTreeMap 结构有 height，node 和 length
+// 我们 transmute 打印之后，再 transmute 回去
+fn explain&lt;K, V&gt;(name: &amp;str, map: BTreeMap&lt;K, V&gt;) -&gt; BTreeMap&lt;K, V&gt; {
+    let arr: [usize; 3] = unsafe { std::mem::transmute(map) };
+    println!(
+        &quot;{}: height: {}, root node: 0x{:x}, len: 0x{:x}&quot;,
+        name, arr[0], arr[1], arr[2]
+    );
+    unsafe { std::mem::transmute(arr) }
+}
+</code></pre></pre>
+<blockquote>
+<p>可以看到，在遍历时，BTreeMap 会按照 key 的顺序把值打印出来。如果你想让自定义的数据结构可以作为 BTreeMap 的 key，那么需要实现 PartialOrd 和 Ord，这两者的关系和 PartialEq / Eq 类似，PartialOrd 也没有实现自反性。同样的，PartialOrd 和 Ord 也可以通过派生宏来实现。</p>
+</blockquote>
+</div>
+</details>
+<h2 id="为什么-rust-的-hashmap-要默认采用加密安全的哈希算法"><a class="header" href="#为什么-rust-的-hashmap-要默认采用加密安全的哈希算法">为什么 Rust 的 HashMap 要默认采用加密安全的哈希算法？</a></h2>
+<details id="admonition-为什么-rust-的-hashmap-要缺省采用加密安全的哈希算法" class="admonition info">
+<summary class="admonition-title">
+<p>为什么 Rust 的 HashMap 要缺省采用加密安全的哈希算法？</p>
+<p><a class="admonition-anchor-link" href="#admonition-为什么-rust-的-hashmap-要缺省采用加密安全的哈希算法"></a></p>
+</summary>
+<div>
+<p>我们知道哈希表在软件系统中的重要地位，但哈希表在最坏情况下，如果绝大多数 key 的 hash 都碰撞在一起，性能会到 O(n)，这会极大拖累系统的效率。</p>
+<p>比如 1M 大小的 session 表，正常情况下查表速度是 O(1)，但极端情况下，需要比较 1M 个数据后才能找到，这样的系统就容易被 DoS 攻击。所以如果不是加密安全的哈希函数，只要黑客知道哈希算法，就可以构造出大量的 key 产生足够多的哈希碰撞，造成目标系统 DoS。</p>
+<p>SipHash 就是为了回应 DoS 攻击而创建的哈希算法，虽然和 sha2 这样的加密哈希不同（不要将 SipHash 用于加密！），但它可以提供类似等级的安全性。把 SipHash 作为 HashMap 的缺省的哈希算法，Rust 可以避免开发者在不知情的情况下被 DoS，就像曾经在 Web 世界发生的那样。
+当然，这一切的代价是性能损耗，虽然 SipHash 非常快，但它比 hashbrown 缺省使用的 Ahash 慢了不少。如果你确定使用的 HashMap 不需要 DoS 防护（比如一个完全内部使用的 HashMap），那么可以用 Ahash 来替换。你只需要使用 Ahash 提供的 RandomState 即可：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use ahash::{AHasher, RandomState};
+use std::collections::HashMap;
+let mut map: HashMap&lt;char, i32, RandomState&gt; = HashMap::default();
+map.insert('a', 1);
+</code></pre></pre>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="3_2_1_slice.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="3_3_error_handling.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="3_2_1_slice.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="3_3_error_handling.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
