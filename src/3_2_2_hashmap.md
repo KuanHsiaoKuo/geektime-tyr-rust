@@ -1,19 +1,20 @@
 # 哈希表
 
 <!--ts-->
+
 * [哈希表](#哈希表)
-   * [哈希表还是列表](#哈希表还是列表)
-   * [Rust 的哈希表](#rust-的哈希表)
-   * [<a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" style="max-width: 100%;"></a>](#-1)
-   * [HashMap 的数据结构](#hashmap-的数据结构)
-   * [HashMap 的基本使用方法](#hashmap-的基本使用方法)
-   * [HashMap 的内存布局](#hashmap-的内存布局)
-   * [ctrl 表](#ctrl-表)
-   * [哈希表重新分配与增长](#哈希表重新分配与增长)
-   * [删除一个值](#删除一个值)
-   * [让自定义的数据结构做 Hash key](#让自定义的数据结构做-hash-key)
-   * [HashSet / BTreeMap / BTreeSet](#hashset--btreemap--btreeset)
-   * [为什么 Rust 的 HashMap 要默认采用加密安全的哈希算法？](#为什么-rust-的-hashmap-要默认采用加密安全的哈希算法)
+    * [哈希表还是列表](#哈希表还是列表)
+    * [Rust 的哈希表](#rust-的哈希表)
+    * [<a target="_blank" rel="noopener noreferrer nofollow" href="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg"><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg" alt="17｜数据结构：软件系统核心部件哈希表，内存如何布局？" style="max-width: 100%;"></a>](#-1)
+    * [HashMap 的数据结构](#hashmap-的数据结构)
+    * [HashMap 的基本使用方法](#hashmap-的基本使用方法)
+    * [HashMap 的内存布局](#hashmap-的内存布局)
+    * [ctrl 表](#ctrl-表)
+    * [哈希表重新分配与增长](#哈希表重新分配与增长)
+    * [删除一个值](#删除一个值)
+    * [让自定义的数据结构做 Hash key](#让自定义的数据结构做-hash-key)
+    * [HashSet / BTreeMap / BTreeSet](#hashset--btreemap--btreeset)
+    * [为什么 Rust 的 HashMap 要默认采用加密安全的哈希算法？](#为什么-rust-的-hashmap-要默认采用加密安全的哈希算法)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Oct 19 09:31:54 UTC 2022 -->
@@ -33,35 +34,51 @@
 
 ## Rust 的哈希表
 
+### 哈希表核心冲突
+
 ~~~admonish info title="哈希表的核心特点与解决" collapsible=true
-哈希表最核心的特点就是：巨量的可能输入和有限的哈希表容量。这就会引发哈希冲突，也就是两个或者多个输入的哈希被映射到了同一个位置，所以我们要能够处理哈希冲突。
+哈希表最核心的特点就是：巨量的可能输入和有限的哈希表容量。
+
+> 这就会引发哈希冲突，也就是两个或者多个输入的哈希被映射到了同一个位置，所以我们要能够处理哈希冲突。
 
 要解决冲突，首先可以通过更好的、分布更均匀的哈希函数，以及使用更大的哈希表来缓解冲突，但无法完全解决，所以我们还需要使用冲突解决机制。
 ~~~
 
-如何解决冲突？
-
 理论上，主要的冲突解决机制有链地址法（chaining）和开放寻址法（open addressing）。
 
-- 链地址法，我们比较熟悉，就是把落在同一个哈希上的数据用单链表或者双链表连接起来。这样在查找的时候，先找到对应的哈希桶（hash bucket），然后再在冲突链上挨个比较，直到找到匹配的项。
+### 解决冲突的方法
+
+~~~admonish info title="1. 链地址法⛓️" collapsible=true
+
+就是把落在同一个哈希上的数据用单链表或者双链表连接起来。
+
+这样在查找的时候:
+- 先找到对应的哈希桶（hash bucket），
+- 然后再在冲突链上挨个比较，直到找到匹配的项。
 
 > 冲突链处理哈希冲突非常直观，很容易理解和撰写代码，但缺点是哈希表和冲突链使用了不同的内存，对缓存不友好。
----
+
 ![17｜数据结构：软件系统核心部件哈希表，内存如何布局？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882976.jpg)
----
+~~~
 
-- 开放寻址法把整个哈希表看做一个大数组，不引入额外的内存，当冲突产生时，按照一定的规则把数据插入到其它空闲的位置。比如线性探寻（linear probing）在出现哈希冲突时，不断往后探寻，直到找到空闲的位置插入。
+~~~admonish info title="2. 开放寻址法" collapsible=true
+> 开放寻址法把整个哈希表看做一个大数组，不引入额外的内存，当冲突产生时，按照一定的规则把数据插入到其它空闲的位置。
 
-- 而二次探查，理论上是在冲突发生时，不断探寻哈希位置加减 n 的二次方，找到空闲的位置插入，我们看图，更容易理解：
+- 线性探寻（linear probing）在出现哈希冲突时，不断往后探寻，直到找到空闲的位置插入。
+- 而二次探查，理论上是在冲突发生时，不断探寻哈希位置加减 n 的二次方，找到空闲的位置插入.
 
----
+我们看图，更容易理解：
+
 ![17｜数据结构：软件系统核心部件哈希表，内存如何布局？](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/17%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BD%AF%E4%BB%B6%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E9%83%A8%E4%BB%B6%E5%93%88%E5%B8%8C%E8%A1%A8%EF%BC%8C%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E5%B8%83%E5%B1%80%EF%BC%9F-4882967.jpg)
----
+
 > 图中示意是理论上的处理方法，实际为了性能会有很多不同的处理。
+~~~
 
-## HashMap 的数据结构
+### HashMap数据结构
 
-~~~admonish info title="深入Rust哈希表的数据结构：HashMap->hashbrown->RawTable" collapsible=true
+> 深入Rust哈希表的数据结构：HashMap->hashbrown->RawTable
+
+~~~admonish info title="1. HashMap数据结构" collapsible=true
 我们来看看 Rust 哈希表的数据结构是什么样子的，打开标准库的 [源代码](https://doc.rust-lang.org/src/std/collections/hash/map.rs.html#206-208)：
 ```rust, editable
 
@@ -82,8 +99,9 @@ pub struct HashMap<K, V, S = RandomState> {
 1. K 和 V 代表 key / value 的类型
 2. S 是哈希算法的状态，它默认是 RandomState，占两个 u64。
 > RandomState 使用 SipHash 作为缺省的哈希算法，它是一个加密安全的哈希函数（cryptographically secure hashing）。
+~~~
 
-从定义中还能看到，Rust 的 HashMap 复用了 hashbrown 的 HashMap: 
+~~~admonish info title="2. 从定义中还能看到，Rust 的 HashMap 复用了 hashbrown 的 HashMap: " collapsible=true
 hashbrown 是 Rust 下对 [Google Swiss Table](https://abseil.io/blog/20180927-swisstables) 的一个改进版实现，我们[打开 hashbrown 的代码](https://docs.rs/hashbrown/0.11.2/src/hashbrown/map.rs.html#192-195)，看它的结构：
 ```rust, editable
 pub struct HashMap<K, V, S = DefaultHashBuilder, A: Allocator + Clone = Global> {
@@ -91,11 +109,15 @@ pub struct HashMap<K, V, S = DefaultHashBuilder, A: Allocator + Clone = Global> 
     pub(crate) table: RawTable<(K, V), A>,
 }
 ```
+
 ---
+
 可以看到，HashMap 里有两个域:
 1. 一个是 hash_builder，类型是刚才我们提到的标准库使用的 RandomState
 2. 还有一个是具体的 RawTable：
+~~~
 
+~~~admonish info title="3. hashbrown的HashMap用到的RawTable" collapsible=true
 ```rust, editable
 
 pub struct RawTable<T, A: Allocator + Clone = Global> {
@@ -122,23 +144,27 @@ struct RawTableInner<A> {
     alloc: A,
 }
 ```
+~~~
 
-RawTable 中，实际上有意义的数据结构是 RawTableInner:
+~~~admonish info title="4. RawTable 中，实际上有意义的数据结构是 RawTableInner:" collapsible=true
 
 > 前四个字段很重要：
 
 1. usize 的 bucket_mask，是哈希表中哈希桶的数量减一；
 2. 名字叫 ctrl 的指针，它指向哈希表堆内存末端的 ctrl 区；
+> 这一点在介绍hashmap的内存结构时还会详细说明
 3. usize 的字段 growth_left，指哈希表在下次自动增长前还能存储多少数据；
 4. Usize 的 items，表明哈希表现在有多少数据。
 
 > 这里最后的 alloc 字段，和 RawTable 的 marker 一样，只是一个用来占位的类型，它用来分配在堆上的内存。
 ~~~
 
-## HashMap 的基本使用方法
+### HashMap 的基本使用方法
+
+> 数据结构搞清楚，我们再看具体使用方法。
 
 ~~~admonish info title="HashMap基本使用方法" collapsible=true
-数据结构搞清楚，我们再看具体使用方法。Rust 哈希表的使用很简单，它提供了一系列很方便的方法，使用起来和其它语言非常类似，你只要看看文档，就很容易理解。
+Rust 哈希表的使用很简单，它提供了一系列很方便的方法，使用起来和其它语言非常类似，你只要看看文档，就很容易理解。
 > 我们来写段代码，尝试一下（代码）：
 ```rust, editable
 
@@ -182,10 +208,12 @@ fn explain<K, V>(name: &str, map: &HashMap<K, V>) {
 3. 当删除表中的数据时，原有的表大小不变，只有显式地调用 shrink_to_fit，才会让哈希表变小。
 ~~~
 
-## HashMap 的内存布局
+### HashMap 的内存布局
+
+> 通过 HashMap 的公开接口无法看到 HashMap 在内存中是如何布局，还是需要借助 std::mem::transmute 方法，来把数据结构打出来。
 
 ~~~admonish info title="ctrl表的变化：借助std::mem::transmute查看内存布局" collapsible=true
-通过 HashMap 的公开接口无法看到 HashMap 在内存中是如何布局，还是需要借助 std::mem::transmute 方法，来把数据结构打出来。
+
 > 我们把刚才的代码改一改（代码）：
 ```rust, editable
 
@@ -247,10 +275,15 @@ final: bucket_mask 0x7, ctrl 0x7fa0d1405e90, growth_left: 4, items: 3
 
 > 在探索 HashMap 数据结构时，说过 ctrl 是一个指向哈希表堆地址末端 ctrl 区的地址，所以我们可以通过这个地址，计算出哈希表堆地址的起始地址。
 
-因为哈希表有 8 个 bucket（0x7 + 1），每个 bucket 大小是 key（char） + value（i32） 的大小，也就是 8 个字节，所以一共是 64 个字节。
-对于这个例子，通过 ctrl 地址减去 64，就可以得到哈希表的堆内存起始地址。然后，我们可以用 rust-gdb / rust-lldb 来打印这个内存。
+1. 因为哈希表有 8 个 bucket（0x7 + 1）
+2. 每个 bucket 大小是 key（char） + value（i32） 的大小，也就是 8 个字节，
+3. 所以一共是 64 个字节。
+4. 对于这个例子，通过 ctrl 地址减去 64，就可以得到哈希表的堆内存起始地址。
+~~~
 
+~~~admonish info title="然后，我们可以用 rust-gdb / rust-lldb 来打印这个内存。" collapsible=true
 > 可以用 Linux 下的 rust-gdb 设置断点，依次查看哈希表有一个、三个、四个值，以及删除一个值的状态：
+
 ```shell
 
 ❯ rust-gdb ~/.target/debug/hashmap2
@@ -315,6 +348,7 @@ Breakpoint 1, hashmap2::explain (name=..., map=...) at src/hashmap2.rs:32
 0x5555555a7b40:  0x00000000  0x00000000  0x00000000  0x00000000
 0x5555555a7b50:  0xff72ffff  0xffff6502  0xffffffff  0xffffffff
 ```
+
 ---
 这段输出蕴藏了很多信息，结合示意图来仔细梳理。
 
@@ -324,14 +358,16 @@ Breakpoint 1, hashmap2::explain (name=..., map=...) at src/hashmap2.rs:32
 
 - key ‘a’ 的 hash 和 bucket_mask 0x3 运算后得到第 0 个位置插入。
 - 同时，这个 hash 的头 7 位取出来，在 ctrl 表中对应的位置，也就是第 0 个字节，把这个值写入。
-
-要理解这个步骤，关键就是要搞清楚这个 ctrl 表是什么。
 ~~~
+
+> 要理解这个步骤，关键就是要搞清楚这个 ctrl 表是什么。
 
 ## ctrl 表
 
-~~~admonish info title="ctrl 表的主要目的与设计" collapsible=true
-ctrl 表的主要目的是快速查找。它的设计非常优雅，值得我们学习。
+### 主要目的与设计
+
+~~~admonish question title="ctrl表的主要目的是什么？它如何设计实现这个目的？" collapsible=true
+> ctrl 表的主要目的是快速查找。它的设计非常优雅，值得我们学习。
 
 一张 ctrl 表里:
 - 有若干个 128bit 或者说 16 个字节的分组（group）
@@ -339,11 +375,18 @@ ctrl 表的主要目的是快速查找。它的设计非常优雅，值得我们
 - 如果一个 bucket 对应的 ctrl byte 首位不为 1，就表示这个 ctrl byte 被使用；
 - 如果所有位都是 1，或者说这个字节是 0xff，那么它是空闲的。
 
-> 一组 control byte 的整个 128 bit 的数据，可以通过一条指令被加载进来，然后和某个值进行 mask，找到它所在的位置。这就是HashMap的 SIMD 查表。
+> SIMD查表：
 
-> 我们知道，现代 CPU 都支持单指令多数据集的操作，而 Rust 充分利用了 CPU 这种能力，一条指令可以让多个相关的数据载入到缓存中处理，大大加快查表的速度。所以，Rust 的哈希表查询的效率非常高。
+一组 control byte 的整个 128 bit 的数据，可以通过一条指令被加载进来，然后和某个值进行 mask，找到它所在的位置。这就是HashMap的 SIMD 查表。
 
-具体怎么操作，我们来看 HashMap 是如何通过 ctrl 表来进行数据查询的。
+> 查询效率高：
+
+我们知道，现代 CPU 都支持单指令多数据集的操作，而 Rust 充分利用了 CPU 这种能力，一条指令可以让多个相关的数据载入到缓存中处理，大大加快查表的速度。所以，Rust 的哈希表查询的效率非常高。
+~~~
+
+### 通过ctrl表查询
+
+~~~admonish info title="具体怎么操作，我们来看 HashMap 是如何通过 ctrl 表来进行数据查询的。" collapsible=true
 
 > 假设这张表里已经添加了一些数据，我们现在要查找 key 为 ‘c’ 的数据：
 
@@ -354,18 +397,20 @@ ctrl 表的主要目的是快速查找。它的设计非常优雅，值得我们
 3. 用 SIMD 指令加载从 128 对应地址开始的 16 个字节；
 4. 对 hash 取头 7 个 bit，然后和刚刚取出的 16 个字节一起做与，找到对应的匹配，如果找到了，它（们）很大概率是要找的值；
 5. 如果不是，那么以二次探查（以 16 的倍数不断累积）的方式往后查找，直到找到为止。
-
+~~~
 
 > 所以，当 HashMap 插入和删除数据，以及因此导致重新分配的时候，主要工作就是在维护这张 ctrl 表和数据的对应。
 
+~~~admonish info title="为何HashMap的结构中，堆内存指针直接指向ctrl表？" collapsible=true
 > 因为 ctrl 表是所有操作最先触及的内存，所以，在 HashMap 的结构中，堆内存的指针直接指向 ctrl 表，而不是指向堆内存的起始位置，这样可以减少一次内存的访问。
-
 ~~~
 
-## 哈希表重新分配与增长
+### 通过ctrl表新增：重新分配与增长
 
 ~~~admonish info title="插入三个元素后没有剩余空间的哈希表，在加入 ‘d’: 4 时，hash map是如何增长的" collapsible=true
-在插入第一条数据后，哈希表只有 4 个 bucket，所以只有头 4 个字节的 ctrl 表有用。随着哈希表的增长，bucket 不够，就会导致重新分配。由于 bucket_mask 永远比 bucket 数量少 1，所以插入三个元素后就会重新分配。
+在插入第一条数据后，哈希表只有 4 个 bucket，所以只有头 4 个字节的 ctrl 表有用。
+
+随着哈希表的增长，bucket 不够，就会导致重新分配。由于 bucket_mask 永远比 bucket 数量少 1，所以插入三个元素后就会重新分配。
 
 根据 rust-gdb 中得到的信息，我们看插入三个元素后没有剩余空间的哈希表，在加入 ‘d’: 4 时，是如何增长的: 
 
@@ -381,7 +426,7 @@ ctrl 表的主要目的是快速查找。它的设计非常优雅，值得我们
 
 ~~~
 
-## 删除一个值
+### 通过ctrl表删除一个值
 
 ~~~admonish info title="哈希表删除时内存如何释放？" collapsible=true
 明白了哈希表是如何增长的，我们再来看删除的时候会发生什么。
@@ -401,15 +446,22 @@ ctrl 表的主要目的是快速查找。它的设计非常优雅，值得我们
 
 ## 让自定义的数据结构做 Hash key
 
-~~~admonish info title="自定义数据结构需要实现Hash、PartialEq、Eq这三个trait" collapsible=true
-有时候，我们需要让自定义的数据结构成为 HashMap 的 key。此时，要使用到三个 trait：[Hash](https://doc.rust-lang.org/std/hash/trait.Hash.html)、[PartialEq](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html)、[Eq](https://doc.rust-lang.org/std/cmp/trait.Eq.html)，不过这三个 trait 都可以通过派生宏自动生成。其中：
+有时候，我们需要让自定义的数据结构成为 HashMap 的 key。此时，要使用到三个 trait：
+
+1. [Hash](https://doc.rust-lang.org/std/hash/trait.Hash.html)
+2. [PartialEq](https://doc.rust-lang.org/std/cmp/trait.PartialEq.html)
+3. [Eq](https://doc.rust-lang.org/std/cmp/trait.Eq.html)
+
+> 不过这三个 trait 都可以通过派生宏自动生成。
+
+~~~admonish question title="自定义数据结构需要实现Hash、PartialEq、Eq这三个trait, 它们分别有什么用？" collapsible=true
 1. 实现了 Hash ，可以让数据结构计算哈希；
-2. 实现了 PartialEq/Eq，可以让数据结构进行相等和不相等的比较。
-3. Eq 实现了比较的自反性（a == a）、对称性（a == b 则 b == a）以及传递性（a == b，b == c，则 a == c）
-4. PartialEq 没有实现自反性。
+2. 实现了 PartialEq/Eq，可以让数据结构进行相等和不相等的比较：
+- Eq 实现了比较的自反性（a == a）、对称性（a == b 则 b == a）以及传递性（a == b，b == c，则 a == c）
+- PartialEq 没有实现自反性。
+~~~
 
-我们可以写个例子，看看自定义数据结构如何支持 HashMap：
-
+~~~admonish info title="写个例子，看看自定义数据结构如何支持 HashMap：" collapsible=true
 ```rust, editable
 
 use std::{
@@ -446,7 +498,9 @@ fn main() {
 ## HashSet / BTreeMap / BTreeSet
 
 ~~~admonish info title="HashSet只用于确认存在，存放无序集合" collapsible=true
-有时我们只需要简单确认元素是否在集合中，如果用 HashMap 就有些浪费空间了。这时可以用 HashSet，它就是简化的 HashMap，可以用来存放无序的集合，定义直接是 HashMap<K, ()>：
+有时我们只需要简单确认元素是否在集合中，如果用 HashMap 就有些浪费空间了。
+
+这时可以用 HashSet，它就是简化的 HashMap，可以用来存放无序的集合，定义直接是 HashMap<K, ()>：
 
 ```rust, editable
 
@@ -463,9 +517,12 @@ pub struct HashSet<T, S = DefaultHashBuilder, A: Allocator + Clone = Global> {
 > 使用 HashSet 查看一个元素是否属于集合的效率非常高。
 ~~~
 
-~~~admonish info title="BTreeMap和BTreeSet都是用于查找，存放有序集合" collapsible=true
-BTreeMap 是内部使用 [B-tree](https://en.wikipedia.org/wiki/B-tree) 来组织哈希表的数据结构。另外 BTreeSet 和 HashSet 类似，是 BTreeMap 的简化版，可以用来存放有序集合。
-我们这里重点看下 BTreeMap，它的数据结构如下：
+BTreeMap 是内部使用 [B-tree](https://en.wikipedia.org/wiki/B-tree) 来组织哈希表的数据结构。
+
+另外 BTreeSet 和 HashSet 类似，是 BTreeMap 的简化版，可以用来存放有序集合。
+
+~~~admonish info title="重点看下 BTreeMap" collapsible=true
+它的数据结构如下：
 
 ```rust, editable
 
@@ -495,8 +552,10 @@ struct InternalNode<K, V> {
     edges: [MaybeUninit<BoxedNode<K, V>>; 2 * B],
 }
 ```
+~~~
 
-> 和 HashMap 不同的是，BTreeMap 是有序的。我们看个例子（代码）:
+~~~admonish question title="和 HashMap 不同的是，BTreeMap 是有序的。" collapsible=true
+> 我们看个例子（代码）:
 
 ```rust, editable
 
@@ -539,13 +598,22 @@ fn explain<K, V>(name: &str, map: BTreeMap<K, V>) -> BTreeMap<K, V> {
 
 ## 为什么 Rust 的 HashMap 要默认采用加密安全的哈希算法？
 
-~~~admonish info title="为什么 Rust 的 HashMap 要缺省采用加密安全的哈希算法？" collapsible=true
+~~~admonish info title="为了防备DoS攻击" collapsible=true
 我们知道哈希表在软件系统中的重要地位，但哈希表在最坏情况下，如果绝大多数 key 的 hash 都碰撞在一起，性能会到 O(n)，这会极大拖累系统的效率。
 
-比如 1M 大小的 session 表，正常情况下查表速度是 O(1)，但极端情况下，需要比较 1M 个数据后才能找到，这样的系统就容易被 DoS 攻击。所以如果不是加密安全的哈希函数，只要黑客知道哈希算法，就可以构造出大量的 key 产生足够多的哈希碰撞，造成目标系统 DoS。
+比如 1M 大小的 session 表，正常情况下查表速度是 O(1)，但极端情况下，需要比较 1M 个数据后才能找到，这样的系统就容易被 DoS 攻击。
+所以如果不是加密安全的哈希函数，只要黑客知道哈希算法，就可以构造出大量的 key 产生足够多的哈希碰撞，造成目标系统 DoS。
+~~~
 
-SipHash 就是为了回应 DoS 攻击而创建的哈希算法，虽然和 sha2 这样的加密哈希不同（不要将 SipHash 用于加密！），但它可以提供类似等级的安全性。把 SipHash 作为 HashMap 的缺省的哈希算法，Rust 可以避免开发者在不知情的情况下被 DoS，就像曾经在 Web 世界发生的那样。
-当然，这一切的代价是性能损耗，虽然 SipHash 非常快，但它比 hashbrown 缺省使用的 Ahash 慢了不少。如果你确定使用的 HashMap 不需要 DoS 防护（比如一个完全内部使用的 HashMap），那么可以用 Ahash 来替换。你只需要使用 Ahash 提供的 RandomState 即可：
+~~~admonish info title="SipHash 就是为了回应 DoS 攻击而创建的哈希算法" collapsible=true
+虽然和 sha2 这样的加密哈希不同（不要将 SipHash 用于加密！），但它可以提供类似等级的安全性。
+把 SipHash 作为 HashMap 的缺省的哈希算法，Rust 可以避免开发者在不知情的情况下被 DoS，就像曾经在 Web 世界发生的那样。
+
+> 当然，这一切的代价是性能损耗，虽然 SipHash 非常快，但它比 hashbrown 缺省使用的 Ahash 慢了不少。
+
+如果你确定使用的 HashMap 不需要 DoS 防护（比如一个完全内部使用的 HashMap），那么可以用 Ahash 来替换。
+
+> 你只需要使用 Ahash 提供的 RandomState 即可：
 
 ```rust, editable
 
@@ -554,5 +622,4 @@ use std::collections::HashMap;
 let mut map: HashMap<char, i32, RandomState> = HashMap::default();
 map.insert('a', 1);
 ```
-
 ~~~
