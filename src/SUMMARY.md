@@ -27,7 +27,7 @@
         - [智能指针](3_1_smart_pointer.md)
         - [集合容器](3_2_containers.md)
             - [切片](3_2_1_slice.md)
-            - [哈希表](3_2_2_hash.md)
+            - [哈希表](3_2_2_hashmap.md)
         - [错误处理](3_3_error_handling.md)
         - [闭包](3_4_closure.md)
     - [IV. 宏编程](4_macros.md)
