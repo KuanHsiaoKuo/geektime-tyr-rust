@@ -1,24 +1,32 @@
 # 切片
 
 <!--ts-->
+
 * [切片](#切片)
-   * [array vs vector](#array-vs-vector)
-   * [Vec&lt;T&gt; 和 &amp;[T]](#vect-和-t)
-   * [解引用](#解引用)
-   * [切片和迭代器 Iterator](#切片和迭代器-iterator)
-   * [特殊的切片：&amp;str](#特殊的切片str)
-   * [Box&lt;[T]&gt;](#boxt)
-   * [常用切片对比图](#常用切片对比图)
+    * [array vs vector](#array-vs-vector)
+    * [Vec&lt;T&gt; 和 &amp;[T]](#vect-和-t)
+    * [解引用](#解引用)
+    * [切片和迭代器 Iterator](#切片和迭代器-iterator)
+    * [特殊的切片：&amp;str](#特殊的切片str)
+    * [Box&lt;[T]&gt;](#boxt)
+    * [常用切片对比图](#常用切片对比图)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Oct 19 08:52:58 UTC 2022 -->
 
 <!--te-->
 
-~~~admonish tip title="切片到底是什么" collapsible=true
+## 切片到底是什么
 
+### 切片的三个特点
+
+~~~admonish tip title="1. 同一类型、长度不确定的、在内存中连续存放的数据结构" collapsible=true
 在 Rust 里，切片是描述一组属于同一类型、长度不确定的、在内存中连续存放的数据结 构，用 [T] 来表述。因为长度不确定，所以切片是个 DST（Dynamically Sized Type）。
+~~~
 
+### 切片的三种访问方式
+
+~~~admonish tip title="2. 切片不能直接访问，需要通过引用访问。有三种访问方式：" collapsible=true
 切片一般只出现在数据结构的定义中，不能直接访问，在使用中主要用以下形式：
 
 - &[T]：表示一个只读的切片引用。
@@ -29,10 +37,12 @@
 
 ~~~
 
+### 切片与数据的关系
+
 > 怎么理解切片呢？我打个比方，切片之于具体的数据结构，就像数据库中的视图之于表。
 > 你可以把它看成一种工具，让我们可以统一访问行为相同、结构类似但有些许差异的类 型。
 
-~~~admonish tip title="切片与数据的关系" collapsible=true
+~~~admonish tip title="3. 举例切片与数据的关系" collapsible=true
 
 ```rust, editable
 {{#include ../geektime_rust_codes/16_data_structure/src/slice1.rs}}
@@ -40,12 +50,24 @@
 1. 对于 array 和 vector，虽然是不同的数据结构，一个放在栈上，一个放在堆上，但它们的 切片是类似的；
 2. 而且对于相同内容数据的相同切片，比如 &arr[1…3] 和 &vec[1…3]，这 两者是等价的。
 3. 除此之外，切片和对应的数据结构也可以直接比较，这是因为它们之间实 现了 PartialEq trait
+~~~
+
+~~~admonish tip title="3.1 切片与数据的关系图" collapsible=true
 ![切片与具体数据的关系](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/16%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AVecT%E3%80%81%5BT%5D%E3%80%81Box%5BT%5D%20%EF%BC%8C%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E4%B9%88%EF%BC%9F-4785008.jpg)
+~~~
+
+### 常用切片对比图
+
+下图描述了切片和数组 [T;n]、列表 Vec<T>、切片引用 &[T] /&mut [T]，以及在堆上分配的切片 Box<[T]> 之间的关系。
+> 建议花些时间理解这张图，也可以用相同的方式去总结学到的其他有关联的数据结构。
+
+~~~admonish info title="&str、[T;n]、Vec<T>、&[T]、&mut[T]的区别与联系图 " collapsible=true
+![](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/16%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AVecT%E3%80%81%5BT%5D%E3%80%81Box%5BT%5D%20%EF%BC%8C%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E4%B9%88%EF%BC%9F-4867546.jpg)
 ~~~
 
 ## array vs vector
 
-~~~admonish info title="array和vector的区别与联系" collapsible=true
+~~~admonish info title="接前面的例子，再次说明array和vector的区别与联系" collapsible=true
 对于 array 和 vector，虽然是不同的数据结构：
 - 一个放在栈上
 - 一个放在堆上
@@ -60,15 +82,16 @@
 ## Vec\<T\> 和 \&\[T\]
 
 ~~~admonish tip title="&[T]与&Vec[T]关系" collapsible=true
-![&[T]和&Vec[T]](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/16%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AVecT%E3%80%81%5BT%5D%E3%80%81Box%5BT%5D%20%EF%BC%8C%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E4%B9%88%EF%BC%9F-4785147.jpg)
+![二者关系图](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/16%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AVecT%E3%80%81%5BT%5D%E3%80%81Box%5BT%5D%20%EF%BC%8C%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E4%B9%88%EF%BC%9F-4785147.jpg)
 ~~~
 
-## 解引用
+## 解引用：转为切片类型
 
 > 在使用的时候，支持切片的具体数据类型，你可以根据需要，解引用转换成切片类型。
-> 比如 Vec<T> 和 [T; n] 会转化成为 &[T]，这是因为 Vec<T> 实现了 Deref trait，而 array 内建了到 &[T] 的解引用。
 
-~~~admonish info title="我们可以写一段代码验证这一行为（代码）" collapsible=true
+- 比如 Vec<T> 和 [T; n] 会转化成为 &[T]，这是因为 Vec<T> 实现了 Deref trait，而 array 内建了到 &[T] 的解引用。
+
+~~~admonish info title="Deref、&、AsRef：我们可以写一段代码验证这一行为（代码）" collapsible=true
 ```rust, editable
 
 use std::fmt;
@@ -109,19 +132,35 @@ where
     println!("{:?}", s.as_ref());
 }
 ```
----
-> 这也就意味着，通过解引用，这几个和切片有关的数据结构都会获得切片的所有能力，包括：
-> binary_search、chunks、concat、contains、start_with、end_with、group_by、iter、join、sort、split、swap 等一系列丰富的功能，
 ~~~
+
+> 这也就意味着，通过解引用，这几个和切片有关的数据结构都会获得切片的所有能力，包括下列丰富的功能：
+
+- binary_search
+- chunks
+- concat
+- contains
+- start_with
+- end_with
+- group_by
+- iter
+- join
+- sort
+- split
+- swap
 
 ## 切片和迭代器 Iterator
 
 ~~~admonish info title="迭代器可以说是切片的孪生兄弟" collapsible=true
-迭代器可以说是切片的孪生兄弟。切片是集合数据的视图，而迭代器定义了对集合数据的各种各样的访问操作。
+迭代器可以说是切片的孪生兄弟:
+- 切片是集合数据的视图
+- 而迭代器定义了对集合数据的各种各样的访问操作。
+~~~
 
-Iterator trait 有大量的方法，但绝大多数情况下，只需要定义它的关联类型 Item 和 next() 方法。
+~~~admonish info title="Iterator trait 有大量的方法，但绝大多数情况下，只需要定义它的关联类型 Item 和 next() 方法。" collapsible=true
 - Item 定义了每次我们从迭代器中取出的数据类型；
 - next() 是从迭代器里取下一个值的方法。当一个迭代器的 next() 方法返回 None 时，表明迭代器中没有数据了。
+
 ```rust
 
 #[must_use = "iterators are lazy and do nothing unless consumed"]
@@ -136,8 +175,10 @@ pub trait Iterator {
 ```
 ~~~
 
-~~~admonish info title="对 Vec<T> 使用 iter() 方法，并进行各种 map / filter / take 操作" collapsible=true
-一个例子：对 Vec<T> 使用 iter() 方法，并进行各种 map / filter / take 操作。在函数式编程语言中，这样的写法很常见，代码的可读性很强。Rust 也支持这种写法（代码）：
+~~~admonish info title="一个例子：对切片类型Vec<T> 使用 iter() 方法，并进行各种 map / filter / take 操作" collapsible=true
+
+> 在函数式编程语言中，这样的写法很常见，代码的可读性很强。Rust 也支持这种写法（代码）：
+
 ```rust
 
 fn main() {
@@ -154,10 +195,19 @@ fn main() {
 ```
 ~~~
 
-~~~admonish info title="Rust的迭代器是个懒接口，这是如何实现的？" collapsible=true
-需要注意的是 Rust 下的迭代器是个懒接口（lazy interface），也就是说这段代码直到运行到 collect 时才真正开始执行，之前的部分不过是在不断地生成新的结构，来累积处理逻辑而已。你可能好奇，这是怎么做到的呢？
+~~~admonish question title="Rust的迭代器是个懒接口，这是如何实现的？" collapsible=true
+需要注意的是 Rust 下的迭代器是个懒接口（lazy interface）:
+1. 也就是说这段代码直到运行到 collect 时才真正开始执行
+2. 之前的部分不过是在不断地生成新的结构，来累积处理逻辑而已。
 
-原来，Iterator 大部分方法都返回一个实现了 Iterator 的数据结构，所以可以这样一路链式下去，在 Rust 标准库中，这些数据结构被称为 [Iterator Adapter](https://doc.rust-lang.org/src/core/iter/adapters/mod.rs.html)。比如上面的 map 方法，它返回 Map 结构，而 Map 结构实现了 [Iterator（源码）](https://doc.rust-lang.org/src/core/iter/adapters/map.rs.html#93-133)。
+你可能好奇，这是怎么做到的呢？
+
+原来，Iterator 大部分方法都返回一个实现了 Iterator 的数据结构，所以可以这样一路链式下去.
+
+在 Rust 标准库中，这些数据结构被称为 [Iterator Adapter](https://doc.rust-lang.org/src/core/iter/adapters/mod.rs.html)。
+
+比如上面的 map 方法，它返回 Map 结构，而 Map 结构实现了 [Iterator（源码）](https://doc.rust-lang.org/src/core/iter/adapters/map.rs.html#93-133)。
+
 整个过程是这样的（链接均为源码资料）：
 
 
@@ -169,13 +219,13 @@ fn main() {
 所以，只有在 collect() 时，才触发代码一层层调用下去，并且调用会根据需要随时结束。这段代码中我们使用了 take(1)，整个调用链循环一次，就能满足 take(1) 以及所有中间过程的要求，所以它只会循环一次。
 ~~~
 
-~~~admonish info title="Rust的函数式编程写法性能如何？" collapsible=true
+~~~admonish question title="Rust的函数式编程写法性能如何？" collapsible=true
 你可能会有疑惑：这种函数式编程的写法，代码是漂亮了，然而这么多无谓的函数调用，性能肯定很差吧？毕竟，函数式编程语言的一大恶名就是性能差。
 
 这个你完全不用担心， Rust 大量使用了 inline 等优化技巧，这样非常清晰友好的表达方式，性能和 C 语言的 for 循环差别不大。
 ~~~
 
-~~~admonish info title="Rust的iterator除了标准库，还有itertools提供更多功能" collapsible=true
+~~~admonish info title="与Python类似，Rust的iterator除了标准库，还有itertools提供更多功能" collapsible=true
 如果标准库中的功能还不能满足你的需求，你可以看看 itertools，它是和 Python 下 itertools 同名且功能类似的工具，提供了大量额外的 adapter。可以看一个简单的例子（代码）：
 ```rust, editable
 
@@ -192,7 +242,9 @@ fn main() {
 }
 ```
 
-在实际开发中，我们可能从一组 Future 中汇聚出一组结果，里面有成功执行的结果，也有失败的错误信息。如果想对成功的结果进一步做 filter/map，那么标准库就无法帮忙了，就需要用 itertools 里的 filter_map_ok()。
+在实际开发中，我们可能从一组 Future 中汇聚出一组结果，里面有成功执行的结果，也有失败的错误信息。
+
+如果想对成功的结果进一步做 filter/map，那么标准库就无法帮忙了，就需要用 itertools 里的 filter_map_ok()。
 ~~~
 
 ## 特殊的切片：&str
@@ -200,12 +252,15 @@ fn main() {
 ~~~admonish info title="String、&String和&str的区别与联系" collapsible=true
 我们来看一种特殊的切片：&str。之前讲过，String 是一个特殊的 Vec<u8>，所以在 String 上做切片，也是一个特殊的结构 &str。
 
-对于 String、&String、&str，很多人也经常分不清它们的区别，我们在之前的一篇加餐中简单聊了这个问题，在上一讲智能指针中，也对比过 String 和 &str。对于 &String 和 &str，如果你理解了上文中 &Vec<T> 和 &[T] 的区别，那么它们也是一样的：
+对于 String、&String、&str，很多人也经常分不清它们的区别.
+
+在&str。对于 &String 和 &str，如果你理解了上文中 &Vec<T> 和 &[T] 的区别，那么它们也是一样的：
+
 ![&String和&str](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/16%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AVecT%E3%80%81%5BT%5D%E3%80%81Box%5BT%5D%20%EF%BC%8C%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E4%B9%88%EF%BC%9F-4867212.jpg)
 ~~~
 
 ~~~admonish info title="String在解引用时会转换成&str" collapsible=true
-String 在解引用时，会转换成 &str。可以用下面的代码验证（代码）：
+可以用下面的代码验证（代码）：
 ```rust, editable
 
 use std::fmt;
@@ -246,8 +301,8 @@ where
 ```
 ~~~
 
-~~~admonish info title="字符的列表和字符串有什么关系和区别" collapsible=true
-那么字符的列表和字符串有什么关系和区别？我们直接写一段代码来看看：
+~~~admonish question title="字符的列表array和字符串String有什么关系和区别" collapsible=true
+我们直接写一段代码来看看：
 
 ```rust, editable
 
@@ -271,10 +326,11 @@ fn main() {
     assert_eq!(String::from_iter(s2), s3);
 }
 ```
----
+
 > 可以看到，字符列表可以通过迭代器转换成 String，String 也可以通过 chars() 函数转换成字符列表，如果不转换，二者不能比较。
----
-下图把数组、列表、字符串以及它们的切片放在一起比较，可以更好地理解它们的区别：
+~~~
+
+~~~admonish info title="下图把数组、列表、字符串以及它们的切片放在一起比较，可以更好地理解它们的区别：" collapsible=true
 ![数组、列表、字符串和各自的切片](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/16%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AVecT%E3%80%81%5BT%5D%E3%80%81Box%5BT%5D%20%EF%BC%8C%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E4%B9%88%EF%BC%9F-4867332.jpg)
 ~~~
 
@@ -302,9 +358,12 @@ Box<[T]> 和切片的引用 &[T] 也很类似：
 ![](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/16%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AVecT%E3%80%81%5BT%5D%E3%80%81Box%5BT%5D%20%EF%BC%8C%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E4%B9%88%EF%BC%9F-4867436.jpg)
 ~~~
 
-~~~admonish info title="那么如何产生 Box<[T]> 呢？" collapsible=true
-那么如何产生 Box<[T]> 呢？
-目前可用的接口就只有一个：从已有的 Vec<T> 中转换。我们看代码：
+~~~admonish question title="那么如何产生 Box<[T]> 呢？" collapsible=true
+
+> 目前可用的接口就只有一个：从已有的 Vec<T> 中转换。
+
+我们看代码：
+
 ```rust, editable
 
 use std::ops::Deref;
@@ -338,11 +397,11 @@ fn main() {
 }
 ```
 ---
-运行代码可以看到:
+> 运行代码可以看到:
 1. Vec<T> 可以通过 into_boxed_slice() 转换成 Box<[T]>
 2. Box<[T]> 也可以通过 into_vec() 转换回 Vec<T>。
 
-这两个转换都是很轻量的转换，只是变换一下结构，不涉及数据的拷贝。
+> 这两个转换都是很轻量的转换，只是变换一下结构，不涉及数据的拷贝。
 
 区别是:
 1. 当 Vec<T> 转换成 Box<[T]> 时，没有使用到的容量就会被丢弃，所以整体占用的内存可能会降低。
@@ -352,11 +411,4 @@ fn main() {
 > tokio 在提供 broadcast channel 时，就使用了 Box<[T]> 这个特性，你感兴趣的话，可以自己看看[源码](https://github.com/tokio-rs/tokio/blob/master/tokio/src/sync/broadcast.rs#L447)。
 ~~~
 
-## 常用切片对比图
 
-~~~admonish info title="&str、[T;n]、Vec<T>、&[T]、&mut[T]的区别与联系图 " collapsible=false
-下图描述了切片和数组 [T;n]、列表 Vec<T>、切片引用 &[T] /&mut [T]，以及在堆上分配的切片 Box<[T]> 之间的关系。
-> 建议花些时间理解这张图，也可以用相同的方式去总结学到的其他有关联的数据结构。
----
-![](https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/16%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9AVecT%E3%80%81%5BT%5D%E3%80%81Box%5BT%5D%20%EF%BC%8C%E4%BD%A0%E7%9C%9F%E7%9A%84%E4%BA%86%E8%A7%A3%E9%9B%86%E5%90%88%E5%AE%B9%E5%99%A8%E4%B9%88%EF%BC%9F-4867546.jpg)
-~~~
