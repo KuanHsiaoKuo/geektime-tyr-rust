@@ -1,6 +1,14 @@
 # 泛型函数
 
 <!--ts-->
+* [泛型函数](#泛型函数)
+   * [单态化](#单态化)
+      * [优劣](#优劣)
+   * [返回值携带泛型参数](#返回值携带泛型参数)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Oct 20 09:34:26 UTC 2022 -->
+
 <!--te-->
 
 ## 单态化
