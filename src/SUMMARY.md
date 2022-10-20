@@ -32,6 +32,8 @@
             - [切片](3_2_1_slice.md)
             - [哈希表](3_2_2_hashmap.md)
         - [错误处理](3_3_error_handling.md)
+            - [错误处理内容和主流方法](3_3_1_error_content.md)
+            - [Rust如何处理错误](3_3_2_rust_error_handling.md)
         - [闭包](3_4_closure.md)
     - [IV. 宏编程](4_macros.md)
         - [宏分类](4_1_macros_classify.md)

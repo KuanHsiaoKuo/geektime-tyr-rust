@@ -23,7 +23,7 @@ line-numbers = true
 
 [output.html.fold]
 enable = true
-level = 2
+level = 3
 
 # 添加表格支持
 # ```extended-markdown-table
