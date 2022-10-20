@@ -1,6 +1,11 @@
 # 自定义智能指针
 
 <!--ts-->
+* [自定义智能指针](#自定义智能指针)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Oct 20 02:05:32 UTC 2022 -->
+
 <!--te-->
 
 ~~~admonish info title='MyString结构示意图' collapsible=true

@@ -15,13 +15,13 @@
       * [为闭包实现trait](#为闭包实现trait)
       * [闭包根据不同trait约束表现不同行为](#闭包根据不同trait约束表现不同行为)
          * [FnOnce](#fnonce)
-         * [怎么理解 FnOnce 的 Args 泛型参数呢？](#怎么理解-fnonce-的-args-泛型参数呢)
+            * [怎么理解 FnOnce 的 Args 泛型参数呢？](#怎么理解-fnonce-的-args-泛型参数呢)
          * [FnMut](#fnmut)
          * [Fn](#fn)
          * [总结一下三种trait闭包使用的情况以及它们之间的关系](#总结一下三种trait闭包使用的情况以及它们之间的关系)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Oct 19 11:46:36 UTC 2022 -->
+<!-- Added by: runner, at: Thu Oct 20 02:05:33 UTC 2022 -->
 
 <!--te-->
 

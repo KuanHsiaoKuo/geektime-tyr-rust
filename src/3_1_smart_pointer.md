@@ -1,28 +1,13 @@
 # 一、智能指针
 
 <!--ts-->
-
 * [一、智能指针](#一智能指针)
-    * [指针还是引用](#指针还是引用)
-    * [智能指针不仅是指针](#智能指针不仅是指针)
-    * [Box: 在堆上分配内存](#box-在堆上分配内存)
-        * [实现内存分配器](#实现内存分配器)
-        * [内存如何释放](#内存如何释放)
-    * [Cow&lt;'a, B&gt;： 写时拷贝](#cowa-b-写时拷贝)
-        * [定义](#定义)
-        * [两个trait：ToOwned、Borrowed](#两个traittoownedborrowed)
-        * [ToOwned](#toowned)
-        * [匹配分发](#匹配分发)
-        * [Cow在需要时才进行内存分配拷贝](#cow在需要时才进行内存分配拷贝)
-    * [MutexGuard： 数据加锁](#mutexguard-数据加锁)
-        * [MutexGuard与String、Box、Cow&lt;'a, B&gt;的对比](#mutexguard与stringboxcowa-b的对比)
-        * [使用Mutex::lock获取](#使用mutexlock获取)
-        * [定义与Deref、Drop trait实现](#定义与derefdrop-trait实现)
-        * [使用Mutex_MutexGuard的例子](#使用mutex_mutexguard的例子)
-    * [自定义智能指针](#自定义智能指针)
+   * [指针还是引用](#指针还是引用)
+   * [智能指针不仅是指针](#智能指针不仅是指针)
+* [自定义智能指针](#自定义智能指针)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Oct 19 11:46:35 UTC 2022 -->
+<!-- Added by: runner, at: Thu Oct 20 02:05:33 UTC 2022 -->
 
 <!--te-->
 
