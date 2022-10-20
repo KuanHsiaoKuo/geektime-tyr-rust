@@ -1,0 +1,564 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>Rust如何处理错误 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item expanded "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item expanded "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item expanded "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item expanded "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item expanded "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item expanded "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_1_box.html"><strong aria-hidden="true">4.3.1.1.</strong> Box</a></li><li class="chapter-item "><a href="3_1_2_cow.html"><strong aria-hidden="true">4.3.1.2.</strong> Cow&lt;'a, B&gt;</a></li><li class="chapter-item "><a href="3_1_3_mutex_guard.html"><strong aria-hidden="true">4.3.1.3.</strong> MutexGuard&lt;'_, T&gt;</a></li></ol></li><li class="chapter-item expanded "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_2_1_slice.html"><strong aria-hidden="true">4.3.2.1.</strong> 切片</a></li><li class="chapter-item "><a href="3_2_2_hashmap.html"><strong aria-hidden="true">4.3.2.2.</strong> 哈希表</a></li></ol></li><li class="chapter-item expanded "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_3_1_error_content.html"><strong aria-hidden="true">4.3.3.1.</strong> 错误处理内容和主流方法</a></li><li class="chapter-item expanded "><a href="3_3_2_rust_error_handling.html" class="active"><strong aria-hidden="true">4.3.3.2.</strong> Rust如何处理错误</a></li></ol></li><li class="chapter-item expanded "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="4_1_macros_classify.html"><strong aria-hidden="true">4.4.1.</strong> 宏分类</a></li><li class="chapter-item expanded "><a href="4_2_declarative_macros.html"><strong aria-hidden="true">4.4.2.</strong> 声明宏</a></li><li class="chapter-item expanded "><a href="4_3_procedural_macros.html"><strong aria-hidden="true">4.4.3.</strong> 过程宏</a></li></ol></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item expanded "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item expanded "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="rust-的错误处理"><a class="header" href="#rust-的错误处理">Rust 的错误处理</a></h1>
+<!--ts-->
+<!--te-->
+<p>由于诞生的年代比较晚，Rust 有机会从已有的语言中学习到各种错误处理的优劣。对于 Rust 来说，目前的几种方式相比而言，最佳的方法是，使用类型系统来构建主要的错误处理流程。</p>
+<h2 id="1-使用类型系统optionresult错误类型处理"><a class="header" href="#1-使用类型系统optionresult错误类型处理">1. 使用类型系统：Option/Result错误类型处理</a></h2>
+<details id="admonition-rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型" class="admonition info">
+<summary class="admonition-title">
+<p>Rust 偷师 Haskell，构建了对标 Maybe 的 Option 类型和 对标 Either 的 Result 类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-rust-偷师-haskell构建了对标-maybe-的-option-类型和-对标-either-的-result-类型"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F-4895260.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
+</div>
+</details>
+<h3 id="option"><a class="header" href="#option">Option</a></h3>
+<details id="admonition-option-是一个-enum其定义如下" class="admonition info">
+<summary class="admonition-title">
+<p>Option 是一个 enum，其定义如下：</p>
+<p><a class="admonition-anchor-link" href="#admonition-option-是一个-enum其定义如下"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub enum Option&lt;T&gt; {
+    None,
+    Some(T),
+}
+</code></pre></pre>
+<blockquote>
+<p>它可以承载有值 / 无值这种最简单的错误类型。</p>
+</blockquote>
+</div>
+</details>
+<h3 id="result"><a class="header" href="#result">Result</a></h3>
+<details id="admonition-result-是一个更加复杂的-enum其定义如下" class="admonition info">
+<summary class="admonition-title">
+<p>Result 是一个更加复杂的 enum，其定义如下：</p>
+<p><a class="admonition-anchor-link" href="#admonition-result-是一个更加复杂的-enum其定义如下"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+#[must_use = &quot;this `Result` may be an `Err` variant, which should be handled&quot;]
+pub enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}
+</code></pre></pre>
+<blockquote>
+<p>当函数出错时，可以返回 Err(E)，否则 Ok(T)。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-result-类型声明时还有个-must_use-的标注" class="admonition info">
+<summary class="admonition-title">
+<p>Result 类型声明时还有个 must_use 的标注</p>
+<p><a class="admonition-anchor-link" href="#admonition-result-类型声明时还有个-must_use-的标注"></a></p>
+</summary>
+<div>
+<p>我们看到，Result 类型声明时还有个 must_use 的标注</p>
+<blockquote>
+<p>编译器会对有 must_use 标注的所有类型做特殊处理：</p>
+</blockquote>
+<p>如果该类型对应的值没有被显式使用，则会告警。这样，保证错误被妥善处理。</p>
+<p>如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/e2100e3f17a9587c4d4bf50523c10653.png" alt="img" /></p>
+<p>这里，如果我们调用 read_file 函数时，直接丢弃返回值，由于 #[must_use] 的标注，Rust 编译器报警，要求我们使用其返回值。</p>
+</div>
+</details>
+<h2 id="2-抛出异常panic-和-catch_unwind"><a class="header" href="#2-抛出异常panic-和-catch_unwind">2. 抛出异常：panic! 和 catch_unwind</a></h2>
+<h3 id="panic抛出异常-不可不想恢复"><a class="header" href="#panic抛出异常-不可不想恢复">panic!抛出异常: 不可/不想恢复</a></h3>
+<ul>
+<li><a href="https://doc.rust-lang.org/book/ch09-03-to-panic-or-not-to-panic.html">To panic! or Not to panic! - The Rust Programming Language</a></li>
+</ul>
+<blockquote>
+<p>使用 Option 和 Result 是 Rust 中处理错误的首选，绝大多数时候我们也应该使用，但 Rust 也提供了特殊的异常处理能力。</p>
+</blockquote>
+<blockquote>
+<p>在 Rust 看来，一旦你需要抛出异常，那抛出的一定是严重的错误。</p>
+</blockquote>
+<p>所以，Rust 跟 Golang 一样，使用了诸如 panic! 这样的字眼警示开发者：想清楚了再使用我。</p>
+<p>一般而言，panic! 是不可恢复或者不想恢复的错误，我们希望在此刻，程序终止运行并得到崩溃信息。</p>
+<details id="admonition-unwarp-或者-expect就是准备panic" class="admonition info">
+<summary class="admonition-title">
+<p>unwarp() 或者 expect()就是准备panic!</p>
+<p><a class="admonition-anchor-link" href="#admonition-unwarp-或者-expect就是准备panic"></a></p>
+</summary>
+<div>
+<p>在使用 Option 和 Result 类型时，开发者也可以对其 unwarp() 或者 expect()，强制把 Option<T> 和 Result&lt;T, E&gt; 转换成 T，如果无法完成这种转换，也会 panic! 出来。</p>
+<p>比如下面的代码，它解析<a href="https://noiseprotocol.org/noise.html#protocol-names-and-modifiers"> noise protocol</a>的协议变量：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+let params: NoiseParams = &quot;Noise_XX_25519_AESGCM_SHA256&quot;.parse().unwrap();
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>如果开发者不小心把协议变量写错了，最佳的方式是立刻 panic! 出来，让错误立刻暴露，以便解决这个问题。</p>
+</blockquote>
+<h3 id="catch_uwind捕获异常崩溃后恢复上下文"><a class="header" href="#catch_uwind捕获异常崩溃后恢复上下文">catch_uwind捕获异常：崩溃后恢复上下文</a></h3>
+<details id="admonition-catch_unwind-有些场景下我们也希望能够像异常处理那样能够栈回溯把环境恢复到捕获异常的上下文" class="admonition info">
+<summary class="admonition-title">
+<p>catch_unwind(): 有些场景下，我们也希望能够像异常处理那样能够栈回溯，把环境恢复到捕获异常的上下文。</p>
+<p><a class="admonition-anchor-link" href="#admonition-catch_unwind-有些场景下我们也希望能够像异常处理那样能够栈回溯把环境恢复到捕获异常的上下文"></a></p>
+</summary>
+<div>
+<p>Rust 标准库下提供了 catch_unwind() ，把调用栈回溯到 catch_unwind 这一刻，作用和其它语言的 try {…} catch {…} 一样。见如下代码：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::panic;
+
+fn main() {
+    let result = panic::catch_unwind(|| {
+        println!(&quot;hello!&quot;);
+    });
+    assert!(result.is_ok());
+    let result = panic::catch_unwind(|| {
+        panic!(&quot;oh no!&quot;);
+    });
+    assert!(result.is_err());
+    println!(&quot;panic captured: {:#?}&quot;, result);
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>当然，和异常处理一样，并不意味着你可以滥用这一特性.
+我想这也是 Rust 把抛出异常称作 panic! ，而捕获异常称作 catch_unwind 的原因:让初学者望而生畏，不敢轻易使用。这也是一个不错的用户体验。</p>
+</blockquote>
+<details id="admonition-catch_unwind-在哪些场景下非常有用" class="admonition question">
+<summary class="admonition-title">
+<p>catch_unwind 在哪些场景下非常有用:</p>
+<p><a class="admonition-anchor-link" href="#admonition-catch_unwind-在哪些场景下非常有用"></a></p>
+</summary>
+<div>
+<p>catch_unwind 在某些场景下非常有用:</p>
+<ol>
+<li>
+<p>比如你在使用 Rust 为 erlang VM 撰写 NIF，你不希望 Rust 代码中的任何 panic! 导致 erlang VM 崩溃。
+因为崩溃是一个非常不好的体验，它违背了 erlang 的设计原则：process 可以 let it crash，但错误代码不该导致 VM 崩溃。</p>
+</li>
+<li>
+<p>此刻，你就可以把 Rust 代码整个封装在 catch_unwind() 函数所需要传入的闭包中。
+这样，一旦任何代码中，包括第三方 crates 的代码，含有能够导致 panic! 的代码，都会被捕获，并被转换为一个 Result。</p>
+</li>
+</ol>
+</div>
+</details>
+<h2 id="3-自定义异常类型"><a class="header" href="#3-自定义异常类型">3. 自定义异常类型</a></h2>
+<h3 id="31-使用error-trait"><a class="header" href="#31-使用error-trait">3.1 使用Error trait</a></h3>
+<blockquote>
+<p>我们可以定义我们自己的数据类型，然后为其实现 Error trait。</p>
+</blockquote>
+<details id="admonition-使用error-trait自定义错误类型" class="admonition info">
+<summary class="admonition-title">
+<p>使用Error trait自定义错误类型</p>
+<p><a class="admonition-anchor-link" href="#admonition-使用error-trait自定义错误类型"></a></p>
+</summary>
+<div>
+<p>上文中，我们讲到 Result&lt;T, E&gt; 里 E 是一个代表错误的数据类型。为了规范这个代表错误的数据类型的行为，Rust 定义了 Error trait：</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Error: Debug + Display {
+    fn source(&amp;self) -&gt; Option&lt;&amp;(dyn Error + 'static)&gt; { ... }
+    fn backtrace(&amp;self) -&gt; Option&lt;&amp;Backtrace&gt; { ... }
+    fn description(&amp;self) -&gt; &amp;str { ... }
+    fn cause(&amp;self) -&gt; Option&lt;&amp;dyn Error&gt; { ... }
+}
+</code></pre></pre>
+</div>
+</details>
+<h3 id="32-使用thiserror简化"><a class="header" href="#32-使用thiserror简化">3.2 使用thiserror简化</a></h3>
+<blockquote>
+<p>不过，这样的工作已经有人替我们简化了：我们可以使用 thiserror和 anyhow来简化这个步骤。</p>
+</blockquote>
+<details id="admonition-thiserror-提供了一个派生宏derive-macro来简化错误类型的定义" class="admonition info">
+<summary class="admonition-title">
+<p>thiserror 提供了一个派生宏（derive macro）来简化错误类型的定义</p>
+<p><a class="admonition-anchor-link" href="#admonition-thiserror-提供了一个派生宏derive-macro来简化错误类型的定义"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use thiserror::Error;
+#[derive(Error, Debug)]
+#[non_exhaustive]
+pub enum DataStoreError {
+    #[error(&quot;data store disconnected&quot;)]
+    Disconnect(#[from] io::Error),
+    #[error(&quot;the data for key `{0}` is not available&quot;)]
+    Redaction(String),
+    #[error(&quot;invalid header (expected {expected:?}, found {found:?})&quot;)]
+    InvalidHeader {
+        expected: String,
+        found: String,
+    },
+    #[error(&quot;unknown data store error&quot;)]
+    Unknown,
+}
+</code></pre></pre>
+</div>
+</details>
+<p>如果你在撰写一个 Rust 库，那么 thiserror 可以很好地协助你对这个库里所有可能发生的错误进行建模。</p>
+<h3 id="33-使用anyhow扩展操作符"><a class="header" href="#33-使用anyhow扩展操作符">3.3 使用anyhow扩展？操作符</a></h3>
+<ol>
+<li>anyhow 实现了 anyhow::Error 和任意符合 Error trait 的错误类型之间的转换，让你可以使用 ? 操作符，不必再手工转换错误类型。</li>
+<li>anyhow 还可以让你很容易地抛出一些临时的错误，而不必费力定义错误类型，当然，我们不提倡滥用这个能力。</li>
+</ol>
+<h3 id="34-让错误无所遁形"><a class="header" href="#34-让错误无所遁形">3.4 让错误无所遁形</a></h3>
+<blockquote>
+<p>作为一名严肃的开发者，我非常建议你在开发前:</p>
+</blockquote>
+<ul>
+<li>先用类似 thiserror 的库定义好你项目中主要的错误类型</li>
+<li>并随着项目的深入，不断增加新的错误类型，让系统中所有的潜在错误都无所遁形。</li>
+</ul>
+<h2 id="4-捕获异常"><a class="header" href="#4-捕获异常">4. 捕获异常</a></h2>
+<h3 id="41-操作符"><a class="header" href="#41-操作符">4.1 ?操作符</a></h3>
+<details id="admonition--操作符的由来" class="admonition info">
+<summary class="admonition-title">
+<p>? 操作符的由来</p>
+<p><a class="admonition-anchor-link" href="#admonition--操作符的由来"></a></p>
+</summary>
+<div>
+<p>这虽然可以极大避免遗忘错误的显示处理，但如果我们并不关心错误，只需要传递错误，还是会写出像 C 或者 Golang 一样比较冗余的代码。怎么办？</p>
+<p>好在 Rust 除了有强大的类型系统外，还具备元编程的能力：</p>
+<ul>
+<li>早期 Rust 提供了 try! 宏来简化错误的显式处理</li>
+<li>后来为了进一步提升用户体验，try! 被进化成 ? 操作符。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-如果你只想传播错误不想就地处理可以用--操作符" class="admonition info">
+<summary class="admonition-title">
+<p>如果你只想传播错误，不想就地处理，可以用 ? 操作符</p>
+<p><a class="admonition-anchor-link" href="#admonition-如果你只想传播错误不想就地处理可以用--操作符"></a></p>
+</summary>
+<div>
+<p>所以在 Rust 代码中，如果你只想传播错误，不想就地处理，可以用 ? 操作符，比如（代码）:</p>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::fs::File;
+use std::io::Read;
+
+fn read_file(name: &amp;str) -&gt; Result&lt;String, std::io::Error&gt; {
+  let mut f = File::open(name)?;
+  let mut contents = String::new();
+  f.read_to_string(&amp;mut contents)?;
+  Ok(contents)
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>通过 ? 操作符，Rust 让错误传播的代价和异常处理不相上下，同时又避免了异常处理的诸多问题。</p>
+</blockquote>
+<details id="admonition--操作符内部被展开成类似这样的代码" class="admonition info">
+<summary class="admonition-title">
+<p>? 操作符内部被展开成类似这样的代码：</p>
+<p><a class="admonition-anchor-link" href="#admonition--操作符内部被展开成类似这样的代码"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+match result {
+  Ok(v) =&gt; v,
+  Err(e) =&gt; return Err(e.into())
+}
+</code></pre></pre>
+<blockquote>
+<p>所以，我们可以方便地写出类似这样的代码，简洁易懂，可读性很强：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+fut
+  .await?
+  .process()?
+  .next()
+  .await?;
+</code></pre></pre>
+<p>整个代码的执行流程如下：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F-4895239.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
+</div>
+</details>
+<p>虽然 ? 操作符使用起来非常方便，但你要注意在不同的错误类型之间是无法直接使用的，需要实现 From trait 在二者之间建立起转换的桥梁，这会带来额外的麻烦。</p>
+<h3 id="42-函数式错误处理-mapmap_errand_then"><a class="header" href="#42-函数式错误处理-mapmap_errand_then">4.2 函数式错误处理: map/map_err/and_then</a></h3>
+<blockquote>
+<p>Rust 还为 Option 和 Result 提供了大量的辅助函数，如 map / map_err / and_then，你可以很方便地处理数据结构中部分情况。</p>
+</blockquote>
+<details id="admonition-map--map_err--and_then-使用函数式错误处理" class="admonition info">
+<summary class="admonition-title">
+<p>map / map_err / and_then: 使用函数式错误处理</p>
+<p><a class="admonition-anchor-link" href="#admonition-map--map_err--and_then-使用函数式错误处理"></a></p>
+</summary>
+<div>
+<p>如下图所示：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/18%EF%BD%9C%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88Rust%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%EF%BC%9F.jpg" alt="18｜错误处理：为什么Rust的错误处理与众不同？" /></p>
+<p>通过这些函数，你可以很方便地对错误处理引入 <a href="https://www.slideshare.net/ScottWlaschin/railway-oriented-programming">Railroad oriented programming 范式</a>。</p>
+<blockquote>
+<p>比如用户注册的流程，你需要校验用户输入，对数据进行处理，转换，然后存入数据库中。你可以这么撰写这个流程：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">Ok(data)
+  .and_then(validate)
+  .and_then(process)
+  .map(transform)
+  .and_then(store)
+  .map_error(...)
+</code></pre></pre>
+<blockquote>
+<p>执行流程如下图所示：</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/image-20221004225336162.png" alt="image-20221004225336162" /></p>
+</div>
+</details>
+<p>此外，Option 和 Result 的互相转换也很方换，这也得益于 Rust 构建的强大的函数式编程的能力。</p>
+<blockquote>
+<p>我们可以看到，无论是通过 ? 操作符，还是函数式编程进行错误处理，Rust 都力求让错误处理灵活高效，让开发者使用起来简单直观。</p>
+</blockquote>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="3_3_1_error_content.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="3_4_closure.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="3_3_1_error_content.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="3_4_closure.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
