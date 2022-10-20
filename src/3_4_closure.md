@@ -495,7 +495,7 @@ fn not_closure(arg: String) -> (String, String) {
 
 ~~~
 
-#### 怎么理解 FnOnce 的 Args 泛型参数呢？
+##### 怎么理解 FnOnce 的 Args 泛型参数呢？
 
 ~~~admonish info title="怎么理解 FnOnce 的 Args 泛型参数呢？" collapsible=true
 Args 又是怎么和 FnOnce 的约束，比如 FnOnce(String) 这样的参数匹配呢？感兴趣的同学可以看下面的例子，它（不完全）模拟了 FnOnce 中闭包的使用（代码）：
