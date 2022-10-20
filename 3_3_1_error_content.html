@@ -182,16 +182,32 @@
                 </div>
                 <h1 id="错误处理主要内容和主流方法"><a class="header" href="#错误处理主要内容和主流方法">错误处理主要内容和主流方法</a></h1>
 <!--ts-->
+<ul>
+<li><a href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9%E5%92%8C%E4%B8%BB%E6%B5%81%E6%96%B9%E6%B3%95">错误处理主要内容和主流方法</a>
+<ul>
+<li><a href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E5%8C%85%E5%90%AB%E8%BF%99%E4%B9%88%E5%87%A0%E9%83%A8%E5%88%86">错误处理包含这么几部分</a></li>
+<li><a href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E7%9A%84%E4%B8%BB%E6%B5%81%E6%96%B9%E6%B3%95">错误处理的主流方法</a>
+<ul>
+<li><a href="#1-%E4%BD%BF%E7%94%A8%E8%BF%94%E5%9B%9E%E5%80%BC%E9%94%99%E8%AF%AF%E7%A0%81">1. 使用返回值（错误码）</a></li>
+<li><a href="#2-%E4%BD%BF%E7%94%A8%E5%BC%82%E5%B8%B8-%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%E6%8D%95%E8%8E%B7%E5%BC%82%E5%B8%B8">2. 使用异常: 抛出异常+捕获异常</a></li>
+<li><a href="#3-%E4%BD%BF%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F">3. 使用类型系统</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Oct 20 03:01:17 UTC 2022 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
+<p>在一门编程语言中，控制流程是语言的核心流程，而错误处理又是控制流程的重要组成部分。</p>
+<p>语言优秀的错误处理能力，会大大减少错误处理对整体流程的破坏，让我们写代码更行云流水，读起来心智负担也更小。</p>
 <details id="admonition-错误处理包含这么几部分" class="admonition info">
 <summary class="admonition-title">
 <p>错误处理包含这么几部分</p>
 <p><a class="admonition-anchor-link" href="#admonition-错误处理包含这么几部分"></a></p>
 </summary>
 <div>
-<p>在一门编程语言中，控制流程是语言的核心流程，而错误处理又是控制流程的重要组成部分。</p>
-<p>语言优秀的错误处理能力，会大大减少错误处理对整体流程的破坏，让我们写代码更行云流水，读起来心智负担也更小。</p>
 <blockquote>
 <p>对我们开发者来说，错误处理包含这么几部分：</p>
 </blockquote>
