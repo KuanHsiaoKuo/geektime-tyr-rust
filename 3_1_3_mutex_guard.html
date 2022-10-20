@@ -1,0 +1,488 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>MutexGuard&lt;&#x27;_, T&gt; - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_1_box.html"><strong aria-hidden="true">4.3.1.1.</strong> Box</a></li><li class="chapter-item "><a href="3_1_2_cow.html"><strong aria-hidden="true">4.3.1.2.</strong> Cow&lt;'a, B&gt;</a></li><li class="chapter-item expanded "><a href="3_1_3_mutex_guard.html" class="active"><strong aria-hidden="true">4.3.1.3.</strong> MutexGuard&lt;'_, T&gt;</a></li></ol></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_2_1_slice.html"><strong aria-hidden="true">4.3.2.1.</strong> 切片</a></li><li class="chapter-item "><a href="3_2_2_hashmap.html"><strong aria-hidden="true">4.3.2.2.</strong> 哈希表</a></li></ol></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="4_1_macros_classify.html"><strong aria-hidden="true">4.4.1.</strong> 宏分类</a></li><li class="chapter-item "><a href="4_2_declarative_macros.html"><strong aria-hidden="true">4.4.2.</strong> 声明宏</a></li><li class="chapter-item "><a href="4_3_procedural_macros.html"><strong aria-hidden="true">4.4.3.</strong> 过程宏</a></li></ol></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="mutexguard-数据加锁"><a class="header" href="#mutexguard-数据加锁">MutexGuard<T>： 数据加锁</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#mutexguard-%E6%95%B0%E6%8D%AE%E5%8A%A0%E9%94%81">MutexGuard： 数据加锁</a>
+<ul>
+<li><a href="#mutexguard%E4%B8%8Estringboxcowa-b%E7%9A%84%E5%AF%B9%E6%AF%94">MutexGuard与String、Box、Cow&lt;’a, B&gt;的对比</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8mutexlock%E8%8E%B7%E5%8F%96">使用Mutex::lock获取</a></li>
+<li><a href="#%E5%AE%9A%E4%B9%89%E4%B8%8Ederefdrop-trait%E5%AE%9E%E7%8E%B0">定义与Deref、Drop trait实现</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8mutex_mutexguard%E7%9A%84%E4%BE%8B%E5%AD%90">使用Mutex_MutexGuard的例子</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Oct 20 02:05:32 UTC 2022 -->
+<!--te-->
+<h2 id="mutexguard与stringboxcowa-b的对比"><a class="header" href="#mutexguard与stringboxcowa-b的对比">MutexGuard与String、Box<T>、Cow&lt;’a, B&gt;的对比</a></h2>
+<details id="admonition-derefdrop" class="admonition info">
+<summary class="admonition-title">
+<p>Deref+Drop</p>
+<p><a class="admonition-anchor-link" href="#admonition-derefdrop"></a></p>
+</summary>
+<div>
+<p>String、Box<T>、Cow&lt;’a, B&gt; 等智能指针，都是通过 Deref 来提 供良好的用户体验， 
+MutexGuard<T> 是另外一类很有意思的智能指针：</p>
+<ol>
+<li>它不但通过 Deref 提供良好的用户体验</li>
+<li>还通过 Drop trait 来确保，使用到的内存以外的资源在退出 时进行释放。</li>
+</ol>
+</div>
+</details>
+<h2 id="使用mutexlock获取"><a class="header" href="#使用mutexlock获取">使用Mutex::lock获取</a></h2>
+<details id="admonition-mutexguard这个结构是在调用-mutexlock-时生成的" class="admonition info">
+<summary class="admonition-title">
+<p>MutexGuard这个结构是在调用 Mutex::lock 时生成的</p>
+<p><a class="admonition-anchor-link" href="#admonition-mutexguard这个结构是在调用-mutexlock-时生成的"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub fn lock(&amp;self) -&gt; LockResult&lt;MutexGuard&lt;'_, T&gt;&gt; {
+    unsafe {
+        self.inner.raw_lock();
+        MutexGuard::new(self)
+    }
+}
+</code></pre></pre>
+<hr />
+<p><a href="https://doc.rust-lang.org/src/std/sync/mutex.rs.html#279-284">rust文档</a></p>
+<ol>
+<li>首先，它会取得锁资源，如果拿不到，会在这里等待；</li>
+<li>如果拿到了，会把 Mutex 结构的引 用传递给 MutexGuard。</li>
+</ol>
+</div>
+</details>
+<h2 id="定义与derefdrop-trait实现"><a class="header" href="#定义与derefdrop-trait实现">定义与Deref、Drop trait实现</a></h2>
+<details id="admonition-mutexguard-的定义以及它的-deref-和-drop-的实现" class="admonition info">
+<summary class="admonition-title">
+<p>MutexGuard 的定义以及它的 Deref 和 Drop 的实现</p>
+<p><a class="admonition-anchor-link" href="#admonition-mutexguard-的定义以及它的-deref-和-drop-的实现"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 这里用 must_use，当你得到了却不使用 MutexGuard 时会报警
+#[must_use = &quot;if unused the Mutex will immediately unlock&quot;]
+pub struct MutexGuard&lt;'a, T: ?Sized + 'a&gt; {
+    lock: &amp;'a Mutex&lt;T&gt;,
+    poison: poison::Guard,
+}
+
+impl&lt;T: ?Sized&gt; Deref for MutexGuard&lt;'_, T&gt; {
+    type Target = T;
+
+    fn deref(&amp;self) -&gt; &amp;T {
+        unsafe { &amp;*self.lock.data.get() }
+    }
+}
+
+impl&lt;T: ?Sized&gt; DerefMut for MutexGuard&lt;'_, T&gt; {
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut T {
+        unsafe { &amp;mut *self.lock.data.get() }
+    }
+}
+
+impl&lt;T: ?Sized&gt; Drop for MutexGuard&lt;'_, T&gt; {
+    #[inline]
+    fn drop(&amp;mut self) {
+        unsafe {
+            self.lock.poison.done(&amp;self.poison);
+            self.lock.inner.raw_unlock();
+        }
+    }
+}
+</code></pre></pre>
+<hr />
+<p>从代码中可以看到:</p>
+<ol>
+<li>当 MutexGuard 结束时，Mutex 会做 unlock</li>
+<li>这样用户在使用 Mutex 时，可以不必关心何时释放这个互斥锁。</li>
+<li>因为无论你在调用栈上怎样传递 MutexGuard ，哪怕在错误处理流程上提前退出，Rust 有所有权机制，可以确保只要 MutexGuard 离开作用域，锁就会被释放</li>
+</ol>
+</div>
+</details>
+<h2 id="使用mutex_mutexguard的例子"><a class="header" href="#使用mutex_mutexguard的例子">使用Mutex_MutexGuard的例子</a></h2>
+<details id="admonition-mutex--mutexguard-example" class="admonition info">
+<summary class="admonition-title">
+<p>Mutex &amp; MutexGuard example</p>
+<p><a class="admonition-anchor-link" href="#admonition-mutex--mutexguard-example"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use lazy_static::lazy_static;
+use std::borrow::Cow;
+use std::collections::HashMap;
+use std::sync::{Arc, Mutex};
+use std::thread;
+use std::time::Duration;
+
+// lazy_static 宏可以生成复杂的 static 对象
+lazy_static! {
+    // 一般情况下 Mutex 和 Arc 一起在多线程环境下提供对共享内存的使用
+    // 如果你把 Mutex 声明成 static，其生命周期是静态的，不需要 Arc
+    static ref METRICS: Mutex&lt;HashMap&lt;Cow&lt;'static, str&gt;, usize&gt;&gt; =
+        Mutex::new(HashMap::new());
+}
+
+fn main() {
+    // 用 Arc 来提供并发环境下的共享所有权（使用引用计数）
+    let metrics: Arc&lt;Mutex&lt;HashMap&lt;Cow&lt;'static, str&gt;, usize&gt;&gt;&gt; =
+        Arc::new(Mutex::new(HashMap::new()));
+    for _ in 0..32 {
+        let m = metrics.clone();
+        thread::spawn(move || {
+            let mut g = m.lock().unwrap();
+            // 此时只有拿到 MutexGuard 的线程可以访问 HashMap
+            let data = &amp;mut *g;
+            // Cow 实现了很多数据结构的 From trait，所以我们可以用 &quot;hello&quot;.into() 生成 Cow
+            let entry = data.entry(&quot;hello&quot;.into()).or_insert(0);
+            *entry += 1;
+            // MutexGuard 被 Drop，锁被释放
+        });
+    }
+
+    thread::sleep(Duration::from_millis(100));
+
+    println!(&quot;metrics: {:?}&quot;, metrics.lock().unwrap());
+}
+</code></pre></pre>
+<hr />
+<blockquote>
+<p>在解析 URL 的时候，我们经常需要将 querystring 中的参数，提取成 KV pair 来进一步使 用。
+绝大多数语言中，提取出来的 KV 都是新的字符串，在每秒钟处理几十 k 甚至上百 k 请求的系统中，你可以想象这会带来多少次堆内存的分配。 
+但在 Rust 中，我们可以用 Cow 类型轻松高效处理它，在读取 URL 的过程中：</p>
+</blockquote>
+<ol>
+<li>每解析出一个 key 或者 value，我们可以用一个 &amp;str 指向 URL 中相应的位置，然后用 Cow 封装它 </li>
+<li>而当解析出来的内容不能直接使用，需要 decode 时，比如 “hello%20world”，我们 可以生成一个解析后的 String，同样用 Cow 封装它。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-你可以把-mutexguard-的引用传给另一个线程使用但你无法把-mutexguard-整个移动到另一个线程" class="admonition info">
+<summary class="admonition-title">
+<p>你可以把 MutexGuard 的引用传给另一个线程使用，但你无法把 MutexGuard 整个移动到另一个线程</p>
+<p><a class="admonition-anchor-link" href="#admonition-你可以把-mutexguard-的引用传给另一个线程使用但你无法把-mutexguard-整个移动到另一个线程"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::sync::Mutex;
+
+fn main() {
+    //
+    let m = Mutex::new(Mutex::new(1));
+    let g = m.lock().unwrap();
+    {
+        rayon::join(
+            || {
+                let mut g1 = g.lock().unwrap();
+                *g1 += 1;
+                println!(&quot;Thread 1: {:?}&quot;, *g1);
+            },
+            || {
+                let mut g1 = g.lock().unwrap();
+                *g1 += 1;
+                println!(&quot;Thread 1: {:?}&quot;, *g1);
+            },
+        );
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-mutexguard-的智能指针有很多用途" class="admonition info">
+<summary class="admonition-title">
+<p>MutexGuard 的智能指针有很多用途</p>
+<p><a class="admonition-anchor-link" href="#admonition-mutexguard-的智能指针有很多用途"></a></p>
+</summary>
+<div>
+<ul>
+<li>r2d2类似实现一个数据库连接池：<a href="https://github.com/sfackler/r2d2/blob/master/src/lib.rs#L611-L638">源码</a></li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl&lt;M&gt; Drop for PooledConnection&lt;M&gt;
+where
+    M: ManageConnection,
+{
+    fn drop(&amp;mut self) {
+        self.pool.put_back(self.checkout, self.conn.take().unwrap());
+    }
+}
+
+impl&lt;M&gt; Deref for PooledConnection&lt;M&gt;
+where
+    M: ManageConnection,
+{
+    type Target = M::Connection;
+
+    fn deref(&amp;self) -&gt; &amp;M::Connection {
+        &amp;self.conn.as_ref().unwrap().conn
+    }
+}
+
+impl&lt;M&gt; DerefMut for PooledConnection&lt;M&gt;
+where
+    M: ManageConnection,
+{
+    fn deref_mut(&amp;mut self) -&gt; &amp;mut M::Connection {
+        &amp;mut self.conn.as_mut().unwrap().conn
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ul>
+<li>类似 MutexGuard 的智能指针有很多用途。比如要创建一个连接池，你可以在 Drop trait 中，回收 checkout 出来的连接，将其再放回连接池。</li>
+</ul>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="3_1_2_cow.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="3_2_containers.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="3_1_2_cow.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="3_2_containers.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

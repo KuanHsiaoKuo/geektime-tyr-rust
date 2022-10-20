@@ -1,0 +1,555 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>Cow&lt;&#x27;a, B&gt; - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_1_box.html"><strong aria-hidden="true">4.3.1.1.</strong> Box</a></li><li class="chapter-item expanded "><a href="3_1_2_cow.html" class="active"><strong aria-hidden="true">4.3.1.2.</strong> Cow&lt;'a, B&gt;</a></li><li class="chapter-item "><a href="3_1_3_mutex_guard.html"><strong aria-hidden="true">4.3.1.3.</strong> MutexGuard&lt;'_, T&gt;</a></li></ol></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_2_1_slice.html"><strong aria-hidden="true">4.3.2.1.</strong> 切片</a></li><li class="chapter-item "><a href="3_2_2_hashmap.html"><strong aria-hidden="true">4.3.2.2.</strong> 哈希表</a></li></ol></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="4_1_macros_classify.html"><strong aria-hidden="true">4.4.1.</strong> 宏分类</a></li><li class="chapter-item "><a href="4_2_declarative_macros.html"><strong aria-hidden="true">4.4.2.</strong> 声明宏</a></li><li class="chapter-item "><a href="4_3_procedural_macros.html"><strong aria-hidden="true">4.4.3.</strong> 过程宏</a></li></ol></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="cowa-b-写时拷贝"><a class="header" href="#cowa-b-写时拷贝">Cow&lt;’a, B&gt;： 写时拷贝</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#cowa-b-%E5%86%99%E6%97%B6%E6%8B%B7%E8%B4%9D">Cow&lt;’a, B&gt;： 写时拷贝</a>
+<ul>
+<li><a href="#%E5%AE%9A%E4%B9%89">定义</a></li>
+<li><a href="#%E4%B8%A4%E4%B8%AAtraittoownedborrowed">两个trait：ToOwned、Borrowed</a></li>
+<li><a href="#toowned">ToOwned</a></li>
+<li><a href="#%E5%8C%B9%E9%85%8D%E5%88%86%E5%8F%91">匹配分发</a></li>
+<li><a href="#cow%E5%9C%A8%E9%9C%80%E8%A6%81%E6%97%B6%E6%89%8D%E8%BF%9B%E8%A1%8C%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E6%8B%B7%E8%B4%9D">Cow在需要时才进行内存分配拷贝</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Oct 20 02:05:32 UTC 2022 -->
+<!--te-->
+<div id="admonition-写时复制copy-on-write有异曲同工之妙" class="admonition info">
+<div class="admonition-title">
+<p>写时复制（Copy-on-write）有异曲同工之妙</p>
+<p><a class="admonition-anchor-link" href="#admonition-写时复制copy-on-write有异曲同工之妙"></a></p>
+</div>
+<div>
+<p>Cow 是 Rust 下用于提供写时克隆（Clone-on-Write）的一个智能指针，它跟虚拟内存管 理的写时复制（Copy-on-write）有异曲同工之妙：</p>
+<blockquote>
+<p>包裹一个只读借用，但如果调用者需 要所有权或者需要修改内容，那么它会 clone 借用的数据</p>
+</blockquote>
+</div>
+</div>
+<h2 id="定义"><a class="header" href="#定义">定义</a></h2>
+<div id="admonition-cow定义" class="admonition info">
+<div class="admonition-title">
+<p>Cow定义</p>
+<p><a class="admonition-anchor-link" href="#admonition-cow定义"></a></p>
+</div>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>pub enum Cow&lt;'a, B&gt; where B: 'a + ToOwned + ?Sized {
+    Borrowed(&amp;'a B),
+    Owned(&lt;B as ToOwned&gt;::Owned),
+}
+<span class="boring">}
+</span></code></pre></pre>
+<blockquote>
+<p>它是一个 enum，可以包含一个对类型 B 的只读引用，或者包含对类型 B 的拥有所有权的 数据。</p>
+</blockquote>
+</div>
+</div>
+<h2 id="两个traittoownedborrowed"><a class="header" href="#两个traittoownedborrowed">两个trait：ToOwned、Borrowed</a></h2>
+<div id="admonition-cow定义用到两个traittoowned和borrowed" class="admonition info">
+<div class="admonition-title">
+<p>Cow定义用到两个trait：ToOwned和Borrowed</p>
+<p><a class="admonition-anchor-link" href="#admonition-cow定义用到两个traittoowned和borrowed"></a></p>
+</div>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>pub trait ToOwned {
+    type Owned: Borrow&lt;Self&gt;;
+    #[must_use = &quot;cloning is often expensive and is not expected to have side effects&quot;]
+    fn to_owned(&amp;self) -&gt; Self::Owned;
+
+    fn clone_into(&amp;self, target: &amp;mut Self::Owned) { ... }
+}
+
+pub trait Borrow&lt;Borrowed&gt; where Borrowed: ?Sized {
+    fn borrow(&amp;self) -&gt; &amp;Borrowed;
+}
+<span class="boring">}
+</span></code></pre></pre>
+<blockquote>
+<p>它是一个 enum，可以包含一个对类型 B 的只读引用，或者包含对类型 B 的拥有所有权的 数据。</p>
+</blockquote>
+</div>
+</div>
+<h2 id="toowned"><a class="header" href="#toowned">ToOwned</a></h2>
+<div id="admonition-type-owned-borrow" class="admonition info">
+<div class="admonition-title">
+<p>type Owned: Borrow<Self></p>
+<p><a class="admonition-anchor-link" href="#admonition-type-owned-borrow"></a></p>
+</div>
+<div>
+<ol>
+<li>首先，type Owned: Borrow<Self> 是一个带有关联类型的 trait. 这里 Owned 是关联类型，需要使用者定义.</li>
+<li>这里 Owned 不能是任意类型，它必须满足 Borrow<T> trait</li>
+<li><a href="https://doc.rust-lang.org/src/alloc/str.rs.html#215-227">参考str对ToOwned trait的实现</a>：</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>impl ToOwned for str {
+    type Owned = String;
+    #[inline]
+    fn to_owned(&amp;self) -&gt; String {
+        unsafe { String::from_utf8_unchecked(self.as_bytes().to_owned()) }
+    }
+
+    fn clone_into(&amp;self, target: &amp;mut String) {
+        let mut b = mem::take(target).into_bytes();
+        self.as_bytes().clone_into(&amp;mut b);
+        *target = unsafe { String::from_utf8_unchecked(b) }
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+<ol start="4">
+<li>可以看到关联类型 Owned 被定义为 String，而根据要求，String 必须定义 Borrow，那这里 Borrow 里的泛型变量 T 是谁呢？</li>
+<li>ToOwned 要求是 Borrow，而此刻实现 ToOwned 的主体是 str，所以 Borrow 是 Borrow，也就是说 String 要实现 Borrow</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>impl Borrow&lt;str&gt; for String {
+    #[inline]
+    fn borrow(&amp;self) -&gt; &amp;str {
+        &amp;self[..]
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</div>
+<div id="admonition-cow-和-toowned--borrow-之间的关系示意图" class="admonition info">
+<div class="admonition-title">
+<p>Cow 和 ToOwned / Borrow<T> 之间的关系示意图</p>
+<p><a class="admonition-anchor-link" href="#admonition-cow-和-toowned--borrow-之间的关系示意图"></a></p>
+</div>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/15%EF%BD%9C%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%EF%BC%9A%E8%BF%99%E4%BA%9B%E6%B5%93%E7%9C%89%E5%A4%A7%E7%9C%BC%E7%9A%84%E7%BB%93%E6%9E%84%E7%AB%9F%E7%84%B6%E9%83%BD%E6%98%AF%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%EF%BC%9F-4781304.jpg" alt="type Owned: Borrow&lt;Self&gt; " /></p>
+</div>
+</div>
+<h2 id="匹配分发"><a class="header" href="#匹配分发">匹配分发</a></h2>
+<div id="admonition-为何-borrow-要定义成一个泛型-trait-呢" class="admonition info">
+<div class="admonition-title">
+<p>为何 Borrow 要定义成一个泛型 trait 呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-为何-borrow-要定义成一个泛型-trait-呢"></a></p>
+</div>
+<div>
+<ol>
+<li>例子1：String不同借用方式</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::borrow::Borrow;
+
+fn main() {
+    let s = &quot;hello world!&quot;.to_owned();
+
+    // 这里必须声明类型，因为 String 有多个 Borrow&lt;T&gt; 实现
+    // 借用为 &amp;String
+    let r1: &amp;String = s.borrow();
+    // 借用为 &amp;str
+    let r2: &amp;str = s.borrow();
+
+    println!(&quot;r1: {:p}, r2: {:p}&quot;, r1, r2);
+}
+</code></pre></pre>
+<blockquote>
+<p>String 可以被借用为 &amp;String，也可以被借用为 &amp;str</p>
+</blockquote>
+<hr />
+<ol start="2">
+<li>例子2：Cow不同解引用方式</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>impl&lt;B: ?Sized + ToOwned&gt; Deref for Cow&lt;'_, B&gt; {
+    type Target = B;
+
+    fn deref(&amp;self) -&gt; &amp;B {
+        match *self {
+            Borrowed(borrowed) =&gt; borrowed,
+            Owned(ref owned) =&gt; owned.borrow(),
+        }
+    }
+}
+
+<span class="boring">}
+</span></code></pre></pre>
+<hr />
+<p>实现的原理很简单，根据 self 是 Borrowed 还是 Owned，我们分别取其内容，生成引 用：</p>
+<ol>
+<li>
+<p>对于 Borrowed，直接就是引用；</p>
+</li>
+<li>
+<p>对于 Owned，调用其 borrow() 方法，获得引用。</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="admonition-匹配分发使用match匹配实现静态动态分发之外的第三种分发" class="admonition info">
+<div class="admonition-title">
+<p>匹配分发：使用match匹配实现静态、动态分发之外的第三种分发</p>
+<p><a class="admonition-anchor-link" href="#admonition-匹配分发使用match匹配实现静态动态分发之外的第三种分发"></a></p>
+</div>
+<div>
+<p>虽然 Cow 是一个 enum，但是通过 Deref 的实现，我们可以获得统一的 体验.
+比如 Cow<str>，使用的感觉和 &amp;str / String 是基本一致的。
+注意，这种根据 enum 的不同状态来进行统一分发的方法是第三种分发手段，另外还可以使用泛型参数 做静态分发和使用 trait object 做动态分发</p>
+</div>
+</div>
+<h2 id="cow在需要时才进行内存分配拷贝"><a class="header" href="#cow在需要时才进行内存分配拷贝">Cow在需要时才进行内存分配拷贝</a></h2>
+<div id="admonition-写时拷贝" class="admonition info">
+<div class="admonition-title">
+<p>写时拷贝</p>
+<p><a class="admonition-anchor-link" href="#admonition-写时拷贝"></a></p>
+</div>
+<div>
+<p>那么 Cow 有什么用呢？</p>
+<ol>
+<li>显然，它可以在需要的时候才进行内存的分配和拷贝，在很多应用 场合，它可以大大提升系统的效率。</li>
+<li>如果 Cow&lt;’a, B&gt; 中的 Owned 数据类型是一个需要 在堆上分配内存的类型，如 String、Vec<T> 等，还能减少堆内存分配的次数。 </li>
+<li>相对于栈内存的分配释放来说，堆内存的分配和释放效率要低很多，其内部还 涉及系统调用和锁，减少不必要的堆内存分配是提升系统效率的关键手段。</li>
+<li>而 Rust 的 Cow&lt;’a, B&gt;，在帮助你达成这个效果的同时，使用体验还非常简单舒服。</li>
+</ol>
+</div>
+</div>
+<details id="admonition-举例使用cow进行url解析" class="admonition info">
+<summary class="admonition-title">
+<p>举例使用Cow进行URL解析</p>
+<p><a class="admonition-anchor-link" href="#admonition-举例使用cow进行url解析"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::borrow::Cow;
+
+use url::Url;
+fn main() {
+    let url = Url::parse(&quot;https://tyr.com/rust?page=1024&amp;sort=desc&amp;extra=hello%20world&quot;).unwrap();
+    let mut pairs = url.query_pairs();
+
+    assert_eq!(pairs.count(), 3);
+
+    let (mut k, v) = pairs.next().unwrap();
+    // 因为 k, v 都是 Cow&lt;str&gt; 他们用起来感觉和 &amp;str 或者 String 一样
+    // 此刻，他们都是 Borrowed
+    println!(&quot;key: {}, v: {}&quot;, k, v);
+    // 当修改发生时，k 变成 Owned
+    k.to_mut().push_str(&quot;_lala&quot;);
+
+    print_pairs((k, v));
+
+    print_pairs(pairs.next().unwrap());
+    print_pairs(pairs.next().unwrap());
+}
+
+fn print_pairs(pair: (Cow&lt;str&gt;, Cow&lt;str&gt;)) {
+    println!(&quot;key: {}, value: {}&quot;, show_cow(pair.0), show_cow(pair.1));
+}
+
+fn show_cow(cow: Cow&lt;str&gt;) -&gt; String {
+    match cow {
+        Cow::Borrowed(v) =&gt; format!(&quot;Borrowed {}&quot;, v),
+        Cow::Owned(v) =&gt; format!(&quot;Owned {}&quot;, v),
+    }
+}
+</code></pre></pre>
+<hr />
+<blockquote>
+<p>在解析 URL 的时候，我们经常需要将 querystring 中的参数，提取成 KV pair 来进一步使 用。
+绝大多数语言中，提取出来的 KV 都是新的字符串，在每秒钟处理几十 k 甚至上百 k 请求的系统中，你可以想象这会带来多少次堆内存的分配。 
+但在 Rust 中，我们可以用 Cow 类型轻松高效处理它，在读取 URL 的过程中：</p>
+</blockquote>
+<ol>
+<li>每解析出一个 key 或者 value，我们可以用一个 &amp;str 指向 URL 中相应的位置，然后用 Cow 封装它 </li>
+<li>而当解析出来的内容不能直接使用，需要 decode 时，比如 “hello%20world”，我们 可以生成一个解析后的 String，同样用 Cow 封装它。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-举例serde使用cow进行序列化反序列化" class="admonition info">
+<summary class="admonition-title">
+<p>举例serde使用Cow进行序列化/反序列化</p>
+<p><a class="admonition-anchor-link" href="#admonition-举例serde使用cow进行序列化反序列化"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use serde::Deserialize;
+use std::borrow::Cow;
+
+#[allow(dead_code)]
+#[derive(Debug, Deserialize)]
+struct User&lt;'input&gt; {
+    #[serde(borrow)]
+    name: Cow&lt;'input, str&gt;,
+    age: u8,
+}
+
+fn main() {
+    let input = r#&quot;{ &quot;name&quot;: &quot;Tyr&quot;, &quot;age&quot;: 18 }&quot;#;
+    let user: User = serde_json::from_str(input).unwrap();
+
+    match user.name {
+        Cow::Borrowed(x) =&gt; println!(&quot;borrowed {}&quot;, x),
+        Cow::Owned(x) =&gt; println!(&quot;owned {}&quot;, x),
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="3_1_1_box.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="3_1_3_mutex_guard.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="3_1_1_box.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="3_1_3_mutex_guard.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>

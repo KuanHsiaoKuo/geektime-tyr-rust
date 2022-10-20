@@ -1,0 +1,479 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>Box - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item "><a href="2_2_generic.html"><strong aria-hidden="true">4.2.2.</strong> 泛型</a></li><li class="chapter-item "><a href="2_3_trait.html"><strong aria-hidden="true">4.2.3.</strong> trait</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_3_0_trait_overview.html"><strong aria-hidden="true">4.2.3.1.</strong> trait概览</a></li><li class="chapter-item "><a href="2_3_1_trait_impl.html"><strong aria-hidden="true">4.2.3.2.</strong> Trait Impl</a></li><li class="chapter-item "><a href="2_3_2_trait_object.html"><strong aria-hidden="true">4.2.3.3.</strong> Trait Object</a></li><li class="chapter-item "><a href="2_3_3_trait_frequently.html"><strong aria-hidden="true">4.2.3.4.</strong> 常用trait</a></li><li class="chapter-item "><a href="2_3_4_trait_design.html"><strong aria-hidden="true">4.2.3.5.</strong> Trait设计</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="3_1_1_box.html" class="active"><strong aria-hidden="true">4.3.1.1.</strong> Box</a></li><li class="chapter-item "><a href="3_1_2_cow.html"><strong aria-hidden="true">4.3.1.2.</strong> Cow&lt;'a, B&gt;</a></li><li class="chapter-item "><a href="3_1_3_mutex_guard.html"><strong aria-hidden="true">4.3.1.3.</strong> MutexGuard&lt;'_, T&gt;</a></li></ol></li><li class="chapter-item "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_2_1_slice.html"><strong aria-hidden="true">4.3.2.1.</strong> 切片</a></li><li class="chapter-item "><a href="3_2_2_hashmap.html"><strong aria-hidden="true">4.3.2.2.</strong> 哈希表</a></li></ol></li><li class="chapter-item "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a></li><li class="chapter-item "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="4_1_macros_classify.html"><strong aria-hidden="true">4.4.1.</strong> 宏分类</a></li><li class="chapter-item "><a href="4_2_declarative_macros.html"><strong aria-hidden="true">4.4.2.</strong> 声明宏</a></li><li class="chapter-item "><a href="4_3_procedural_macros.html"><strong aria-hidden="true">4.4.3.</strong> 过程宏</a></li></ol></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="box-在堆上分配内存"><a class="header" href="#box-在堆上分配内存">Box<T>: 在堆上分配内存</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#box-%E5%9C%A8%E5%A0%86%E4%B8%8A%E5%88%86%E9%85%8D%E5%86%85%E5%AD%98">Box: 在堆上分配内存</a>
+<ul>
+<li><a href="#%E5%AE%9E%E7%8E%B0%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%99%A8">实现内存分配器</a></li>
+<li><a href="#%E5%86%85%E5%AD%98%E5%A6%82%E4%BD%95%E9%87%8A%E6%94%BE">内存如何释放</a></li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Thu Oct 20 02:05:32 UTC 2022 -->
+<!--te-->
+<details id="admonition-从cc得到box灵感" class="admonition info">
+<summary class="admonition-title">
+<p>从c/c++得到Box<T>灵感</p>
+<p><a class="admonition-anchor-link" href="#admonition-从cc得到box灵感"></a></p>
+</summary>
+<div>
+<p>我们先看 Box<T>，它是 Rust 中最基本的在堆上分配内存的方式，绝大多数其它包含堆内 存分配的数据类型，内部都是通过 Box<T> 完成的，比如 Vec<T>。</p>
+<p>为什么有 Box<T> 的设计，我们得先回忆一下在 C 语言中，堆内存是怎么分配的。</p>
+<ol>
+<li>
+<p>C 需要使用 malloc/calloc/realloc/free 来处理内存的分配，很多时候，被分配出来的内存 在函数调用中来来回回使用，导致谁应该负责释放这件事情很难确定，给开发者造成了极 大的心智负担。</p>
+</li>
+<li>
+<p>C++ 在此基础上改进了一下，提供了一个智能指针  unique_ptr，可以在指针退出作用 域的时候释放堆内存，这样保证了堆内存的单一所有权。这个 unique_ptr 就是 Rust 的 Box<T> 的前身。</p>
+</li>
+</ol>
+<hr />
+<p><a href="https://doc.rust-lang.org/src/core/ptr/unique.rs.html#36-44">Box<T> 的定义</a>里，内部就是一个 Unique<T> 用于致敬 C++，Unique<T> 是
+一个私有的数据结构，我们不能直接使用，它包裹了一个 *const T 指针，并唯一拥有这个 指针。</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Unique&lt;T: ?Sized&gt; {
+    pointer: *const T,
+    // NOTE: this marker has no consequences for variance, but is necessary
+    // for dropck to understand that we logically own a `T`.
+    //
+    // For details, see:
+    // https://github.com/rust-lang/rfcs/blob/master/text/0769-sound-generic-drop.md#phantom-data
+    _marker: PhantomData&lt;T&gt;,
+}
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
+<details id="admonition-堆上分配内存的-box-其实有一个缺省的泛型参数-a" class="admonition info">
+<summary class="admonition-title">
+<p>堆上分配内存的 Box<T> 其实有一个缺省的泛型参数 A</p>
+<p><a class="admonition-anchor-link" href="#admonition-堆上分配内存的-box-其实有一个缺省的泛型参数-a"></a></p>
+</summary>
+<div>
+<p>设计内存分配器的目的除了保证正确性之外，就是为了有效地利用剩余内存，并控制内存 在分配和释放过程中产生的碎片的数量。
+在多核环境下，它还要能够高效地处理并发请 求。（如果你对通用内存分配器感兴趣，可以看参考资料） 堆上分配内存的 Box<T></p>
+<p>其实有一个缺省的泛型参数 A，就需要满足 <a href="https://doc.rust-lang.org/std/alloc/trait.Allocator.html">Allocator trait</a>， 并且默认是 Global：</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>pub struct Box&lt;T: ?Sized, A: Allocator = Global&gt;(Unique&lt;T&gt;, A);
+<span class="boring">}
+</span></code></pre></pre>
+<hr />
+<p>Allocator trait 提供很多方法：</p>
+<ol>
+<li>
+<p>allocate 是主要方法，用于分配内存，对应 C 的 malloc/calloc；</p>
+</li>
+<li>
+<p>deallocate，用于释放内存，对应 C 的 free；</p>
+</li>
+<li>
+<p>还有 grow / shrink，用来扩大或缩小堆上已分配的内存，对应 C 的 realloc。</p>
+</li>
+</ol>
+</div>
+</details>
+<details id="admonition-替换默认的内存分配器" class="admonition info">
+<summary class="admonition-title">
+<p>替换默认的内存分配器</p>
+<p><a class="admonition-anchor-link" href="#admonition-替换默认的内存分配器"></a></p>
+</summary>
+<div>
+<p>如果你想替换默认的内存分配器，可以使用 #[global_allocator] 标记宏，定义你自己的全局分配器。下面的代码展示了如何在 Rust
+下使用<a href="https://crates.io/crates/jemallocator">jemalloc</a>:</p>
+<pre><pre class="playground"><code class="language-rust">
+use jemallocator::Jemalloc;
+
+#[global_allocator]
+static GLOBAL: Jemalloc = Jemalloc;
+
+fn main() {}
+</code></pre></pre>
+</div>
+</details>
+<h2 id="实现内存分配器"><a class="header" href="#实现内存分配器">实现内存分配器</a></h2>
+<details id="admonition-内存分配器" class="admonition info">
+<summary class="admonition-title">
+<p>内存分配器</p>
+<p><a class="admonition-anchor-link" href="#admonition-内存分配器"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">use std::alloc::{GlobalAlloc, Layout, System};
+
+struct MyAllocator;
+
+unsafe impl GlobalAlloc for MyAllocator {
+    unsafe fn alloc(&amp;self, layout: Layout) -&gt; *mut u8 {
+        let data = System.alloc(layout);
+        eprintln!(&quot;ALLOC: {:p}, size {}&quot;, data, layout.size());
+        data
+    }
+
+    unsafe fn dealloc(&amp;self, ptr: *mut u8, layout: Layout) {
+        System.dealloc(ptr, layout);
+        eprintln!(&quot;FREE: {:p}, size {}&quot;, ptr, layout.size());
+    }
+}
+
+#[global_allocator]
+static GLOBAL: MyAllocator = MyAllocator;
+
+#[allow(dead_code)]
+struct Matrix {
+    // 使用不规则的数字如 505 可以让 dbg! 的打印很容易分辨出来
+    data: [u8; 505],
+}
+
+impl Default for Matrix {
+    fn default() -&gt; Self {
+        Self { data: [0; 505] }
+    }
+}
+
+fn main() {
+    // 在这句执行之前已经有一些内存分配和释放
+    let data = Box::new(Matrix::default());
+    println!(
+        &quot;!!! allocated memory: {:p}, len: {}&quot;,
+        &amp;*data,
+        std::mem::size_of::&lt;Matrix&gt;()
+    );
+
+    // data 在这里 drop，可以在打印中看到 FREE
+    // 之后还有很多其它内存被释放
+}
+</code></pre></pre>
+<hr />
+<ol>
+<li>这里 MyAllocator 就用 System allocator，然后加 eprintln!()，和我 们常用的 println!() 不同的是，eprintln!() 将数据打印到 stderr</li>
+<li>注意这里不能使用 println!() 。因为 stdout 会打印到一个由 Mutex 互斥锁保护的共享全 局 buffer 中，这个过程中会涉及内存的分配，分配的内存又会触发 println!()，最终造成 程序崩溃。而
+eprintln! 直接打印到 stderr，不会 buffer。</li>
+<li>在使用 Box 分配堆内存的时候要注意，Box::new() 是一个函数，所以传入它的数据会出现 在栈上，再移动到堆上。所以，如果我们的 Matrix 结构不是 505 个字节，是一个非常大 的结构，就有可能出问题。</li>
+</ol>
+<pre><pre class="playground"><code class="language-rust  editable">// #![feature(dropck_eyepatch)]
+
+// struct MyBox&lt;T&gt;(Box&lt;T&gt;);
+
+// unsafe impl&lt;#[may_dangle] T&gt; Drop for MyBox&lt;T&gt; {
+//     fn drop(&amp;mut self) {
+//         todo!();
+//     }
+// }
+
+fn main() {
+    // 在堆上分配 16M 内存，但它会现在栈上出现，再移动到堆上
+    let boxed = Box::new([0u8; 1 &lt;&lt; 24]);
+    println!(&quot;len: {}&quot;, boxed.len());
+}
+</code></pre></pre>
+<ul>
+<li><code>cargo run --bin box</code>或者在 playground 里运行，直接栈溢出 stack overflow</li>
+<li>本地使用 “cargo run –bin box —release” 编译成 release 代码运行，会正常执行！</li>
+</ul>
+<blockquote>
+<p>这是因为 “cargo run” 或者在 playground 下运行，默认是 debug build，它不会做任 何 inline 的优化，而 Box::new() 的实现就一行代码，并注明了要 inline，在 release 模式
+下，这个函数调用会被优化掉, 本质是编译器自动调用下列方式:</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>#[cfg(not(no_global_oom_handling))]
+#[inline(always)]
+#[doc(alias = &quot;alloc&quot;)]
+#[doc(alias = &quot;malloc&quot;)]
+#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+pub fn new(x: T) -&gt; Self {
+    box x
+}
+<span class="boring">}
+</span></code></pre></pre>
+<blockquote>
+<p>这里的关键字 box是 Rust 内部的关键字，用户代码无法调用，它只出现在 Rust 代码中，用于分配堆内存，box 关键字在编译时，会使用内存分配器 分配内存。</p>
+</blockquote>
+</div>
+</details>
+<h2 id="内存如何释放"><a class="header" href="#内存如何释放">内存如何释放</a></h2>
+<details id="admonition-box默认实现的drop-trait" class="admonition info">
+<summary class="admonition-title">
+<p>Box<T>默认实现的Drop trait</p>
+<p><a class="admonition-anchor-link" href="#admonition-box默认实现的drop-trait"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+unsafe impl&lt;#[may_dangle] T: ?Sized, A: Allocator&gt; Drop for Box&lt;T, A&gt; {
+    fn drop(&amp;mut self) {
+        // FIXME: Do nothing, drop is currently performed by compiler.
+    }
+}
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
+<details id="admonition-先稳定接口再迭代稳定实现" class="admonition info">
+<summary class="admonition-title">
+<p>先稳定接口，再迭代稳定实现</p>
+<p><a class="admonition-anchor-link" href="#admonition-先稳定接口再迭代稳定实现"></a></p>
+</summary>
+<div>
+<p>目前 drop trait 什么都没有做，编译器会自动插入 deallocate 的代码。这是 Rust 语 言的一种策略：在具体实现还没有稳定下来之前，我先把接口稳定，实现随着之后的迭代 慢慢稳定。</p>
+</div>
+</details>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="3_1_smart_pointer.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="3_1_2_cow.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="3_1_smart_pointer.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="3_1_2_cow.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
