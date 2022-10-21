@@ -33,7 +33,7 @@
 
 > 又叫ad-hoc，Rust主要使用Trait Impl实现。
 
-~~~admonish tip title="ad-hoc是一个拉丁词，意思为特定，临时" collapsible=True
+~~~admonish tip title="ad-hoc是一个拉丁词，意思为特定，临时" collapsible=true
 Ad hoc是一个拉丁文常用短语。
 
 > 这个短语的意思是“特设的、特定目的的（地）、即席的、临时的、将就的、专案的”。
