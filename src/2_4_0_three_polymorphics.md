@@ -23,7 +23,7 @@
 
 > 又叫编译时多态，Rust主要使用泛型来实现
 
-~~~admonish tip title="对不同类型，调用相同方法，执行相同逻辑" collapsible=True
+~~~admonish tip title="对不同类型，调用相同方法，执行相同逻辑" collapsible=true
 参数化多态(Parametric polymorphism)是指一段代码适用于不同的类型，把类型作为参数，在实际需要的时候根据类型进行实例化，所有的实例有相同的行为
 ~~~
 
