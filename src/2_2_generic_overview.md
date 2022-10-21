@@ -1,6 +1,16 @@
 # 泛型概览
 
 <!--ts-->
+* [泛型概览](#泛型概览)
+   * [泛型实现方式](#泛型实现方式)
+   * [泛型就像定义函数](#泛型就像定义函数)
+   * [泛型基本使用示例](#泛型基本使用示例)
+      * [Generic Vec](#generic-vec)
+      * [Generic Cow](#generic-cow)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Fri Oct 21 08:28:56 UTC 2022 -->
+
 <!--te-->
 
 ## 泛型实现方式

@@ -21,7 +21,7 @@
          * [总结一下三种trait闭包使用的情况以及它们之间的关系](#总结一下三种trait闭包使用的情况以及它们之间的关系)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Oct 20 09:34:35 UTC 2022 -->
+<!-- Added by: runner, at: Fri Oct 21 08:29:00 UTC 2022 -->
 
 <!--te-->
 
