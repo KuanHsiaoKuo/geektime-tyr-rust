@@ -216,17 +216,11 @@
 <ul>
 <li><a href="#%E6%B3%9B%E5%9E%8B%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F">泛型实现方式</a></li>
 <li><a href="#%E6%B3%9B%E5%9E%8B%E5%B0%B1%E5%83%8F%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0">泛型就像定义函数</a></li>
-<li><a href="#%E6%B3%9B%E5%9E%8B%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">泛型基本使用示例</a>
-<ul>
-<li><a href="#generic-vec">Generic Vec</a></li>
-<li><a href="#generic-cow">Generic Cow</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Oct 21 11:58:30 UTC 2022 -->
+<!-- Added by: runner, at: Fri Oct 21 14:41:26 UTC 2022 -->
 <!--te-->
 <h2 id="泛型实现方式"><a class="header" href="#泛型实现方式">泛型实现方式</a></h2>
 <blockquote>
@@ -244,121 +238,6 @@
 </details>
 <h2 id="泛型就像定义函数"><a class="header" href="#泛型就像定义函数">泛型就像定义函数</a></h2>
 <div class="extended-markdown-table"><div class="extended-markdown-header extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 1; grid-row-end: 2"></div><div class="extended-markdown-header" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 1; grid-row-end: 2">Define</div><div class="extended-markdown-header" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 1; grid-row-end: 2">Usage</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 2; grid-row-end: 3">Function</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 2; grid-row-end: 3">Extract args from **duplicate code**, to make it more universal</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 2; grid-row-end: 3">Get **different results** via different args when calling functions</div><div class="extended-markdown-left-border" style="grid-column-start: 1; grid-column-end: 2; grid-row-start: 3; grid-row-end: 4">Generics</div><div class="" style="grid-column-start: 2; grid-column-end: 3; grid-row-start: 3; grid-row-end: 4">Extract args from **duplicate data structure**, to make it more universal</div><div class="" style="grid-column-start: 3; grid-column-end: 4; grid-row-start: 3; grid-row-end: 4">Get **different specific data structures** via different args when using generics</div></div>
-<h2 id="泛型基本使用示例"><a class="header" href="#泛型基本使用示例">泛型基本使用示例</a></h2>
-<h3 id="generic-vec"><a class="header" href="#generic-vec">Generic Vec<T></a></h3>
-<details id="admonition-泛型结构vec例子" class="admonition info">
-<summary class="admonition-title">
-<p>泛型结构Vec<T>例子</p>
-<p><a class="admonition-anchor-link" href="#admonition-泛型结构vec例子"></a></p>
-</summary>
-<div>
-<pre><pre class="playground"><code class="language-rust  editable">
-pub struct Vec&lt;T, A: Allocator = Global&gt; {
-    buf: RawVec&lt;T, A&gt;,
-    len: usize,
-}
-
-pub struct RawVec&lt;T, A: Allocator = Global&gt; {
-    ptr: Unique&lt;T&gt;,
-    cap: usize,
-    alloc: A,
-}
-</code></pre></pre>
-<hr />
-<p>Vec有两个参数:</p>
-<ol>
-<li>一个是 T，是列表里的每个数据的类型</li>
-<li>另一个是 A，它有进一步的限制 A: Allocator </li>
-</ol>
-<blockquote>
-<p>也就是说 A 需要满足 Allocator trait。
-A 这个参数有默认值 Global，它是 Rust 默认的全局分配器</p>
-</blockquote>
-<ol start="3">
-<li>这也是为什么 Vec 虽然有两个参数，使用时都只需要用 T。</li>
-</ol>
-</div>
-</details>
-<h3 id="generic-cow"><a class="header" href="#generic-cow">Generic Cow<T></a></h3>
-<details id="admonition-枚举类型cow例子" class="admonition info">
-<summary class="admonition-title">
-<p>枚举类型Cow<T>例子</p>
-<p><a class="admonition-anchor-link" href="#admonition-枚举类型cow例子"></a></p>
-</summary>
-<div>
-<pre><pre class="playground"><code class="language-rust  editable">
-pub enum Cow&lt;'a, B: ?Sized + 'a&gt; where B: ToOwned,
-{
-    // 借用的数据
-    Borrowed(&amp;'a B),
-    // 拥有的数据
-    Owned(&lt;B as ToOwned&gt;::Owned),
-}
-</code></pre></pre>
-</div>
-</details>
-<p>这里对 B 的三个约束分别是：</p>
-<ol>
-<li>生命周期 ’a</li>
-</ol>
-<details id="admonition-cow就像option" class="admonition info">
-<summary class="admonition-title">
-<p>Cow就像Option</p>
-<p><a class="admonition-anchor-link" href="#admonition-cow就像option"></a></p>
-</summary>
-<div>
-<p>Cow（Clone-on-Write）是 Rust 中一个很有意思且很重要的数据结构。
-它就像 Option 一样，在返回数据的时候，提供了一种可能：</p>
-<ul>
-<li>要么返回一个借用的数据（只读）</li>
-<li>要么返回一个拥有所有权的数据（可写）。</li>
-</ul>
-</div>
-</details>
-<ol start="2">
-<li>长度可变 ?Sized</li>
-</ol>
-<details id="admonition-sized代表可变大小" class="admonition info">
-<summary class="admonition-title">
-<p>?Sized代表可变大小</p>
-<p><a class="admonition-anchor-link" href="#admonition-sized代表可变大小"></a></p>
-</summary>
-<div>
-<p>?Sized 是一种特殊的约束写法:</p>
-<ul>
-<li>? 代表可以放松问号之后的约束</li>
-<li>由于 Rust 默认的泛型参数都需要是 Sized，也就是固定大小的类型，所以这里 ?Sized 代表用可变大小的类型。</li>
-</ul>
-</div>
-</details>
-<ol start="3">
-<li>符合 ToOwned trait</li>
-</ol>
-<details id="admonition-toowned-可以把借用的数据克隆出一个拥有所有权的数据" class="admonition info">
-<summary class="admonition-title">
-<p>ToOwned: 可以把借用的数据克隆出一个拥有所有权的数据</p>
-<p><a class="admonition-anchor-link" href="#admonition-toowned-可以把借用的数据克隆出一个拥有所有权的数据"></a></p>
-</summary>
-<div>
-<p><a href="https://doc.rust-lang.org/std/borrow/trait.ToOwned.html">ToOwned</a> 是一个 trait，它可以把借用的数据克隆出一个拥有所有权的数据。</p>
-</div>
-</details>
-<details id="admonition-owned" class="admonition info">
-<summary class="admonition-title">
-<p><B as ToOwned>::Owned</p>
-<p><a class="admonition-anchor-link" href="#admonition-owned"></a></p>
-</summary>
-<div>
-<ol>
-<li>它对 B 做了一个强制类型转换，转成 ToOwned trait</li>
-<li>然后访问 ToOwned trait 内部的 Owned 类型</li>
-</ol>
-<blockquote>
-<p>因为在 Rust 里，子类型可以强制转换成父类型，B 可以用 ToOwned 约束，所以它是 ToOwned trait 的子类型，因而 B 可以安全地强制转换成 ToOwned。这里 B as ToOwned 是成立的。</p>
-</blockquote>
-</div>
-</details>
-
             </main>
 
             <!--            <script src="https://utteranc.es/client.js"-->

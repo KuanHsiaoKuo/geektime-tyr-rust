@@ -185,31 +185,203 @@
 <ul>
 <li><a href="#%E5%8F%82%E6%95%B0%E5%A4%9A%E6%80%81%E6%B3%9B%E5%9E%8B%E4%BD%BF%E7%94%A8">参数多态：泛型使用</a>
 <ul>
-<li><a href="#%E9%80%90%E6%AD%A5%E7%BA%A6%E6%9D%9F%E6%8A%8A%E5%86%B3%E7%AD%96%E4%BA%A4%E7%BB%99%E4%BD%BF%E7%94%A8%E8%80%85">逐步约束：把决策交给使用者</a></li>
-<li><a href="#%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">三种使用场景</a>
+<li><a href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A0%87%E6%B3%A8">生命周期标注</a></li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E7%BB%93%E6%9E%84structenum%E5%AE%9A%E4%B9%89%E4%B8%AD">泛型结构：struct/enum定义中</a>
+<ul>
+<li><a href="#generic-vec">Generic Vec</a></li>
+<li><a href="#generic-cow">Generic Cow</a></li>
+<li><a href="#trait-impl-%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E5%AE%9E%E7%8E%B0%E4%B8%8B%E9%80%90%E6%AD%A5%E6%B7%BB%E5%8A%A0%E7%BA%A6%E6%9D%9F">trait impl: 在不同的实现下逐步添加约束</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">泛型参数：三种使用场景</a>
 <ul>
 <li><a href="#%E5%BB%B6%E8%BF%9F%E7%BB%91%E5%AE%9A">延迟绑定</a></li>
 <li><a href="#%E9%A2%9D%E5%A4%96%E7%B1%BB%E5%9E%8B">额外类型</a></li>
-<li><a href="#%E5%A4%9A%E4%B8%AA%E5%AE%9E%E7%8E%B0">多个实现</a></li>
-</ul>
-</li>
-<li><a href="#%E5%8D%95%E6%80%81%E5%8C%96">单态化</a>
+<li><a href="#%E5%A4%9A%E4%B8%AA%E5%AE%9E%E7%8E%B0">多个实现</a>
 <ul>
-<li><a href="#%E4%BC%98%E5%8A%A3">优劣</a></li>
+<li><a href="#%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0">简单实现</a></li>
+<li><a href="#asyncprostreader%E7%BB%BC%E5%90%88%E4%BE%8B%E5%AD%90">AsyncProstReader综合例子</a></li>
 </ul>
 </li>
-<li><a href="#%E8%BF%94%E5%9B%9E%E5%80%BC%E6%90%BA%E5%B8%A6%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0">返回值携带泛型参数</a></li>
+<li><a href="#asyncprostreader-%E7%BB%BC%E5%90%88%E4%BD%BF%E7%94%A8%E4%BA%86%E6%B3%9B%E5%9E%8B%E7%9A%84%E4%B8%89%E7%A7%8D%E7%94%A8%E6%B3%95%E6%84%9F%E5%85%B4%E8%B6%A3%E7%9A%84%E8%AF%9D%E4%BD%A0%E5%8F%AF%E4%BB%A5%E7%9C%8B%E6%BA%90%E4%BB%A3%E7%A0%81">AsyncProstReader: 综合使用了泛型的三种用法，感兴趣的话你可以看源代码</a></li>
+</ul>
+</li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%87%BD%E6%95%B0">泛型函数</a>
+<ul>
+<li><a href="#%E4%BD%BF%E7%94%A8%E6%B3%9B%E5%9E%8B%E7%BB%93%E6%9E%84%E4%BD%9C%E4%B8%BA%E5%8F%82%E6%95%B0%E6%88%96%E8%BF%94%E5%9B%9E%E5%80%BC">使用泛型结构作为参数或返回值</a></li>
+<li><a href="#%E6%B3%9B%E5%9E%8B%E5%87%BD%E6%95%B0%E7%BC%96%E8%AF%91%E6%97%B6%E8%BF%9B%E8%A1%8C%E5%8D%95%E6%80%81%E5%8C%96">泛型函数编译时进行单态化</a></li>
+<li><a href="#%E8%BF%94%E5%9B%9E%E5%80%BC%E6%90%BA%E5%B8%A6%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0-%E9%80%89%E6%8B%A9trait-object%E8%80%8C%E4%B8%8D%E6%98%AFtrait-impl">返回值携带泛型参数: 选择trait object而不是trait impl</a></li>
+<li><a href="#%E5%A4%8D%E6%9D%82%E6%B3%9B%E5%9E%8B%E5%8F%82%E6%95%B0%E5%A4%84%E7%90%86%E4%B8%80%E6%AD%A5%E6%AD%A5%E5%88%86%E8%A7%A3">复杂泛型参数处理：一步步分解</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Oct 21 11:58:30 UTC 2022 -->
+<!-- Added by: runner, at: Fri Oct 21 14:41:26 UTC 2022 -->
 <!--te-->
-<h2 id="逐步约束把决策交给使用者"><a class="header" href="#逐步约束把决策交给使用者">逐步约束：把决策交给使用者</a></h2>
-<details id="admonition-在不同的实现下逐步添加约束" class="admonition info">
+<h2 id="生命周期标注"><a class="header" href="#生命周期标注">生命周期标注</a></h2>
+<blockquote>
+<p>其实在 Rust 里，生命周期标注也是泛型的一部分，一个生命周期 ’a 代表任意的生命周期，和 T 代表任意类型是一样的。</p>
+</blockquote>
+<h2 id="泛型结构structenum定义中"><a class="header" href="#泛型结构structenum定义中">泛型结构：struct/enum定义中</a></h2>
+<h3 id="generic-vec"><a class="header" href="#generic-vec">Generic Vec<T></a></h3>
+<details id="admonition-泛型结构vec例子" class="admonition info">
 <summary class="admonition-title">
-<p>在不同的实现下逐步添加约束</p>
-<p><a class="admonition-anchor-link" href="#admonition-在不同的实现下逐步添加约束"></a></p>
+<p>泛型结构Vec<T>例子</p>
+<p><a class="admonition-anchor-link" href="#admonition-泛型结构vec例子"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub struct Vec&lt;T, A: Allocator = Global&gt; {
+    buf: RawVec&lt;T, A&gt;,
+    len: usize,
+}
+
+pub struct RawVec&lt;T, A: Allocator = Global&gt; {
+    ptr: Unique&lt;T&gt;,
+    cap: usize,
+    alloc: A,
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-为什么上面的例子中vec-虽然有两个参数使用时都只需要用-t-" class="admonition question">
+<summary class="admonition-title">
+<p>为什么上面的例子中，Vec 虽然有两个参数，使用时都只需要用 T ？</p>
+<p><a class="admonition-anchor-link" href="#admonition-为什么上面的例子中vec-虽然有两个参数使用时都只需要用-t-"></a></p>
+</summary>
+<div>
+<p>Vec有两个参数:</p>
+<ol>
+<li>一个是 T，是列表里的每个数据的类型</li>
+<li>另一个是 A，它有进一步的限制 A: Allocator </li>
+</ol>
+<ul>
+<li>也就是说 A 需要满足 Allocator trait。</li>
+<li>A 这个参数有默认值 Global，它是 Rust 默认的全局分配器, 它不需要用到T</li>
+<li>这也是为什么 Vec 虽然有两个参数，使用时都只需要用 T。</li>
+</ul>
+</div>
+</details>
+<h3 id="generic-cow"><a class="header" href="#generic-cow">Generic Cow<T></a></h3>
+<details id="admonition-cow就像option" class="admonition info">
+<summary class="admonition-title">
+<p>Cow就像Option</p>
+<p><a class="admonition-anchor-link" href="#admonition-cow就像option"></a></p>
+</summary>
+<div>
+<p>Cow（Clone-on-Write）是 Rust 中一个很有意思且很重要的数据结构。
+它就像 Option 一样，在返回数据的时候，提供了一种可能：</p>
+<ul>
+<li>要么返回一个借用的数据（只读）</li>
+<li>要么返回一个拥有所有权的数据（可写）。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-枚举类型cow例子" class="admonition info">
+<summary class="admonition-title">
+<p>枚举类型Cow<T>例子</p>
+<p><a class="admonition-anchor-link" href="#admonition-枚举类型cow例子"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub enum Cow&lt;'a, B: ?Sized + 'a&gt; where B: ToOwned,
+{
+    // 借用的数据
+    Borrowed(&amp;'a B),
+    // 拥有的数据
+    Owned(&lt;B as ToOwned&gt;::Owned),
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>这里对 B 的三个约束分别是：</p>
+</blockquote>
+<ol>
+<li>生命周期 ’a</li>
+</ol>
+<details id="admonition-告诉编译器cow的生命周期也是a" class="admonition info">
+<summary class="admonition-title">
+<p>告诉编译器，Cow的生命周期也是’a</p>
+<p><a class="admonition-anchor-link" href="#admonition-告诉编译器cow的生命周期也是a"></a></p>
+</summary>
+<div>
+<ul>
+<li>这里 B 的生命周期是 ’a，所以 B 需要满足 ’a，这里和泛型约束一样，也是用  B: ’a 来表示。</li>
+<li>当 Cow 内部的类型 B 生命周期为 ’a 时，Cow 自己的生命周期也是 ’a。</li>
+</ul>
+</div>
+</details>
+<ol start="2">
+<li>长度可变 ?Sized</li>
+</ol>
+<details id="admonition-sized代表可变大小" class="admonition info">
+<summary class="admonition-title">
+<p>?Sized代表可变大小</p>
+<p><a class="admonition-anchor-link" href="#admonition-sized代表可变大小"></a></p>
+</summary>
+<div>
+<p>?Sized 是一种特殊的约束写法:</p>
+<ul>
+<li>? 代表可以放松问号之后的约束</li>
+<li>由于 Rust 默认的泛型参数都需要是 Sized，也就是固定大小的类型，所以这里 ?Sized 代表用可变大小的类型。</li>
+</ul>
+</div>
+</details>
+<ol start="3">
+<li>where B: ToOwned</li>
+</ol>
+<ul>
+<li>
+<p>符合 ToOwned trait</p>
+</li>
+<li>
+<p>这里把ToOwned放在where字句中，其实行内泛型约束的写法本身就是where子句的一个语法糖，简写。</p>
+</li>
+</ul>
+<details id="admonition-where子句与行内泛型约束有什么区别呢" class="admonition info">
+<summary class="admonition-title">
+<p>where子句与行内泛型约束有什么区别呢？</p>
+<p><a class="admonition-anchor-link" href="#admonition-where子句与行内泛型约束有什么区别呢"></a></p>
+</summary>
+<div>
+<p><a href="https://stackoverflow.com/questions/46793494/whats-the-difference-between-t-trait-and-where-t-trait">rust - What’s the difference between <code>&lt;T: Trait&gt;</code> and <code>where T: Trait</code>? - Stack Overflow</a></p>
+</div>
+</details>
+<details id="admonition-toowned-可以把借用的数据克隆出一个拥有所有权的数据" class="admonition info">
+<summary class="admonition-title">
+<p>ToOwned: 可以把借用的数据克隆出一个拥有所有权的数据</p>
+<p><a class="admonition-anchor-link" href="#admonition-toowned-可以把借用的数据克隆出一个拥有所有权的数据"></a></p>
+</summary>
+<div>
+<p><a href="https://doc.rust-lang.org/std/borrow/trait.ToOwned.html">ToOwned</a> 是一个 trait，它可以把借用的数据克隆出一个拥有所有权的数据。</p>
+</div>
+</details>
+<ol start="4">
+<li><B as ToOwned>::Owned</li>
+</ol>
+<details id="admonition-owned" class="admonition info">
+<summary class="admonition-title">
+<p><B as ToOwned>::Owned</p>
+<p><a class="admonition-anchor-link" href="#admonition-owned"></a></p>
+</summary>
+<div>
+<ol>
+<li>它对 B 做了一个强制类型转换，转成 ToOwned trait</li>
+<li>然后访问 ToOwned trait 内部的 Owned 类型</li>
+</ol>
+<blockquote>
+<p>因为在 Rust 里，子类型可以强制转换成父类型，B 可以用 ToOwned 约束，所以它是 ToOwned trait 的子类型，因而 B 可以安全地强制转换成 ToOwned。这里 B as ToOwned 是成立的。</p>
+</blockquote>
+</div>
+</details>
+<h3 id="trait-impl-在不同的实现下逐步添加约束"><a class="header" href="#trait-impl-在不同的实现下逐步添加约束">trait impl: 在不同的实现下逐步添加约束</a></h3>
+<details id="admonition-逐步约束把决策交给使用者" class="admonition info">
+<summary class="admonition-title">
+<p>逐步约束：把决策交给使用者</p>
+<p><a class="admonition-anchor-link" href="#admonition-逐步约束把决策交给使用者"></a></p>
 </summary>
 <div>
 <pre><pre class="playground"><code class="language-rust  editable">use std::fs::File;
@@ -248,11 +420,363 @@ fn main() {
 </code></pre></pre>
 </div>
 </details>
-<h2 id="三种使用场景"><a class="header" href="#三种使用场景">三种使用场景</a></h2>
+<blockquote>
+<p>逐步添加约束，可以让约束只出现在它不得不出现的地方，这样代码的灵活性最大。</p>
+</blockquote>
+<h2 id="泛型参数三种使用场景"><a class="header" href="#泛型参数三种使用场景">泛型参数：三种使用场景</a></h2>
 <h3 id="延迟绑定"><a class="header" href="#延迟绑定">延迟绑定</a></h3>
+<p>使用泛型参数延迟数据结构的绑定；</p>
 <h3 id="额外类型"><a class="header" href="#额外类型">额外类型</a></h3>
+<p>使用泛型参数和 PhantomData，声明数据结构中不直接使用，但在实现过程中需要用到的类型；</p>
+<details id="admonition-在定义数据结构时对于额外的暂时不需要的泛型参数用-phantomdata-来拥有它们这样可以规避编译器的报错" class="admonition info">
+<summary class="admonition-title">
+<p>在定义数据结构时，对于额外的、暂时不需要的泛型参数，用 PhantomData 来“拥有”它们，这样可以规避编译器的报错。</p>
+<p><a class="admonition-anchor-link" href="#admonition-在定义数据结构时对于额外的暂时不需要的泛型参数用-phantomdata-来拥有它们这样可以规避编译器的报错"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::marker::PhantomData;
+
+#[derive(Debug, Default, PartialEq, Eq)]
+pub struct Identifier&lt;T&gt; {
+    inner: u64,
+    _tag: PhantomData&lt;T&gt;,
+}
+
+#[derive(Debug, Default, PartialEq, Eq)]
+pub struct User {
+    id: Identifier&lt;Self&gt;,
+}
+
+#[derive(Debug, Default, PartialEq, Eq)]
+pub struct Product {
+    id: Identifier&lt;Self&gt;,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn id_should_not_be_the_same() {
+        let user = User::default();
+        let product = Product::default();
+
+        // 两个 id 不能比较，因为他们属于不同的类型
+        // assert_ne!(user.id, product.id);
+
+        assert_eq!(user.id.inner, product.id.inner);
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-加深对phantomdata的理解" class="admonition info">
+<summary class="admonition-title">
+<p>加深对PhantomData的理解</p>
+<p><a class="admonition-anchor-link" href="#admonition-加深对phantomdata的理解"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::{
+    marker::PhantomData,
+    sync::atomic::{AtomicU64, Ordering},
+};
+
+static NEXT_ID: AtomicU64 = AtomicU64::new(1);
+
+pub struct Customer&lt;T&gt; {
+    id: u64,
+    name: String,
+    _type: PhantomData&lt;T&gt;,
+}
+
+pub trait Free {
+    fn feature1(&amp;self);
+    fn feature2(&amp;self);
+}
+
+pub trait Personal: Free {
+    fn advance_feature(&amp;self);
+}
+
+impl&lt;T&gt; Free for Customer&lt;T&gt; {
+    fn feature1(&amp;self) {
+        println!(&quot;feature 1 for {}&quot;, self.name);
+    }
+
+    fn feature2(&amp;self) {
+        println!(&quot;feature 2 for {}&quot;, self.name);
+    }
+}
+
+impl Personal for Customer&lt;PersonalPlan&gt; {
+    fn advance_feature(&amp;self) {
+        println!(
+            &quot;Dear {}(as our valuable customer {}), enjoy this advanced feature!&quot;,
+            self.name, self.id
+        );
+    }
+}
+
+pub struct FreePlan;
+pub struct PersonalPlan(f32);
+
+impl&lt;T&gt; Customer&lt;T&gt; {
+    pub fn new(name: String) -&gt; Self {
+        Self {
+            id: NEXT_ID.fetch_add(1, Ordering::Relaxed),
+            name,
+            _type: PhantomData::default(),
+        }
+    }
+}
+
+impl From&lt;Customer&lt;FreePlan&gt;&gt; for Customer&lt;PersonalPlan&gt; {
+    fn from(c: Customer&lt;FreePlan&gt;) -&gt; Self {
+        Self::new(c.name)
+    }
+}
+
+/// 订阅成为付费用户
+pub fn subscribe(customer: Customer&lt;FreePlan&gt;, payment: f32) -&gt; Customer&lt;PersonalPlan&gt; {
+    let _plan = PersonalPlan(payment);
+    // 存储 plan 到 DB
+    // ...
+    customer.into()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_customer() {
+        // 一开始是个免费用户
+        let customer = Customer::&lt;FreePlan&gt;::new(&quot;Tyr&quot;.into());
+        // 使用免费 feature
+        customer.feature1();
+        customer.feature2();
+        // 用着用着觉得产品不错愿意付费
+        let customer = subscribe(customer, 6.99);
+        customer.feature1();
+        customer.feature1();
+        // 付费用户解锁了新技能
+        customer.advance_feature();
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-在这个例子里customer-有个额外的类型-t" class="admonition info">
+<summary class="admonition-title">
+<p>在这个例子里，Customer 有个额外的类型 T:</p>
+<p><a class="admonition-anchor-link" href="#admonition-在这个例子里customer-有个额外的类型-t"></a></p>
+</summary>
+<div>
+<ol>
+<li>通过类型 T，我们可以将用户分成不同的等级</li>
+</ol>
+<ul>
+<li>
+<p>比如免费用户是 Customer<FreePlan></p>
+</li>
+<li>
+<p>付费用户是 Customer<PersonalPlan></p>
+</li>
+<li>
+<p>免费用户可以转化成付费用户，解锁更多权益</p>
+</li>
+</ul>
+<ol start="2">
+<li>使用 PhantomData 处理这样的状态，可以在编译期做状态的检测，避免运行期检测的负担和潜在的错误。</li>
+</ol>
+</div>
+</details>
 <h3 id="多个实现"><a class="header" href="#多个实现">多个实现</a></h3>
-<h2 id="单态化"><a class="header" href="#单态化">单态化</a></h2>
+<p>使用泛型参数让同一个数据结构对同一个 trait 可以拥有不同的实现。</p>
+<h4 id="简单实现"><a class="header" href="#简单实现">简单实现</a></h4>
+<details id="admonition-有时候对于同一个-trait我们想要有不同的实现该怎么办" class="admonition question">
+<summary class="admonition-title">
+<p>有时候，对于同一个 trait，我们想要有不同的实现，该怎么办？</p>
+<p><a class="admonition-anchor-link" href="#admonition-有时候对于同一个-trait我们想要有不同的实现该怎么办"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+use std::marker::PhantomData;
+
+#[derive(Debug, Default)]
+pub struct Equation&lt;IterMethod&gt; {
+    current: u32,
+    _method: PhantomData&lt;IterMethod&gt;,
+}
+
+// 线性增长
+#[derive(Debug, Default)]
+pub struct Linear;
+
+// 二次增长
+#[derive(Debug, Default)]
+pub struct Quadratic;
+
+impl Iterator for Equation&lt;Linear&gt; {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        self.current += 1;
+        if self.current &gt;= u32::MAX {
+            return None;
+        }
+
+        Some(self.current)
+    }
+}
+
+impl Iterator for Equation&lt;Quadratic&gt; {
+    type Item = u32;
+
+    fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt; {
+        self.current += 1;
+        if self.current &gt;= u16::MAX as u32 {
+            return None;
+        }
+
+        Some(self.current * self.current)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_linear() {
+        let mut equation = Equation::&lt;Linear&gt;::default();
+        assert_eq!(Some(1), equation.next());
+        assert_eq!(Some(2), equation.next());
+        assert_eq!(Some(3), equation.next());
+    }
+
+    #[test]
+    fn test_quadratic() {
+        let mut equation = Equation::&lt;Quadratic&gt;::default();
+        assert_eq!(Some(1), equation.next());
+        assert_eq!(Some(4), equation.next());
+        assert_eq!(Some(9), equation.next());
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<h4 id="asyncprostreader综合例子"><a class="header" href="#asyncprostreader综合例子">AsyncProstReader综合例子</a></h4>
+<details id="admonition-来看一个真实存在的例子asyncprostreaderhttpsdocsrsasync-prost021srcasync_prostreaderrshtml26-31它来自kv-server-里用过的-async-prost-库httpsdocsrsasync-prost021async_prost" class="admonition info">
+<summary class="admonition-title">
+<p>来看一个真实存在的例子<a href="https://docs.rs/async-prost/0.2.1/src/async_prost/reader.rs.html#26-31">AsyncProstReader</a>，它来自KV server 里用过的 <a href="https://docs.rs/async-prost/0.2.1/async_prost/">async-prost 库</a></p>
+<p><a class="admonition-anchor-link" href="#admonition-来看一个真实存在的例子asyncprostreaderhttpsdocsrsasync-prost021srcasync_prostreaderrshtml26-31它来自kv-server-里用过的-async-prost-库httpsdocsrsasync-prost021async_prost"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+/// A marker that indicates that the wrapping type is compatible with `AsyncProstReader` with Prost support.
+#[derive(Debug)]
+pub struct AsyncDestination;
+
+/// a marker that indicates that the wrapper type is compatible with `AsyncProstReader` with Framed support.
+#[derive(Debug)]
+pub struct AsyncFrameDestination;
+
+/// A wrapper around an async reader that produces an asynchronous stream of prost-decoded values
+#[derive(Debug)]
+pub struct AsyncProstReader&lt;R, T, D&gt; {
+    reader: R,
+    pub(crate) buffer: BytesMut,
+    into: PhantomData&lt;T&gt;,
+    dest: PhantomData&lt;D&gt;,
+}
+</code></pre></pre>
+</div>
+</details>
+<ol>
+<li>这个数据结构使用了三个泛型参数，R,T,D.</li>
+<li>其实数据结构中真正用到的只有一个 R，它可以是一个实现了 AsyncRead 的数据结构（稍后会看到）。</li>
+<li>另外两个泛型参数 T 和 D，在<strong>数据结构定义的时候</strong>其实并不需要，只是<strong>在数据结构的实现过程</strong>中，才需要用到它们的约束。</li>
+<li>其中，T 是从 R 中读取出的数据反序列化出来的类型，在实现时用 prost::Message 约束。</li>
+<li>D 是一个类型占位符，它会根据需要被具体化为 AsyncDestination 或者 AsyncFrameDestination。</li>
+<li>类型参数 D 如何使用，我们可以先想像一下:</li>
+</ol>
+<ul>
+<li>实现 AsyncProstReader 的时候，我们希望在使用 AsyncDestination 时，提供一种实现</li>
+<li>而在使用 AsyncFrameDestination 时，提供另一种实现</li>
+</ul>
+<blockquote>
+<p>也就是说，这里的类型参数 D，在 impl 的时候，会被具体化成某个类型。</p>
+</blockquote>
+<details id="admonition-拿着这个想法来看-asyncprostreader-在实现-streamhttpsdocsrsfutures0317futurespreludetraitstreamhtml-时d-是如何具体化的" class="admonition info">
+<summary class="admonition-title">
+<p>拿着这个想法，来看 AsyncProstReader 在<a href="https://docs.rs/futures/0.3.17/futures/prelude/trait.Stream.html">实现 Stream</a> 时，D 是如何具体化的</p>
+<p><a class="admonition-anchor-link" href="#admonition-拿着这个想法来看-asyncprostreader-在实现-streamhttpsdocsrsfutures0317futurespreludetraitstreamhtml-时d-是如何具体化的"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>这里你不用关心 Stream 具体是什么以及如何实现。</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;R, T&gt; Stream for AsyncProstReader&lt;R, T, AsyncDestination&gt;
+where
+    T: Message + Default,
+    R: AsyncRead + Unpin,
+{
+    type Item = Result&lt;T, io::Error&gt;;
+
+    fn poll_next(mut self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt; {
+        ...
+    }
+}
+</code></pre></pre>
+<blockquote>
+<p>再看对另外一个对 D 的具体实现：</p>
+</blockquote>
+<pre><pre class="playground"><code class="language-rust  editable">
+impl&lt;R, T&gt; Stream for AsyncProstReader&lt;R, T, AsyncFrameDestination&gt;
+where
+    R: AsyncRead + Unpin,
+    T: Framed + Default,
+{
+    type Item = Result&lt;T, io::Error&gt;;
+
+    fn poll_next(mut self: Pin&lt;&amp;mut Self&gt;, cx: &amp;mut Context&lt;'_&gt;) -&gt; Poll&lt;Option&lt;Self::Item&gt;&gt; {
+        ...
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<p>在这个例子里，除了 Stream 的实现不同外，AsyncProstReader 的其它实现都是共享的。</p>
+<blockquote>
+<p>所以我们有必要为其增加一个泛型参数 D，使其可以根据不同的 D 的类型，来提供不同的 Stream 实现。</p>
+</blockquote>
+<h3 id="asyncprostreader-综合使用了泛型的三种用法感兴趣的话你可以看源代码"><a class="header" href="#asyncprostreader-综合使用了泛型的三种用法感兴趣的话你可以看源代码">AsyncProstReader: 综合使用了泛型的三种用法，感兴趣的话你可以看源代码</a></h3>
+<h2 id="泛型函数"><a class="header" href="#泛型函数">泛型函数</a></h2>
+<h3 id="使用泛型结构作为参数或返回值"><a class="header" href="#使用泛型结构作为参数或返回值">使用泛型结构作为参数或返回值</a></h3>
+<details id="admonition-在声明一个函数的时候我们还可以不指定具体的参数或返回值的类型而是由泛型参数来代替" class="admonition info">
+<summary class="admonition-title">
+<p>在声明一个函数的时候，我们还可以不指定具体的参数或返回值的类型，而是由泛型参数来代替</p>
+<p><a class="admonition-anchor-link" href="#admonition-在声明一个函数的时候我们还可以不指定具体的参数或返回值的类型而是由泛型参数来代替"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+fn id&lt;T&gt;(x: T) -&gt; T {
+    return x;
+}
+
+fn main() {
+    let int = id(10);
+    let string = id(&quot;Tyr&quot;);
+    println!(&quot;{}, {}&quot;, int, string);
+}
+</code></pre></pre>
+</div>
+</details>
+<h3 id="泛型函数编译时进行单态化"><a class="header" href="#泛型函数编译时进行单态化">泛型函数编译时进行单态化</a></h3>
 <details id="admonition-编译时展开泛型参数单态化" class="admonition info">
 <summary class="admonition-title">
 <p>编译时展开泛型参数单态化</p>
@@ -303,8 +827,217 @@ fn main() {
 </ul>
 </div>
 </details>
-<h3 id="优劣"><a class="header" href="#优劣">优劣</a></h3>
-<h2 id="返回值携带泛型参数"><a class="header" href="#返回值携带泛型参数">返回值携带泛型参数</a></h2>
+<h3 id="返回值携带泛型参数-选择trait-object而不是trait-impl"><a class="header" href="#返回值携带泛型参数-选择trait-object而不是trait-impl">返回值携带泛型参数: 选择trait object而不是trait impl</a></h3>
+<details id="admonition-例子使用trait-object的迭代函数" class="admonition info">
+<summary class="admonition-title">
+<p>例子：使用trait object的迭代函数</p>
+<p><a class="admonition-anchor-link" href="#admonition-例子使用trait-object的迭代函数"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait Storage {
+    ...
+    /// 遍历 HashTable，返回 kv pair 的 Iterator
+    fn get_iter(&amp;self, table: &amp;str) -&gt; 
+        Result&lt;Box&lt;dyn Iterator&lt;Item = Kvpair&gt;&gt;, KvError&gt;;
+}
+</code></pre></pre>
+<blockquote>
+<p>对于 get_iter() 方法，并不关心返回值是一个什么样的 Iterator，只要它能够允许我们不断调用 next() 方法，获得一个 Kvpair 的结构，就可以了。在实现里，使用了 trait object。</p>
+</blockquote>
+</div>
+</details>
+<details id="admonition-上面的例子不能使用trait-impl因为rust还不允许" class="admonition info">
+<summary class="admonition-title">
+<p>上面的例子不能使用trait impl，因为rust还不允许</p>
+<p><a class="admonition-anchor-link" href="#admonition-上面的例子不能使用trait-impl因为rust还不允许"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">// 目前 trait 还不支持
+fn get_iter(&amp;self, table: &amp;str) -&gt; Result&lt;impl Iterator&lt;Item = Kvpair&gt;, KvError&gt;;
+</code></pre></pre>
+<hr />
+<pre><pre class="playground"><code class="language-rust  editable">
+pub trait ImplTrait {
+    // 允许
+    fn impl_in_args(s: impl Into&lt;String&gt;) -&gt; String {
+        s.into()
+    }
+
+    // 不允许
+    fn impl_as_return(s: String) -&gt; impl Into&lt;String&gt; {
+        s
+    }
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-使用impl泛型参数做返回值很难构造成功" class="admonition info">
+<summary class="admonition-title">
+<p>使用impl泛型参数做返回值，很难构造成功</p>
+<p><a class="admonition-anchor-link" href="#admonition-使用impl泛型参数做返回值很难构造成功"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 目前 trait 还不支持
+fn get_iter(&amp;self, table: &amp;str) -&gt; Result&lt;impl Iterator&lt;Item = Kvpair&gt;, KvError&gt;;
+
+
+// 可以正确编译
+pub fn generics_as_return_working(i: u32) -&gt; impl Iterator&lt;Item = u32&gt; {
+    std::iter::once(i)
+}
+
+// 期待泛型类型，却返回一个具体类型
+pub fn generics_as_return_not_working&lt;T: Iterator&lt;Item = u32&gt;&gt;(i: u32) -&gt; T {
+    std::iter::once(i)
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-可以返回-trait-object它消除了类型的差异把所有不同的实现-iterator-的类型都统一到一个相同的-trait-object-下" class="admonition info">
+<summary class="admonition-title">
+<p>可以返回 trait object，它消除了类型的差异，把所有不同的实现 Iterator 的类型都统一到一个相同的 trait object 下</p>
+<p><a class="admonition-anchor-link" href="#admonition-可以返回-trait-object它消除了类型的差异把所有不同的实现-iterator-的类型都统一到一个相同的-trait-object-下"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+// 返回 trait object
+pub fn trait_object_as_return_working(i: u32) -&gt; Box&lt;dyn Iterator&lt;Item = u32&gt;&gt; {
+    Box::new(std::iter::once(i))
+}
+</code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>使用 trait object 是有额外的代价的，首先这里有一次额外的堆分配，其次动态分派会带来一定的性能损失。</p>
+</blockquote>
+<h3 id="复杂泛型参数处理一步步分解"><a class="header" href="#复杂泛型参数处理一步步分解">复杂泛型参数处理：一步步分解</a></h3>
+<details id="admonition-一个复杂泛型参数示例" class="admonition info">
+<summary class="admonition-title">
+<p>一个复杂泛型参数示例</p>
+<p><a class="admonition-anchor-link" href="#admonition-一个复杂泛型参数示例"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">
+pub fn comsume_iterator&lt;F, Iter,  T&gt;(mut f: F)
+where
+    F: FnMut(i32) -&gt; Iter, 
+    Iter: Iterator&lt;Item = T&gt;, 
+    T: std::fmt::Debug, 
+{
+    // 根据 F 的类型，f(10) 返回 iterator，所以可以用 for 循环
+    for item in f(10) {
+        println!(&quot;{:?}&quot;, item); // item 实现了 Debug trait，所以可以用 {:?} 打印
+    }
+}
+</code></pre></pre>
+<blockquote>
+<p>一步步分解，其实并不难理解其实质:</p>
+</blockquote>
+<ol>
+<li>F: FnMut(i32) -&gt; Iter: 参数 F 是一个闭包，接受 i32，返回 Iter 类型；</li>
+<li>Iter: Iterator&lt;Item = T&gt;: 参数 Iter 是一个 Iterator，Item 是 T 类型；</li>
+<li>T: std::fmt::Debug: 参数 T 是一个实现了 Debug trait 的类型。</li>
+</ol>
+</div>
+</details>
+<details id="admonition-一个更加复杂的例子来自substrate的librshttpsgithubcomparitytechsubstrateblobmasterframeexecutivesrclibrsl154-l226" class="admonition info">
+<summary class="admonition-title">
+<p>一个更加复杂的例子：<a href="https://github.com/paritytech/substrate/blob/master/frame/executive/src/lib.rs#L154-L226">来自substrate的lib.rs</a></p>
+<p><a class="admonition-anchor-link" href="#admonition-一个更加复杂的例子来自substrate的librshttpsgithubcomparitytechsubstrateblobmasterframeexecutivesrclibrsl154-l226"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>/// Main entry point for certain runtime actions as e.g. `execute_block`.
+///
+/// Generic parameters:
+/// - `System`: Something that implements `frame_system::Config`
+/// - `Block`: The block type of the runtime
+/// - `Context`: The context that is used when checking an extrinsic.
+/// - `UnsignedValidator`: The unsigned transaction validator of the runtime.
+/// - `AllPalletsWithSystem`: Tuple that contains all pallets including frame system pallet. Will be
+///   used to call hooks e.g. `on_initialize`.
+/// - `OnRuntimeUpgrade`: Custom logic that should be called after a runtime upgrade. Modules are
+///   already called by `AllPalletsWithSystem`. It will be called before all modules will be called.
+pub struct Executive&lt;
+	System,
+	Block,
+	Context,
+	UnsignedValidator,
+	AllPalletsWithSystem,
+	OnRuntimeUpgrade = (),
+&gt;(
+	PhantomData&lt;(
+		System,
+		Block,
+		Context,
+		UnsignedValidator,
+		AllPalletsWithSystem,
+		OnRuntimeUpgrade,
+	)&gt;,
+);
+
+impl&lt;
+		System: frame_system::Config + EnsureInherentsAreFirst&lt;Block&gt;,
+		Block: traits::Block&lt;Header = System::Header, Hash = System::Hash&gt;,
+		Context: Default,
+		UnsignedValidator,
+		AllPalletsWithSystem: OnRuntimeUpgrade
+			+ OnInitialize&lt;System::BlockNumber&gt;
+			+ OnIdle&lt;System::BlockNumber&gt;
+			+ OnFinalize&lt;System::BlockNumber&gt;
+			+ OffchainWorker&lt;System::BlockNumber&gt;,
+		COnRuntimeUpgrade: OnRuntimeUpgrade,
+	&gt; ExecuteBlock&lt;Block&gt;
+	for Executive&lt;System, Block, Context, UnsignedValidator, AllPalletsWithSystem, COnRuntimeUpgrade&gt;
+where
+	Block::Extrinsic: Checkable&lt;Context&gt; + Codec,
+	CheckedOf&lt;Block::Extrinsic, Context&gt;: Applyable + GetDispatchInfo,
+	CallOf&lt;Block::Extrinsic, Context&gt;:
+		Dispatchable&lt;Info = DispatchInfo, PostInfo = PostDispatchInfo&gt;,
+	OriginOf&lt;Block::Extrinsic, Context&gt;: From&lt;Option&lt;System::AccountId&gt;&gt;,
+	UnsignedValidator: ValidateUnsigned&lt;Call = CallOf&lt;Block::Extrinsic, Context&gt;&gt;,
+{
+	fn execute_block(block: Block) {
+		Executive::&lt;
+			System,
+			Block,
+			Context,
+			UnsignedValidator,
+			AllPalletsWithSystem,
+			COnRuntimeUpgrade,
+		&gt;::execute_block(block);
+	}
+}
+
+impl&lt;
+		System: frame_system::Config + EnsureInherentsAreFirst&lt;Block&gt;,
+		Block: traits::Block&lt;Header = System::Header, Hash = System::Hash&gt;,
+		Context: Default,
+		UnsignedValidator,
+		AllPalletsWithSystem: OnRuntimeUpgrade
+			+ OnInitialize&lt;System::BlockNumber&gt;
+			+ OnIdle&lt;System::BlockNumber&gt;
+			+ OnFinalize&lt;System::BlockNumber&gt;
+			+ OffchainWorker&lt;System::BlockNumber&gt;,
+		COnRuntimeUpgrade: OnRuntimeUpgrade,
+	&gt; Executive&lt;System, Block, Context, UnsignedValidator, AllPalletsWithSystem, COnRuntimeUpgrade&gt;
+where
+	Block::Extrinsic: Checkable&lt;Context&gt; + Codec,
+	CheckedOf&lt;Block::Extrinsic, Context&gt;: Applyable + GetDispatchInfo,
+	CallOf&lt;Block::Extrinsic, Context&gt;:
+		Dispatchable&lt;Info = DispatchInfo, PostInfo = PostDispatchInfo&gt;,
+	OriginOf&lt;Block::Extrinsic, Context&gt;: From&lt;Option&lt;System::AccountId&gt;&gt;,
+	UnsignedValidator: ValidateUnsigned&lt;Call = CallOf&lt;Block::Extrinsic, Context&gt;&gt;,
+{
+    ...
+}
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
 
             </main>
 
