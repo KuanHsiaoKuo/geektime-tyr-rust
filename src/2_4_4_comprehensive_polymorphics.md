@@ -1,6 +1,13 @@
 # 复杂多态实例
 
 <!--ts-->
+* [复杂多态实例](#复杂多态实例)
+   * [从编程角度理解多态的意义](#从编程角度理解多态的意义)
+   * [实例一：参数多态+特设多态（substrate/frame/executive/src/lib.rs）](#实例一参数多态特设多态substrateframeexecutivesrclibrs)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Sat Oct 22 02:45:05 UTC 2022 -->
+
 <!--te-->
 
 ## 从编程角度理解多态的意义
