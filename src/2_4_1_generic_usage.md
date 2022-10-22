@@ -1,7 +1,7 @@
 # Generics: 参数多态, 编译期单态化
 
 <!--ts-->
-* [参数多态：泛型使用](#参数多态泛型使用)
+* [Generics: 参数多态, 编译期单态化](#generics-参数多态-编译期单态化)
    * [生命周期标注](#生命周期标注)
    * [泛型结构：struct/enum定义中](#泛型结构structenum定义中)
       * [Generic Vec](#generic-vec)
@@ -21,7 +21,7 @@
       * [复杂泛型参数处理：一步步分解](#复杂泛型参数处理一步步分解)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 22 02:45:05 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 22 03:55:15 UTC 2022 -->
 
 <!--te-->
 

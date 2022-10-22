@@ -1,18 +1,17 @@
 # Trait Object: 子类型多态，运行时通过vtable动态分发
 
 <!--ts-->
-
-* [Trait Object](#trait-object)
-    * [子类型多态: 动态分派](#子类型多态-动态分派)
-    * [实现机理：ptr+vtable](#实现机理ptrvtable)
-    * [对象安全](#对象安全)
-    * [使用场景](#使用场景)
-        * [在函数中使用](#在函数中使用)
-        * [在函数返回值中使用](#在函数返回值中使用)
-        * [在数据结构中使用](#在数据结构中使用)
+* [Trait Object: 子类型多态，运行时通过vtable动态分发](#trait-object-子类型多态运行时通过vtable动态分发)
+   * [子类型多态: 动态分派](#子类型多态-动态分派)
+   * [实现机理：ptr+vtable](#实现机理ptrvtable)
+   * [对象安全](#对象安全)
+   * [使用场景](#使用场景)
+      * [在函数中使用](#在函数中使用)
+      * [在函数返回值中使用](#在函数返回值中使用)
+      * [在数据结构中使用](#在数据结构中使用)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 22 02:45:05 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 22 03:55:15 UTC 2022 -->
 
 <!--te-->
 
