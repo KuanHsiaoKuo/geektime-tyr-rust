@@ -11,7 +11,7 @@
       * [特设多态 vs 子类型多态](#特设多态-vs-子类型多态)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 22 02:45:05 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 22 03:55:15 UTC 2022 -->
 
 <!--te-->
 

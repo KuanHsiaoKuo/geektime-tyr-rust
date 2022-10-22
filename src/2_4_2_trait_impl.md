@@ -1,11 +1,11 @@
 # Trait Impl/Bound: 特设多态，编译期单态化
 
 <!--ts-->
-* [Trait Impl](#trait-impl)
+* [Trait Impl/Bound: 特设多态，编译期单态化](#trait-implbound-特设多态编译期单态化)
    * [Trait impl的两面派](#trait-impl的两面派)
       * [具体实现](#具体实现)
       * [设计约束](#设计约束)
-   * [基本练习](#基本练习)
+   * [基本练习: 使用self参数](#基本练习-使用self参数)
       * [支持泛型](#支持泛型)
       * [支持继承](#支持继承)
       * [Self和self](#self和self)
@@ -17,7 +17,7 @@
       * [补充使用：使用关联类型+添加Result&lt;T, E&gt;](#补充使用使用关联类型添加resultt-e)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 22 02:45:05 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 22 03:55:15 UTC 2022 -->
 
 <!--te-->
 
