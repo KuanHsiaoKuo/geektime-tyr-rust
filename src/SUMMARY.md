@@ -22,6 +22,7 @@
             - [Generics](2_4_1_generic_usage.md)
             - [Trait impl](2_4_2_trait_impl.md)
             - [Trait object](2_4_3_trait_object.md)
+            - [复杂多态综合使用实例](2_4_4_comprehensive_polymorphics.md)
         - [常用trait](2_5_trait_frequently.md)
         - [Trait设计](2_6_trait_design.md)
     - [III. 数据结构](3_data_structure.md)
