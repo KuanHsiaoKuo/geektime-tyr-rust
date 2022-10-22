@@ -1,14 +1,15 @@
-# Trait Object
+# Trait Object: 子类型多态，运行时通过vtable动态分发
 
 <!--ts-->
+
 * [Trait Object](#trait-object)
-   * [子类型多态: 动态分派](#子类型多态-动态分派)
-   * [实现机理：ptr+vtable](#实现机理ptrvtable)
-   * [对象安全](#对象安全)
-   * [使用场景](#使用场景)
-      * [在函数中使用](#在函数中使用)
-      * [在函数返回值中使用](#在函数返回值中使用)
-      * [在数据结构中使用](#在数据结构中使用)
+    * [子类型多态: 动态分派](#子类型多态-动态分派)
+    * [实现机理：ptr+vtable](#实现机理ptrvtable)
+    * [对象安全](#对象安全)
+    * [使用场景](#使用场景)
+        * [在函数中使用](#在函数中使用)
+        * [在函数返回值中使用](#在函数返回值中使用)
+        * [在数据结构中使用](#在数据结构中使用)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sat Oct 22 02:45:05 UTC 2022 -->
@@ -17,13 +18,14 @@
 
 ## 子类型多态: 动态分派
 
-~~~admonish info title='在运行期决定' collapsible=true
+~~~admonish info title='在运行期决定, 第一个参数是&self' collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/13_traits/src/formatter.rs}}
 ```
 ----
 
-要有一种手段，告诉编译器，此处需要并且仅需要任何实现了 Formatter 接口的数据类型。在 Rust 里，这种类型叫 Trait Object，表现为 &dyn Trait 或者 Box。
+要有一种手段，告诉编译器，此处需要并且仅需要任何实现了 Formatter 接口的数据类型。
+> 在 Rust 里，这种类型叫 Trait Object，表现为 &dyn Trait 或者 Box。
 1. 这里结构体只是声明了一下，并不关注其包含什么字段
 ~~~
 

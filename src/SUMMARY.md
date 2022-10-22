@@ -20,7 +20,7 @@
         - [trait概览](2_3_trait_overview.md)
         - [三种多态形式](2_4_0_three_polymorphics.md)
             - [Generics](2_4_1_generic_usage.md)
-            - [Trait impl](2_4_2_trait_impl.md)
+            - [Trait impl/bound](2_4_2_trait_impl.md)
             - [Trait object](2_4_3_trait_object.md)
             - [复杂多态综合使用实例](2_4_4_comprehensive_polymorphics.md)
         - [常用trait](2_5_trait_frequently.md)
