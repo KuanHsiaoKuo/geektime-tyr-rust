@@ -193,13 +193,14 @@
 <li><a href="#%E5%8F%82%E6%95%B0%E5%A4%9A%E6%80%81-vs-%E7%89%B9%E8%AE%BE%E5%A4%9A%E6%80%81">参数多态 vs 特设多态</a></li>
 <li><a href="#%E5%8F%82%E6%95%B0%E5%A4%9A%E6%80%81-vs-%E5%AD%90%E7%B1%BB%E5%9E%8B%E5%A4%9A%E6%80%81">参数多态 vs 子类型多态</a></li>
 <li><a href="#%E7%89%B9%E8%AE%BE%E5%A4%9A%E6%80%81-vs-%E5%AD%90%E7%B1%BB%E5%9E%8B%E5%A4%9A%E6%80%81">特设多态 vs 子类型多态</a></li>
+<li><a href="#%E5%85%B7%E4%BD%93%E5%86%8D%E5%AF%B9%E6%AF%94%E4%B8%80%E4%B8%8Brust%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%A4%9A%E6%80%81%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F">具体再对比一下rust的两种多态实现方式：</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 22 03:55:15 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 22 06:02:11 UTC 2022 -->
 <!--te-->
 <blockquote>
 <p>通俗来讲，只要是为不同类型的数据或操作提供了相同的名字就可以叫多态。</p>
@@ -283,6 +284,79 @@
 <li>特设多态的实现很明确：特定实现，发生在编译期</li>
 <li>子类型多态：胖指针实现，发生在运行期</li>
 </ol>
+<h3 id="具体再对比一下rust的两种多态实现方式"><a class="header" href="#具体再对比一下rust的两种多态实现方式">具体再对比一下rust的两种多态实现方式：</a></h3>
+<details id="admonition-trait-impl特设多态vs-trait-object子类型多态" class="admonition tip">
+<summary class="admonition-title">
+<p>trait impl（特设多态）vs trait object（子类型多态）</p>
+<p><a class="admonition-anchor-link" href="#admonition-trait-impl特设多态vs-trait-object子类型多态"></a></p>
+</summary>
+<div>
+<blockquote>
+<p>trait object（动态分发）：</p>
+</blockquote>
+<ol>
+<li>前提：trait里面的每个方法都要有&amp;slef参数。</li>
+<li>优势：使用指针，对参数的要求更灵活，二进制文件小。</li>
+<li>劣势：运行时动态分发，造成性能不如静态分发。</li>
+<li>特点：传指针或者引用。</li>
+</ol>
+<blockquote>
+<p>trait bound（静态分发）:</p>
+</blockquote>
+<ol>
+<li>前提: 只要程序代码中并没初始化类型，那么针对这个类型的trait中的方法也没有生成。</li>
+<li>执行：编译期分析代码，为每个实现了trait的类型执行单态化（必须满足前提）。</li>
+<li>优势：编译期决定为类型分发trait实现，不影响运行时，性能高。</li>
+<li>劣势：编译器为每个实现过trait的类型编译一份方法实现，二进制文件大。</li>
+<li>特点：传值</li>
+</ol>
+</div>
+</details>
+<details id="admonition-具体到self和self" class="admonition tip">
+<summary class="admonition-title">
+<p>具体到self和&amp;self</p>
+<p><a class="admonition-anchor-link" href="#admonition-具体到self和self"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust  editable">#[warn(dead_code)]
+trait Animal {
+    // trait object的方法都要带&amp;self参数
+    fn hello(&amp;self){println!(&quot;hello&quot;);}
+}
+
+struct Good{}
+struct Hello{}
+
+impl Animal for Good{}//默认实现
+impl Animal for Hello{}//默认实现
+
+ //动态分发体现在传递引用&amp;dyn
+fn test_dyn(x: &amp;dyn Animal) 
+{
+    x.hello();
+}
+
+//静态分发体现在传递值impl Animal
+fn test(x: impl Animal){
+    x.hello();
+}
+
+fn main() {
+    {
+        let good = Good{};
+        test_dyn(&amp;good);
+        // let hello = Hello{};
+        // test_dyn(&amp;hello);
+    }
+}
+</code></pre></pre>
+<ol>
+<li>trait object的方法都要带&amp;self参数</li>
+<li>动态分发体现在参数传递引用&amp;dyn</li>
+<li>静态分发体现在参数传递值impl Animal</li>
+</ol>
+</div>
+</details>
 
             </main>
 
