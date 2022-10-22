@@ -1,14 +1,15 @@
 # 三种多态形式
 
 <!--ts-->
+
 * [三种多态形式](#三种多态形式)
-   * [参数多态：](#参数多态)
-   * [特设多态：](#特设多态)
-   * [子类型多态](#子类型多态)
-   * [三种多态两两对比](#三种多态两两对比)
-      * [参数多态 vs 特设多态](#参数多态-vs-特设多态)
-      * [参数多态 vs 子类型多态](#参数多态-vs-子类型多态)
-      * [特设多态 vs 子类型多态](#特设多态-vs-子类型多态)
+    * [参数多态：](#参数多态)
+    * [特设多态：](#特设多态)
+    * [子类型多态](#子类型多态)
+    * [三种多态两两对比](#三种多态两两对比)
+        * [参数多态 vs 特设多态](#参数多态-vs-特设多态)
+        * [参数多态 vs 子类型多态](#参数多态-vs-子类型多态)
+        * [特设多态 vs 子类型多态](#特设多态-vs-子类型多态)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sat Oct 22 02:45:05 UTC 2022 -->
@@ -78,3 +79,62 @@ Ad hoc是一个拉丁文常用短语。
 
 1. 特设多态的实现很明确：特定实现，发生在编译期
 2. 子类型多态：胖指针实现，发生在运行期
+
+### 具体再对比一下rust的两种多态实现方式：
+
+~~~admonish tip title="trait impl（特设多态）vs trait object（子类型多态）" collapsible=true
+> trait object（动态分发）：
+
+1. 前提：trait里面的每个方法都要有&slef参数。
+2. 优势：使用指针，对参数的要求更灵活，二进制文件小。
+3. 劣势：运行时动态分发，造成性能不如静态分发。
+4. 特点：传指针或者引用。
+
+> trait bound（静态分发）:
+
+1. 前提: 只要程序代码中并没初始化类型，那么针对这个类型的trait中的方法也没有生成。
+2. 执行：编译期分析代码，为每个实现了trait的类型执行单态化（必须满足前提）。
+3. 优势：编译期决定为类型分发trait实现，不影响运行时，性能高。
+4. 劣势：编译器为每个实现过trait的类型编译一份方法实现，二进制文件大。
+5. 特点：传值
+~~~
+
+~~~admonish tip title="具体到self和&self" collapsible=true
+```rust, editable
+#[warn(dead_code)]
+trait Animal {
+    // trait object的方法都要带&self参数
+    fn hello(&self){println!("hello");}
+}
+
+struct Good{}
+struct Hello{}
+
+impl Animal for Good{}//默认实现
+impl Animal for Hello{}//默认实现
+
+ //动态分发体现在传递引用&dyn
+fn test_dyn(x: &dyn Animal) 
+{
+    x.hello();
+}
+
+//静态分发体现在传递值impl Animal
+fn test(x: impl Animal){
+    x.hello();
+}
+
+fn main() {
+    {
+        let good = Good{};
+        test_dyn(&good);
+        // let hello = Hello{};
+        // test_dyn(&hello);
+    }
+}
+```
+
+1. trait object的方法都要带&self参数
+2. 动态分发体现在参数传递引用&dyn
+3. 静态分发体现在参数传递值impl Animal
+~~~
