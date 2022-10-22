@@ -1,28 +1,27 @@
 # Generics: 参数多态, 编译期单态化
 
 <!--ts-->
-
 * [Generics: 参数多态, 编译期单态化](#generics-参数多态-编译期单态化)
-    * [生命周期标注](#生命周期标注)
-    * [泛型结构：struct/enum定义中](#泛型结构structenum定义中)
-        * [Generic Vec](#generic-vec)
-        * [Generic Cow](#generic-cow)
-        * [trait impl: 在不同的实现下逐步添加约束](#trait-impl-在不同的实现下逐步添加约束)
-    * [泛型参数：三种使用场景](#泛型参数三种使用场景)
-        * [延迟绑定](#延迟绑定)
-        * [额外类型](#额外类型)
-        * [多个实现](#多个实现)
-            * [简单实现](#简单实现)
-            * [AsyncProstReader综合例子](#asyncprostreader综合例子)
-        * [AsyncProstReader: 综合使用了泛型的三种用法，感兴趣的话你可以看源代码](#asyncprostreader-综合使用了泛型的三种用法感兴趣的话你可以看源代码)
-    * [泛型函数](#泛型函数)
-        * [使用泛型结构作为参数或返回值](#使用泛型结构作为参数或返回值)
-        * [泛型函数编译时进行单态化](#泛型函数编译时进行单态化)
-        * [返回值携带泛型参数: 选择trait object而不是trait impl](#返回值携带泛型参数-选择trait-object而不是trait-impl)
-        * [复杂泛型参数处理：一步步分解](#复杂泛型参数处理一步步分解)
+   * [生命周期标注](#生命周期标注)
+   * [泛型结构：struct/enum定义中](#泛型结构structenum定义中)
+      * [Generic Vec](#generic-vec)
+      * [Generic Cow](#generic-cow)
+      * [trait impl: 在不同的实现下逐步添加约束](#trait-impl-在不同的实现下逐步添加约束)
+   * [泛型参数：三种使用场景](#泛型参数三种使用场景)
+      * [延迟绑定](#延迟绑定)
+      * [额外类型](#额外类型)
+      * [多个实现](#多个实现)
+         * [简单实现](#简单实现)
+         * [AsyncProstReader综合例子](#asyncprostreader综合例子)
+      * [AsyncProstReader: 综合使用了泛型的三种用法，感兴趣的话你可以看源代码](#asyncprostreader-综合使用了泛型的三种用法感兴趣的话你可以看源代码)
+   * [泛型函数](#泛型函数)
+      * [使用泛型结构作为参数或返回值](#使用泛型结构作为参数或返回值)
+      * [泛型函数编译时进行单态化](#泛型函数编译时进行单态化)
+      * [返回值携带泛型参数: 选择trait object而不是trait impl](#返回值携带泛型参数-选择trait-object而不是trait-impl)
+      * [复杂泛型参数处理：一步步分解](#复杂泛型参数处理一步步分解)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 22 06:07:00 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 22 07:05:52 UTC 2022 -->
 
 <!--te-->
 

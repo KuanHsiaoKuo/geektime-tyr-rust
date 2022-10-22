@@ -6,7 +6,7 @@
    * [实例一：参数多态+特设多态（substrate/frame/executive/src/lib.rs）](#实例一参数多态特设多态substrateframeexecutivesrclibrs)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 22 06:07:00 UTC 2022 -->
+<!-- Added by: runner, at: Sat Oct 22 07:05:53 UTC 2022 -->
 
 <!--te-->
 
