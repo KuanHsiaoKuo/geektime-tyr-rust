@@ -15,7 +15,7 @@
    * [Box&lt;[T]&gt;](#boxt)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct 23 06:38:27 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 23 06:48:52 UTC 2022 -->
 
 <!--te-->
 

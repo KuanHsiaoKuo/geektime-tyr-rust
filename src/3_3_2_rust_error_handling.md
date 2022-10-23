@@ -7,7 +7,7 @@
       * [Result](#result)
    * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
       * [panic!抛出异常: 不可/不想恢复](#panic抛出异常-不可不想恢复)
-      * [unwarp/expect语法糖](#unwarpexpect语法糖)
+      * [unwrap/expect语法糖](#unwrapexpect语法糖)
       * [catch_uwind捕获异常：崩溃后恢复上下文](#catch_uwind捕获异常崩溃后恢复上下文)
    * [3. 自定义异常类型](#3-自定义异常类型)
       * [3.1 使用Error trait](#31-使用error-trait)
@@ -22,7 +22,7 @@
       * [4.2 函数式错误处理: map/map_err/and_then](#42-函数式错误处理-mapmap_errand_then)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sun Oct 23 06:38:29 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 23 06:48:53 UTC 2022 -->
 
 <!--te-->
 
