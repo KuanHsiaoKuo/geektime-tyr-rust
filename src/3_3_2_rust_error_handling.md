@@ -1,21 +1,22 @@
 # Rust 的错误处理
 
 <!--ts-->
+
 * [Rust 的错误处理](#rust-的错误处理)
-   * [1. 使用类型系统来构建主要的错误处理流程：Option/Result错误类型处理](#1-使用类型系统来构建主要的错误处理流程optionresult错误类型处理)
-      * [Option](#option)
-      * [Result](#result)
-   * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
-      * [panic!抛出异常: 不可/不想恢复](#panic抛出异常-不可不想恢复)
-      * [catch_uwind捕获异常：崩溃后恢复上下文](#catch_uwind捕获异常崩溃后恢复上下文)
-   * [3. 自定义异常类型](#3-自定义异常类型)
-      * [3.1 使用Error trait](#31-使用error-trait)
-      * [3.2 使用thiserror简化](#32-使用thiserror简化)
-      * [3.3 使用anyhow扩展？操作符](#33-使用anyhow扩展操作符)
-      * [3.4 让错误无所遁形](#34-让错误无所遁形)
-   * [4. 捕获异常](#4-捕获异常)
-      * [4.1 ?操作符](#41-操作符)
-      * [4.2 函数式错误处理: map/map_err/and_then](#42-函数式错误处理-mapmap_errand_then)
+    * [1. 使用类型系统来构建主要的错误处理流程：Option/Result错误类型处理](#1-使用类型系统来构建主要的错误处理流程optionresult错误类型处理)
+        * [Option](#option)
+        * [Result](#result)
+    * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
+        * [panic!抛出异常: 不可/不想恢复](#panic抛出异常-不可不想恢复)
+        * [catch_uwind捕获异常：崩溃后恢复上下文](#catch_uwind捕获异常崩溃后恢复上下文)
+    * [3. 自定义异常类型](#3-自定义异常类型)
+        * [3.1 使用Error trait](#31-使用error-trait)
+        * [3.2 使用thiserror简化](#32-使用thiserror简化)
+        * [3.3 使用anyhow扩展？操作符](#33-使用anyhow扩展操作符)
+        * [3.4 让错误无所遁形](#34-让错误无所遁形)
+    * [4. 捕获异常](#4-捕获异常)
+        * [4.1 ?操作符](#41-操作符)
+        * [4.2 函数式错误处理: map/map_err/and_then](#42-函数式错误处理-mapmap_errand_then)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Sat Oct 22 07:05:54 UTC 2022 -->
@@ -87,15 +88,14 @@ pub enum Result<T, E> {
 
 一般而言，panic! 是不可恢复或者不想恢复的错误，我们希望在此刻，程序终止运行并得到崩溃信息。
 
+### unwarp/expect语法糖
+
 ~~~admonish info title="unwarp() 或者 expect()就是准备panic!" collapsible=true
 在使用 Option 和 Result 类型时，开发者也可以对其 unwarp() 或者 expect()，强制把 Option<T> 和 Result<T, E> 转换成 T，如果无法完成这种转换，也会 panic! 出来。
-
-
 
 比如下面的代码，它解析[ noise protocol](https://noiseprotocol.org/noise.html#protocol-names-and-modifiers)的协议变量：
 
 ```rust, editable
-
 let params: NoiseParams = "Noise_XX_25519_AESGCM_SHA256".parse().unwrap();
 ```
 ~~~
@@ -184,7 +184,7 @@ pub enum DataStoreError {
 
 如果你在撰写一个 Rust 库，那么 thiserror 可以很好地协助你对这个库里所有可能发生的错误进行建模。
 
-### 3.3 使用anyhow扩展？操作符
+### 3.3 使用anyhow扩展 ？操作符
 
 1. anyhow 实现了 anyhow::Error 和任意符合 Error trait 的错误类型之间的转换，让你可以使用 ? 操作符，不必再手工转换错误类型。
 2. anyhow 还可以让你很容易地抛出一些临时的错误，而不必费力定义错误类型，当然，我们不提倡滥用这个能力。
@@ -198,7 +198,9 @@ pub enum DataStoreError {
 
 ## 4. 捕获异常
 
-### 4.1 ?操作符
+### 4.1 ? 操作符
+
+#### 由来
 
 ~~~admonish info title="? 操作符的由来" collapsible=true
 这虽然可以极大避免遗忘错误的显示处理，但如果我们并不关心错误，只需要传递错误，还是会写出像 C 或者 Golang 一样比较冗余的代码。怎么办？
@@ -207,6 +209,8 @@ pub enum DataStoreError {
 - 早期 Rust 提供了 try! 宏来简化错误的显式处理
 - 后来为了进一步提升用户体验，try! 被进化成 ? 操作符。
 ~~~
+
+#### 用于传播📣
 
 ~~~admonish info title="如果你只想传播错误，不想就地处理，可以用 ? 操作符" collapsible=true
 所以在 Rust 代码中，如果你只想传播错误，不想就地处理，可以用 ? 操作符，比如（代码）:
@@ -227,7 +231,9 @@ fn read_file(name: &str) -> Result<String, std::io::Error> {
 
 > 通过 ? 操作符，Rust 让错误传播的代价和异常处理不相上下，同时又避免了异常处理的诸多问题。
 
-~~~admonish info title="? 操作符内部被展开成类似这样的代码：" collapsible=true
+#### ？操作符展开
+
+~~~admonish info title=" ? 操作符内部被展开成类似这样的代码：" collapsible=true
 ```rust, editable
 
 match result {
