@@ -1,25 +1,28 @@
 # Rust 的错误处理
 
 <!--ts-->
-
 * [Rust 的错误处理](#rust-的错误处理)
-    * [1. 使用类型系统来构建主要的错误处理流程：Option/Result错误类型处理](#1-使用类型系统来构建主要的错误处理流程optionresult错误类型处理)
-        * [Option](#option)
-        * [Result](#result)
-    * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
-        * [panic!抛出异常: 不可/不想恢复](#panic抛出异常-不可不想恢复)
-        * [catch_uwind捕获异常：崩溃后恢复上下文](#catch_uwind捕获异常崩溃后恢复上下文)
-    * [3. 自定义异常类型](#3-自定义异常类型)
-        * [3.1 使用Error trait](#31-使用error-trait)
-        * [3.2 使用thiserror简化](#32-使用thiserror简化)
-        * [3.3 使用anyhow扩展？操作符](#33-使用anyhow扩展操作符)
-        * [3.4 让错误无所遁形](#34-让错误无所遁形)
-    * [4. 捕获异常](#4-捕获异常)
-        * [4.1 ?操作符](#41-操作符)
-        * [4.2 函数式错误处理: map/map_err/and_then](#42-函数式错误处理-mapmap_errand_then)
+   * [1. 使用类型系统来构建主要的错误处理流程：Option/Result错误类型处理](#1-使用类型系统来构建主要的错误处理流程optionresult错误类型处理)
+      * [Option](#option)
+      * [Result](#result)
+   * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
+      * [panic!抛出异常: 不可/不想恢复](#panic抛出异常-不可不想恢复)
+      * [unwarp/expect语法糖](#unwarpexpect语法糖)
+      * [catch_uwind捕获异常：崩溃后恢复上下文](#catch_uwind捕获异常崩溃后恢复上下文)
+   * [3. 自定义异常类型](#3-自定义异常类型)
+      * [3.1 使用Error trait](#31-使用error-trait)
+      * [3.2 使用thiserror简化](#32-使用thiserror简化)
+      * [3.3 使用anyhow扩展 ？操作符](#33-使用anyhow扩展-操作符)
+      * [3.4 让错误无所遁形](#34-让错误无所遁形)
+   * [4. 捕获异常](#4-捕获异常)
+      * [4.1 ? 操作符](#41--操作符)
+         * [由来](#由来)
+         * [用于传播<g-emoji class="g-emoji" alias="mega" fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/1f4e3.png">📣</g-emoji>](#用于传播)
+         * [？操作符展开](#操作符展开)
+      * [4.2 函数式错误处理: map/map_err/and_then](#42-函数式错误处理-mapmap_errand_then)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Oct 22 07:05:54 UTC 2022 -->
+<!-- Added by: runner, at: Sun Oct 23 06:38:29 UTC 2022 -->
 
 <!--te-->
 
