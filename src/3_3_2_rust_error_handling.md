@@ -91,10 +91,10 @@ pub enum Result<T, E> {
 
 一般而言，panic! 是不可恢复或者不想恢复的错误，我们希望在此刻，程序终止运行并得到崩溃信息。
 
-### unwarp/expect语法糖
+### unwrap/expect语法糖
 
-~~~admonish info title="unwarp() 或者 expect()就是准备panic!" collapsible=true
-在使用 Option 和 Result 类型时，开发者也可以对其 unwarp() 或者 expect()，强制把 Option<T> 和 Result<T, E> 转换成 T，如果无法完成这种转换，也会 panic! 出来。
+~~~admonish info title="unwrap() 或者 expect()就是准备panic!" collapsible=true
+在使用 Option 和 Result 类型时，开发者也可以对其 unwrap() 或者 expect()，强制把 Option<T> 和 Result<T, E> 转换成 T，如果无法完成这种转换，也会 panic! 出来。
 
 比如下面的代码，它解析[ noise protocol](https://noiseprotocol.org/noise.html#protocol-names-and-modifiers)的协议变量：
 
