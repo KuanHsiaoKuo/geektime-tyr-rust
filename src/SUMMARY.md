@@ -47,6 +47,8 @@
         - [深入async/await](5_3_deepin_async_await.md)
     - [VI. 混合编程](6_unsafe_ffi.md)
     - [VII. 网络开发](7_network.md)
+        - [网络协议](7_1_protocols.md)
+        - [网络模型](7_2_network_models.md)
 - [kv server设计与实现](kv_server_design.md)
     - [基本流程](kv1_basic.md)
     - [实现并验证协议层](kv2_protocols.md)
