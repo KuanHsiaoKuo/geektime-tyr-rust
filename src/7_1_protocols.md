@@ -1,6 +1,27 @@
 # 基于网络协议
 
 <!--ts-->
+* [基于网络协议](#基于网络协议)
+   * [回顾网络协议](#回顾网络协议)
+   * [Rust生态对网络协议的支持](#rust生态对网络协议的支持)
+   * [std::net](#stdnet)
+      * [服务端：TcpListener](#服务端tcplistener)
+      * [客户端：TcpStream](#客户端tcpstream)
+   * [处理网络连接的一般方法](#处理网络连接的一般方法)
+      * [问题一：如何处理大量连接？](#问题一如何处理大量连接)
+      * [问题二：如何处理共享信息？](#问题二如何处理共享信息)
+   * [处理网络数据的一般方法](#处理网络数据的一般方法)
+      * [JSON序列化](#json序列化)
+      * [使用 protobuf 自定义协议](#使用-protobuf-自定义协议)
+         * [如何界定一个消息帧（frame）](#如何界定一个消息帧frame)
+         * [tokio/tokio_util](#tokiotokio_util)
+   * [Tokio](#tokio)
+   * [尝试改写](#尝试改写)
+   * [总结：如何用 Rust 做基于 TCP 的网络开发](#总结如何用-rust-做基于-tcp-的网络开发)
+
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Mon Oct 24 07:25:43 UTC 2022 -->
+
 <!--te-->
 
 在互联网时代，谈到网络开发，我们想到的首先是 Web 开发以及涉及的**部分** HTTP 协议和 WebSocket 协议。
