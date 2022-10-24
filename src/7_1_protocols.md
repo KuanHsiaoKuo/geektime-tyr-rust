@@ -92,28 +92,9 @@
 4. 它实现了 Read / Write trait，可以像读写文件一样，进行 socket 的读写：
 
 ~~~admonish example title="例子: 使用std::net 创建一个 TCP server ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/listener.rs))" collapsible=true
-```rust
-use std::{
-    io::{Read, Write},
-    net::TcpListener,
-    thread,
-};
-
-fn main() {
-    let listener = TcpListener::bind("0.0.0.0:9527").unwrap();
-    loop {
-        let (mut stream, addr) = listener.accept().unwrap();
-        println!("Accepted a new connection: {}", addr);
-        thread::spawn(move || {
-            let mut buf = [0u8; 12];
-            stream.read_exact(&mut buf).unwrap();
-            println!("data: {:?}", String::from_utf8_lossy(&buf));
-            // 一共写了 17 个字节
-            stream.write_all(b"glad to meet you!").unwrap();
-        });
-    }
-}
-```
+```rust, editable
+{{#include ../geektime_rust_codes/29_network/examples/listener.rs}}
+``
 ~~~
 
 ### 客户端：TcpStream
@@ -123,22 +104,9 @@ fn main() {
 > 一旦客户端的请求被服务器接受，就可以发送或者接收数据：
 
 ~~~admonish example title="例子:  客户端使用TcpStream::connect() ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/client.rs)) " collapsible=true
-```rust
-use std::{
-    io::{Read, Write},
-    net::TcpStream,
-};
-
-fn main() {
-    let mut stream = TcpStream::connect("127.0.0.1:9527").unwrap();
-    // 一共写了 12 个字节
-    stream.write_all(b"hello world!").unwrap();
-
-    let mut buf = [0u8; 17];
-    stream.read_exact(&mut buf).unwrap();
-    println!("data: {:?}", String::from_utf8_lossy(&buf));
-}
-```
+```rust, editable
+{{#include ../geektime_rust_codes/29_network/examples/client.rs}}
+``
 ~~~
 
 在这个例子中:
@@ -290,28 +258,8 @@ rocket = { version = "0.5.0-rc.1", features = ["json"] }
 ~~~
 
 ~~~admonish info title=" 然后在 main.rs 里添加代码：([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/rocket_server.rs)) " collapsible=true
-```rust
-#[macro_use]
-extern crate rocket;
-
-use rocket::serde::json::Json;
-use rocket::serde::{Deserialize, Serialize};
-
-#[derive(Serialize, Deserialize)]
-#[serde(crate = "rocket::serde")]
-struct Hello {
-    name: String,
-}
-
-#[get("/", format = "json")]
-fn hello() -> Json<Hello> {
-    Json(Hello { name: "Tyr".into() })
-}
-
-#[launch]
-fn rocket() -> _ {
-    rocket::build().mount("/", routes![hello])
-}
+```rust, editable
+{{#include ../geektime_rust_codes/29_network/examples/rocket_server.rs}}
 ```
 ~~~
 
@@ -364,57 +312,14 @@ kv server 的实现在 TCP 之上构建了基于 protobuf 的协议，支持一�
 下面是使用 tokio / tokio_util 撰写的服务器和客户端，你可以看到，服务器和客户端都使用了 LengthDelimitedCodec 来处理消息帧。
 
 ~~~admonish example title="例子:  服务器的代码 ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_server.rs))" collapsible=true
-```rust
-use anyhow::Result;
-use bytes::Bytes;
-use futures::{SinkExt, StreamExt};
-use tokio::net::TcpListener;
-use tokio_util::codec::{Framed, LengthDelimitedCodec};
-
-#[tokio::main]
-async fn main() -> Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:9527").await?;
-    loop {
-        let (stream, addr) = listener.accept().await?;
-        println!("accepted: {:?}", addr);
-        // LengthDelimitedCodec 默认 4 字节长度
-        let mut stream = Framed::new(stream, LengthDelimitedCodec::new());
-
-        tokio::spawn(async move {
-            // 接收到的消息会只包含消息主体（不包含长度）
-            while let Some(Ok(data)) = stream.next().await {
-                println!("Got: {:?}", String::from_utf8_lossy(&data));
-                // 发送的消息也需要发送消息主体，不需要提供长度
-                // Framed/LengthDelimitedCodec 会自动计算并添加
-                stream.send(Bytes::from("goodbye world!")).await.unwrap();
-            }
-        });
-    }
-}
-```
+```rust, editable
+{{#include ../geektime_rust_codes/29_network/examples/async_framed_server.rs}}
+``
 ~~~
 
 ~~~admonish example title="例子:  客户端代码 ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_client.rs)) " collapsible=true
-```rust
-use anyhow::Result;
-use bytes::Bytes;
-use futures::{SinkExt, StreamExt};
-use tokio::net::TcpStream;
-use tokio_util::codec::{Framed, LengthDelimitedCodec};
-
-#[tokio::main]
-async fn main() -> Result<()> {
-    let stream = TcpStream::connect("127.0.0.1:9527").await?;
-    let mut stream = Framed::new(stream, LengthDelimitedCodec::new());
-    stream.send(Bytes::from("hello world")).await?;
-
-    // 接收从服务器返回的数据
-    if let Some(Ok(data)) = stream.next().await {
-        println!("Got: {:?}", String::from_utf8_lossy(&data));
-    }
-
-    Ok(())
-}
+```rust, editable
+{{#include ../geektime_rust_codes/29_network/examples/async_framed_client.rs}}
 ```
 ~~~
 
