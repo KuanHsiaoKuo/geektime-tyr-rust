@@ -314,7 +314,7 @@ kv server 的实现在 TCP 之上构建了基于 protobuf 的协议，支持一�
 ~~~admonish example title="例子:  服务器的代码 ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_server.rs))" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/29_network/examples/async_framed_server.rs}}
-``
+```
 ~~~
 
 ~~~admonish example title="例子:  客户端代码 ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_client.rs)) " collapsible=true
