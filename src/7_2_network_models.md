@@ -167,7 +167,7 @@ P2P 网络的构建，一般要比客户端 / 服务器网络复杂，因为节�
 
 ### P2P聊天应用
 
-~~~admonish example title="例子:  下面是一个简单的 P2P 聊天应用：在本地网络中通过 MDNS 做节点发现，使用 floodpub 做消息传播。  " collapsible=true
+~~~admonish example title="例子:  下面是一个简单的 P2P 聊天应用：在本地网络中通过 MDNS 做节点发现，使用 floodpub 做消息传播。 ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/p2p_chat.rs)) " collapsible=true
 在关键位置都写了注释：
 
 ```rust

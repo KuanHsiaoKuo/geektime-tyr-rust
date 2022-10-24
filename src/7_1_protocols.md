@@ -1,23 +1,24 @@
 # 基于网络协议
 
 <!--ts-->
+
 * [基于网络协议](#基于网络协议)
-   * [回顾网络协议](#回顾网络协议)
-   * [Rust生态对网络协议的支持](#rust生态对网络协议的支持)
-   * [std::net](#stdnet)
-      * [服务端：TcpListener](#服务端tcplistener)
-      * [客户端：TcpStream](#客户端tcpstream)
-   * [处理网络连接的一般方法](#处理网络连接的一般方法)
-      * [问题一：如何处理大量连接？](#问题一如何处理大量连接)
-      * [问题二：如何处理共享信息？](#问题二如何处理共享信息)
-   * [处理网络数据的一般方法](#处理网络数据的一般方法)
-      * [JSON序列化](#json序列化)
-      * [使用 protobuf 自定义协议](#使用-protobuf-自定义协议)
-         * [如何界定一个消息帧（frame）](#如何界定一个消息帧frame)
-         * [tokio/tokio_util](#tokiotokio_util)
-   * [Tokio](#tokio)
-   * [尝试改写](#尝试改写)
-   * [总结：如何用 Rust 做基于 TCP 的网络开发](#总结如何用-rust-做基于-tcp-的网络开发)
+    * [回顾网络协议](#回顾网络协议)
+    * [Rust生态对网络协议的支持](#rust生态对网络协议的支持)
+    * [std::net](#stdnet)
+        * [服务端：TcpListener](#服务端tcplistener)
+        * [客户端：TcpStream](#客户端tcpstream)
+    * [处理网络连接的一般方法](#处理网络连接的一般方法)
+        * [问题一：如何处理大量连接？](#问题一如何处理大量连接)
+        * [问题二：如何处理共享信息？](#问题二如何处理共享信息)
+    * [处理网络数据的一般方法](#处理网络数据的一般方法)
+        * [JSON序列化](#json序列化)
+        * [使用 protobuf 自定义协议](#使用-protobuf-自定义协议)
+            * [如何界定一个消息帧（frame）](#如何界定一个消息帧frame)
+            * [tokio/tokio_util](#tokiotokio_util)
+    * [Tokio](#tokio)
+    * [尝试改写](#尝试改写)
+    * [总结：如何用 Rust 做基于 TCP 的网络开发](#总结如何用-rust-做基于-tcp-的网络开发)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Mon Oct 24 07:25:43 UTC 2022 -->
@@ -91,7 +92,7 @@
 3. 接收到请求后，会得到一个 TcpStream
 4. 它实现了 Read / Write trait，可以像读写文件一样，进行 socket 的读写：
 
-~~~admonish example title="例子:   使用std::net 创建一个 TCP server" collapsible=true
+~~~admonish example title="例子: 使用std::net 创建一个 TCP server ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/listener.rs))" collapsible=true
 ```rust
 use std::{
     io::{Read, Write},
@@ -122,7 +123,7 @@ fn main() {
 
 > 一旦客户端的请求被服务器接受，就可以发送或者接收数据：
 
-~~~admonish example title="例子:  客户端使用TcpStream::connect() " collapsible=true
+~~~admonish example title="例子:  客户端使用TcpStream::connect() ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/client.rs)) " collapsible=true
 ```rust
 use std::{
     io::{Read, Write},
@@ -187,11 +188,8 @@ fn main() {
 }
 ```
 
-
-
->  但是，处理连接的过程，需要放在另一个线程或者另一个异步任务中进行，而不要在主循环中直接处理。
+> 但是，处理连接的过程，需要放在另一个线程或者另一个异步任务中进行，而不要在主循环中直接处理。
 > 因为这样会阻塞主循环，使其在处理完当前的连接前，无法 accept() 新的连接。
-
 ~~~
 
 ~~~admonish question title=" 换成loop+spawn可以吗？ " collapsible=true
@@ -292,7 +290,7 @@ rocket = { version = "0.5.0-rc.1", features = ["json"] }
 ```
 ~~~
 
-~~~admonish info title=" 然后在 main.rs 里添加代码： " collapsible=true
+~~~admonish info title=" 然后在 main.rs 里添加代码：([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/rocket_server.rs)) " collapsible=true
 ```rust
 #[macro_use]
 extern crate rocket;
@@ -366,7 +364,7 @@ kv server 的实现在 TCP 之上构建了基于 protobuf 的协议，支持一�
 
 下面是使用 tokio / tokio_util 撰写的服务器和客户端，你可以看到，服务器和客户端都使用了 LengthDelimitedCodec 来处理消息帧。
 
-~~~admonish example title="例子:  服务器的代码 " collapsible=true
+~~~admonish example title="例子:  服务器的代码 ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_server.rs))" collapsible=true
 ```rust
 use anyhow::Result;
 use bytes::Bytes;
@@ -397,7 +395,7 @@ async fn main() -> Result<()> {
 ```
 ~~~
 
-~~~admonish example title="例子:  客户端代码 " collapsible=true
+~~~admonish example title="例子:  客户端代码 ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_client.rs)) " collapsible=true
 ```rust
 use anyhow::Result;
 use bytes::Bytes;
