@@ -94,7 +94,7 @@
 ~~~admonish example title="例子: 使用std::net 创建一个 TCP server ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/listener.rs))" collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/29_network/examples/listener.rs}}
-``
+```
 ~~~
 
 ### 客户端：TcpStream
@@ -106,7 +106,7 @@
 ~~~admonish example title="例子:  客户端使用TcpStream::connect() ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/client.rs)) " collapsible=true
 ```rust, editable
 {{#include ../geektime_rust_codes/29_network/examples/client.rs}}
-``
+```
 ~~~
 
 在这个例子中:
