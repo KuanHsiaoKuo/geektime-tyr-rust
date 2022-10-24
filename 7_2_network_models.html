@@ -1,0 +1,771 @@
+<!DOCTYPE HTML>
+<html lang="cn" class="sidebar-visible no-js rust">
+<head>
+    <!-- Book generated using mdBook -->
+    <meta charset="UTF-8">
+    <title>网络模型 - Anatomy In First Rust Programming Class 🦀</title>
+
+
+    <!-- Custom HTML head -->
+    
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="description" content="以rust编程第一课的代码为例进行基础代码分析">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#ffffff"/>
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="md-favicon.png">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/general.css">
+    <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+    <!-- Highlight.js Stylesheets -->
+    <link rel="stylesheet" href="highlight.css">
+    <link rel="stylesheet" href="tomorrow-night.css">
+    <link rel="stylesheet" href="ayu-highlight.css">
+
+    <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="assets/pagetoc/pagetoc_style.css">
+        <link rel="stylesheet" href="assets/css/mdbook-admonish.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+<!-- Provide site root to javascript -->
+<script type="text/javascript">
+    var path_to_root = "";
+    var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+</script>
+
+<!-- Work around some values being stored in localStorage wrapped in quotes -->
+<script type="text/javascript">
+    try {
+        var theme = localStorage.getItem('mdbook-theme');
+        var sidebar = localStorage.getItem('mdbook-sidebar');
+
+        if (theme.startsWith('"') && theme.endsWith('"')) {
+            localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+        }
+
+        if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+            localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+        }
+    } catch (e) {
+    }
+</script>
+
+<!-- Set the theme before any content is loaded, prevents flash -->
+<script type="text/javascript">
+    var theme;
+    try {
+        theme = localStorage.getItem('mdbook-theme');
+    } catch (e) {
+    }
+    if (theme === null || theme === undefined) {
+        theme = default_theme;
+    }
+    var html = document.querySelector('html');
+    html.classList.remove('no-js')
+    html.classList.remove('rust')
+    html.classList.add(theme);
+    html.classList.add('js');
+</script>
+
+<!-- Hide / unhide sidebar before it is displayed -->
+<script type="text/javascript">
+    var html = document.querySelector('html');
+    var sidebar = 'hidden';
+    if (document.body.clientWidth >= 1080) {
+        try {
+            sidebar = localStorage.getItem('mdbook-sidebar');
+        } catch (e) {
+        }
+        sidebar = sidebar || 'visible';
+    }
+    html.classList.remove('sidebar-visible');
+    html.classList.add("sidebar-" + sidebar);
+</script>
+
+<nav id="sidebar" class="sidebar" aria-label="Table of contents">
+    <div class="sidebar-scrollbox">
+        <ol class="chapter"><li class="chapter-item expanded "><a href="anatomy_logic.html"><strong aria-hidden="true">1.</strong> 源码阅读逻辑</a></li><li class="chapter-item expanded "><a href="intro_gdb_lldb.html"><strong aria-hidden="true">2.</strong> gdb/lldb调试或查看内存结构</a></li><li class="chapter-item expanded "><a href="get_hands_dirty.html"><strong aria-hidden="true">3.</strong> get hands dirty</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="httpie.html"><strong aria-hidden="true">3.1.</strong> httpie</a></li><li class="chapter-item expanded "><a href="rgrep.html"><strong aria-hidden="true">3.2.</strong> rgrep</a></li><li class="chapter-item expanded "><a href="thumbor.html"><strong aria-hidden="true">3.3.</strong> thumbor</a></li><li class="chapter-item expanded "><a href="queryer.html"><strong aria-hidden="true">3.4.</strong> queryer</a></li></ol></li><li class="chapter-item expanded "><a href="rust_cores.html"><strong aria-hidden="true">4.</strong> Rust核心深入</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_stack_heap_ownership_lifetime_memory.html"><strong aria-hidden="true">4.1.</strong> I. 从栈堆、所有权、生命周期开始内存管理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="1_1_stack_heap.html"><strong aria-hidden="true">4.1.1.</strong> 从堆栈开始</a></li><li class="chapter-item expanded "><a href="1_2_programming_basic_concepts.html"><strong aria-hidden="true">4.1.2.</strong> 四大编程基础概念</a></li><li class="chapter-item expanded "><a href="1_3_ownership.html"><strong aria-hidden="true">4.1.3.</strong> 所有权</a></li><li class="chapter-item expanded "><a href="1_4_lifetime.html"><strong aria-hidden="true">4.1.4.</strong> 生命周期</a></li><li class="chapter-item expanded "><a href="1_5_go_through.html"><strong aria-hidden="true">4.1.5.</strong> 从创建到消亡</a></li></ol></li><li class="chapter-item expanded "><a href="2_type_system.html"><strong aria-hidden="true">4.2.</strong> II. 类型系统</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="2_1_type_details.html"><strong aria-hidden="true">4.2.1.</strong> 类型系统特点</a></li><li class="chapter-item expanded "><a href="2_2_generic_overview.html"><strong aria-hidden="true">4.2.2.</strong> 泛型概览：就像函数</a></li><li class="chapter-item expanded "><a href="2_3_trait_overview.html"><strong aria-hidden="true">4.2.3.</strong> trait概览</a></li><li class="chapter-item expanded "><a href="2_4_0_three_polymorphics.html"><strong aria-hidden="true">4.2.4.</strong> 三种多态形式</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="2_4_1_generic_usage.html"><strong aria-hidden="true">4.2.4.1.</strong> Generics: &lt;&gt;</a></li><li class="chapter-item "><a href="2_4_2_trait_impl.html"><strong aria-hidden="true">4.2.4.2.</strong> Trait impl/bound: self</a></li><li class="chapter-item "><a href="2_4_3_trait_object.html"><strong aria-hidden="true">4.2.4.3.</strong> Trait object: &self</a></li><li class="chapter-item "><a href="2_4_4_comprehensive_polymorphics.html"><strong aria-hidden="true">4.2.4.4.</strong> 复杂多态综合使用实例</a></li></ol></li><li class="chapter-item expanded "><a href="2_5_trait_frequently.html"><strong aria-hidden="true">4.2.5.</strong> 常用trait</a></li><li class="chapter-item expanded "><a href="2_6_trait_design.html"><strong aria-hidden="true">4.2.6.</strong> Trait设计</a></li></ol></li><li class="chapter-item expanded "><a href="3_data_structure.html"><strong aria-hidden="true">4.3.</strong> III. 数据结构</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="3_1_smart_pointer.html"><strong aria-hidden="true">4.3.1.</strong> 智能指针</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_1_1_box.html"><strong aria-hidden="true">4.3.1.1.</strong> Box</a></li><li class="chapter-item "><a href="3_1_2_cow.html"><strong aria-hidden="true">4.3.1.2.</strong> Cow&lt;'a, B&gt;</a></li><li class="chapter-item "><a href="3_1_3_mutex_guard.html"><strong aria-hidden="true">4.3.1.3.</strong> MutexGuard&lt;'_, T&gt;</a></li></ol></li><li class="chapter-item expanded "><a href="3_2_containers.html"><strong aria-hidden="true">4.3.2.</strong> 集合容器</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_2_1_slice.html"><strong aria-hidden="true">4.3.2.1.</strong> 切片</a></li><li class="chapter-item "><a href="3_2_2_hashmap.html"><strong aria-hidden="true">4.3.2.2.</strong> 哈希表</a></li></ol></li><li class="chapter-item expanded "><a href="3_3_error_handling.html"><strong aria-hidden="true">4.3.3.</strong> 错误处理</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item "><a href="3_3_1_error_content.html"><strong aria-hidden="true">4.3.3.1.</strong> 错误处理内容和主流方法</a></li><li class="chapter-item "><a href="3_3_2_rust_error_handling.html"><strong aria-hidden="true">4.3.3.2.</strong> Rust如何处理错误: ?/unwrap/expect</a></li></ol></li><li class="chapter-item expanded "><a href="3_4_closure.html"><strong aria-hidden="true">4.3.4.</strong> 闭包</a></li></ol></li><li class="chapter-item expanded "><a href="4_macros.html"><strong aria-hidden="true">4.4.</strong> IV. 宏编程</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="4_1_macros_classify.html"><strong aria-hidden="true">4.4.1.</strong> 宏分类</a></li><li class="chapter-item expanded "><a href="4_2_declarative_macros.html"><strong aria-hidden="true">4.4.2.</strong> 声明宏</a></li><li class="chapter-item expanded "><a href="4_3_procedural_macros.html"><strong aria-hidden="true">4.4.3.</strong> 过程宏</a></li></ol></li><li class="chapter-item expanded "><a href="5_concurrency_async.html"><strong aria-hidden="true">4.5.</strong> V. 并发与异步</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="5_1_concurrency_primitives.html"><strong aria-hidden="true">4.5.1.</strong> 并发原语(Concurrency Primitives)</a></li><li class="chapter-item expanded "><a href="5_2_future_async_await.html"><strong aria-hidden="true">4.5.2.</strong> 异步：Future/Async/Await</a></li><li class="chapter-item expanded "><a href="5_3_deepin_async_await.html"><strong aria-hidden="true">4.5.3.</strong> 深入async/await</a></li></ol></li><li class="chapter-item expanded "><a href="6_unsafe_ffi.html"><strong aria-hidden="true">4.6.</strong> VI. 混合编程</a></li><li class="chapter-item expanded "><a href="7_network.html"><strong aria-hidden="true">4.7.</strong> VII. 网络开发</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="7_1_protocols.html"><strong aria-hidden="true">4.7.1.</strong> 网络协议</a></li><li class="chapter-item expanded "><a href="7_2_network_models.html" class="active"><strong aria-hidden="true">4.7.2.</strong> 网络模型</a></li></ol></li></ol></li><li class="chapter-item expanded "><a href="kv_server_design.html"><strong aria-hidden="true">5.</strong> kv server设计与实现</a><a class="toggle"><div>❱</div></a></li><li><ol class="section"><li class="chapter-item expanded "><a href="kv1_basic.html"><strong aria-hidden="true">5.1.</strong> 基本流程</a></li><li class="chapter-item expanded "><a href="kv2_protocols.html"><strong aria-hidden="true">5.2.</strong> 实现并验证协议层</a></li><li class="chapter-item expanded "><a href="kv3_advanced_traits.html"><strong aria-hidden="true">5.3.</strong> 高级trait改造</a></li><li class="chapter-item expanded "><a href="kv4_network.html"><strong aria-hidden="true">5.4.</strong> 网络处理</a></li><li class="chapter-item expanded "><a href="kv5_network_security.html"><strong aria-hidden="true">5.5.</strong> 网络安全</a></li><li class="chapter-item expanded "><a href="kv6_async_refactor.html"><strong aria-hidden="true">5.6.</strong> 异步改造</a></li><li class="chapter-item expanded "><a href="kv7_big_refactor.html"><strong aria-hidden="true">5.7.</strong> 重大重构</a></li><li class="chapter-item expanded "><a href="kv8_config_ci_cd.html"><strong aria-hidden="true">5.8.</strong> 配置、测试、监控、CI/CD</a></li></ol></li><li class="chapter-item expanded "><a href="custom_axum_async_web_framework.html"><strong aria-hidden="true">6.</strong> 构建自己的类axum异步Web框架</a></li><li class="chapter-item expanded affix "><a href="checklist.html">Checklist</a></li></ol>
+    </div>
+    <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+</nav>
+
+<div id="page-wrapper" class="page-wrapper">
+
+    <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+        <div id="menu-bar" class="menu-bar sticky bordered">
+            <div class="left-buttons">
+                <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents"
+                        aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <button id="theme-toggle" class="icon-button" type="button" title="Change theme"
+                        aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                    <i class="fa fa-paint-brush"></i>
+                </button>
+                <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="light">Light</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="rust">Rust (default)</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="coal">Coal</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="navy">Navy</button>
+                    </li>
+                    <li role="none">
+                        <button role="menuitem" class="theme" id="ayu">Ayu</button>
+                    </li>
+                </ul>
+                    <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)"
+                            aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S"
+                            aria-controls="searchbar">
+                        <i class="fa fa-search"></i>
+                    </button>
+            </div>
+
+            <h1 class="menu-title">Anatomy In First Rust Programming Class 🦀</h1>
+            <h4 class="menu-bar"><a href="https://kuanhsiaokuo.github.io/think-tool-kit/">保持批判，有所取舍，知行合一, 方见真我</a> -- 练武不练功
+                到头一场空 -- 《赛博英雄传》 </h4>
+            <div class="right-buttons">
+                    <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <i id="print-button" class="fa fa-print"></i>
+                    </a>
+                    <a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git" title="Git repository" aria-label="Git repository">
+                        <i id="git-repository-button" class="fa fa-rust"></i>
+                    </a>
+            </div>
+        </div>
+
+            <div id="search-wrapper" class="hidden">
+                <form id="searchbar-outer" class="searchbar-outer">
+                    <input type="search" name="search" id="searchbar" name="searchbar"
+                           placeholder="Search this book ..." aria-controls="searchresults-outer"
+                           aria-describedby="searchresults-header">
+                </form>
+                <div id="searchresults-outer" class="searchresults-outer hidden">
+                    <div id="searchresults-header" class="searchresults-header"></div>
+                    <ul id="searchresults">
+                    </ul>
+                </div>
+            </div>
+
+        <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+        <script type="text/javascript">
+            document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+            document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+            Array.from(document.querySelectorAll('#sidebar a')).forEach(function (link) {
+                link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+            });
+        </script>
+
+        <div id="content" class="content">
+            <main>
+
+                <!-- Page table of contents -->
+                <div class="sidetoc">
+                    <nav class="pagetoc"></nav>
+                </div>
+                <h1 id="基于通讯模型"><a class="header" href="#基于通讯模型">基于通讯模型</a></h1>
+<!--ts-->
+<ul>
+<li><a href="#%E5%9F%BA%E4%BA%8E%E9%80%9A%E8%AE%AF%E6%A8%A1%E5%9E%8B">基于通讯模型</a>
+<ul>
+<li><a href="#%E9%80%9A%E8%AE%AF%E6%A8%A1%E5%9E%8B">通讯模型</a>
+<ul>
+<li><a href="#%E5%8F%8C%E5%90%91%E9%80%9A%E8%AE%AF">双向通讯</a></li>
+<li><a href="#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94">请求响应</a></li>
+<li><a href="#%E6%8E%A7%E5%88%B6%E5%B9%B3%E9%9D%A2--%E6%95%B0%E6%8D%AE%E5%B9%B3%E9%9D%A2%E5%88%86%E7%A6%BB">控制平面 / 数据平面分离</a></li>
+<li><a href="#p2p-%E7%BD%91%E7%BB%9C">P2P 网络</a></li>
+</ul>
+</li>
+<li><a href="#%E5%A6%82%E4%BD%95%E6%9E%84%E5%BB%BA-p2p-%E7%BD%91%E7%BB%9C">如何构建 P2P 网络</a>
+<ul>
+<li><a href="#%E8%A7%A3%E5%86%B3%E7%BD%91%E7%BB%9C%E8%BF%9E%E9%80%9A">解决网络连通</a></li>
+<li><a href="#%E6%89%BF%E8%BD%BD%E5%A4%9A%E4%B8%AA%E5%8D%8F%E8%AE%AE">承载多个协议</a></li>
+<li><a href="#%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E8%A7%A3%E5%86%B3">网络安全解决</a></li>
+</ul>
+</li>
+<li><a href="#rust-%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86-p2p-%E7%BD%91%E7%BB%9C">Rust 如何处理 P2P 网络</a>
+<ul>
+<li><a href="#p2p%E8%81%8A%E5%A4%A9%E5%BA%94%E7%94%A8">P2P聊天应用</a></li>
+<li><a href="#%E6%BC%94%E7%A4%BA">演示</a></li>
+<li><a href="#%E9%80%9A%E8%AE%AF%E6%A8%A1%E5%9E%8B%E7%BB%83%E4%B9%A0%E9%A2%98">通讯模型练习题</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<!-- Created by https://github.com/ekalinin/github-markdown-toc -->
+<!-- Added by: runner, at: Mon Oct 24 07:25:44 UTC 2022 -->
+<!--te-->
+<h2 id="通讯模型"><a class="header" href="#通讯模型">通讯模型</a></h2>
+<h3 id="双向通讯"><a class="header" href="#双向通讯">双向通讯</a></h3>
+<details id="admonition-笔记前面tcp-服务器的例子7_1_protocolshtmlstdnet里所做的都是双向通讯这是最典型的一种通讯方式" class="admonition note">
+<summary class="admonition-title">
+<p>笔记：前面<a href="7_1_protocols.html#stdnet"><strong>TCP 服务器的例子</strong></a>里，所做的都是双向通讯。这是最典型的一种通讯方式：</p>
+<p><a class="admonition-anchor-link" href="#admonition-笔记前面tcp-服务器的例子7_1_protocolshtmlstdnet里所做的都是双向通讯这是最典型的一种通讯方式"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/fbe99846847d7d495685eb7bd62889c0.jpg" alt="img" /></p>
+<ol>
+<li>服务端监听9527端口</li>
+<li>客户端连接9527端口</li>
+<li>一旦连接建立，服务器和客户端都可以根据需要主动向对方发起传输。</li>
+<li>服务器收到消息后就spawn一个线程处理</li>
+<li>整个网络运行在全双工模式下（full duplex）</li>
+</ol>
+<p>我们熟悉的 TCP / WebSocket 就运行在这种模型下。</p>
+<p>双向通讯的好处是：<strong>数据的流向是没有限制的，一端不必等待另一端才能发送数据，网络可以进行比较实时地处理。</strong></p>
+</div>
+</details>
+<h3 id="请求响应"><a class="header" href="#请求响应">请求响应</a></h3>
+<details id="admonition-笔记在-web-开发的世界里请求---响应模型是我们最熟悉的模型" class="admonition note">
+<summary class="admonition-title">
+<p>笔记：在 Web 开发的世界里，请求 - 响应模型是我们最熟悉的模型。</p>
+<p><a class="admonition-anchor-link" href="#admonition-笔记在-web-开发的世界里请求---响应模型是我们最熟悉的模型"></a></p>
+</summary>
+<div>
+<p>客户端发送请求，服务器根据请求返回响应。</p>
+<p>整个网络处在半双工模式下（half duplex）。HTTP/1.x 就运行在这种模式下。</p>
+<ul>
+<li>一般而言，请求响应模式下，在客户端没有发起请求时，服务器不会也无法主动向客户端发送数据。</li>
+<li>除此之外，请求发送的顺序和响应返回的顺序是一一对应的，不会也不能乱序，这种处理方式会导致**<a href="https://en.wikipedia.org/wiki/Head-of-line_blocking">应用层的队头阻塞（Head-Of-Line blocking）</a>**。</li>
+</ul>
+<p>请求响应模型处理起来很简单，由于 HTTP 协议的流行，尽管有很多限制，请求响应模型还是得到了非常广泛的应用。</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/3ab96bc728d939b57695ba732ab187ba.jpg" alt="img" /></p>
+</div>
+</details>
+<h3 id="控制平面--数据平面分离"><a class="header" href="#控制平面--数据平面分离">控制平面 / 数据平面分离</a></h3>
+<p>但有时候，服务器和客户端之间会进行复杂的通讯，这些通讯包含<strong>控制信令和数据流</strong>。</p>
+<p>因为 TCP 有<strong>天然的网络层的队头阻塞</strong>，所以当控制信令和数据交杂在同一个连接中时，过大的数据流会阻塞控制信令，使其延迟加大，无法及时响应一些重要的命令。</p>
+<p>以 FTP 为例：</p>
+<ul>
+<li>如果用户在传输一个 1G 的文件后，再进行 ls 命令</li>
+<li>如果文件传输和 ls 命令都在同一个连接中进行，那么，只有文件传输结束，用户才会看到 ls 命令的结果，这样显然对用户非常不友好。</li>
+</ul>
+<details id="admonition--所以我们会采用控制平面和数据平面分离的方式进行网络处理" class="admonition note">
+<summary class="admonition-title">
+<blockquote>
+<p>所以，我们会采用控制平面和数据平面分离的方式，进行网络处理:</p>
+</blockquote>
+<p><a class="admonition-anchor-link" href="#admonition--所以我们会采用控制平面和数据平面分离的方式进行网络处理"></a></p>
+</summary>
+<div>
+<ol>
+<li>
+<p>connect()/ctrl_send/ctrl_recv:</p>
+<p>客户端会首先连接服务器，建立控制连接。控制连接是一个长连接，会一直存在，直到交互终止。</p>
+</li>
+<li>
+<p>connect/data_send/data_recv:</p>
+<p>然后，二者会根据需要额外创建新的临时的数据连接，用于传输大容量的数据，数据连接在完成相应的工作后，会自动关闭。</p>
+</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/9617389f71bbf9ef08c4955754107eb8.jpg" alt="img" /></p>
+</div>
+</details>
+<details id="admonition-除-ftp-外还有很多协议都是类似的处理方式" class="admonition note">
+<summary class="admonition-title">
+<p>除 FTP 外，还有很多协议都是类似的处理方式:</p>
+<p><a class="admonition-anchor-link" href="#admonition-除-ftp-外还有很多协议都是类似的处理方式"></a></p>
+</summary>
+<div>
+<ol>
+<li>
+<p>比如**<a href="https://en.wikipedia.org/wiki/Session_Initiation_Protocol">多媒体通讯协议SIP 协议</a>**。</p>
+</li>
+<li>
+<p>HTTP/2 和借鉴了 HTTP/2 的用于多路复用的 Yamux 协议，虽然运行在同一个 TCP 连接之上，它们在应用层也构建了类似的控制平面和数据平面。</p>
+</li>
+</ol>
+<blockquote>
+<p>以 HTTP/2 为例</p>
+</blockquote>
+<ul>
+<li>
+<p>控制平面（ctrl stream）可以创建很多新的 stream，用于并行处理多个应用层的请求</p>
+</li>
+<li>
+<p>比如使用 HTTP/2 的 gRPC，各个请求可以并行处理</p>
+</li>
+<li>
+<p>不同 stream 之间的数据可以乱序返回，而不必受请求响应模型的限制</p>
+</li>
+</ul>
+<blockquote>
+<p>虽然 HTTP/2 依旧受困于 TCP 层的队头阻塞，但它解决了应用层的队头阻塞。</p>
+</blockquote>
+</div>
+</details>
+<h3 id="p2p-网络"><a class="header" href="#p2p-网络">P2P 网络</a></h3>
+<p>前面我们谈论的网络通讯模型，都是传统的客户端 / 服务器交互模型（C/S 或 B/S）:</p>
+<p>客户端和服务器在网络中的作用是不对等的，客户端永远是连接的发起方，而服务器是连接的处理方。</p>
+<blockquote>
+<p>不对等的网络模型有很多好处</p>
+</blockquote>
+<p>比如客户端不需要公网地址，可以隐藏在网络地址转换（NAT）设备（比如 NAT 网关、防火墙）之后，只要服务器拥有公网地址，这个网络就可以连通。</p>
+<p>所以，客户端 / 服务器模型是天然中心化的，所有连接都需要经过服务器这个中间人，即便是两个客户端的数据交互也不例外。</p>
+<p>这种模型随着互联网的大规模使用成为了网络世界的主流。</p>
+<blockquote>
+<p>然而，很多应用场景需要通讯的两端可以直接交互，而无需一个中间人代为中转。</p>
+</blockquote>
+<p>比如 A 和 B 分享一个 1G 的文件，如果通过服务器中转，数据相当于传输了两次，效率很低。</p>
+<blockquote>
+<p>P2P 模型打破了这种不对等的关系，使得任意两个节点在理论上可以直接连接，每个节点既是客户端，又是服务器。</p>
+</blockquote>
+<h2 id="如何构建-p2p-网络"><a class="header" href="#如何构建-p2p-网络">如何构建 P2P 网络</a></h2>
+<p>可是由于历史上 IPv4 地址的缺乏，以及对隐私和网络安全的担忧，互联网的运营商在接入端，大量使用了 NAT 设备，使得普通的网络用户，缺乏直接可以访问的公网 IP。</p>
+<p>因而，构建一个 P2P 网络首先需要解决网络的连通性。</p>
+<h3 id="解决网络连通"><a class="header" href="#解决网络连通">解决网络连通</a></h3>
+<details id="admonition-笔记主流的解决方法" class="admonition note">
+<summary class="admonition-title">
+<p>笔记：主流的解决方法</p>
+<p><a class="admonition-anchor-link" href="#admonition-笔记主流的解决方法"></a></p>
+</summary>
+<div>
+<ol>
+<li>
+<p>探索</p>
+<p>P2P 网络的每个节点，都会首先会通过 STUN 服务器探索自己的公网 IP/port</p>
+</li>
+<li>
+<p>注册</p>
+<p>然后在 bootstrap/signaling server 上注册自己的公网 IP/port，让别人能发现自己，从而和潜在的“邻居”建立连接。</p>
+</li>
+</ol>
+<p>在一个大型的 P2P 网络中，一个节点常常会拥有几十个邻居，通过这些邻居以及邻居掌握的网络信息，每个节点都能构建一张如何找到某个节点（某个数据）的路由表。</p>
+<p>在此之上，节点还可以加入某个或者某些 topic，然后通过某些协议（比如 gossip）在整个 topic 下扩散消息：</p>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/ef8f35f961d4771729a18f69becd4274.jpg" alt="img" /></p>
+</div>
+</details>
+<h3 id="承载多个协议"><a class="header" href="#承载多个协议">承载多个协议</a></h3>
+<p>P2P 网络的构建，一般要比客户端 / 服务器网络复杂，因为节点间的连接要承载很多协议：</p>
+<ul>
+<li>
+<p>节点发现（mDNS、bootstrap、Kad DHT）</p>
+</li>
+<li>
+<p>节点路由（Kad DHT）</p>
+</li>
+<li>
+<p>内容发现（pubsub、Kad DHT）</p>
+</li>
+<li>
+<p>应用层协议</p>
+</li>
+</ul>
+<blockquote>
+<p>同时，连接的安全性受到的挑战也和之前不同。</p>
+</blockquote>
+<details id="admonition-笔记所以我们会看到p2p-协议的连接往往在一个-tcp-连接中使用类似-yamux-的多路复用协议来承载很多其他协议" class="admonition note">
+<summary class="admonition-title">
+<p>笔记：所以我们会看到，P2P 协议的连接，往往在一个 TCP 连接中，<strong>使用类似 yamux 的多路复用协议来承载很多其他协议</strong></p>
+<p><a class="admonition-anchor-link" href="#admonition-笔记所以我们会看到p2p-协议的连接往往在一个-tcp-连接中使用类似-yamux-的多路复用协议来承载很多其他协议"></a></p>
+</summary>
+<div>
+<p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/765b2b7f05986c87dfa524ff9f5980f3.jpg" alt="img" /></p>
+</div>
+</details>
+<h3 id="网络安全解决"><a class="header" href="#网络安全解决">网络安全解决</a></h3>
+<p>在网络安全方面，TLS 虽然能很好地保护客户端 / 服务器模型，<strong>然而证书的创建、发放以及信任对 P2P 网络是个问题</strong></p>
+<blockquote>
+<p>所以 P2P 网络倾向于使用自己的安全协议，或者使用 noise protocol，来构建安全等级可以媲美 TLS 1.3 的安全协议。</p>
+</blockquote>
+<h2 id="rust-如何处理-p2p-网络"><a class="header" href="#rust-如何处理-p2p-网络">Rust 如何处理 P2P 网络</a></h2>
+<blockquote>
+<p>在 Rust 下，有 **<a href="https://docs.rs/libp2p/latest/libp2p/">libp2p 这个比较成熟的库</a>**来处理 P2P 网络。</p>
+</blockquote>
+<h3 id="p2p聊天应用"><a class="header" href="#p2p聊天应用">P2P聊天应用</a></h3>
+<details id="admonition-例子--下面是一个简单的-p2p-聊天应用在本地网络中通过-mdns-做节点发现使用-floodpub-做消息传播" class="admonition example">
+<summary class="admonition-title">
+<p>例子:  下面是一个简单的 P2P 聊天应用：在本地网络中通过 MDNS 做节点发现，使用 floodpub 做消息传播。</p>
+<p><a class="admonition-anchor-link" href="#admonition-例子--下面是一个简单的-p2p-聊天应用在本地网络中通过-mdns-做节点发现使用-floodpub-做消息传播"></a></p>
+</summary>
+<div>
+<p>在关键位置都写了注释：</p>
+<pre><pre class="playground"><code class="language-rust">use anyhow::Result;
+use futures::StreamExt;
+use libp2p::{
+    core::upgrade,
+    floodsub::{self, Floodsub, FloodsubEvent, Topic},
+    identity,
+    mdns::{Mdns, MdnsEvent},
+    noise,
+    swarm::{NetworkBehaviourEventProcess, SwarmBuilder, SwarmEvent},
+    tcp::TokioTcpConfig,
+    yamux, NetworkBehaviour, PeerId, Swarm, Transport,
+};
+use std::borrow::Cow;
+use tokio::io::{stdin, AsyncBufReadExt, BufReader};
+
+/// 处理 p2p 网络的 behavior 数据结构
+/// 里面的每个域需要实现 NetworkBehaviour，或者使用 #[behaviour(ignore)]
+#[derive(NetworkBehaviour)]
+#[behaviour(event_process = true)]
+struct ChatBehavior {
+    /// flood subscription，比较浪费带宽，gossipsub 是更好的选择
+    floodsub: Floodsub,
+    /// 本地节点发现机制
+    mdns: Mdns,
+    // 在 behavior 结构中，你也可以放其它数据，但需要 ignore
+    // #[behaviour(ignore)]
+    // _useless: String,
+}
+
+impl ChatBehavior {
+    /// 创建一个新的 ChatBehavior
+    pub async fn new(id: PeerId) -&gt; Result&lt;Self&gt; {
+        Ok(Self {
+            mdns: Mdns::new(Default::default()).await?,
+            floodsub: Floodsub::new(id),
+        })
+    }
+}
+
+impl NetworkBehaviourEventProcess&lt;FloodsubEvent&gt; for ChatBehavior {
+    // 处理 floodsub 产生的消息
+    fn inject_event(&amp;mut self, event: FloodsubEvent) {
+        if let FloodsubEvent::Message(msg) = event {
+            let text = String::from_utf8_lossy(&amp;msg.data);
+            println!(&quot;{:?}: {:?}&quot;, msg.source, text);
+        }
+    }
+}
+
+impl NetworkBehaviourEventProcess&lt;MdnsEvent&gt; for ChatBehavior {
+    fn inject_event(&amp;mut self, event: MdnsEvent) {
+        match event {
+            MdnsEvent::Discovered(list) =&gt; {
+                // 把 mdns 发现的新的 peer 加入到 floodsub 的 view 中
+                for (id, addr) in list {
+                    println!(&quot;Got peer: {} with addr {}&quot;, &amp;id, &amp;addr);
+                    self.floodsub.add_node_to_partial_view(id);
+                }
+            }
+            MdnsEvent::Expired(list) =&gt; {
+                // 把 mdns 发现的离开的 peer 加入到 floodsub 的 view 中
+                for (id, addr) in list {
+                    println!(&quot;Removed peer: {} with addr {}&quot;, &amp;id, &amp;addr);
+                    self.floodsub.remove_node_from_partial_view(&amp;id);
+                }
+            }
+        }
+    }
+}
+
+#[tokio::main]
+async fn main() -&gt; Result&lt;()&gt; {
+    // 如果带参数，当成一个 topic
+    let name = match std::env::args().nth(1) {
+        Some(arg) =&gt; Cow::Owned(arg),
+        None =&gt; Cow::Borrowed(&quot;lobby&quot;),
+    };
+
+    // 创建 floodsub topic
+    let topic = floodsub::Topic::new(name);
+
+    // 创建 swarm
+    let mut swarm = create_swarm(topic.clone()).await?;
+
+    swarm.listen_on(&quot;/ip4/127.0.0.1/tcp/0&quot;.parse()?)?;
+
+    // 获取 stdin 的每一行
+    let mut stdin = BufReader::new(stdin()).lines();
+
+    // main loop
+    loop {
+        tokio::select! {
+            line = stdin.next_line() =&gt; {
+                let line = line?.expect(&quot;stdin closed&quot;);
+                swarm.behaviour_mut().floodsub.publish(topic.clone(), line.as_bytes());
+            }
+            event = swarm.select_next_some() =&gt; {
+                if let SwarmEvent::NewListenAddr { address, .. } = event {
+                    println!(&quot;Listening on {:?}&quot;, address);
+                }
+            }
+        }
+    }
+}
+
+async fn create_swarm(topic: Topic) -&gt; Result&lt;Swarm&lt;ChatBehavior&gt;&gt; {
+    // 创建 identity（密钥对）
+    let id_keys = identity::Keypair::generate_ed25519();
+    let peer_id = PeerId::from(id_keys.public());
+    println!(&quot;Local peer id: {:?}&quot;, peer_id);
+
+    // 使用 noise protocol 来处理加密和认证
+    let noise_keys = noise::Keypair::&lt;noise::X25519Spec&gt;::new().into_authentic(&amp;id_keys)?;
+
+    // 创建传输层
+    let transport = TokioTcpConfig::new()
+        .nodelay(true)
+        .upgrade(upgrade::Version::V1)
+        .authenticate(noise::NoiseConfig::xx(noise_keys).into_authenticated())
+        .multiplex(yamux::YamuxConfig::default())
+        .boxed();
+
+    // 创建 chat behavior
+    let mut behavior = ChatBehavior::new(peer_id.clone()).await?;
+    // 订阅某个主题
+    behavior.floodsub.subscribe(topic.clone());
+    // 创建 swarm
+    let swarm = SwarmBuilder::new(transport, behavior, peer_id)
+        .executor(Box::new(|fut| {
+            tokio::spawn(fut);
+        }))
+        .build();
+
+    Ok(swarm)
+}
+</code></pre></pre>
+</div>
+</details>
+<details id="admonition-要运行这段代码你需要在-cargotoml-中使用-futures-和-libp2p" class="admonition example">
+<summary class="admonition-title">
+<p>要运行这段代码，你需要在 Cargo.toml 中使用 futures 和 libp2p： </p>
+<p><a class="admonition-anchor-link" href="#admonition-要运行这段代码你需要在-cargotoml-中使用-futures-和-libp2p"></a></p>
+</summary>
+<div>
+<pre><code class="language-toml">futures = &quot;0.3&quot;
+libp2p = { version = &quot;0.39&quot;,  features = [&quot;tcp-tokio&quot;] }
+</code></pre>
+</div>
+</details>
+<h3 id="演示"><a class="header" href="#演示">演示</a></h3>
+<details id="admonition-例子-开一个窗口-a-运行" class="admonition example">
+<summary class="admonition-title">
+<p>例子: 开一个窗口 A 运行：</p>
+<p><a class="admonition-anchor-link" href="#admonition-例子-开一个窗口-a-运行"></a></p>
+</summary>
+<div>
+<pre><code class="language-shell">❯ cargo run --example p2p_chat --quiet
+Local peer id: PeerId(&quot;12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg&quot;)
+Listening on &quot;/ip4/127.0.0.1/tcp/51654&quot;
+// 下面的内容在新节点加入时逐渐出现
+Got peer: 12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA with addr /ip4/192.168.86.23/tcp/51656
+Got peer: 12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA with addr /ip4/127.0.0.1/tcp/51656
+Got peer: 12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT with addr /ip4/192.168.86.23/tcp/51661
+Got peer: 12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT with addr /ip4/127.0.0.1/tcp/51661
+Got peer: 12D3KooWRy9r8j7UQMxavqTcNmoz1JmnLcTU5UZvzvE5jz4Zw3eh with addr /ip4/192.168.86.23/tcp/51670
+Got peer: 12D3KooWRy9r8j7UQMxavqTcNmoz1JmnLcTU5UZvzvE5jz4Zw3eh with addr /ip4/127.0.0.1/tcp/51670
+</code></pre>
+</div>
+</details>
+<details id="admonition-例子--窗口-b" class="admonition example">
+<summary class="admonition-title">
+<p>例子:  窗口 B</p>
+<p><a class="admonition-anchor-link" href="#admonition-例子--窗口-b"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>❯ cargo run --example p2p_chat --quiet
+Local peer id: PeerId(&quot;12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA&quot;)
+Listening on &quot;/ip4/127.0.0.1/tcp/51656&quot;
+Got peer: 12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg with addr /ip4/192.168.86.23/tcp/51654
+Got peer: 12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg with addr /ip4/127.0.0.1/tcp/51654
+// 下面的内容在新节点加入时逐渐出现
+Got peer: 12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT with addr /ip4/192.168.86.23/tcp/51661
+Got peer: 12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT with addr /ip4/127.0.0.1/tcp/51661
+Got peer: 12D3KooWRy9r8j7UQMxavqTcNmoz1JmnLcTU5UZvzvE5jz4Zw3eh with addr /ip4/192.168.86.23/tcp/51670
+Got peer: 12D3KooWRy9r8j7UQMxavqTcNmoz1JmnLcTU5UZvzvE5jz4Zw3eh with addr /ip4/127.0.0.1/tcp/51670
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
+<details id="admonition-例子--窗口c" class="admonition example">
+<summary class="admonition-title">
+<p>例子:  窗口C </p>
+<p><a class="admonition-anchor-link" href="#admonition-例子--窗口c"></a></p>
+</summary>
+<div>
+<pre><code class="language-shell">❯ cargo run --example p2p_chat --quiet
+Local peer id: PeerId(&quot;12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT&quot;)
+Listening on &quot;/ip4/127.0.0.1/tcp/51661&quot;
+Got peer: 12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA with addr /ip4/192.168.86.23/tcp/51656
+Got peer: 12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA with addr /ip4/127.0.0.1/tcp/51656
+Got peer: 12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg with addr /ip4/192.168.86.23/tcp/51654
+Got peer: 12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg with addr /ip4/127.0.0.1/tcp/51654
+// 下面的内容在新节点加入时逐渐出现
+Got peer: 12D3KooWRy9r8j7UQMxavqTcNmoz1JmnLcTU5UZvzvE5jz4Zw3eh with addr /ip4/192.168.86.23/tcp/51670
+Got peer: 12D3KooWRy9r8j7UQMxavqTcNmoz1JmnLcTU5UZvzvE5jz4Zw3eh with addr /ip4/127.0.0.1/tcp/51670
+</code></pre>
+</div>
+</details>
+<details id="admonition-例子--窗口-d-使用-topic-参数让它和其它的-topic-不同" class="admonition example">
+<summary class="admonition-title">
+<p>例子:  窗口 D 使用 topic 参数，让它和其它的 topic 不同 </p>
+<p><a class="admonition-anchor-link" href="#admonition-例子--窗口-d-使用-topic-参数让它和其它的-topic-不同"></a></p>
+</summary>
+<div>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>❯ cargo run --example p2p_chat --quiet -- hello
+Local peer id: PeerId(&quot;12D3KooWRy9r8j7UQMxavqTcNmoz1JmnLcTU5UZvzvE5jz4Zw3eh&quot;)
+Listening on &quot;/ip4/127.0.0.1/tcp/51670&quot;
+Got peer: 12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT with addr /ip4/192.168.86.23/tcp/51661
+Got peer: 12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT with addr /ip4/127.0.0.1/tcp/51661
+Got peer: 12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA with addr /ip4/192.168.86.23/tcp/51656
+Got peer: 12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA with addr /ip4/127.0.0.1/tcp/51656
+Got peer: 12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg with addr /ip4/192.168.86.23/tcp/51654
+Got peer: 12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg with addr /ip4/127.0.0.1/tcp/51654
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
+<p>你会看到，每个节点运行时，都会通过 MDNS 广播，来发现本地已有的 P2P 节点。</p>
+<blockquote>
+<p>现在 A/B/C/D 组成了一个 P2P 网络，其中 A/B/C 都订阅了 lobby，而 D 订阅了 hello。</p>
+</blockquote>
+<details id="admonition-例子--我们在-abcd-四个窗口中分别输入-hello-from-x可以看到" class="admonition example">
+<summary class="admonition-title">
+<p>例子:  我们在 A/B/C/D 四个窗口中分别输入 “Hello from X”，可以看到 </p>
+<p><a class="admonition-anchor-link" href="#admonition-例子--我们在-abcd-四个窗口中分别输入-hello-from-x可以看到"></a></p>
+</summary>
+<div>
+<ul>
+<li>窗口 A：</li>
+</ul>
+<pre><code class="language-shell">hello from A
+
+PeerId(&quot;12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA&quot;): &quot;hello from B&quot;
+
+PeerId(&quot;12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT&quot;): &quot;hello from C&quot;
+</code></pre>
+<ul>
+<li>窗口 B：</li>
+</ul>
+<pre><code class="language-shell">PeerId(&quot;12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg&quot;): &quot;hello from A&quot;
+
+hello from B
+
+PeerId(&quot;12D3KooWMRQvxJcjcexCrNfgSVd2iChpiDWzbgRRS6c5mn9bBzdT&quot;): &quot;hello from C&quot;
+</code></pre>
+<ul>
+<li>窗口 C：</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>PeerId(&quot;12D3KooWDJtZVKBCa7B9C8ZQmRpP7cB7CgeG7PWLXYCnN3aXkaVg&quot;): &quot;hello from A&quot;
+
+PeerId(&quot;12D3KooWAw1gTLCesw1bvTiKNYFyacwbAcjvKwfDsJiH8AuBFgFA&quot;): &quot;hello from B&quot;
+
+hello from C
+<span class="boring">}
+</span></code></pre></pre>
+<ul>
+<li>窗口 D：</li>
+</ul>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>hello from D
+<span class="boring">}
+</span></code></pre></pre>
+</div>
+</details>
+<blockquote>
+<p>可以看到，在 lobby 下的 A/B/C 都收到了各自的消息。</p>
+</blockquote>
+<p>这个使用 libp2p 的聊天代码，如果你读不懂，没关系。</p>
+<blockquote>
+<p>P2P 有大量的新的概念和协议需要预先掌握，所以如果你对这些概念和协议感兴趣，可以自行阅读 <strong><a href="https://docs.rs/libp2p/latest/libp2p/">libp2p 的文档</a></strong>
+，以及它的**<a href="https://github.com/libp2p/rust-libp2p/tree/master/examples">示例代码</a>**。</p>
+</blockquote>
+<h3 id="通讯模型练习题"><a class="header" href="#通讯模型练习题">通讯模型练习题</a></h3>
+<ol>
+<li>看一看 libp2p 的文档和示例代码，把 libp2p clone 到本地，运行每个示例代码。</li>
+<li>阅读 <a href="https://docs.rs/libp2p-swarm/0.30.0/src/libp2p_swarm/behaviour.rs.html#56-185"><strong>libp2p 的 NetworkBehaviour
+trait</strong></a>
+，以及 <strong><a href="https://docs.rs/libp2p-floodsub/0.30.0/src/libp2p_floodsub/layer.rs.html#244-399">floodsub 对应的实现</a></strong>。</li>
+<li>尝试把<a href="#P2P%E8%81%8A%E5%A4%A9%E5%BA%94%E7%94%A8">P2P聊天应用</a>例子中的 floodsub
+替换成**<a href="https://docs.rs/libp2p/0.39.1/libp2p/gossipsub/struct.Gossipsub.html">更高效更节省带宽的 gossipsub</a>**。</li>
+</ol>
+
+            </main>
+
+            <!--            <script src="https://utteranc.es/client.js"-->
+            <!--                    repo="RustMagazine/rust_magazine_2022"-->
+            <!--                    issue-term="title"-->
+            <!--                    theme="github-light"-->
+            <!--                    crossorigin="anonymous"-->
+            <!--                    async></script>-->
+
+            <nav class="nav-wrapper" aria-label="Page navigation">
+                <!-- Mobile navigation buttons -->
+                    <a rel="prev" href="7_1_protocols.html" class="mobile-nav-chapters previous"
+                       title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="kv_server_design.html" class="mobile-nav-chapters next"
+                       title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+
+                <div style="clear: both"></div>
+            </nav>
+        </div>
+    </div>
+
+    <nav class="nav-wide-wrapper" aria-label="Page navigation">
+            <a rel="prev" href="7_1_protocols.html" class="nav-chapters previous" title="Previous chapter"
+               aria-label="Previous chapter" aria-keyshortcuts="Left">
+                <i class="fa fa-angle-left"></i>
+            </a>
+
+            <a rel="next" href="kv_server_design.html" class="nav-chapters next" title="Next chapter"
+               aria-label="Next chapter" aria-keyshortcuts="Right">
+                <i class="fa fa-angle-right"></i>
+            </a>
+    </nav>
+
+</div>
+
+
+
+    <script type="text/javascript">
+        window.playground_line_numbers = true;
+    </script>
+
+    <script type="text/javascript">
+        window.playground_copyable = true;
+    </script>
+
+    <script src="ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="editor.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mode-rust.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-dawn.js" type="text/javascript" charset="utf-8"></script>
+    <script src="theme-tomorrow_night.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+<script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+<script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JS scripts -->
+    <script type="text/javascript" src="assets/mermaid/mermaid.min.js"></script>
+    <script type="text/javascript" src="assets/mermaid/mermaid-init.js"></script>
+    <script type="text/javascript" src="assets/smart-anchor.js"></script>
+    <script type="text/javascript" src="assets/pagetoc/sidebar.js"></script>
+
+</body>
+</html>
