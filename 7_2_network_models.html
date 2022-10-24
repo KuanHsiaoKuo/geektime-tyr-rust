@@ -211,7 +211,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 24 07:57:59 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 24 14:02:43 UTC 2022 -->
 <!--te-->
 <h2 id="通讯模型"><a class="header" href="#通讯模型">通讯模型</a></h2>
 <h3 id="双向通讯"><a class="header" href="#双向通讯">双向通讯</a></h3>
@@ -398,7 +398,7 @@
 </summary>
 <div>
 <p>在关键位置都写了注释：</p>
-<pre><pre class="playground"><code class="language-rust">use anyhow::Result;
+<pre><pre class="playground"><code class="language-rust  editable">use anyhow::Result;
 use futures::StreamExt;
 use libp2p::{
     core::upgrade,
@@ -521,7 +521,7 @@ async fn create_swarm(topic: Topic) -&gt; Result&lt;Swarm&lt;ChatBehavior&gt;&gt
         .boxed();
 
     // 创建 chat behavior
-    let mut behavior = ChatBehavior::new(peer_id.clone()).await?;
+    let mut behavior = ChatBehavior::new(peer_id).await?;
     // 订阅某个主题
     behavior.floodsub.subscribe(topic.clone());
     // 创建 swarm

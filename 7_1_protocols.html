@@ -217,7 +217,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 24 07:57:59 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 24 14:02:42 UTC 2022 -->
 <!--te-->
 <p>在互联网时代，谈到网络开发，我们想到的首先是 Web 开发以及涉及的<strong>部分</strong> HTTP 协议和 WebSocket 协议。</p>
 <details id="admonition-为什么说部分" class="admonition question">
@@ -321,7 +321,7 @@
 <p><a class="admonition-anchor-link" href="#admonition-例子-使用stdnet-创建一个-tcp-server-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexampleslistenerrs"></a></p>
 </summary>
 <div>
-<pre><pre class="playground"><code class="language-rust">use std::{
+<pre><pre class="playground"><code class="language-rust  editable">use std::{
     io::{Read, Write},
     net::TcpListener,
     thread,
@@ -341,21 +341,29 @@ fn main() {
         });
     }
 }
-</code></pre></pre>
-</div>
-</details>
-<h3 id="客户端tcpstream"><a class="header" href="#客户端tcpstream">客户端：TcpStream</a></h3>
-<p>对于客户端，我们可以用 TcpStream::connect() 得到一个 TcpStream。</p>
-<blockquote>
-<p>一旦客户端的请求被服务器接受，就可以发送或者接收数据：</p>
-</blockquote>
-<details id="admonition-例子--客户端使用tcpstreamconnect-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesclientrs" class="admonition example">
-<summary class="admonition-title">
-<p>例子:  客户端使用TcpStream::connect() (<a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/client.rs">github</a>) </p>
-<p><a class="admonition-anchor-link" href="#admonition-例子--客户端使用tcpstreamconnect-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesclientrs"></a></p>
-</summary>
-<div>
-<pre><pre class="playground"><code class="language-rust">use std::{
+``
+
+&lt;/div&gt;
+&lt;/details&gt;
+
+## 客户端：TcpStream
+
+对于客户端，我们可以用 TcpStream::connect() 得到一个 TcpStream。
+
+&gt; 一旦客户端的请求被服务器接受，就可以发送或者接收数据：
+
+
+&lt;details id=&quot;admonition-例子--客户端使用tcpstreamconnect-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesclientrs&quot; class=&quot;admonition example&quot;&gt;
+&lt;summary class=&quot;admonition-title&quot;&gt;
+
+例子:  客户端使用TcpStream::connect() ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/client.rs)) 
+
+&lt;a class=&quot;admonition-anchor-link&quot; href=&quot;#admonition-例子--客户端使用tcpstreamconnect-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesclientrs&quot;&gt;&lt;/a&gt;
+&lt;/summary&gt;
+&lt;div&gt;
+
+```rust, editable
+use std::{
     io::{Read, Write},
     net::TcpStream,
 };
@@ -369,56 +377,66 @@ fn main() {
     stream.read_exact(&amp;mut buf).unwrap();
     println!(&quot;data: {:?}&quot;, String::from_utf8_lossy(&amp;buf));
 }
-</code></pre></pre>
-</div>
-</details>
-<p>在这个例子中:</p>
-<ol>
-<li>客户端在连接成功后，会发送 12 个字节的 “hello world!“给服务器</li>
-<li>服务器读取并回复后，客户端会尝试接收完整的、来自服务器的 17 个字节的 “glad to meet you!”。</li>
-</ol>
-<blockquote>
-<p>但是，目前客户端和服务器都需要硬编码要接收数据的大小，这样不够灵活，后续我们会看到如何通过使用消息帧（frame）更好地处理。</p>
-</blockquote>
-<details id="admonition-为什么上方的客户端代码无需显式关闭tcpstream" class="admonition question">
-<summary class="admonition-title">
-<p>为什么上方的客户端代码无需显式关闭TcpStream？ </p>
-<p><a class="admonition-anchor-link" href="#admonition-为什么上方的客户端代码无需显式关闭tcpstream"></a></p>
-</summary>
-<div>
-<p>从客户端的代码中可以看到，我们无需显式地关闭 TcpStream:</p>
-<ul>
-<li>
-<p>因为 TcpStream 的内部实现也处理了 <strong>Drop trait</strong>，使得其离开作用域时会被关闭。</p>
-</li>
-<li>
-<p>但如果你去看 <strong><a href="https://doc.rust-lang.org/std/net/struct.TcpStream.html">TcpStream 的文档</a></strong>，会发现它并没有实现 Drop。</p>
-</li>
-</ul>
-<p>这是因为:</p>
-<ol>
-<li>TcpStream 内部包装了 <strong>sys_common::net::TcpStream</strong> </li>
-<li>然后它又包装了 Socket</li>
-<li>而 Socket 是一个平台相关的结构</li>
-<li><strong>比如，在 Unix 下的实现是 FileDesc</strong></li>
-<li>然后它内部是一个 OwnedFd</li>
-<li>最终会调用 libc::close(self.fd) 来关闭 fd，也就关闭了 TcpStream。</li>
-</ol>
-</div>
-</details>
-<h2 id="处理网络连接的一般方法"><a class="header" href="#处理网络连接的一般方法">处理网络连接的一般方法</a></h2>
-<p>如果你使用某个 Web Framework 处理 Web 流量，那么无需关心网络连接，框架会帮你打点好一切，你只需要关心某个路由或者某个 RPC 的处理逻辑就可以了。</p>
-<blockquote>
-<p>但如果你要在 TCP 之上构建自己的协议，那么你需要认真考虑如何妥善处理网络连接。</p>
-</blockquote>
-<details id="admonition-之前的-listener-代码有什么问题" class="admonition question">
-<summary class="admonition-title">
-<p>之前的 listener 代码有什么问题？ </p>
-<p><a class="admonition-anchor-link" href="#admonition-之前的-listener-代码有什么问题"></a></p>
-</summary>
-<div>
-<p>我们在之前的 listener 代码中也看到了，在网络处理的主循环中，会不断 accept() 一个新的连接：</p>
-<pre><pre class="playground"><code class="language-rust">fn main() {
+``
+
+&lt;/div&gt;
+&lt;/details&gt;
+
+在这个例子中:
+
+1. 客户端在连接成功后，会发送 12 个字节的 &quot;hello world!&quot;给服务器
+2. 服务器读取并回复后，客户端会尝试接收完整的、来自服务器的 17 个字节的 “glad to meet you!”。
+
+&gt; 但是，目前客户端和服务器都需要硬编码要接收数据的大小，这样不够灵活，后续我们会看到如何通过使用消息帧（frame）更好地处理。
+
+
+&lt;details id=&quot;admonition-为什么上方的客户端代码无需显式关闭tcpstream&quot; class=&quot;admonition question&quot;&gt;
+&lt;summary class=&quot;admonition-title&quot;&gt;
+
+ 为什么上方的客户端代码无需显式关闭TcpStream？ 
+
+&lt;a class=&quot;admonition-anchor-link&quot; href=&quot;#admonition-为什么上方的客户端代码无需显式关闭tcpstream&quot;&gt;&lt;/a&gt;
+&lt;/summary&gt;
+&lt;div&gt;
+
+从客户端的代码中可以看到，我们无需显式地关闭 TcpStream:
+
+- 因为 TcpStream 的内部实现也处理了 **Drop trait**，使得其离开作用域时会被关闭。
+
+- 但如果你去看 **[TcpStream 的文档](https://doc.rust-lang.org/std/net/struct.TcpStream.html)**，会发现它并没有实现 Drop。
+
+这是因为:
+
+1. TcpStream 内部包装了 **sys_common::net::TcpStream** 
+2. 然后它又包装了 Socket
+3. 而 Socket 是一个平台相关的结构
+4. **比如，在 Unix 下的实现是 FileDesc**
+5. 然后它内部是一个 OwnedFd
+6. 最终会调用 libc::close(self.fd) 来关闭 fd，也就关闭了 TcpStream。
+
+&lt;/div&gt;
+&lt;/details&gt;
+
+# 处理网络连接的一般方法
+
+如果你使用某个 Web Framework 处理 Web 流量，那么无需关心网络连接，框架会帮你打点好一切，你只需要关心某个路由或者某个 RPC 的处理逻辑就可以了。
+
+&gt; 但如果你要在 TCP 之上构建自己的协议，那么你需要认真考虑如何妥善处理网络连接。
+
+
+&lt;details id=&quot;admonition-之前的-listener-代码有什么问题&quot; class=&quot;admonition question&quot;&gt;
+&lt;summary class=&quot;admonition-title&quot;&gt;
+
+  之前的 listener 代码有什么问题？ 
+
+&lt;a class=&quot;admonition-anchor-link&quot; href=&quot;#admonition-之前的-listener-代码有什么问题&quot;&gt;&lt;/a&gt;
+&lt;/summary&gt;
+&lt;div&gt;
+
+我们在之前的 listener 代码中也看到了，在网络处理的主循环中，会不断 accept() 一个新的连接：
+
+```rust
+fn main() {
     ...
     loop {
         let (mut stream, addr) = listener.accept().unwrap();
@@ -583,9 +601,7 @@ fn main() {
 <p><a class="admonition-anchor-link" href="#admonition-然后在-mainrs-里添加代码githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesrocket_serverrs"></a></p>
 </summary>
 <div>
-<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>#[macro_use]
+<pre><pre class="playground"><code class="language-rust  editable">#[macro_use]
 extern crate rocket;
 
 use rocket::serde::json::Json;
@@ -606,8 +622,7 @@ fn hello() -&gt; Json&lt;Hello&gt; {
 fn rocket() -&gt; _ {
     rocket::build().mount(&quot;/&quot;, routes![hello])
 }
-<span class="boring">}
-</span></code></pre></pre>
+</code></pre></pre>
 </div>
 </details>
 <p>可以看到，使用 rocket，10 多行代码，我们就可以运行起一个 Web Server。</p>
@@ -677,7 +692,7 @@ fn rocket() -&gt; _ {
 <p><a class="admonition-anchor-link" href="#admonition-例子--服务器的代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_serverrs"></a></p>
 </summary>
 <div>
-<pre><pre class="playground"><code class="language-rust">use anyhow::Result;
+<pre><pre class="playground"><code class="language-rust  editable">use anyhow::Result;
 use bytes::Bytes;
 use futures::{SinkExt, StreamExt};
 use tokio::net::TcpListener;
@@ -696,23 +711,30 @@ async fn main() -&gt; Result&lt;()&gt; {
             // 接收到的消息会只包含消息主体（不包含长度）
             while let Some(Ok(data)) = stream.next().await {
                 println!(&quot;Got: {:?}&quot;, String::from_utf8_lossy(&amp;data));
-                // 发送的消息也需要发送消息主体，不需要提供长度
+                // 发送的消息也脏需要发送消息主体，不需要提供长度
                 // Framed/LengthDelimitedCodec 会自动计算并添加
                 stream.send(Bytes::from(&quot;goodbye world!&quot;)).await.unwrap();
             }
         });
     }
 }
-</code></pre></pre>
-</div>
-</details>
-<details id="admonition-例子--客户端代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_clientrs" class="admonition example">
-<summary class="admonition-title">
-<p>例子:  客户端代码 (<a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_client.rs">github</a>) </p>
-<p><a class="admonition-anchor-link" href="#admonition-例子--客户端代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_clientrs"></a></p>
-</summary>
-<div>
-<pre><pre class="playground"><code class="language-rust">use anyhow::Result;
+``
+
+&lt;/div&gt;
+&lt;/details&gt;
+
+
+&lt;details id=&quot;admonition-例子--客户端代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_clientrs&quot; class=&quot;admonition example&quot;&gt;
+&lt;summary class=&quot;admonition-title&quot;&gt;
+
+例子:  客户端代码 ([github](https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_client.rs)) 
+
+&lt;a class=&quot;admonition-anchor-link&quot; href=&quot;#admonition-例子--客户端代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_clientrs&quot;&gt;&lt;/a&gt;
+&lt;/summary&gt;
+&lt;div&gt;
+
+```rust, editable
+use anyhow::Result;
 use bytes::Bytes;
 use futures::{SinkExt, StreamExt};
 use tokio::net::TcpStream;
