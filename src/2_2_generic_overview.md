@@ -6,7 +6,7 @@
    * [泛型就像定义函数](#泛型就像定义函数)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 24 14:08:49 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 24 14:15:22 UTC 2022 -->
 
 <!--te-->
 

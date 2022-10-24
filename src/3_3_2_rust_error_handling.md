@@ -22,7 +22,7 @@
       * [4.2 函数式错误处理: map/map_err/and_then](#42-函数式错误处理-mapmap_errand_then)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 24 14:08:52 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 24 14:15:27 UTC 2022 -->
 
 <!--te-->
 
