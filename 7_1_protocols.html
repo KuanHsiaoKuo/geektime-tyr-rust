@@ -217,7 +217,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 24 07:25:43 UTC 2022 -->
+<!-- Added by: runner, at: Mon Oct 24 07:56:52 UTC 2022 -->
 <!--te-->
 <p>在互联网时代，谈到网络开发，我们想到的首先是 Web 开发以及涉及的<strong>部分</strong> HTTP 协议和 WebSocket 协议。</p>
 <details id="admonition-为什么说部分" class="admonition question">
@@ -315,10 +315,10 @@
 <li>接收到请求后，会得到一个 TcpStream</li>
 <li>它实现了 Read / Write trait，可以像读写文件一样，进行 socket 的读写：</li>
 </ol>
-<details id="admonition-例子---使用stdnet-创建一个-tcp-server" class="admonition example">
+<details id="admonition-例子-使用stdnet-创建一个-tcp-server-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexampleslistenerrs" class="admonition example">
 <summary class="admonition-title">
-<p>例子:   使用std::net 创建一个 TCP server</p>
-<p><a class="admonition-anchor-link" href="#admonition-例子---使用stdnet-创建一个-tcp-server"></a></p>
+<p>例子: 使用std::net 创建一个 TCP server (<a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/listener.rs">github</a>)</p>
+<p><a class="admonition-anchor-link" href="#admonition-例子-使用stdnet-创建一个-tcp-server-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexampleslistenerrs"></a></p>
 </summary>
 <div>
 <pre><pre class="playground"><code class="language-rust">use std::{
@@ -349,10 +349,10 @@ fn main() {
 <blockquote>
 <p>一旦客户端的请求被服务器接受，就可以发送或者接收数据：</p>
 </blockquote>
-<details id="admonition-例子--客户端使用tcpstreamconnect" class="admonition example">
+<details id="admonition-例子--客户端使用tcpstreamconnect-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesclientrs" class="admonition example">
 <summary class="admonition-title">
-<p>例子:  客户端使用TcpStream::connect() </p>
-<p><a class="admonition-anchor-link" href="#admonition-例子--客户端使用tcpstreamconnect"></a></p>
+<p>例子:  客户端使用TcpStream::connect() (<a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/client.rs">github</a>) </p>
+<p><a class="admonition-anchor-link" href="#admonition-例子--客户端使用tcpstreamconnect-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesclientrs"></a></p>
 </summary>
 <div>
 <pre><pre class="playground"><code class="language-rust">use std::{
@@ -577,10 +577,10 @@ fn main() {
 </code></pre>
 </div>
 </details>
-<details id="admonition-然后在-mainrs-里添加代码" class="admonition info">
+<details id="admonition-然后在-mainrs-里添加代码githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesrocket_serverrs" class="admonition info">
 <summary class="admonition-title">
-<p>然后在 main.rs 里添加代码： </p>
-<p><a class="admonition-anchor-link" href="#admonition-然后在-mainrs-里添加代码"></a></p>
+<p>然后在 main.rs 里添加代码：(<a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/rocket_server.rs">github</a>) </p>
+<p><a class="admonition-anchor-link" href="#admonition-然后在-mainrs-里添加代码githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesrocket_serverrs"></a></p>
 </summary>
 <div>
 <pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
@@ -671,10 +671,10 @@ fn rocket() -&gt; _ {
 </details>
 <h4 id="tokiotokio_util"><a class="header" href="#tokiotokio_util">tokio/tokio_util</a></h4>
 <p>下面是使用 tokio / tokio_util 撰写的服务器和客户端，你可以看到，服务器和客户端都使用了 LengthDelimitedCodec 来处理消息帧。</p>
-<details id="admonition-例子--服务器的代码" class="admonition example">
+<details id="admonition-例子--服务器的代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_serverrs" class="admonition example">
 <summary class="admonition-title">
-<p>例子:  服务器的代码 </p>
-<p><a class="admonition-anchor-link" href="#admonition-例子--服务器的代码"></a></p>
+<p>例子:  服务器的代码 (<a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_server.rs">github</a>)</p>
+<p><a class="admonition-anchor-link" href="#admonition-例子--服务器的代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_serverrs"></a></p>
 </summary>
 <div>
 <pre><pre class="playground"><code class="language-rust">use anyhow::Result;
@@ -706,10 +706,10 @@ async fn main() -&gt; Result&lt;()&gt; {
 </code></pre></pre>
 </div>
 </details>
-<details id="admonition-例子--客户端代码" class="admonition example">
+<details id="admonition-例子--客户端代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_clientrs" class="admonition example">
 <summary class="admonition-title">
-<p>例子:  客户端代码 </p>
-<p><a class="admonition-anchor-link" href="#admonition-例子--客户端代码"></a></p>
+<p>例子:  客户端代码 (<a href="https://github.com/KuanHsiaoKuo/geektime-tyr-rust/blob/main/geektime_rust_codes/29_network/examples/async_framed_client.rs">github</a>) </p>
+<p><a class="admonition-anchor-link" href="#admonition-例子--客户端代码-githubhttpsgithubcomkuanhsiaokuogeektime-tyr-rustblobmaingeektime_rust_codes29_networkexamplesasync_framed_clientrs"></a></p>
 </summary>
 <div>
 <pre><pre class="playground"><code class="language-rust">use anyhow::Result;
