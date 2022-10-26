@@ -1,8 +1,8 @@
 # Rust 的错误处理: 使用类型系统来构建
 
 <!--ts-->
-* [Rust 的错误处理](#rust-的错误处理)
-   * [1. 使用类型系统来构建主要的错误处理流程：Option/Result错误类型处理](#1-使用类型系统来构建主要的错误处理流程optionresult错误类型处理)
+* [Rust 的错误处理: 使用类型系统来构建](#rust-的错误处理-使用类型系统来构建)
+   * [1. 可恢复错误：Option/Result错误类型处理](#1-可恢复错误optionresult错误类型处理)
       * [Option](#option)
       * [Result](#result)
    * [2. 抛出异常：panic! 和 catch_unwind](#2-抛出异常panic-和-catch_unwind)
@@ -22,7 +22,7 @@
       * [4.2 函数式错误处理: map/map_err/and_then](#42-函数式错误处理-mapmap_errand_then)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 24 14:15:27 UTC 2022 -->
+<!-- Added by: runner, at: Wed Oct 26 01:15:49 UTC 2022 -->
 
 <!--te-->
 
