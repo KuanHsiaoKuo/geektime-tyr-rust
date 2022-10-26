@@ -7,6 +7,7 @@ use std::{
 fn main() {
     let listener = TcpListener::bind("0.0.0.0:9527").unwrap();
     loop {
+        // unwrap(): 
         let (mut stream, addr) = listener.accept().unwrap();
         println!("Accepted a new connection: {}", addr);
         thread::spawn(move || {
