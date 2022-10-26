@@ -217,7 +217,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 24 14:15:31 UTC 2022 -->
+<!-- Added by: runner, at: Wed Oct 26 01:15:50 UTC 2022 -->
 <!--te-->
 <p>在互联网时代，谈到网络开发，我们想到的首先是 Web 开发以及涉及的<strong>部分</strong> HTTP 协议和 WebSocket 协议。</p>
 <details id="admonition-为什么说部分" class="admonition question">
@@ -330,6 +330,7 @@
 fn main() {
     let listener = TcpListener::bind(&quot;0.0.0.0:9527&quot;).unwrap();
     loop {
+        // unwrap(): 
         let (mut stream, addr) = listener.accept().unwrap();
         println!(&quot;Accepted a new connection: {}&quot;, addr);
         thread::spawn(move || {

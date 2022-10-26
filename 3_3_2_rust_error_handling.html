@@ -180,12 +180,12 @@
                 <div class="sidetoc">
                     <nav class="pagetoc"></nav>
                 </div>
-                <h1 id="rust-的错误处理"><a class="header" href="#rust-的错误处理">Rust 的错误处理</a></h1>
+                <h1 id="rust-的错误处理-使用类型系统来构建"><a class="header" href="#rust-的错误处理-使用类型系统来构建">Rust 的错误处理: 使用类型系统来构建</a></h1>
 <!--ts-->
 <ul>
-<li><a href="#rust-%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">Rust 的错误处理</a>
+<li><a href="#rust-%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86-%E4%BD%BF%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9D%A5%E6%9E%84%E5%BB%BA">Rust 的错误处理: 使用类型系统来构建</a>
 <ul>
-<li><a href="#1-%E4%BD%BF%E7%94%A8%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E6%9D%A5%E6%9E%84%E5%BB%BA%E4%B8%BB%E8%A6%81%E7%9A%84%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8Boptionresult%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B%E5%A4%84%E7%90%86">1. 使用类型系统来构建主要的错误处理流程：Option/Result错误类型处理</a>
+<li><a href="#1-%E5%8F%AF%E6%81%A2%E5%A4%8D%E9%94%99%E8%AF%AFoptionresult%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B%E5%A4%84%E7%90%86">1. 可恢复错误：Option/Result错误类型处理</a>
 <ul>
 <li><a href="#option">Option</a></li>
 <li><a href="#result">Result</a></li>
@@ -223,9 +223,9 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Mon Oct 24 14:15:27 UTC 2022 -->
+<!-- Added by: runner, at: Wed Oct 26 01:15:49 UTC 2022 -->
 <!--te-->
-<h2 id="1-使用类型系统来构建主要的错误处理流程optionresult错误类型处理"><a class="header" href="#1-使用类型系统来构建主要的错误处理流程optionresult错误类型处理">1. 使用类型系统来构建主要的错误处理流程：Option/Result错误类型处理</a></h2>
+<h2 id="1-可恢复错误optionresult错误类型处理"><a class="header" href="#1-可恢复错误optionresult错误类型处理">1. 可恢复错误：Option/Result错误类型处理</a></h2>
 <blockquote>
 <p>由于诞生的年代比较晚，Rust 有机会从已有的语言中学习到各种错误处理的优劣。对于 Rust 来说，目前的几种方式相比而言，最佳的方法是，使用类型系统来构建主要的错误处理流程。</p>
 </blockquote>
