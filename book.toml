@@ -8,7 +8,7 @@ title = "Anatomy In First Rust Programming Class 🦀"
 
 [output.html]
 theme = "mytheme"
-default-theme = "rust"
+default-theme = "navy"
 git-repository-url = "https://github.com/KuanHsiaoKuo/geektime-tyr-rust.git"
 git-repository-icon = "fa-rust"
 additional-js = ["assets/mermaid/mermaid.min.js", "assets/mermaid/mermaid-init.js", "assets/smart-anchor.js", "assets/pagetoc/sidebar.js"]
