@@ -200,7 +200,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Jan 26 08:04:42 UTC 2023 -->
+<!-- Added by: runner, at: Sat Mar 18 14:56:08 UTC 2023 -->
 <!--te-->
 <h2 id="动态还是静态"><a class="header" href="#动态还是静态">动态还是静态？</a></h2>
 <details id="admonition-动态静态生命周期定义与表示方式" class="admonition info">
@@ -247,6 +247,9 @@
 </div>
 </details>
 <h2 id="如何识别生命周期"><a class="header" href="#如何识别生命周期">如何识别生命周期</a></h2>
+<blockquote>
+<p>其实生命周期参数主要用于帮助编译器识别引用的生命周期范围，对于明显不符合生命周期参数的变量，哪怕加了生命周期参数也不会通过。</p>
+</blockquote>
 <h3 id="只有传址的参数且多于一个才可能需要生命周期标注"><a class="header" href="#只有传址的参数且多于一个才可能需要生命周期标注">只有传址的参数，且多于一个，才可能需要生命周期标注</a></h3>
 <h3 id="两个小例子"><a class="header" href="#两个小例子">两个小例子</a></h3>
 <details id="admonition-两个小例子" class="admonition info">
