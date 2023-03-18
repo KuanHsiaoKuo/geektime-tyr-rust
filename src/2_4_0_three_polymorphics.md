@@ -12,7 +12,7 @@
       * [具体再对比一下rust的两种多态实现方式：](#具体再对比一下rust的两种多态实现方式)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Jan 26 08:04:43 UTC 2023 -->
+<!-- Added by: runner, at: Sat Mar 18 14:56:09 UTC 2023 -->
 
 <!--te-->
 
