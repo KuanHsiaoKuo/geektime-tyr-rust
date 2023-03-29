@@ -1,18 +1,19 @@
 # 七、如何做大的重构？
 
 <!--ts-->
+
 * [七、如何做大的重构？](#七如何做大的重构)
-   * [现有架构分析](#现有架构分析)
-   * [要支持 Pub/Sub，现有架构有两个很大的问题。](#要支持-pubsub现有架构有两个很大的问题)
-   * [使用 yamux 做多路复用](#使用-yamux-做多路复用)
-   * [支持 pub/sub](#支持-pubsub)
-      * [Pub/Sub 如何设计？](#pubsub-如何设计)
-      * [Pub/Sub 的实现](#pubsub-的实现)
-      * [在处理流程中引入 Pub/Sub](#在处理流程中引入-pubsub)
-      * [继续重构：弥补设计上的小问题](#继续重构弥补设计上的小问题)
-      * [让客户端能更好地使用新的接口](#让客户端能更好地使用新的接口)
-   * [你可以仔细阅读这一节中的代码，好好品味这些接口的设计。](#你可以仔细阅读这一节中的代码好好品味这些接口的设计)
-   * [一些相关考虑](#一些相关考虑)
+    * [现有架构分析](#现有架构分析)
+    * [要支持 Pub/Sub，现有架构有两个很大的问题。](#要支持-pubsub现有架构有两个很大的问题)
+    * [使用 yamux 做多路复用](#使用-yamux-做多路复用)
+    * [支持 pub/sub](#支持-pubsub)
+        * [Pub/Sub 如何设计？](#pubsub-如何设计)
+        * [Pub/Sub 的实现](#pubsub-的实现)
+        * [在处理流程中引入 Pub/Sub](#在处理流程中引入-pubsub)
+        * [继续重构：弥补设计上的小问题](#继续重构弥补设计上的小问题)
+        * [让客户端能更好地使用新的接口](#让客户端能更好地使用新的接口)
+    * [你可以仔细阅读这一节中的代码，好好品味这些接口的设计。](#你可以仔细阅读这一节中的代码好好品味这些接口的设计)
+    * [一些相关考虑](#一些相关考虑)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Thu Jan 26 08:04:51 UTC 2023 -->
@@ -273,7 +274,8 @@ message Publish {
 ```
 ~~~
 
-命令的响应我们不用改变。当客户端 Subscribe 时，返回的 stream 里的第一个值包含订阅 ID，这是一个全局唯一的 ID，这样，客户端后续可以用 Unsubscribe 取消。
+命令的响应我们不用改变。当客户端 Subscribe 时，返回的 stream 里的第一个值包含订阅 ID，这是一个全局唯一的 ID，这样，客户端后续可以用
+Unsubscribe 取消。
 
 ### Pub/Sub 如何设计？
 
@@ -338,7 +340,8 @@ pub struct Broadcaster {
 如果一条消息要发送给一万个客户端，那么我们不希望这条消息被复制后，再被发送，而是直接发送同一份数据。
 ~~~
 
-> 这里对 Pub/Sub 的接口，构建了一个 Topic trait。虽然目前我们只有 Broadcaster 会实现 Topic trait，但未来也许会换不同的实现方式，所以，抽象出 Topic trait 很有意义。
+> 这里对 Pub/Sub 的接口，构建了一个 Topic trait。虽然目前我们只有 Broadcaster 会实现 Topic trait，但未来也许会换不同的实现方式，所以，抽象出
+> Topic trait 很有意义。
 
 ### Pub/Sub 的实现
 
@@ -514,7 +517,8 @@ mod tests {
 
 ~~~
 
-这个测试需要一系列新的改动，比如 assert_res_ok() 的接口变化了，我们需要在 src/pb/mod.rs 里添加新的 TryFrom 支持等等，详细代码你可以看 repo 里的 diff_topic。
+这个测试需要一系列新的改动，比如 assert_res_ok() 的接口变化了，我们需要在 src/pb/mod.rs 里添加新的 TryFrom 支持等等，详细代码你可以看
+repo 里的 diff_topic。
 
 ### 在处理流程中引入 Pub/Sub
 
@@ -691,7 +695,8 @@ impl<Store: Storage> Service<Store> {
 
 - execute() 方法的返回值变成了 StreamingResponse
 - 这就意味着所有围绕着这个方法的调用，包括测试，都需要相应更新。
-- 这是迫不得已的，不过通过构建和 CommandService / dispatch 平行的 TopicService / dispatch_stream，我们已经让这个破坏性更新尽可能地在比较高层，否则，改动会更大。
+- 这是迫不得已的，不过通过构建和 CommandService / dispatch 平行的 TopicService /
+  dispatch_stream，我们已经让这个破坏性更新尽可能地在比较高层，否则，改动会更大。
 
 目前，代码无法编译通过，这是因为如下的代码，res 现在是个 stream，
 
@@ -726,8 +731,7 @@ where
 
 如果是个 test，需要使用 #[tokio::test]。你可以自己试着把所有相关的代码都改一下。
 
-~~~admonish note title="当你改到 src/network/mod.rs 里 ProstServerStream 的 process 方法里面的stream.send(data) 时，我们目前的 data 是 Arc<CommandResponse>：
- " collapsible=true
+~~~admonish note title="当你改到 src/network/mod.rs 里 ProstServerStream 的 process 方法里面的stream.send(data) 时，我们目前的 data 是 Arc<CommandResponse>： " collapsible=true
 ```rust, editable
 
 impl<S> ProstServerStream<S>
@@ -929,7 +933,8 @@ where
 - 这个改动会导致使用 execute() 方法的测试都无法编译，你可以试着修改掉它们。
 ~~~
 
-此外我们还创建了一个新的文件 src/network/stream_result.rs，用来帮助客户端更好地使用 execute_streaming() 接口。所有改动的具体代码可以看 repo 中的 diff_client。
+此外我们还创建了一个新的文件 src/network/stream_result.rs，用来帮助客户端更好地使用 execute_streaming() 接口。所有改动的具体代码可以看
+repo 中的 diff_client。
 
 ~~~admonish note title="测试 " collapsible=true
 现在，代码一切就绪:
@@ -947,7 +952,8 @@ RUST_LOG=info cargo run --bin kvc --quiet
 ```
 ~~~
 
-> 此时，服务器和客户端都收到了彼此的请求和响应，即便混合 HSET/HGET 和 PUBLISH/SUBSCRIBE 命令，一切都依旧处理正常！今天我们做了一个比较大的重构，但比预想中对原有代码的改动要小，这简直太棒了！
+> 此时，服务器和客户端都收到了彼此的请求和响应，即便混合 HSET/HGET 和 PUBLISH/SUBSCRIBE
+> 命令，一切都依旧处理正常！今天我们做了一个比较大的重构，但比预想中对原有代码的改动要小，这简直太棒了！
 
 ## 你可以仔细阅读这一节中的代码，好好品味这些接口的设计。
 
