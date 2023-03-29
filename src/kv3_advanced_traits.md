@@ -1,19 +1,36 @@
 # 三、高级trait技巧
 
+~~~admonish abstract title="Summarize made by cursor" collapsible=true
+本篇文章主要介绍了 Rust 中高级 trait 技巧:
+1. 包括处理 Iterator
+2. 支持事件通知
+3. 为持久化数据库实现 Storage trait
+4. 构建新的 KV server
+5. 进一步认识 trait 的威力以及泛型结构和生命周期标注
+6. 更多用于阅读源码等内容。 
+7. 其中，处理 Iterator 主要是介绍了如何使用 Rust 标准库中的 IntoIterator trait，将数据结构的所有权转移到 Iterator 中；
+8. 支持事件通知则是通过构造者模式，为 ServiceInner 注册相应的事件处理函数，并提供了 Notify 和 NotifyMut 两个 trait，用于事件通知。
+9. 为持久化数据库实现 Storage trait 主要是介绍了如何为 sled 实现 Storage trait，并测试通过。
+10. 构建新的 KV server 主要是介绍了如何使用 Service 和 ServiceInner 两个数据结构，以及如何使用 Builder Pattern 构建 Service。
+11. 进一步认识 trait 的威力则是介绍了 trait 的多态性和动态分发的特性，以及如何使用 trait 对代码进行抽象。
+12. 泛型结构和生命周期标注更多用于阅读源码则是介绍了如何阅读 Rust 源码中的泛型结构和生命周期标注。
+~~~
+
 <!--ts-->
+
 * [三、高级trait技巧](#三高级trait技巧)
-   * [处理 Iterator](#处理-iterator)
-   * [支持事件通知](#支持事件通知)
-      * [先看事件处理函数如何注册。](#先看事件处理函数如何注册)
-         * [思路](#思路)
-         * [先写测试](#先写测试)
-         * [fn_received的链式调用](#fn_received的链式调用)
-   * [为持久化数据库实现 Storage trait](#为持久化数据库实现-storage-trait)
-      * [方案选择](#方案选择)
-      * [为sled实现Storage trait，并测试通过](#为sled实现storage-trait并测试通过)
-   * [构建新的 KV server](#构建新的-kv-server)
-   * [进一步认识trait的威力](#进一步认识trait的威力)
-   * [泛型结构和生命周期标注更多用于阅读源码](#泛型结构和生命周期标注更多用于阅读源码)
+    * [处理 Iterator](#处理-iterator)
+    * [支持事件通知](#支持事件通知)
+        * [先看事件处理函数如何注册。](#先看事件处理函数如何注册)
+            * [思路](#思路)
+            * [先写测试](#先写测试)
+            * [fn_received的链式调用](#fn_received的链式调用)
+    * [为持久化数据库实现 Storage trait](#为持久化数据库实现-storage-trait)
+        * [方案选择](#方案选择)
+        * [为sled实现Storage trait，并测试通过](#为sled实现storage-trait并测试通过)
+    * [构建新的 KV server](#构建新的-kv-server)
+    * [进一步认识trait的威力](#进一步认识trait的威力)
+    * [泛型结构和生命周期标注更多用于阅读源码](#泛型结构和生命周期标注更多用于阅读源码)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
@@ -113,7 +130,8 @@ Bingo！这个代码可以编译通过。现在如果运行 cargo test 进行测
 
 3. 对get_iter()进行抽象
 
-> 虽然这个代码可以通过测试，并且本身也非常精简，我们还是有必要思考一下，如果以后想为更多的 data store 实现 Storage trait，都会怎样处理 get_iter() 方法？
+> 虽然这个代码可以通过测试，并且本身也非常精简，我们还是有必要思考一下，如果以后想为更多的 data store 实现 Storage
+> trait，都会怎样处理 get_iter() 方法？
 
 我们会：
 
@@ -123,7 +141,8 @@ Bingo！这个代码可以编译通过。现在如果运行 cargo test 进行测
 
 这里的第 2 步对于每个 Storage trait 的 get_iter() 方法的实现来说，都是相同的。
 
-有没有可能把它封装起来呢？使得 Storage trait 的实现者只需要提供它们自己的拥有所有权的 Iterator，并对 Iterator 里的 Item 类型提供 Into<Kvpair> ？
+有没有可能把它封装起来呢？使得 Storage trait 的实现者只需要提供它们自己的拥有所有权的 Iterator，并对 Iterator 里的 Item
+类型提供 Into<Kvpair> ？
 
 ~~~admonish note title="笔记： 这样，我们在 src/storage/memory.rs 里对 get_iter() 的实现，就可以直接使用 StorageIter  " collapsible=true
 来尝试一下，在 src/storage/mod.rs 中，构建一个 StorageIter，并实现 Iterator trait：

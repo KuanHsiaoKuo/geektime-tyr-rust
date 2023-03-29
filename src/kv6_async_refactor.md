@@ -1,14 +1,23 @@
 # 六、异步处理
 
+~~~admonish abstract title="Summarize made by cursor" collapsible=true
+本篇文章主要介绍了 Rust 异步处理的相关知识。
+1. 首先回顾了构建 KV server 的过程，然后介绍了异步重构的必要性。
+2. 接着，详细讲解了如何创建 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait
+3. 然后让 ProstServerStream 和 ProstClientStream 使用它。
+4. 最后，分别实现了 Stream 和 Sink 的 poll_next()、poll_ready()、start_send()、poll_flush() 和 poll_close() 方法。
+~~~
+
 <!--ts-->
+
 * [六、异步处理](#六异步处理)
-   * [回顾构建过程](#回顾构建过程)
-   * [开始做异步重构](#开始做异步重构)
-   * [创建 ProstStream](#创建-proststream)
-      * [测试！](#测试)
-   * [使用 ProstStream](#使用-proststream)
-   * [异步处理回顾：单元测试的重要性](#异步处理回顾单元测试的重要性)
-   * [思考题](#思考题)
+    * [回顾构建过程](#回顾构建过程)
+    * [开始做异步重构](#开始做异步重构)
+    * [创建 ProstStream](#创建-proststream)
+        * [测试！](#测试)
+    * [使用 ProstStream](#使用-proststream)
+    * [异步处理回顾：单元测试的重要性](#异步处理回顾单元测试的重要性)
+    * [思考题](#思考题)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
@@ -55,7 +64,8 @@
 
 ## 开始做异步重构
 
-虽然我们很早就已经撰写了不少异步或者和异步有关的代码。但是最能体现 Rust 异步本质的 poll()、poll_read()、poll_next() 这样的处理函数还没有怎么写过，之前测试异步的 read_frame() 写过一个
+虽然我们很早就已经撰写了不少异步或者和异步有关的代码。但是最能体现 Rust 异步本质的 poll()、poll_read()、poll_next()
+这样的处理函数还没有怎么写过，之前测试异步的 read_frame() 写过一个
 DummyStream，算是体验了一下底层的异步处理函数的复杂接口。
 
 ~~~admonish note title="不过在 DummyStream 里，并没有做任何复杂的动作： " collapsible=true
@@ -114,7 +124,8 @@ while let Some(Ok(cmd)) = stream.next().await {
 > 虽然从代码对比的角度，这两段代码几乎一样，但未来的可扩展性，和整个异步生态的融洽性上，AsyncProst 还是更胜一筹。
 ~~~
 
-所以这里就构造一个 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait，然后让 ProstServerStream 和 ProstClientStream 使用它。
+所以这里就构造一个 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait，然后让 ProstServerStream 和 ProstClientStream
+使用它。
 
 ## 创建 ProstStream
 
@@ -254,7 +265,8 @@ where
 
 接下来我们就一个个处理。
 
-> 注意对于 In 和 Out 参数，还为其约束了 FrameCoder，这样，在实现里我们可以使用 decode_frame() 和 encode_frame() 来获取一个 Item 或者 encode 一个 Item。
+> 注意对于 In 和 Out 参数，还为其约束了 FrameCoder，这样，在实现里我们可以使用 decode_frame() 和 encode_frame() 来获取一个
+> Item 或者 encode 一个 Item。
 
 ~~~admonish note title="1. Stream 的实现, 主要是Stream 的 poll_next() 方法。" collapsible=true
 poll_next() 可以直接调用之前写好的 read_frame()，然后再用 decode_frame() 来解包：
@@ -433,7 +445,8 @@ impl<S, Req, Res> Unpin for ProstStream<S, Req, Res> where S: Unpin {}
 
 ### 测试！
 
-又到了重要的测试环节。我们需要写点测试来确保 ProstStream 能正常工作。因为之前在 src/network/frame.rs 中写了个 DummyStream，实现了 AsyncRead，我们只需要扩展它，让它再实现
+又到了重要的测试环节。我们需要写点测试来确保 ProstStream 能正常工作。因为之前在 src/network/frame.rs 中写了个
+DummyStream，实现了 AsyncRead，我们只需要扩展它，让它再实现
 AsyncWrite。
 
 ~~~admonish note title="1. 为了让它可以被复用，我们将其从 frame.rs 中移出来，放在 src/network/mod.rs 中，并修改成下面的样子（记得在 frame.rs 的测试里 use 新的 DummyStream）： " collapsible=true
@@ -635,7 +648,8 @@ RUST_LOG=info cargo run --bin kvc --quiet
 
 本节我们做了个稍微大一些的重构，为已有的代码提供更加符合异步 IO 接口的功能。
 
-> 从对外使用的角度来说，它并没有提供或者满足任何额外的需求，但是从代码结构和质量的角度，它使得我们的 ProstStream 可以更方便和更直观地被其它接口调用，也更容易跟整个 Rust 的现有生态结合起来。
+> 从对外使用的角度来说，它并没有提供或者满足任何额外的需求，但是从代码结构和质量的角度，它使得我们的 ProstStream
+> 可以更方便和更直观地被其它接口调用，也更容易跟整个 Rust 的现有生态结合起来。
 
 你可能会好奇，为什么可以这么自然地进行代码重构？这是因为我们有足够的单元测试覆盖来打底。
 

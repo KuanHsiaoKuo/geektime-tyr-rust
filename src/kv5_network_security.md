@@ -1,12 +1,22 @@
 # 五、网络安全：生成 x509 证书
 
+~~~admonish abstract title="Summarize made by cursor" collapsible=true
+本篇文章主要介绍了如何使用 TLS 来保证客户端和服务器间的安全性。
+1. 文章首先介绍了 TLS 的作用和 TLS 的数据封装
+2. 然后详细讲解了如何使用 tokio-rustls 库来实现 TLS
+3. 文章提供了两个数据结构 TlsServerAcceptor / TlsClientConnector，分别用于存放 TLS ServerConfig 和 TLS ClientConfig
+4. 并提供了 accept() 和 connect() 方法，用于把底层的协议转换成 TLS stream。
+5. 最后，文章提供了一个测试用例，演示了如何使用 TLS 客户端和服务器之间进行通信。
+~~~
+
 <!--ts-->
+
 * [五、网络安全：生成 x509 证书](#五网络安全生成-x509-证书)
-   * [在 KV server 中使用 TLS](#在-kv-server-中使用-tls)
-      * [实现TLS](#实现tls)
-   * [让 KV client/server 支持 TLS](#让-kv-clientserver-支持-tls)
-   * [网络安全开发回顾](#网络安全开发回顾)
-   * [考虑双向验证](#考虑双向验证)
+    * [在 KV server 中使用 TLS](#在-kv-server-中使用-tls)
+        * [实现TLS](#实现tls)
+    * [让 KV client/server 支持 TLS](#让-kv-clientserver-支持-tls)
+    * [网络安全开发回顾](#网络安全开发回顾)
+    * [考虑双向验证](#考虑双向验证)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
@@ -124,7 +134,8 @@ TLS 是目前最主要的应用层安全协议，被广泛用于保护架构在 
 
 好，接下来我们看看 TLS 怎么实现。
 
-估计很多人一听 TLS 或者 SSL，就头皮发麻，因为之前跟 [openssl](https://www.openssl.org) 打交道有过很多不好的经历。openssl 的代码库太庞杂，API 不友好，编译链接都很费劲。
+估计很多人一听 TLS 或者 SSL，就头皮发麻，因为之前跟 [openssl](https://www.openssl.org) 打交道有过很多不好的经历。openssl
+的代码库太庞杂，API 不友好，编译链接都很费劲。
 
 ~~~admonish info title=" 不过，在 Rust 下使用 TLS 的体验还是很不错的： " collapsible=true
 - Rust 对 openssl 有很不错的封装: [rust-openssl](https://github.com/sfackler/rust-openssl)
@@ -305,7 +316,8 @@ fn load_key(key: &str) -> Result<PrivateKey, KvError> {
 - 因为 TLS 需要验证证书的 CA，所以还需要加载 CA 证书。虽然平时在做 Web 开发时，我们都只使用服务器证书，但其实 TLS 支持双向验证，服务器也可以验证客户端的证书是否是它认识的 CA 签发的。
 ~~~
 
-> 处理完 config 后，这段代码的核心逻辑其实就是客户端的 connect() 方法和服务器的 accept() 方法，它们都接受一个满足 AsyncRead + AsyncWrite + Unpin + Send 的 stream。
+> 处理完 config 后，这段代码的核心逻辑其实就是客户端的 connect() 方法和服务器的 accept() 方法，它们都接受一个满足
+> AsyncRead + AsyncWrite + Unpin + Send 的 stream。
 
 ~~~admonish note title="3. 考虑到通用性，我们不希望 TLS 代码只能接受 TcpStream，所以这里提供了一个泛型参数 S：" collapsible=true
 ```rust, editable
@@ -529,7 +541,8 @@ async fn main() -> Result<()> {
 
 ~~~
 
-> 这就是使用 trait 做面向接口编程的巨大威力，系统的各个组件可以来自不同的 crates，但只要其接口一致（或者我们创建 adapter 使其接口一致），就可以无缝插入。
+> 这就是使用 trait 做面向接口编程的巨大威力，系统的各个组件可以来自不同的 crates，但只要其接口一致（或者我们创建 adapter
+> 使其接口一致），就可以无缝插入。
 
 ~~~admonish success title="测试通过 " collapsible=true
 - 完成之后，打开一个命令行窗口，运行：
@@ -553,20 +566,25 @@ RUST_LOG=info cargo run --bin kvc --quie
 
 ## 网络安全开发回顾
 
-网络安全是开发网络相关的应用程序中非常重要的一个环节。虽然 KV Server 这样的服务基本上会运行在云端受控的网络环境中，不会对 internet 提供服务，然而云端内部的安全性也不容忽视。你不希望数据在流动的过程中被篡改。
+网络安全是开发网络相关的应用程序中非常重要的一个环节。虽然 KV Server 这样的服务基本上会运行在云端受控的网络环境中，不会对
+internet 提供服务，然而云端内部的安全性也不容忽视。你不希望数据在流动的过程中被篡改。
 
-TLS 很好地解决了安全性的问题，可以保证整个传输过程中数据的机密性和完整性。如果使用客户端证书的话，还可以做一定程度的客户端合法性的验证。比如你可以在云端为所有有权访问 KV server
+TLS 很好地解决了安全性的问题，可以保证整个传输过程中数据的机密性和完整性。如果使用客户端证书的话，还可以做一定程度的客户端合法性的验证。比如你可以在云端为所有有权访问
+KV server
 的客户端签发客户端证书，这样，只要客户端的私钥不泄露，就只有拥有证书的客户端才能访问 KV server。
 
-不知道你现在有没有觉得，在 Rust 下使用 TLS 是非常方便的一件事情。并且，我们构建的 ProstServerStream / ProstClientStream，因为有足够好的抽象，可以在 TcpStream 和 TlsStream
+不知道你现在有没有觉得，在 Rust 下使用 TLS 是非常方便的一件事情。并且，我们构建的 ProstServerStream /
+ProstClientStream，因为有足够好的抽象，可以在 TcpStream 和 TlsStream
 之间游刃有余地切换。当你构建好相关的代码，只需要把 TcpStream 换成 TlsStream，KV server 就可以无缝切换到一个安全的网络协议栈。
 
 ## 考虑双向验证
 
-目前我们的 kvc / kvs 只做了单向的验证，如果服务器要验证客户端的证书，该怎么做？如果你没有头绪，可以再仔细看看测试 TLS 的代码，然后改动 kvc/kvs 使得双向验证也能通过吧。
+目前我们的 kvc / kvs 只做了单向的验证，如果服务器要验证客户端的证书，该怎么做？如果你没有头绪，可以再仔细看看测试 TLS
+的代码，然后改动 kvc/kvs 使得双向验证也能通过吧。
 
 除了 TLS，另外一个被广泛使用的处理应用层安全的协议是 [noise protocol](https://noiseprotocol.org)
-。你可以阅读[陈天的这篇文章](https://zhuanlan.zhihu.com/p/96944134)了解 noise protocol。Rust 下有[ snow ](https://github.com/mcginty/snow)
+。你可以阅读[陈天的这篇文章](https://zhuanlan.zhihu.com/p/96944134)了解 noise protocol。Rust
+下有[ snow ](https://github.com/mcginty/snow)
 这个很优秀的库处理 noise
 protocol。对于有余力的同学，你们可以看看它的文档，尝试着写段[类似reqwest的 tls.rs 的代码](https://github.com/seanmonstar/reqwest/blob/master/src/tls.rs)
 ，让我们的 kvs / kvc 可以使用 noise protocol。

@@ -1,13 +1,24 @@
 # 四、网络处理
 
+~~~admonish abstract title="Summarize made by cursor" collapsible=true
+本篇文章主要介绍了 Rust 中的网络处理:
+- 包括如何定义协议的 Frame
+- 如何撰写处理 Frame 的代码
+- 以及如何让网络层可以像 AsyncProst 那样方便使用。
+- 文章中详细介绍了 async-prost 库的使用，以及如何自己处理封包和解包的逻辑。
+- 同时，还介绍了如何使用 tokio-util 库来处理和 frame 相关的封包解包的主要需求，包括 LinesDelimited 和 LengthDelimited。
+- 最后，文章还介绍了如何为 CommandRequest / CommandResponse 提供缺省实现，以便做 frame 级别的处理。
+~~~
+
 <!--ts-->
+
 * [四、网络处理](#四网络处理)
-   * [async-prost](#async-prost)
-   * [如何定义协议的 Frame？](#如何定义协议的-frame)
-   * [如何撰写处理 Frame 的代码？](#如何撰写处理-frame-的代码)
-   * [让网络层可以像 AsyncProst 那样方便使用](#让网络层可以像-asyncprost-那样方便使用)
-   * [正式创建 kv-server 和 kv-client](#正式创建-kv-server-和-kv-client)
-   * [回顾网络开发](#回顾网络开发)
+    * [async-prost](#async-prost)
+    * [如何定义协议的 Frame？](#如何定义协议的-frame)
+    * [如何撰写处理 Frame 的代码？](#如何撰写处理-frame-的代码)
+    * [让网络层可以像 AsyncProst 那样方便使用](#让网络层可以像-asyncprost-那样方便使用)
+    * [正式创建 kv-server 和 kv-client](#正式创建-kv-server-和-kv-client)
+    * [回顾网络开发](#回顾网络开发)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
@@ -58,7 +69,8 @@ protobuf 帮我们解决了协议消息如何定义的问题，然而一个消�
 - 如果你想要更灵活些，也可以使用 [varint](https://en.wikipedia.org/wiki/Variable-length_quantity)。
 ~~~
 
-tokio 有个 tokio-util 库，已经帮我们处理了和 frame 相关的封包解包的主要需求，包括 LinesDelimited（处理 \r\n 分隔符）和 LengthDelimited（处理长度分隔符）。
+tokio 有个 tokio-util 库，已经帮我们处理了和 frame 相关的封包解包的主要需求，包括 LinesDelimited（处理 \r\n 分隔符）和
+LengthDelimited（处理长度分隔符）。
 
 ~~~admonish note title="我们可以使用它的 LengthDelimitedCodec 尝试一下。 " collapsible=true
 1. 首先在 Cargo.toml 里添加依赖：

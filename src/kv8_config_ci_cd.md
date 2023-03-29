@@ -1,12 +1,21 @@
 # 八、配置/测试/监控/CI/CD
 
+~~~admonish abstract title="Summarize made by cursor" collapsible=true
+本篇文章主要介绍了 Rust 语言下的 KV server 项目的配置、测试、监控、CI/CD 等方面。
+1. 首先介绍了如何使用 serde 和 toml 处理配置文件
+2. 然后讲解了如何编写集成测试和性能测试
+3. 接着，介绍了如何使用 jaeger 和 opentelemetry 进行测量和监控
+4. 最后讲解了如何使用 GitHub Actions 实现 CI/CD。
+~~~
+
 <!--ts-->
+
 * [八、配置/测试/监控/CI/CD](#八配置测试监控cicd)
-   * [配置](#配置)
-   * [集成测试](#集成测试)
-   * [性能测试](#性能测试)
-   * [测量和监控](#测量和监控)
-   * [CI/CD](#cicd)
+    * [配置](#配置)
+    * [集成测试](#集成测试)
+    * [性能测试](#性能测试)
+    * [测量和监控](#测量和监控)
+    * [CI/CD](#cicd)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
@@ -19,7 +28,8 @@
 - 也没有复杂的生命周期处理：只有零星 'static 标注；
 - 更没有支持集群的处理。
 
-> 然而，如果你能够理解到目前为止的代码，甚至能独立写出这样的代码，那么，你已经具备足够的、能在一线大厂开发的实力了，国内我不是特别清楚，但在北美这边，保守一些地说，300k+ USD 的 package 应该可以轻松拿到。
+> 然而，如果你能够理解到目前为止的代码，甚至能独立写出这样的代码，那么，你已经具备足够的、能在一线大厂开发的实力了，国内我不是特别清楚，但在北美这边，保守一些地说，300k+
+> USD 的 package 应该可以轻松拿到。
 
 今天我们就给 KV server 项目收个尾，结合之前梳理的实战中 Rust 项目应该考虑的问题，来聊聊和生产环境有关的一些处理，按开发流程，主要讲五个方面：
 
@@ -31,7 +41,8 @@
 
 ## 配置
 
-1. 首先在 Cargo.toml 里添加 [serde](https://github.com/serde-rs/serde) 和[ toml](https://github.com/toml-rs/toml-rs)。我们计划：
+1. 首先在 Cargo.toml 里添加 [serde](https://github.com/serde-rs/serde) 和[ toml](https://github.com/toml-rs/toml-rs)
+   。我们计划：
 
 - 使用 toml 做配置文件
 - serde 用来处理配置的序列化和反序列化
@@ -184,7 +195,8 @@ oSMDIQCtmdgIxQNLopbTbgr5ehFRZeraWkv8CWAeSHVk9iCEnQ==\r
 ```
 ~~~
 
-有了 start_server_with_config 和 start_client_with_config 这两个辅助函数，我们就可以简化 src/server.rs 和 src/client.rs 了。
+有了 start_server_with_config 和 start_client_with_config 这两个辅助函数，我们就可以简化 src/server.rs 和 src/client.rs
+了。
 
 ~~~admonish note title="下面是 src/server.rs 的新代码： " collapsible=true
 ```rust, editable
@@ -241,7 +253,8 @@ async fn main() -> Result<()> {
 
 基本的想法是我们连上 100 个 subscriber 作为背景，然后看 publisher publish 的速度。
 
-因为 BROADCAST_CAPACITY 有限，是 128，当 publisher 速度太快，而导致 server 不能及时往 subscriber 发送时，server 接收 client 数据的速度就会降下来，无法接收新的
+因为 BROADCAST_CAPACITY 有限，是 128，当 publisher 速度太快，而导致 server 不能及时往 subscriber 发送时，server 接收 client
+数据的速度就会降下来，无法接收新的
 client，整体的 publish 的速度也会降下来，所以这个测试能够了解 server 处理 publish 的速度。
 
 ~~~admonish note title="为了确认这一点，我们在 start_tls_server() 函数中，在 process() 之前，再加个 100ms 的延时，人为减缓系统的处理速度：" collapsible=true
@@ -327,7 +340,8 @@ publishing              time:   [318.61 ms 324.48 ms 329.81 ms]
 
 ~~~
 
-> 嗯，这下 324ms，正好是减去刚才加的 100ms。可是这个速度依旧不合理，凭直觉我们感觉一下这个速度，是 Python 这样的语言还正常，如果是 Rust 也太慢了吧？
+> 嗯，这下 324ms，正好是减去刚才加的 100ms。可是这个速度依旧不合理，凭直觉我们感觉一下这个速度，是 Python 这样的语言还正常，如果是
+> Rust 也太慢了吧？
 
 ## 测量和监控
 
@@ -335,11 +349,13 @@ publishing              time:   [318.61 ms 324.48 ms 329.81 ms]
 
 现在知道了 KV server 性能有问题，但并不知道问题出在哪里。我们需要使用合适的测量方式。
 
-目前，比较好的端对端的性能监控和测量工具是 jaeger，我们可以在 KV server/client 侧收集监控信息，发送给 jaeger 来查看在服务器和客户端的整个处理流程中，时间都花费到哪里去了。
+目前，比较好的端对端的性能监控和测量工具是 jaeger，我们可以在 KV server/client 侧收集监控信息，发送给 jaeger
+来查看在服务器和客户端的整个处理流程中，时间都花费到哪里去了。
 
 之前我们在 KV server 里使用的日志工具是
 tracing，不过日志只是它的诸多功能之一，它还能做[ instrument](https://docs.rs/tracing/0.1.28/tracing/attr.instrument.html)
-，然后配合 [opentelemetry 库](https://github.com/open-telemetry/opentelemetry-rust)，我们就可以把 instrument 的结果发送给 jaeger 了。
+，然后配合 [opentelemetry 库](https://github.com/open-telemetry/opentelemetry-rust)，我们就可以把 instrument 的结果发送给
+jaeger 了。
 
 ~~~admonish note title="1. 加入jaeger " collapsible=true
 好，在 Cargo.toml 里添加新的依赖：
@@ -869,7 +885,8 @@ jobs:
 - 正式的 release tag 会触发生产环境的滚动升级，升级覆盖到的用户可以使用。
 ~~~
 
-一般来说，每家企业都有自己的 CI/CD 的工具链，这里为了展示方便，我们演示了如何使用 github action 对 Rust 代码做 CI，你可以按照自己的需要来处理。
+一般来说，每家企业都有自己的 CI/CD 的工具链，这里为了展示方便，我们演示了如何使用 github action 对 Rust 代码做
+CI，你可以按照自己的需要来处理。
 
 在刚才的 action 代码中，还编译并上传了文档，所以我们可以通过 github pages 很方便地访问文档：
 

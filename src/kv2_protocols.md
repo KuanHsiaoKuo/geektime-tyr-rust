@@ -1,23 +1,34 @@
 # 二、实现并验证协议层
 
+~~~admonish abstract title="Summarize" collapsible=true
+本篇文章主要讲解了如何实现并验证协议层和Storage trait。
+1. 在实现协议层时，需要创建项目并添加依赖
+2. 处理protobuf，实现Storage trait和CommandService trait
+3. 最后实现Service结构。
+4. 在实现Storage trait时，需要定义外界如何和存储打交道，包括get、set、contains、del、get_all和get_iter等接口。
+5. 在实现过程中，使用了dashmap创建MemTable结构。
+6. 还提供了测试代码，帮助读者理解和实践。
+~~~
+
 <!--ts-->
+
 * [二、实现并验证协议层](#二实现并验证协议层)
-   * [创建项目，添加依赖](#创建项目添加依赖)
-   * [protobuf处理](#protobuf处理)
-   * [实现并验证 Storage trait](#实现并验证-storage-trait)
-      * [构建MemTable](#构建memtable)
-      * [测试](#测试)
-   * [实现并验证 CommandService trait](#实现并验证-commandservice-trait)
-      * [为什么要这么写？](#为什么要这么写)
-      * [在 src/pb/mod.rs 中添加相关的外围逻辑](#在-srcpbmodrs-中添加相关的外围逻辑)
-   * [最后的拼图：Service 结构的实现](#最后的拼图service-结构的实现)
-      * [围绕接口测试](#围绕接口测试)
-      * [继续写代码](#继续写代码)
-   * [新的 server](#新的-server)
-   * [运行](#运行)
-   * [初步感受Rust撰写代码最佳实践](#初步感受rust撰写代码最佳实践)
-   * [为剩下6个命令构建测试并实现](#为剩下6个命令构建测试并实现)
-   * [考虑用线程池处理并发](#考虑用线程池处理并发)
+    * [创建项目，添加依赖](#创建项目添加依赖)
+    * [protobuf处理](#protobuf处理)
+    * [实现并验证 Storage trait](#实现并验证-storage-trait)
+        * [构建MemTable](#构建memtable)
+        * [测试](#测试)
+    * [实现并验证 CommandService trait](#实现并验证-commandservice-trait)
+        * [为什么要这么写？](#为什么要这么写)
+        * [在 src/pb/mod.rs 中添加相关的外围逻辑](#在-srcpbmodrs-中添加相关的外围逻辑)
+    * [最后的拼图：Service 结构的实现](#最后的拼图service-结构的实现)
+        * [围绕接口测试](#围绕接口测试)
+        * [继续写代码](#继续写代码)
+    * [新的 server](#新的-server)
+    * [运行](#运行)
+    * [初步感受Rust撰写代码最佳实践](#初步感受rust撰写代码最佳实践)
+    * [为剩下6个命令构建测试并实现](#为剩下6个命令构建测试并实现)
+    * [考虑用线程池处理并发](#考虑用线程池处理并发)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
@@ -244,7 +255,8 @@ RUST_LOG=info cargo run --example client --quiet
 
 接下来构建 Storage trait。
 
-我们上一讲谈到了如何使用嵌套的支持并发的 im-memory HashMap 来实现 storage trait。由于 Arc<RwLock<HashMap<K, V>>> 这样的支持并发的 HashMap 是一个刚需，Rust
+我们上一讲谈到了如何使用嵌套的支持并发的 im-memory HashMap 来实现 storage trait。由于 Arc<RwLock<HashMap<K, V>>> 这样的支持并发的
+HashMap 是一个刚需，Rust
 生态有很多相关的 crate 支持，这里我们可以使用 dashmap 创建一个 MemTable 结构，来实现 Storage trait。
 
 ~~~admonish note title="实现 " collapsible=true
@@ -917,7 +929,8 @@ pub fn assert_res_error(res: CommandResponse, code: u32, msg: &str) {
 ```
 ~~~
 
-> 注意，这里的 assert_res_ok() 和 assert_res_error() 是从 src/service/command_service.rs 中挪过来的。在开发的过程中，不光产品代码需要不断重构，测试代码也需要重构来贯彻
+> 注意，这里的 assert_res_ok() 和 assert_res_error() 是从 src/service/command_service.rs
+> 中挪过来的。在开发的过程中，不光产品代码需要不断重构，测试代码也需要重构来贯彻
 > DRY 思想。
 
 ### 围绕接口测试
@@ -937,7 +950,8 @@ pub fn assert_res_error(res: CommandResponse, code: u32, msg: &str) {
 
 ### 继续写代码
 
-好，我们回来写代码。在这段测试中，已经敲定了 Service 这个数据结构的使用蓝图，它可以跨线程，可以调用 execute 来执行某个 CommandRequest 命令，返回 CommandResponse。
+好，我们回来写代码。在这段测试中，已经敲定了 Service 这个数据结构的使用蓝图，它可以跨线程，可以调用 execute 来执行某个
+CommandRequest 命令，返回 CommandResponse。
 
 ~~~admonish note title="根据这些想法，在 src/service/mod.rs 里添加 Service 的声明和实现：" collapsible=true
 ```rust, editable
@@ -1099,11 +1113,13 @@ KV server 并不是一个很难的项目，但想要把它写好，并不简单�
 
 ## 为剩下6个命令构建测试并实现
 
-为剩下 6 个命令 HMGET、HMSET、HDEL、HMDEL、HEXIST、HMEXIST 构建测试，并实现它们。在测试和实现过程中，你也许需要添加更多的 From<T> 的实现。
+为剩下 6 个命令 HMGET、HMSET、HDEL、HMDEL、HEXIST、HMEXIST 构建测试，并实现它们。在测试和实现过程中，你也许需要添加更多的
+From<T> 的实现。
 
 ## 考虑用线程池处理并发
 
 虽然我们的 KV server 使用了 concurrent hashmap 来处理并发，但这并不一定是最好的选择。
 
-我们也可以创建一个线程池，每个线程有自己的 HashMap。当 HGET/HSET 等命令来临时，可以对 key 做个哈希，然后分派到 “拥有” 那个 key
+我们也可以创建一个线程池，每个线程有自己的 HashMap。当 HGET/HSET 等命令来临时，可以对 key 做个哈希，然后分派到 “拥有” 那个
+key
 的线程，这样，可以避免在处理的时候加锁，提高系统的吞吐。你可以想想如果用这种方式处理，该怎么做。

@@ -1,15 +1,25 @@
 # 一、基本流程
 
+~~~admonish abstract title="Summarize" collapsible=true
+本文主要介绍了如何设计一个 KV server，从需求分析、基本流程、架构和设计等方面进行了讲解。
+1. 文章首先介绍了 KV server 的需求，然后通过一个简单的实现来说明过程式代码的缺点。
+2. 接着，文章提出了好的实现应该：
+   - 从系统的主流程开始，搞清楚从客户端的请求到最终客户端收到响应，都会经过哪些主要的步骤
+   - 然后根据这些步骤，思考哪些东西需要延迟绑定，构建主要的接口和 trait。
+3. 最后，文章介绍了客户端和服务器之间的协议、服务器和命令处理流程的接口、服务器和存储的接口等几个重要的接口，并使用 protobuf 定义了第一版支持的客户端命令。
+~~~
+
 <!--ts-->
+
 * [一、基本流程](#一基本流程)
-   * [为什么选 KV server 来实操呢？](#为什么选-kv-server-来实操呢)
-   * [先来一个短平糙的实现](#先来一个短平糙的实现)
-   * [架构和设计](#架构和设计)
-      * [主体交互接口](#主体交互接口)
-      * [客户端和服务器间的协议](#客户端和服务器间的协议)
-         * [CommandService trait](#commandservice-trait)
-      * [Storage trait](#storage-trait)
-      * [trait的好处](#trait的好处)
+    * [为什么选 KV server 来实操呢？](#为什么选-kv-server-来实操呢)
+    * [先来一个短平糙的实现](#先来一个短平糙的实现)
+    * [架构和设计](#架构和设计)
+        * [主体交互接口](#主体交互接口)
+        * [客户端和服务器间的协议](#客户端和服务器间的协议)
+            * [CommandService trait](#commandservice-trait)
+        * [Storage trait](#storage-trait)
+        * [trait的好处](#trait的好处)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
@@ -172,7 +182,8 @@ Sep 19 22:25:38.401  INFO naive_server: Got response: CommandResponse { status: 
 5. 整个系统可以配置么？比如服务使用哪个端口、哪个存储引擎？
 ~~~
 
-> 如果你想做好架构，那么，问出这些问题，并且找到这些问题的答案就很重要。值得注意的是，这里面很多问题产品经理并不能帮你回答，或者 TA 的回答会将你带入歧路。作为一个架构师，我们需要对系统未来如何应对变化负责。
+> 如果你想做好架构，那么，问出这些问题，并且找到这些问题的答案就很重要。值得注意的是，这里面很多问题产品经理并不能帮你回答，或者
+> TA 的回答会将你带入歧路。作为一个架构师，我们需要对系统未来如何应对变化负责。
 
 ~~~admonish example title="下面是我的思考，你可以参考： " collapsible=true
 
@@ -313,7 +324,8 @@ message Hmexist {
 ```
 ~~~
 
-> 通过 [prost](https://github.com/tokio-rs/prost)，这个 protobuf 文件可以被编译成 Rust 代码（主要是 struct 和 enum），供我们使用。你应该还记得，thumbor
+> 通过 [prost](https://github.com/tokio-rs/prost)，这个 protobuf 文件可以被编译成 Rust 代码（主要是 struct 和
+> enum），供我们使用。你应该还记得，thumbor
 > 的开发时，已经见识到了 prost 处理 protobuf 的方式了。
 
 #### CommandService trait
@@ -382,7 +394,8 @@ pub trait Storage {
 
 在 CommandService trait 中已经看到，在处理客户端请求的时候，与之打交道的是 Storage trait，而非具体的某个 store。
 
-这样做的好处是，未来根据业务的需要，在不同的场景下添加不同的 store，只需要为其实现 Storage trait 即可，不必修改 CommandService 有关的代码。
+这样做的好处是，未来根据业务的需要，在不同的场景下添加不同的 store，只需要为其实现 Storage trait 即可，不必修改
+CommandService 有关的代码。
 
 ~~~admonish note title="> 比如在 HGET 命令的实现时，我们使用 Storage::get 方法，从 table 中获取数据，它跟某个具体的存储方案无关  " collapsible=true
 ```rust, editable
