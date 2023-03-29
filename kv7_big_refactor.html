@@ -203,7 +203,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Sat Mar 18 14:56:17 UTC 2023 -->
+<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
 <!--te-->
 <h2 id="现有架构分析"><a class="header" href="#现有架构分析">现有架构分析</a></h2>
 <details id="admonition-先简单回顾一下-redis-对-pubsub-的支持" class="admonition info">
@@ -505,7 +505,8 @@ message Publish {
 </code></pre></pre>
 </div>
 </details>
-<p>命令的响应我们不用改变。当客户端 Subscribe 时，返回的 stream 里的第一个值包含订阅 ID，这是一个全局唯一的 ID，这样，客户端后续可以用 Unsubscribe 取消。</p>
+<p>命令的响应我们不用改变。当客户端 Subscribe 时，返回的 stream 里的第一个值包含订阅 ID，这是一个全局唯一的 ID，这样，客户端后续可以用
+Unsubscribe 取消。</p>
 <h3 id="pubsub-如何设计"><a class="header" href="#pubsub-如何设计">Pub/Sub 如何设计？</a></h3>
 <details id="admonition-那么pubsub-该如何实现呢" class="admonition question">
 <summary class="admonition-title">
@@ -588,7 +589,8 @@ pub struct Broadcaster {
 </div>
 </details>
 <blockquote>
-<p>这里对 Pub/Sub 的接口，构建了一个 Topic trait。虽然目前我们只有 Broadcaster 会实现 Topic trait，但未来也许会换不同的实现方式，所以，抽象出 Topic trait 很有意义。</p>
+<p>这里对 Pub/Sub 的接口，构建了一个 Topic trait。虽然目前我们只有 Broadcaster 会实现 Topic trait，但未来也许会换不同的实现方式，所以，抽象出
+Topic trait 很有意义。</p>
 </blockquote>
 <h3 id="pubsub-的实现"><a class="header" href="#pubsub-的实现">Pub/Sub 的实现</a></h3>
 <details id="admonition-创建-srcservicetopicrs记得在-modrs-里引用并添入" class="admonition note">
@@ -769,7 +771,8 @@ mod tests {
 </code></pre></pre>
 </div>
 </details>
-<p>这个测试需要一系列新的改动，比如 assert_res_ok() 的接口变化了，我们需要在 src/pb/mod.rs 里添加新的 TryFrom 支持等等，详细代码你可以看 repo 里的 diff_topic。</p>
+<p>这个测试需要一系列新的改动，比如 assert_res_ok() 的接口变化了，我们需要在 src/pb/mod.rs 里添加新的 TryFrom 支持等等，详细代码你可以看
+repo 里的 diff_topic。</p>
 <h3 id="在处理流程中引入-pubsub"><a class="header" href="#在处理流程中引入-pubsub">在处理流程中引入 Pub/Sub</a></h3>
 <p>好，再来看它和用户传入的 CommandRequest 如何发生关系。</p>
 <details id="admonition-我们之前设计了-commandservice-trait它虽然可以处理其它命令但对-pubsub-相关的几个新命令无法处理因为接口没有任何和-topic-有关的参数" class="admonition note">
@@ -959,7 +962,8 @@ impl&lt;Store: Storage&gt; Service&lt;Store&gt; {
 <ul>
 <li>execute() 方法的返回值变成了 StreamingResponse</li>
 <li>这就意味着所有围绕着这个方法的调用，包括测试，都需要相应更新。</li>
-<li>这是迫不得已的，不过通过构建和 CommandService / dispatch 平行的 TopicService / dispatch_stream，我们已经让这个破坏性更新尽可能地在比较高层，否则，改动会更大。</li>
+<li>这是迫不得已的，不过通过构建和 CommandService / dispatch 平行的 TopicService /
+dispatch_stream，我们已经让这个破坏性更新尽可能地在比较高层，否则，改动会更大。</li>
 </ul>
 <p>目前，代码无法编译通过，这是因为如下的代码，res 现在是个 stream，</p>
 <details id="admonition-我们需要处理一下" class="admonition note">
@@ -997,18 +1001,13 @@ where
 <p>当然，这样的改动也意味着，原本的函数需要变成 async。</p>
 </blockquote>
 <p>如果是个 test，需要使用 #[tokio::test]。你可以自己试着把所有相关的代码都改一下。</p>
-<div id="admonition-error-rendering-admonishment" class="admonition bug">
-<div class="admonition-title">
-<p>Error rendering admonishment</p>
-<p><a class="admonition-anchor-link" href="#admonition-error-rendering-admonishment"></a></p>
-</div>
+<details id="admonition-当你改到-srcnetworkmodrs-里-prostserverstream-的-process-方法里面的streamsenddata-时我们目前的-data-是-arc" class="admonition note">
+<summary class="admonition-title">
+<p>当你改到 src/network/mod.rs 里 ProstServerStream 的 process 方法里面的stream.send(data) 时，我们目前的 data 是 Arc<CommandResponse>： </p>
+<p><a class="admonition-anchor-link" href="#admonition-当你改到-srcnetworkmodrs-里-prostserverstream-的-process-方法里面的streamsenddata-时我们目前的-data-是-arc"></a></p>
+</summary>
 <div>
-<p>Failed with: TOML parsing error: expected an equals, found a newline at line 1 column 6</p>
-<p>Original markdown input:</p>
-<pre><code>~~~admonish note title=&quot;当你改到 src/network/mod.rs 里 ProstServerStream 的 process 方法里面的stream.send(data) 时，我们目前的 data 是 Arc&lt;CommandResponse&gt;：
- &quot; collapsible=true
-```rust, editable
-
+<pre><pre class="playground"><code class="language-rust  editable">
 impl&lt;S&gt; ProstServerStream&lt;S&gt;
 where
     S: AsyncRead + AsyncWrite + Unpin + Send + 'static,
@@ -1030,11 +1029,9 @@ where
         Ok(())
     }
 }
-```
-~~~
-</code></pre>
+</code></pre></pre>
 </div>
-</div>
+</details>
 <p>所以我们还需要稍微改动一下 src/network/stream.rs：</p>
 <pre><pre class="playground"><code class="language-rust  editable">
 // impl&lt;S, In, Out&gt; Sink&lt;Out&gt; for ProstStream&lt;S, In, Out&gt;
@@ -1213,7 +1210,8 @@ where
 </ul>
 </div>
 </details>
-<p>此外我们还创建了一个新的文件 src/network/stream_result.rs，用来帮助客户端更好地使用 execute_streaming() 接口。所有改动的具体代码可以看 repo 中的 diff_client。</p>
+<p>此外我们还创建了一个新的文件 src/network/stream_result.rs，用来帮助客户端更好地使用 execute_streaming() 接口。所有改动的具体代码可以看
+repo 中的 diff_client。</p>
 <details id="admonition-测试-1" class="admonition note">
 <summary class="admonition-title">
 <p>测试 </p>
@@ -1234,7 +1232,8 @@ where
 </div>
 </details>
 <blockquote>
-<p>此时，服务器和客户端都收到了彼此的请求和响应，即便混合 HSET/HGET 和 PUBLISH/SUBSCRIBE 命令，一切都依旧处理正常！今天我们做了一个比较大的重构，但比预想中对原有代码的改动要小，这简直太棒了！</p>
+<p>此时，服务器和客户端都收到了彼此的请求和响应，即便混合 HSET/HGET 和 PUBLISH/SUBSCRIBE
+命令，一切都依旧处理正常！今天我们做了一个比较大的重构，但比预想中对原有代码的改动要小，这简直太棒了！</p>
 </blockquote>
 <h2 id="你可以仔细阅读这一节中的代码好好品味这些接口的设计"><a class="header" href="#你可以仔细阅读这一节中的代码好好品味这些接口的设计">你可以仔细阅读这一节中的代码，好好品味这些接口的设计。</a></h2>
 <details id="admonition-你可以仔细阅读这一节中的代码好好品味这些接口的设计" class="admonition abstract">
