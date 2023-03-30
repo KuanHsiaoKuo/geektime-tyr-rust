@@ -181,6 +181,29 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="三高级trait技巧"><a class="header" href="#三高级trait技巧">三、高级trait技巧</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了 Rust 中高级 trait 技巧:</p>
+<ol>
+<li>包括处理 Iterator</li>
+<li>支持事件通知</li>
+<li>为持久化数据库实现 Storage trait</li>
+<li>构建新的 KV server</li>
+<li>进一步认识 trait 的威力以及泛型结构和生命周期标注</li>
+<li>更多用于阅读源码等内容。 </li>
+<li>其中，处理 Iterator 主要是介绍了如何使用 Rust 标准库中的 IntoIterator trait，将数据结构的所有权转移到 Iterator 中；</li>
+<li>支持事件通知则是通过构造者模式，为 ServiceInner 注册相应的事件处理函数，并提供了 Notify 和 NotifyMut 两个 trait，用于事件通知。</li>
+<li>为持久化数据库实现 Storage trait 主要是介绍了如何为 sled 实现 Storage trait，并测试通过。</li>
+<li>构建新的 KV server 主要是介绍了如何使用 Service 和 ServiceInner 两个数据结构，以及如何使用 Builder Pattern 构建 Service。</li>
+<li>进一步认识 trait 的威力则是介绍了 trait 的多态性和动态分发的特性，以及如何使用 trait 对代码进行抽象。</li>
+<li>泛型结构和生命周期标注更多用于阅读源码则是介绍了如何阅读 Rust 源码中的泛型结构和生命周期标注。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#%E4%B8%89%E9%AB%98%E7%BA%A7trait%E6%8A%80%E5%B7%A7">三、高级trait技巧</a>
@@ -210,7 +233,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:20 UTC 2023 -->
 <!--te-->
 <p>前面已经完成了 KV store 的基本功能，但留了两个小尾巴：</p>
 <ol>
@@ -339,7 +362,8 @@ impl From&lt;(String, Value)&gt; for Kvpair {
 <li>对get_iter()进行抽象</li>
 </ol>
 <blockquote>
-<p>虽然这个代码可以通过测试，并且本身也非常精简，我们还是有必要思考一下，如果以后想为更多的 data store 实现 Storage trait，都会怎样处理 get_iter() 方法？</p>
+<p>虽然这个代码可以通过测试，并且本身也非常精简，我们还是有必要思考一下，如果以后想为更多的 data store 实现 Storage
+trait，都会怎样处理 get_iter() 方法？</p>
 </blockquote>
 <p>我们会：</p>
 <ul>
@@ -348,7 +372,8 @@ impl From&lt;(String, Value)&gt; for Kvpair {
 <li>将 map 出来的每个 item 转换成 Kvpair</li>
 </ul>
 <p>这里的第 2 步对于每个 Storage trait 的 get_iter() 方法的实现来说，都是相同的。</p>
-<p>有没有可能把它封装起来呢？使得 Storage trait 的实现者只需要提供它们自己的拥有所有权的 Iterator，并对 Iterator 里的 Item 类型提供 Into<Kvpair> ？</p>
+<p>有没有可能把它封装起来呢？使得 Storage trait 的实现者只需要提供它们自己的拥有所有权的 Iterator，并对 Iterator 里的 Item
+类型提供 Into<Kvpair> ？</p>
 <details id="admonition-笔记-这样我们在-srcstoragememoryrs-里对-get_iter-的实现就可以直接使用-storageiter" class="admonition note">
 <summary class="admonition-title">
 <p>笔记： 这样，我们在 src/storage/memory.rs 里对 get_iter() 的实现，就可以直接使用 StorageIter</p>

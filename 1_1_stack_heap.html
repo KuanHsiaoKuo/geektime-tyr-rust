@@ -181,6 +181,78 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="内存"><a class="header" href="#内存">内存</a></h1>
+<details id="admonition-graph-made-by-cursor" class="admonition note">
+<summary class="admonition-title">
+<p>graph made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-graph-made-by-cursor"></a></p>
+</summary>
+<div>
+<pre class="mermaid">
+graph TD
+    A[内存] --&gt; B[栈]
+    A --&gt; C[堆]
+    B --&gt; D[栈溢出]
+    C --&gt; E[堆溢出]
+    C --&gt; F[使用堆引用共享数据]
+    B --&gt; G[栈帧示意图]
+    C --&gt; H[字符串内存使用图]
+`</pre>
+</div>
+</details>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本文主要介绍了 Rust 中的内存管理:</p>
+<ul>
+<li>包括栈和堆的概念、栈溢出和堆溢出的问题以及如何使用堆引用共享数据。</li>
+<li>文章通过图片和代码示例详细讲解了这些概念和问题</li>
+<li>对于 Rust 初学者来说是一篇很好的入门文章。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-questions-made-by-cursor" class="admonition question">
+<summary class="admonition-title">
+<p>Questions made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-questions-made-by-cursor"></a></p>
+</summary>
+<div>
+<ol>
+<li>Rust中的内存管理包括哪些概念和问题？</li>
+<li>什么是栈和堆？它们有什么区别？</li>
+<li>如何使用堆引用共享数据？</li>
+<li>如何考虑栈溢出和堆溢出的问题？</li>
+</ol>
+</div>
+</details>
+<details id="admonition-answers-made-by-cursor" class="admonition tip">
+<summary class="admonition-title">
+<p>Answers made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-answers-made-by-cursor"></a></p>
+</summary>
+<div>
+<ol>
+<li>
+<p>Rust中的内存管理包括哪些概念和问题？
+本文介绍了 Rust 中的内存管理，包括栈和堆的概念、栈溢出和堆溢出的问题以及如何使用堆引用共享数据。</p>
+</li>
+<li>
+<p>什么是栈和堆？它们有什么区别？
+栈和堆都是内存中的一部分，栈是一种后进先出的数据结构，用于存储函数调用时的局部变量和函数调用的返回地址等信息，而堆是一种动态分配内存的机制，用于存储程序运行时动态分配的数据。栈和堆的主要区别在于它们的分配方式和管理方式不同。</p>
+</li>
+<li>
+<p>如何使用堆引用共享数据？
+可以使用指针或引用来引用堆中的数据，从而实现数据的共享。在 Rust 中，可以使用 Box<T> 类型来创建堆上的数据，并使用 &amp; 操作符来创建指向堆上数据的引用。</p>
+</li>
+<li>
+<p>如何考虑栈溢出和堆溢出的问题？
+栈溢出和堆溢出都是内存管理中的常见问题。栈溢出通常是由于递归调用或者函数调用层数过多导致的，可以通过增加栈的大小或者优化代码来解决。堆溢出通常是由于动态分配内存时没有正确释放导致的，可以通过手动释放内存或者使用 Rust 的内存管理机制来解决。</p>
+</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#%E5%86%85%E5%AD%98">内存</a>
@@ -202,7 +274,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:03 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:05 UTC 2023 -->
 <!--te-->
 <h2 id="字符串内存使用图"><a class="header" href="#字符串内存使用图">字符串内存使用图</a></h2>
 <details id="admonition-字符串内存使用图" class="admonition info">

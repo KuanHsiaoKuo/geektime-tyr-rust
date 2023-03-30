@@ -181,6 +181,21 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="七如何做大的重构"><a class="header" href="#七如何做大的重构">七、如何做大的重构？</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了如何在 Rust 中进行大规模重构，以支持 Pub/Sub。</p>
+<ol>
+<li>首先，文章分析了现有架构的问题，即同步处理和 head of line blocking 问题。</li>
+<li>然后，文章介绍了如何使用 yamux 做多路复用，以解决 head of line blocking 问题。</li>
+<li>接着，文章讲解了如何支持 Pub/Sub，包括设计思路和数据结构。</li>
+<li>最后，文章提供了完整的代码实现和测试。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#%E4%B8%83%E5%A6%82%E4%BD%95%E5%81%9A%E5%A4%A7%E7%9A%84%E9%87%8D%E6%9E%84">七、如何做大的重构？</a>
@@ -203,7 +218,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:22 UTC 2023 -->
 <!--te-->
 <h2 id="现有架构分析"><a class="header" href="#现有架构分析">现有架构分析</a></h2>
 <details id="admonition-先简单回顾一下-redis-对-pubsub-的支持" class="admonition info">

@@ -251,7 +251,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:11 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:18 UTC 2023 -->
 <!--te-->
 <h2 id="项目文档"><a class="header" href="#项目文档">项目文档</a></h2>
 <h3 id="来源"><a class="header" href="#来源">来源</a></h3>
@@ -373,7 +373,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:19 UTC 2023 -->
 <!--te-->
 <h1 id="gdblldb"><a class="header" href="#gdblldb">gdb/lldb</a></h1>
 <h2 id="资料整理"><a class="header" href="#资料整理">资料整理</a></h2>
@@ -965,7 +965,7 @@ warning: Expressions should be quoted if they contain spaces or other special ch
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:19 UTC 2023 -->
 <!--te-->
 <h2 id="example的使用"><a class="header" href="#example的使用">example的使用</a></h2>
 <ul>
@@ -1487,7 +1487,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:14 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:23 UTC 2023 -->
 <!--te-->
 <h2 id="cargotoml"><a class="header" href="#cargotoml">Cargo.toml</a></h2>
 <details id="admonition-cargotoml" class="admonition note">
@@ -2827,7 +2827,7 @@ RUST_LOG=info target/release/thumbor
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:14 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:23 UTC 2023 -->
 <!--te-->
 <h2 id="workspace-这里使用虚拟清单virtual-manifest方式"><a class="header" href="#workspace-这里使用虚拟清单virtual-manifest方式">workspace: 这里使用虚拟清单(virtual manifest)方式</a></h2>
 <blockquote>
@@ -3697,9 +3697,81 @@ fn main() {
 <li><a href="1_stack_heap_ownership_lifetime_memory.html#i-%E4%BB%8E%E6%A0%88%E5%A0%86%E6%89%80%E6%9C%89%E6%9D%83%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E5%BC%80%E5%A7%8B%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86">I. 从栈堆、所有权、生命周期开始内存管理</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:04 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:07 UTC 2023 -->
 <!--te-->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="内存"><a class="header" href="#内存">内存</a></h1>
+<details id="admonition-graph-made-by-cursor" class="admonition note">
+<summary class="admonition-title">
+<p>graph made by cursor</p>
+<p><a class="admonition-anchor-link" href="1_1_stack_heap.html#admonition-graph-made-by-cursor"></a></p>
+</summary>
+<div>
+<pre class="mermaid">
+graph TD
+    A[内存] --&gt; B[栈]
+    A --&gt; C[堆]
+    B --&gt; D[栈溢出]
+    C --&gt; E[堆溢出]
+    C --&gt; F[使用堆引用共享数据]
+    B --&gt; G[栈帧示意图]
+    C --&gt; H[字符串内存使用图]
+`</pre>
+</div>
+</details>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="1_1_stack_heap.html#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本文主要介绍了 Rust 中的内存管理:</p>
+<ul>
+<li>包括栈和堆的概念、栈溢出和堆溢出的问题以及如何使用堆引用共享数据。</li>
+<li>文章通过图片和代码示例详细讲解了这些概念和问题</li>
+<li>对于 Rust 初学者来说是一篇很好的入门文章。</li>
+</ul>
+</div>
+</details>
+<details id="admonition-questions-made-by-cursor" class="admonition question">
+<summary class="admonition-title">
+<p>Questions made by cursor</p>
+<p><a class="admonition-anchor-link" href="1_1_stack_heap.html#admonition-questions-made-by-cursor"></a></p>
+</summary>
+<div>
+<ol>
+<li>Rust中的内存管理包括哪些概念和问题？</li>
+<li>什么是栈和堆？它们有什么区别？</li>
+<li>如何使用堆引用共享数据？</li>
+<li>如何考虑栈溢出和堆溢出的问题？</li>
+</ol>
+</div>
+</details>
+<details id="admonition-answers-made-by-cursor" class="admonition tip">
+<summary class="admonition-title">
+<p>Answers made by cursor</p>
+<p><a class="admonition-anchor-link" href="1_1_stack_heap.html#admonition-answers-made-by-cursor"></a></p>
+</summary>
+<div>
+<ol>
+<li>
+<p>Rust中的内存管理包括哪些概念和问题？
+本文介绍了 Rust 中的内存管理，包括栈和堆的概念、栈溢出和堆溢出的问题以及如何使用堆引用共享数据。</p>
+</li>
+<li>
+<p>什么是栈和堆？它们有什么区别？
+栈和堆都是内存中的一部分，栈是一种后进先出的数据结构，用于存储函数调用时的局部变量和函数调用的返回地址等信息，而堆是一种动态分配内存的机制，用于存储程序运行时动态分配的数据。栈和堆的主要区别在于它们的分配方式和管理方式不同。</p>
+</li>
+<li>
+<p>如何使用堆引用共享数据？
+可以使用指针或引用来引用堆中的数据，从而实现数据的共享。在 Rust 中，可以使用 Box<T> 类型来创建堆上的数据，并使用 &amp; 操作符来创建指向堆上数据的引用。</p>
+</li>
+<li>
+<p>如何考虑栈溢出和堆溢出的问题？
+栈溢出和堆溢出都是内存管理中的常见问题。栈溢出通常是由于递归调用或者函数调用层数过多导致的，可以通过增加栈的大小或者优化代码来解决。堆溢出通常是由于动态分配内存时没有正确释放导致的，可以通过手动释放内存或者使用 Rust 的内存管理机制来解决。</p>
+</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="1_1_stack_heap.html#%E5%86%85%E5%AD%98">内存</a>
@@ -3721,7 +3793,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:03 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:05 UTC 2023 -->
 <!--te-->
 <h2 id="字符串内存使用图"><a class="header" href="#字符串内存使用图">字符串内存使用图</a></h2>
 <details id="admonition-字符串内存使用图" class="admonition info">
@@ -3804,7 +3876,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:03 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:05 UTC 2023 -->
 <!--te-->
 <h2 id="1-数据"><a class="header" href="#1-数据">1. 数据</a></h2>
 <h3 id="值和类型"><a class="header" href="#值和类型">值和类型</a></h3>
@@ -3904,7 +3976,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:03 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:06 UTC 2023 -->
 <!--te-->
 <h2 id="对比单一共享所有权"><a class="header" href="#对比单一共享所有权">对比单一/共享所有权</a></h2>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/09%EF%BD%9C%E6%89%80%E6%9C%89%E6%9D%83%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%80%BC%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%A4%9A%E4%B8%AA%E6%89%80%E6%9C%89%E8%80%85%E4%B9%88%EF%BC%9F-4606985.jpg" alt="单一/共享所有权对比" /></p>
@@ -4300,7 +4372,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:03 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:06 UTC 2023 -->
 <!--te-->
 <h2 id="动态还是静态"><a class="header" href="#动态还是静态">动态还是静态？</a></h2>
 <details id="admonition-动态静态生命周期定义与表示方式" class="admonition info">
@@ -4624,7 +4696,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:03 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:06 UTC 2023 -->
 <!--te-->
 <h2 id="创建"><a class="header" href="#创建">创建</a></h2>
 <h3 id="堆内存生命周期管理发展史"><a class="header" href="#堆内存生命周期管理发展史">堆内存生命周期管理发展史</a></h3>
@@ -4941,7 +5013,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 <li><a href="2_type_system.html#ii-%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F">II. 类型系统</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:05 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:10 UTC 2023 -->
 <!--te-->
 <div style="break-before: page; page-break-before: always;"></div><h1 id="类型系统"><a class="header" href="#类型系统">类型系统</a></h1>
 <!--ts-->
@@ -4967,7 +5039,7 @@ fn main() -&gt; std::io::Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:04 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:07 UTC 2023 -->
 <!--te-->
 <h2 id="rust类型系统特点"><a class="header" href="#rust类型系统特点">Rust类型系统特点</a></h2>
 <div id="admonition-类型系统分类图" class="admonition info">
@@ -5192,7 +5264,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:04 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:07 UTC 2023 -->
 <!--te-->
 <h2 id="泛型实现方式"><a class="header" href="#泛型实现方式">泛型实现方式</a></h2>
 <blockquote>
@@ -5220,7 +5292,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:04 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:07 UTC 2023 -->
 <!--te-->
 <div id="admonition-trait概览图" class="admonition info">
 <div class="admonition-title">
@@ -5288,7 +5360,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:04 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:08 UTC 2023 -->
 <!--te-->
 <blockquote>
 <p>通俗来讲，只要是为不同类型的数据或操作提供了相同的名字就可以叫多态。</p>
@@ -5483,7 +5555,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:04 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:08 UTC 2023 -->
 <!--te-->
 <h2 id="生命周期标注"><a class="header" href="#生命周期标注">生命周期标注</a></h2>
 <blockquote>
@@ -6244,7 +6316,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:05 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:09 UTC 2023 -->
 <!--te-->
 <h2 id="trait-impl的两面派"><a class="header" href="#trait-impl的两面派">Trait impl的两面派</a></h2>
 <blockquote>
@@ -6733,7 +6805,7 @@ fn parse(s: &amp;str) -&gt; Result&lt;Self, Self::Error&gt;
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:05 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:09 UTC 2023 -->
 <!--te-->
 <h2 id="子类型多态-动态分派"><a class="header" href="#子类型多态-动态分派">子类型多态: 动态分派</a></h2>
 <details id="admonition-在运行期决定-第一个参数是self" class="admonition info">
@@ -6913,7 +6985,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:05 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:09 UTC 2023 -->
 <!--te-->
 <h2 id="从编程角度理解多态的意义"><a class="header" href="#从编程角度理解多态的意义">从编程角度理解多态的意义</a></h2>
 <p>理解多态：</p>
@@ -7051,7 +7123,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:05 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:10 UTC 2023 -->
 <!--te-->
 <blockquote>
 <p>基于<a href="/2_3_1_trait_impl.html#%E8%BF%9B%E9%98%B6%E4%BD%BF%E7%94%A8">trait进阶使用</a></p>
@@ -8034,7 +8106,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:05 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:10 UTC 2023 -->
 <!--te-->
 <h2 id="顺手自然"><a class="header" href="#顺手自然">顺手自然</a></h2>
 <h2 id="桥接"><a class="header" href="#桥接">桥接</a></h2>
@@ -8051,7 +8123,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:09 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:14 UTC 2023 -->
 <!--te-->
 <h2 id="数据结构快速一览"><a class="header" href="#数据结构快速一览">数据结构快速一览</a></h2>
 <div id="admonition-数据结构快速一览" class="admonition tip">
@@ -8091,7 +8163,7 @@ fn main() {
 <li><a href="3_1_smart_pointer.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88">自定义智能指针</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:07 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:12 UTC 2023 -->
 <!--te-->
 <h2 id="指针还是引用"><a class="header" href="#指针还是引用">指针还是引用</a></h2>
 <details id="admonition-引用是特殊的指针" class="admonition info">
@@ -8413,7 +8485,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:06 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:11 UTC 2023 -->
 <!--te-->
 <details id="admonition-从cc得到box灵感" class="admonition info">
 <summary class="admonition-title">
@@ -8656,7 +8728,7 @@ unsafe impl&lt;#[may_dangle] T: ?Sized, A: Allocator&gt; Drop for Box&lt;T, A&gt
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:06 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:11 UTC 2023 -->
 <!--te-->
 <details id="admonition-写时复制copy-on-write有异曲同工之妙" class="admonition info">
 <summary class="admonition-title">
@@ -8971,7 +9043,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:07 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:11 UTC 2023 -->
 <!--te-->
 <h2 id="mutexguard与stringboxcowa-b的对比"><a class="header" href="#mutexguard与stringboxcowa-b的对比">MutexGuard与String、Box<T>、Cow&lt;’a, B&gt;的对比</a></h2>
 <details id="admonition-derefdrop" class="admonition info">
@@ -9202,7 +9274,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:08 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:13 UTC 2023 -->
 <!--te-->
 <h2 id="对容器进行定义"><a class="header" href="#对容器进行定义">对容器进行定义</a></h2>
 <details id="admonition-容器数据结构如何理解" class="admonition tip">
@@ -9261,7 +9333,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:07 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:12 UTC 2023 -->
 <!--te-->
 <h2 id="切片到底是什么"><a class="header" href="#切片到底是什么">切片到底是什么</a></h2>
 <h3 id="切片的三个特点"><a class="header" href="#切片的三个特点">切片的三个特点</a></h3>
@@ -9808,7 +9880,7 @@ fn main() {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:08 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:12 UTC 2023 -->
 <!--te-->
 <h2 id="哈希表还是列表"><a class="header" href="#哈希表还是列表">哈希表还是列表</a></h2>
 <p>我们知道，哈希表和列表类似，都用于处理需要随机访问的数据结构, 但还有不同选择:</p>
@@ -10565,7 +10637,7 @@ map.insert('a', 1);
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:08 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:13 UTC 2023 -->
 <!--te-->
 <h2 id="错误处理包含这么几部分"><a class="header" href="#错误处理包含这么几部分">错误处理包含这么几部分</a></h2>
 <p>在一门编程语言中，控制流程是语言的核心流程，而错误处理又是控制流程的重要组成部分。</p>
@@ -10799,7 +10871,7 @@ void transition(...) {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:08 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:13 UTC 2023 -->
 <!--te-->
 <h2 id="1-可恢复错误optionresult错误类型处理"><a class="header" href="#1-可恢复错误optionresult错误类型处理">1. 可恢复错误：Option/Result错误类型处理</a></h2>
 <blockquote>
@@ -11151,7 +11223,7 @@ fut
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:08 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:14 UTC 2023 -->
 <!--te-->
 <h2 id="闭包的定义"><a class="header" href="#闭包的定义">闭包的定义</a></h2>
 <details id="admonition-闭包的基本概念" class="admonition info">
@@ -11873,7 +11945,7 @@ fn call_once(arg: u64, c: impl FnOnce(u64) -&gt; u64) -&gt; u64 {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:09 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:15 UTC 2023 -->
 <!--te-->
 <h2 id="资料"><a class="header" href="#资料">资料</a></h2>
 <ul>
@@ -11930,7 +12002,7 @@ fn call_once(arg: u64, c: impl FnOnce(u64) -&gt; u64) -&gt; u64 {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:09 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:14 UTC 2023 -->
 <!--te-->
 <h2 id="使用泳道图"><a class="header" href="#使用泳道图">使用泳道图</a></h2>
 <details id="admonition-宏编程使用对比泳道图" class="admonition info">
@@ -12061,7 +12133,7 @@ Clap/Structopts 那样收集到一个数据结构中，然后再进一步处理�
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:09 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:15 UTC 2023 -->
 <!--te-->
 <h2 id="rust常用声明宏"><a class="header" href="#rust常用声明宏">Rust常用声明宏</a></h2>
 <h3 id="println"><a class="header" href="#println">println!</a></h3>
@@ -12238,7 +12310,7 @@ macro_rules! my_vec {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:09 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:15 UTC 2023 -->
 <!--te-->
 <h2 id="手工定义图"><a class="header" href="#手工定义图">手工定义图</a></h2>
 <blockquote>
@@ -13146,7 +13218,7 @@ pub struct Command {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:10 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:17 UTC 2023 -->
 <!--te-->
 <h2 id="区分并发与并行"><a class="header" href="#区分并发与并行">区分并发与并行</a></h2>
 <details id="admonition-再次区分并发与并行" class="admonition info">
@@ -13241,7 +13313,7 @@ pub struct Command {
 <li><a href="5_1_concurrency_primitives.html#%E5%B0%8F%E7%BB%93%E4%B8%80%E4%B8%8B%E5%90%84%E7%A7%8D%E5%B9%B6%E5%8F%91%E5%8E%9F%E8%AF%AD%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF">小结一下各种并发原语的使用场景</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:10 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:16 UTC 2023 -->
 <!--te-->
 <h1 id="并发的难点工作模式和核心"><a class="header" href="#并发的难点工作模式和核心">并发的难点、工作模式和核心</a></h1>
 <details id="admonition-处理并发的难点在哪里" class="admonition info">
@@ -15445,7 +15517,7 @@ mod tests {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:10 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:16 UTC 2023 -->
 <!--te-->
 <h2 id="actor是有栈协程future是无栈协程"><a class="header" href="#actor是有栈协程future是无栈协程">actor是有栈协程，Future是无栈协程</a></h2>
 <details id="admonition-actor是有栈协程future是无栈协程" class="admonition info">
@@ -16424,7 +16496,7 @@ fn task_async() -&gt; impl Future&lt;Output = usize&gt; {
 <li><a href="5_3_deepin_async_await.html#%E5%9B%9E%E9%A1%BE%E6%95%B4%E7%90%86future%E7%9A%84contextpinunpin%E4%BB%A5%E5%8F%8Aasyncawait">回顾整理Future的Context、Pin/Unpin，以及async/await</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:10 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:16 UTC 2023 -->
 <!--te-->
 <h1 id="futureasyncawait的联动理解"><a class="header" href="#futureasyncawait的联动理解">Future、Async/Await的联动理解</a></h1>
 <div id="admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解" class="admonition info">
@@ -17281,7 +17353,7 @@ impl&lt;P: Deref&gt; Pin&lt;P&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:10 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:17 UTC 2023 -->
 <!--te-->
 <p>在互联网时代，谈到网络开发，我们想到的首先是 Web 开发以及涉及的<strong>部分</strong> HTTP 协议和 WebSocket 协议。</p>
 <details id="admonition-为什么说部分" class="admonition question">
@@ -17938,7 +18010,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:11 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:17 UTC 2023 -->
 <!--te-->
 <h2 id="通讯模型"><a class="header" href="#通讯模型">通讯模型</a></h2>
 <h3 id="双向通讯"><a class="header" href="#双向通讯">双向通讯</a></h3>
@@ -18434,7 +18506,7 @@ trait</strong></a>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:14 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:22 UTC 2023 -->
 <!--te-->
 <h1 id="整体回顾"><a class="header" href="#整体回顾">整体回顾</a></h1>
 <p>我们的 KV server 之旅就到此为止了。在整整 7 堂课里，我们一点点从零构造了一个完整的 KV server，包括注释在内，撰写了近三千行代码：</p>
@@ -18499,6 +18571,25 @@ path = '/tmp/kv-log'
 rotation = 'Daily'
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="一基本流程"><a class="header" href="#一基本流程">一、基本流程</a></h1>
+<details id="admonition-summarize" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize</p>
+<p><a class="admonition-anchor-link" href="kv1_basic.html#admonition-summarize"></a></p>
+</summary>
+<div>
+<p>本文主要介绍了如何设计一个 KV server，从需求分析、基本流程、架构和设计等方面进行了讲解。</p>
+<ol>
+<li>文章首先介绍了 KV server 的需求，然后通过一个简单的实现来说明过程式代码的缺点。</li>
+<li>接着，文章提出了好的实现应该：
+<ul>
+<li>从系统的主流程开始，搞清楚从客户端的请求到最终客户端收到响应，都会经过哪些主要的步骤</li>
+<li>然后根据这些步骤，思考哪些东西需要延迟绑定，构建主要的接口和 trait。</li>
+</ul>
+</li>
+<li>最后，文章介绍了客户端和服务器之间的协议、服务器和命令处理流程的接口、服务器和存储的接口等几个重要的接口，并使用 protobuf 定义了第一版支持的客户端命令。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="kv1_basic.html#%E4%B8%80%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B">一、基本流程</a>
@@ -18521,7 +18612,7 @@ rotation = 'Daily'
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:20 UTC 2023 -->
 <!--te-->
 <h2 id="为什么选-kv-server-来实操呢"><a class="header" href="#为什么选-kv-server-来实操呢">为什么选 KV server 来实操呢？</a></h2>
 <p>因为它是一个足够简单又足够复杂的服务。</p>
@@ -18698,7 +18789,8 @@ Sep 19 22:25:38.401  INFO naive_server: Got response: CommandResponse { status: 
 </div>
 </details>
 <blockquote>
-<p>如果你想做好架构，那么，问出这些问题，并且找到这些问题的答案就很重要。值得注意的是，这里面很多问题产品经理并不能帮你回答，或者 TA 的回答会将你带入歧路。作为一个架构师，我们需要对系统未来如何应对变化负责。</p>
+<p>如果你想做好架构，那么，问出这些问题，并且找到这些问题的答案就很重要。值得注意的是，这里面很多问题产品经理并不能帮你回答，或者
+TA 的回答会将你带入歧路。作为一个架构师，我们需要对系统未来如何应对变化负责。</p>
 </blockquote>
 <details id="admonition-下面是我的思考你可以参考" class="admonition example">
 <summary class="admonition-title">
@@ -18860,7 +18952,8 @@ message Hmexist {
 </div>
 </details>
 <blockquote>
-<p>通过 <a href="https://github.com/tokio-rs/prost">prost</a>，这个 protobuf 文件可以被编译成 Rust 代码（主要是 struct 和 enum），供我们使用。你应该还记得，thumbor
+<p>通过 <a href="https://github.com/tokio-rs/prost">prost</a>，这个 protobuf 文件可以被编译成 Rust 代码（主要是 struct 和
+enum），供我们使用。你应该还记得，thumbor
 的开发时，已经见识到了 prost 处理 protobuf 的方式了。</p>
 </blockquote>
 <h4 id="commandservice-trait"><a class="header" href="#commandservice-trait">CommandService trait</a></h4>
@@ -18942,7 +19035,8 @@ pub trait Storage {
 </details>
 <h3 id="trait的好处"><a class="header" href="#trait的好处">trait的好处</a></h3>
 <p>在 CommandService trait 中已经看到，在处理客户端请求的时候，与之打交道的是 Storage trait，而非具体的某个 store。</p>
-<p>这样做的好处是，未来根据业务的需要，在不同的场景下添加不同的 store，只需要为其实现 Storage trait 即可，不必修改 CommandService 有关的代码。</p>
+<p>这样做的好处是，未来根据业务的需要，在不同的场景下添加不同的 store，只需要为其实现 Storage trait 即可，不必修改
+CommandService 有关的代码。</p>
 <details id="admonition--比如在-hget-命令的实现时我们使用-storageget-方法从-table-中获取数据它跟某个具体的存储方案无关" class="admonition note">
 <summary class="admonition-title">
 <blockquote>
@@ -19014,6 +19108,23 @@ pub trait Storage {
 </div>
 </details>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="二实现并验证协议层"><a class="header" href="#二实现并验证协议层">二、实现并验证协议层</a></h1>
+<details id="admonition-summarize" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize</p>
+<p><a class="admonition-anchor-link" href="kv2_protocols.html#admonition-summarize"></a></p>
+</summary>
+<div>
+<p>本篇文章主要讲解了如何实现并验证协议层和Storage trait。</p>
+<ol>
+<li>在实现协议层时，需要创建项目并添加依赖</li>
+<li>处理protobuf，实现Storage trait和CommandService trait</li>
+<li>最后实现Service结构。</li>
+<li>在实现Storage trait时，需要定义外界如何和存储打交道，包括get、set、contains、del、get_all和get_iter等接口。</li>
+<li>在实现过程中，使用了dashmap创建MemTable结构。</li>
+<li>还提供了测试代码，帮助读者理解和实践。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="kv2_protocols.html#%E4%BA%8C%E5%AE%9E%E7%8E%B0%E5%B9%B6%E9%AA%8C%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%B1%82">二、实现并验证协议层</a>
@@ -19047,7 +19158,7 @@ pub trait Storage {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:20 UTC 2023 -->
 <!--te-->
 <p>还是按照上一讲定义接口的顺序来一个一个测试：首先我们来构建协议层。</p>
 <h2 id="创建项目添加依赖"><a class="header" href="#创建项目添加依赖">创建项目，添加依赖</a></h2>
@@ -19278,7 +19389,8 @@ async fn main() -&gt; Result&lt;()&gt; {
 </details>
 <h2 id="实现并验证-storage-trait"><a class="header" href="#实现并验证-storage-trait">实现并验证 Storage trait</a></h2>
 <p>接下来构建 Storage trait。</p>
-<p>我们上一讲谈到了如何使用嵌套的支持并发的 im-memory HashMap 来实现 storage trait。由于 Arc&lt;RwLock&lt;HashMap&lt;K, V&gt;&gt;&gt; 这样的支持并发的 HashMap 是一个刚需，Rust
+<p>我们上一讲谈到了如何使用嵌套的支持并发的 im-memory HashMap 来实现 storage trait。由于 Arc&lt;RwLock&lt;HashMap&lt;K, V&gt;&gt;&gt; 这样的支持并发的
+HashMap 是一个刚需，Rust
 生态有很多相关的 crate 支持，这里我们可以使用 dashmap 创建一个 MemTable 结构，来实现 Storage trait。</p>
 <details id="admonition-实现" class="admonition note">
 <summary class="admonition-title">
@@ -19993,7 +20105,8 @@ pub fn assert_res_error(res: CommandResponse, code: u32, msg: &amp;str) {
 </div>
 </details>
 <blockquote>
-<p>注意，这里的 assert_res_ok() 和 assert_res_error() 是从 src/service/command_service.rs 中挪过来的。在开发的过程中，不光产品代码需要不断重构，测试代码也需要重构来贯彻
+<p>注意，这里的 assert_res_ok() 和 assert_res_error() 是从 src/service/command_service.rs
+中挪过来的。在开发的过程中，不光产品代码需要不断重构，测试代码也需要重构来贯彻
 DRY 思想。</p>
 </blockquote>
 <h3 id="围绕接口测试"><a class="header" href="#围绕接口测试">围绕接口测试</a></h3>
@@ -20011,7 +20124,8 @@ DRY 思想。</p>
 </div>
 </details>
 <h3 id="继续写代码"><a class="header" href="#继续写代码">继续写代码</a></h3>
-<p>好，我们回来写代码。在这段测试中，已经敲定了 Service 这个数据结构的使用蓝图，它可以跨线程，可以调用 execute 来执行某个 CommandRequest 命令，返回 CommandResponse。</p>
+<p>好，我们回来写代码。在这段测试中，已经敲定了 Service 这个数据结构的使用蓝图，它可以跨线程，可以调用 execute 来执行某个
+CommandRequest 命令，返回 CommandResponse。</p>
 <details id="admonition-根据这些想法在-srcservicemodrs-里添加-service-的声明和实现" class="admonition note">
 <summary class="admonition-title">
 <p>根据这些想法，在 src/service/mod.rs 里添加 Service 的声明和实现：</p>
@@ -20187,12 +20301,37 @@ async fn main() -&gt; Result&lt;()&gt; {
 </div>
 </details>
 <h2 id="为剩下6个命令构建测试并实现"><a class="header" href="#为剩下6个命令构建测试并实现">为剩下6个命令构建测试并实现</a></h2>
-<p>为剩下 6 个命令 HMGET、HMSET、HDEL、HMDEL、HEXIST、HMEXIST 构建测试，并实现它们。在测试和实现过程中，你也许需要添加更多的 From<T> 的实现。</p>
+<p>为剩下 6 个命令 HMGET、HMSET、HDEL、HMDEL、HEXIST、HMEXIST 构建测试，并实现它们。在测试和实现过程中，你也许需要添加更多的
+From<T> 的实现。</p>
 <h2 id="考虑用线程池处理并发"><a class="header" href="#考虑用线程池处理并发">考虑用线程池处理并发</a></h2>
 <p>虽然我们的 KV server 使用了 concurrent hashmap 来处理并发，但这并不一定是最好的选择。</p>
-<p>我们也可以创建一个线程池，每个线程有自己的 HashMap。当 HGET/HSET 等命令来临时，可以对 key 做个哈希，然后分派到 “拥有” 那个 key
+<p>我们也可以创建一个线程池，每个线程有自己的 HashMap。当 HGET/HSET 等命令来临时，可以对 key 做个哈希，然后分派到 “拥有” 那个
+key
 的线程，这样，可以避免在处理的时候加锁，提高系统的吞吐。你可以想想如果用这种方式处理，该怎么做。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="三高级trait技巧"><a class="header" href="#三高级trait技巧">三、高级trait技巧</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="kv3_advanced_traits.html#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了 Rust 中高级 trait 技巧:</p>
+<ol>
+<li>包括处理 Iterator</li>
+<li>支持事件通知</li>
+<li>为持久化数据库实现 Storage trait</li>
+<li>构建新的 KV server</li>
+<li>进一步认识 trait 的威力以及泛型结构和生命周期标注</li>
+<li>更多用于阅读源码等内容。 </li>
+<li>其中，处理 Iterator 主要是介绍了如何使用 Rust 标准库中的 IntoIterator trait，将数据结构的所有权转移到 Iterator 中；</li>
+<li>支持事件通知则是通过构造者模式，为 ServiceInner 注册相应的事件处理函数，并提供了 Notify 和 NotifyMut 两个 trait，用于事件通知。</li>
+<li>为持久化数据库实现 Storage trait 主要是介绍了如何为 sled 实现 Storage trait，并测试通过。</li>
+<li>构建新的 KV server 主要是介绍了如何使用 Service 和 ServiceInner 两个数据结构，以及如何使用 Builder Pattern 构建 Service。</li>
+<li>进一步认识 trait 的威力则是介绍了 trait 的多态性和动态分发的特性，以及如何使用 trait 对代码进行抽象。</li>
+<li>泛型结构和生命周期标注更多用于阅读源码则是介绍了如何阅读 Rust 源码中的泛型结构和生命周期标注。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="kv3_advanced_traits.html#%E4%B8%89%E9%AB%98%E7%BA%A7trait%E6%8A%80%E5%B7%A7">三、高级trait技巧</a>
@@ -20222,7 +20361,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:20 UTC 2023 -->
 <!--te-->
 <p>前面已经完成了 KV store 的基本功能，但留了两个小尾巴：</p>
 <ol>
@@ -20351,7 +20490,8 @@ impl From&lt;(String, Value)&gt; for Kvpair {
 <li>对get_iter()进行抽象</li>
 </ol>
 <blockquote>
-<p>虽然这个代码可以通过测试，并且本身也非常精简，我们还是有必要思考一下，如果以后想为更多的 data store 实现 Storage trait，都会怎样处理 get_iter() 方法？</p>
+<p>虽然这个代码可以通过测试，并且本身也非常精简，我们还是有必要思考一下，如果以后想为更多的 data store 实现 Storage
+trait，都会怎样处理 get_iter() 方法？</p>
 </blockquote>
 <p>我们会：</p>
 <ul>
@@ -20360,7 +20500,8 @@ impl From&lt;(String, Value)&gt; for Kvpair {
 <li>将 map 出来的每个 item 转换成 Kvpair</li>
 </ul>
 <p>这里的第 2 步对于每个 Storage trait 的 get_iter() 方法的实现来说，都是相同的。</p>
-<p>有没有可能把它封装起来呢？使得 Storage trait 的实现者只需要提供它们自己的拥有所有权的 Iterator，并对 Iterator 里的 Item 类型提供 Into<Kvpair> ？</p>
+<p>有没有可能把它封装起来呢？使得 Storage trait 的实现者只需要提供它们自己的拥有所有权的 Iterator，并对 Iterator 里的 Item
+类型提供 Into<Kvpair> ？</p>
 <details id="admonition-笔记-这样我们在-srcstoragememoryrs-里对-get_iter-的实现就可以直接使用-storageiter" class="admonition note">
 <summary class="admonition-title">
 <p>笔记： 这样，我们在 src/storage/memory.rs 里对 get_iter() 的实现，就可以直接使用 StorageIter</p>
@@ -21092,6 +21233,23 @@ Rust 编译器会尽最大的努力，让你的代码简单。如果你用 clipp
 </div>
 </details>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="四网络处理"><a class="header" href="#四网络处理">四、网络处理</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="kv4_network.html#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了 Rust 中的网络处理:</p>
+<ul>
+<li>包括如何定义协议的 Frame</li>
+<li>如何撰写处理 Frame 的代码</li>
+<li>以及如何让网络层可以像 AsyncProst 那样方便使用。</li>
+<li>文章中详细介绍了 async-prost 库的使用，以及如何自己处理封包和解包的逻辑。</li>
+<li>同时，还介绍了如何使用 tokio-util 库来处理和 frame 相关的封包解包的主要需求，包括 LinesDelimited 和 LengthDelimited。</li>
+<li>最后，文章还介绍了如何为 CommandRequest / CommandResponse 提供缺省实现，以便做 frame 级别的处理。</li>
+</ul>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="kv4_network.html#%E5%9B%9B%E7%BD%91%E7%BB%9C%E5%A4%84%E7%90%86">四、网络处理</a>
@@ -21106,7 +21264,7 @@ Rust 编译器会尽最大的努力，让你的代码简单。如果你用 clipp
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:21 UTC 2023 -->
 <!--te-->
 <h2 id="async-prost"><a class="header" href="#async-prost">async-prost</a></h2>
 <p>之前一直在使用一个神秘的 <a href="https://github.com/tyrchen/async-prost">async-prost 库</a>，我们神奇地完成了 TCP frame 的封包和解包。</p>
@@ -21165,7 +21323,8 @@ Rust 编译器会尽最大的努力，让你的代码简单。如果你用 clipp
 </ul>
 </div>
 </details>
-<p>tokio 有个 tokio-util 库，已经帮我们处理了和 frame 相关的封包解包的主要需求，包括 LinesDelimited（处理 \r\n 分隔符）和 LengthDelimited（处理长度分隔符）。</p>
+<p>tokio 有个 tokio-util 库，已经帮我们处理了和 frame 相关的封包解包的主要需求，包括 LinesDelimited（处理 \r\n 分隔符）和
+LengthDelimited（处理长度分隔符）。</p>
 <details id="admonition-我们可以使用它的-lengthdelimitedcodec-尝试一下" class="admonition note">
 <summary class="admonition-title">
 <p>我们可以使用它的 LengthDelimitedCodec 尝试一下。 </p>
@@ -22163,6 +22322,22 @@ async fn main() -&gt; Result&lt;()&gt; {
 </div>
 </details>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="五网络安全生成-x509-证书"><a class="header" href="#五网络安全生成-x509-证书">五、网络安全：生成 x509 证书</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="kv5_network_security.html#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了如何使用 TLS 来保证客户端和服务器间的安全性。</p>
+<ol>
+<li>文章首先介绍了 TLS 的作用和 TLS 的数据封装</li>
+<li>然后详细讲解了如何使用 tokio-rustls 库来实现 TLS</li>
+<li>文章提供了两个数据结构 TlsServerAcceptor / TlsClientConnector，分别用于存放 TLS ServerConfig 和 TLS ClientConfig</li>
+<li>并提供了 accept() 和 connect() 方法，用于把底层的协议转换成 TLS stream。</li>
+<li>最后，文章提供了一个测试用例，演示了如何使用 TLS 客户端和服务器之间进行通信。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="kv5_network_security.html#%E4%BA%94%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E7%94%9F%E6%88%90-x509-%E8%AF%81%E4%B9%A6">五、网络安全：生成 x509 证书</a>
@@ -22179,7 +22354,7 @@ async fn main() -&gt; Result&lt;()&gt; {
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:21 UTC 2023 -->
 <!--te-->
 <details id="admonition-那么当我们的应用架构在-tcp-上时如何使用-tls-来保证客户端和服务器间的安全性呢" class="admonition question">
 <summary class="admonition-title">
@@ -22299,7 +22474,8 @@ async fn gen_files(pem: &amp;CertPem) -&gt; Result&lt;()&gt; {
 <p>所以今天要做的就是在上一讲的网络处理的基础上，添加 TLS 支持，使得 KV server 的客户端服务器之间的通讯被严格保护起来，确保最大程度的安全，免遭第三方的偷窥、篡改以及仿造。</p>
 <h3 id="实现tls"><a class="header" href="#实现tls">实现TLS</a></h3>
 <p>好，接下来我们看看 TLS 怎么实现。</p>
-<p>估计很多人一听 TLS 或者 SSL，就头皮发麻，因为之前跟 <a href="https://www.openssl.org">openssl</a> 打交道有过很多不好的经历。openssl 的代码库太庞杂，API 不友好，编译链接都很费劲。</p>
+<p>估计很多人一听 TLS 或者 SSL，就头皮发麻，因为之前跟 <a href="https://www.openssl.org">openssl</a> 打交道有过很多不好的经历。openssl
+的代码库太庞杂，API 不友好，编译链接都很费劲。</p>
 <details id="admonition-不过在-rust-下使用-tls-的体验还是很不错的" class="admonition info">
 <summary class="admonition-title">
 <p>不过，在 Rust 下使用 TLS 的体验还是很不错的： </p>
@@ -22500,7 +22676,8 @@ fn load_key(key: &amp;str) -&gt; Result&lt;PrivateKey, KvError&gt; {
 </div>
 </details>
 <blockquote>
-<p>处理完 config 后，这段代码的核心逻辑其实就是客户端的 connect() 方法和服务器的 accept() 方法，它们都接受一个满足 AsyncRead + AsyncWrite + Unpin + Send 的 stream。</p>
+<p>处理完 config 后，这段代码的核心逻辑其实就是客户端的 connect() 方法和服务器的 accept() 方法，它们都接受一个满足
+AsyncRead + AsyncWrite + Unpin + Send 的 stream。</p>
 </blockquote>
 <details id="admonition-3-考虑到通用性我们不希望-tls-代码只能接受-tcpstream所以这里提供了一个泛型参数-s" class="admonition note">
 <summary class="admonition-title">
@@ -22736,7 +22913,8 @@ async fn main() -&gt; Result&lt;()&gt; {
 </div>
 </details>
 <blockquote>
-<p>这就是使用 trait 做面向接口编程的巨大威力，系统的各个组件可以来自不同的 crates，但只要其接口一致（或者我们创建 adapter 使其接口一致），就可以无缝插入。</p>
+<p>这就是使用 trait 做面向接口编程的巨大威力，系统的各个组件可以来自不同的 crates，但只要其接口一致（或者我们创建 adapter
+使其接口一致），就可以无缝插入。</p>
 </blockquote>
 <details id="admonition-测试通过" class="admonition success">
 <summary class="admonition-title">
@@ -22760,19 +22938,39 @@ async fn main() -&gt; Result&lt;()&gt; {
 <p>现在，我们的 KV server 已经具备足够的安全性了！</p>
 <p>以后，等我们使用配置文件，就可以根据配置文件读取证书和私钥。这样可以在部署的时候，才从 vault 中获取私钥，既保证灵活性，又能保证系统自身的安全。</p>
 <h2 id="网络安全开发回顾"><a class="header" href="#网络安全开发回顾">网络安全开发回顾</a></h2>
-<p>网络安全是开发网络相关的应用程序中非常重要的一个环节。虽然 KV Server 这样的服务基本上会运行在云端受控的网络环境中，不会对 internet 提供服务，然而云端内部的安全性也不容忽视。你不希望数据在流动的过程中被篡改。</p>
-<p>TLS 很好地解决了安全性的问题，可以保证整个传输过程中数据的机密性和完整性。如果使用客户端证书的话，还可以做一定程度的客户端合法性的验证。比如你可以在云端为所有有权访问 KV server
+<p>网络安全是开发网络相关的应用程序中非常重要的一个环节。虽然 KV Server 这样的服务基本上会运行在云端受控的网络环境中，不会对
+internet 提供服务，然而云端内部的安全性也不容忽视。你不希望数据在流动的过程中被篡改。</p>
+<p>TLS 很好地解决了安全性的问题，可以保证整个传输过程中数据的机密性和完整性。如果使用客户端证书的话，还可以做一定程度的客户端合法性的验证。比如你可以在云端为所有有权访问
+KV server
 的客户端签发客户端证书，这样，只要客户端的私钥不泄露，就只有拥有证书的客户端才能访问 KV server。</p>
-<p>不知道你现在有没有觉得，在 Rust 下使用 TLS 是非常方便的一件事情。并且，我们构建的 ProstServerStream / ProstClientStream，因为有足够好的抽象，可以在 TcpStream 和 TlsStream
+<p>不知道你现在有没有觉得，在 Rust 下使用 TLS 是非常方便的一件事情。并且，我们构建的 ProstServerStream /
+ProstClientStream，因为有足够好的抽象，可以在 TcpStream 和 TlsStream
 之间游刃有余地切换。当你构建好相关的代码，只需要把 TcpStream 换成 TlsStream，KV server 就可以无缝切换到一个安全的网络协议栈。</p>
 <h2 id="考虑双向验证"><a class="header" href="#考虑双向验证">考虑双向验证</a></h2>
-<p>目前我们的 kvc / kvs 只做了单向的验证，如果服务器要验证客户端的证书，该怎么做？如果你没有头绪，可以再仔细看看测试 TLS 的代码，然后改动 kvc/kvs 使得双向验证也能通过吧。</p>
+<p>目前我们的 kvc / kvs 只做了单向的验证，如果服务器要验证客户端的证书，该怎么做？如果你没有头绪，可以再仔细看看测试 TLS
+的代码，然后改动 kvc/kvs 使得双向验证也能通过吧。</p>
 <p>除了 TLS，另外一个被广泛使用的处理应用层安全的协议是 <a href="https://noiseprotocol.org">noise protocol</a>
-。你可以阅读<a href="https://zhuanlan.zhihu.com/p/96944134">陈天的这篇文章</a>了解 noise protocol。Rust 下有<a href="https://github.com/mcginty/snow"> snow </a>
+。你可以阅读<a href="https://zhuanlan.zhihu.com/p/96944134">陈天的这篇文章</a>了解 noise protocol。Rust
+下有<a href="https://github.com/mcginty/snow"> snow </a>
 这个很优秀的库处理 noise
 protocol。对于有余力的同学，你们可以看看它的文档，尝试着写段<a href="https://github.com/seanmonstar/reqwest/blob/master/src/tls.rs">类似reqwest的 tls.rs 的代码</a>
 ，让我们的 kvs / kvc 可以使用 noise protocol。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="六异步处理"><a class="header" href="#六异步处理">六、异步处理</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="kv6_async_refactor.html#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了 Rust 异步处理的相关知识。</p>
+<ol>
+<li>首先回顾了构建 KV server 的过程，然后介绍了异步重构的必要性。</li>
+<li>接着，详细讲解了如何创建 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait</li>
+<li>然后让 ProstServerStream 和 ProstClientStream 使用它。</li>
+<li>最后，分别实现了 Stream 和 Sink 的 poll_next()、poll_ready()、start_send()、poll_flush() 和 poll_close() 方法。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="kv6_async_refactor.html#%E5%85%AD%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86">六、异步处理</a>
@@ -22791,7 +22989,7 @@ protocol。对于有余力的同学，你们可以看看它的文档，尝试着
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:21 UTC 2023 -->
 <!--te-->
 <h2 id="回顾构建过程"><a class="header" href="#回顾构建过程">回顾构建过程</a></h2>
 <p>之前已经完成了一个相对完善的 KV server。</p>
@@ -22862,7 +23060,8 @@ protocol。对于有余力的同学，你们可以看看它的文档，尝试着
 </div>
 </div>
 <h2 id="开始做异步重构"><a class="header" href="#开始做异步重构">开始做异步重构</a></h2>
-<p>虽然我们很早就已经撰写了不少异步或者和异步有关的代码。但是最能体现 Rust 异步本质的 poll()、poll_read()、poll_next() 这样的处理函数还没有怎么写过，之前测试异步的 read_frame() 写过一个
+<p>虽然我们很早就已经撰写了不少异步或者和异步有关的代码。但是最能体现 Rust 异步本质的 poll()、poll_read()、poll_next()
+这样的处理函数还没有怎么写过，之前测试异步的 read_frame() 写过一个
 DummyStream，算是体验了一下底层的异步处理函数的复杂接口。</p>
 <details id="admonition-不过在-dummystream-里并没有做任何复杂的动作" class="admonition note">
 <summary class="admonition-title">
@@ -22930,7 +23129,8 @@ while let Some(Ok(cmd)) = stream.next().await {
 </blockquote>
 </div>
 </details>
-<p>所以这里就构造一个 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait，然后让 ProstServerStream 和 ProstClientStream 使用它。</p>
+<p>所以这里就构造一个 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait，然后让 ProstServerStream 和 ProstClientStream
+使用它。</p>
 <h2 id="创建-proststream"><a class="header" href="#创建-proststream">创建 ProstStream</a></h2>
 <details id="admonition-在开始重构之前先来简单复习一下-stream-trait-和-sink-trait" class="admonition note">
 <summary class="admonition-title">
@@ -23091,7 +23291,8 @@ where
 </details>
 <p>接下来我们就一个个处理。</p>
 <blockquote>
-<p>注意对于 In 和 Out 参数，还为其约束了 FrameCoder，这样，在实现里我们可以使用 decode_frame() 和 encode_frame() 来获取一个 Item 或者 encode 一个 Item。</p>
+<p>注意对于 In 和 Out 参数，还为其约束了 FrameCoder，这样，在实现里我们可以使用 decode_frame() 和 encode_frame() 来获取一个
+Item 或者 encode 一个 Item。</p>
 </blockquote>
 <details id="admonition-1-stream-的实现-主要是stream-的-poll_next-方法" class="admonition note">
 <summary class="admonition-title">
@@ -23275,7 +23476,8 @@ impl&lt;S, Req, Res&gt; Unpin for ProstStream&lt;S, Req, Res&gt; where S: Unpin 
 </div>
 </details>
 <h3 id="测试-1"><a class="header" href="#测试-1">测试！</a></h3>
-<p>又到了重要的测试环节。我们需要写点测试来确保 ProstStream 能正常工作。因为之前在 src/network/frame.rs 中写了个 DummyStream，实现了 AsyncRead，我们只需要扩展它，让它再实现
+<p>又到了重要的测试环节。我们需要写点测试来确保 ProstStream 能正常工作。因为之前在 src/network/frame.rs 中写了个
+DummyStream，实现了 AsyncRead，我们只需要扩展它，让它再实现
 AsyncWrite。</p>
 <details id="admonition-1-为了让它可以被复用我们将其从-framers-中移出来放在-srcnetworkmodrs-中并修改成下面的样子记得在-framers-的测试里-use-新的-dummystream" class="admonition note">
 <summary class="admonition-title">
@@ -23487,13 +23689,29 @@ where
 <p>在实际开发中，进行重构来改善既有代码的质量是必不可少的。之前在开发 KV server 的过程中，我们在不断地进行一些小的重构。</p>
 <p>本节我们做了个稍微大一些的重构，为已有的代码提供更加符合异步 IO 接口的功能。</p>
 <blockquote>
-<p>从对外使用的角度来说，它并没有提供或者满足任何额外的需求，但是从代码结构和质量的角度，它使得我们的 ProstStream 可以更方便和更直观地被其它接口调用，也更容易跟整个 Rust 的现有生态结合起来。</p>
+<p>从对外使用的角度来说，它并没有提供或者满足任何额外的需求，但是从代码结构和质量的角度，它使得我们的 ProstStream
+可以更方便和更直观地被其它接口调用，也更容易跟整个 Rust 的现有生态结合起来。</p>
 </blockquote>
 <p>你可能会好奇，为什么可以这么自然地进行代码重构？这是因为我们有足够的单元测试覆盖来打底。</p>
 <p>就像生物的进化一样，好的代码是在良性的重构中不断演进出来的，而良性的重构，是在优秀的单元测试的监管下，使代码朝着正确方向迈出的步伐。在这里，单元测试扮演着生物进化中自然环境的角色，把重构过程中的错误一一扼杀。</p>
 <h2 id="思考题"><a class="header" href="#思考题">思考题</a></h2>
 <p>为什么在创建 ProstStream 时，要在数据结构中放 wbuf / rbuf 和 written 字段？为什么不能用局部变量？</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="七如何做大的重构"><a class="header" href="#七如何做大的重构">七、如何做大的重构？</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="kv7_big_refactor.html#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了如何在 Rust 中进行大规模重构，以支持 Pub/Sub。</p>
+<ol>
+<li>首先，文章分析了现有架构的问题，即同步处理和 head of line blocking 问题。</li>
+<li>然后，文章介绍了如何使用 yamux 做多路复用，以解决 head of line blocking 问题。</li>
+<li>接着，文章讲解了如何支持 Pub/Sub，包括设计思路和数据结构。</li>
+<li>最后，文章提供了完整的代码实现和测试。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="kv7_big_refactor.html#%E4%B8%83%E5%A6%82%E4%BD%95%E5%81%9A%E5%A4%A7%E7%9A%84%E9%87%8D%E6%9E%84">七、如何做大的重构？</a>
@@ -23516,7 +23734,7 @@ where
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:22 UTC 2023 -->
 <!--te-->
 <h2 id="现有架构分析"><a class="header" href="#现有架构分析">现有架构分析</a></h2>
 <details id="admonition-先简单回顾一下-redis-对-pubsub-的支持" class="admonition info">
@@ -24592,6 +24810,21 @@ repo 中的 diff_client。</p>
 </div>
 </details>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="八配置测试监控cicd"><a class="header" href="#八配置测试监控cicd">八、配置/测试/监控/CI/CD</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="kv8_config_ci_cd.html#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了 Rust 语言下的 KV server 项目的配置、测试、监控、CI/CD 等方面。</p>
+<ol>
+<li>首先介绍了如何使用 serde 和 toml 处理配置文件</li>
+<li>然后讲解了如何编写集成测试和性能测试</li>
+<li>接着，介绍了如何使用 jaeger 和 opentelemetry 进行测量和监控</li>
+<li>最后讲解了如何使用 GitHub Actions 实现 CI/CD。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="kv8_config_ci_cd.html#%E5%85%AB%E9%85%8D%E7%BD%AE%E6%B5%8B%E8%AF%95%E7%9B%91%E6%8E%A7cicd">八、配置/测试/监控/CI/CD</a>
@@ -24605,7 +24838,7 @@ repo 中的 diff_client。</p>
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:22 UTC 2023 -->
 <!--te-->
 <p>虽然这是一个“简单”的 KV server：</p>
 <ul>
@@ -24614,7 +24847,8 @@ repo 中的 diff_client。</p>
 <li>更没有支持集群的处理。</li>
 </ul>
 <blockquote>
-<p>然而，如果你能够理解到目前为止的代码，甚至能独立写出这样的代码，那么，你已经具备足够的、能在一线大厂开发的实力了，国内我不是特别清楚，但在北美这边，保守一些地说，300k+ USD 的 package 应该可以轻松拿到。</p>
+<p>然而，如果你能够理解到目前为止的代码，甚至能独立写出这样的代码，那么，你已经具备足够的、能在一线大厂开发的实力了，国内我不是特别清楚，但在北美这边，保守一些地说，300k+
+USD 的 package 应该可以轻松拿到。</p>
 </blockquote>
 <p>今天我们就给 KV server 项目收个尾，结合之前梳理的实战中 Rust 项目应该考虑的问题，来聊聊和生产环境有关的一些处理，按开发流程，主要讲五个方面：</p>
 <ul>
@@ -24626,7 +24860,8 @@ repo 中的 diff_client。</p>
 </ul>
 <h2 id="配置"><a class="header" href="#配置">配置</a></h2>
 <ol>
-<li>首先在 Cargo.toml 里添加 <a href="https://github.com/serde-rs/serde">serde</a> 和<a href="https://github.com/toml-rs/toml-rs"> toml</a>。我们计划：</li>
+<li>首先在 Cargo.toml 里添加 <a href="https://github.com/serde-rs/serde">serde</a> 和<a href="https://github.com/toml-rs/toml-rs"> toml</a>
+。我们计划：</li>
 </ol>
 <ul>
 <li>使用 toml 做配置文件</li>
@@ -24971,7 +25206,8 @@ async fn start_tls_server&lt;Store: Storage&gt;(
 </code></pre></pre>
 </div>
 </details>
-<p>有了 start_server_with_config 和 start_client_with_config 这两个辅助函数，我们就可以简化 src/server.rs 和 src/client.rs 了。</p>
+<p>有了 start_server_with_config 和 start_client_with_config 这两个辅助函数，我们就可以简化 src/server.rs 和 src/client.rs
+了。</p>
 <details id="admonition-下面是-srcserverrs-的新代码" class="admonition note">
 <summary class="admonition-title">
 <p>下面是 src/server.rs 的新代码： </p>
@@ -25128,7 +25364,8 @@ async fn yamux_server_client_full_tests() -&gt; Result&lt;()&gt; {
 
 基本的想法是我们连上 100 个 subscriber 作为背景，然后看 publisher publish 的速度。
 
-因为 BROADCAST_CAPACITY 有限，是 128，当 publisher 速度太快，而导致 server 不能及时往 subscriber 发送时，server 接收 client 数据的速度就会降下来，无法接收新的
+因为 BROADCAST_CAPACITY 有限，是 128，当 publisher 速度太快，而导致 server 不能及时往 subscriber 发送时，server 接收 client
+数据的速度就会降下来，无法接收新的
 client，整体的 publish 的速度也会降下来，所以这个测试能够了解 server 处理 publish 的速度。
 
 
@@ -25354,7 +25591,8 @@ publishing              time:   [318.61 ms 324.48 ms 329.81 ms]
 </code></pre>
 <pre><code>
  &gt; 
- &gt; 嗯，这下 324ms，正好是减去刚才加的 100ms。可是这个速度依旧不合理，凭直觉我们感觉一下这个速度，是 Python 这样的语言还正常，如果是 Rust 也太慢了吧？
+ &gt; 嗯，这下 324ms，正好是减去刚才加的 100ms。可是这个速度依旧不合理，凭直觉我们感觉一下这个速度，是 Python 这样的语言还正常，如果是
+ &gt; Rust 也太慢了吧？
 
 ## 测量和监控
 
@@ -25363,11 +25601,13 @@ publishing              time:   [318.61 ms 324.48 ms 329.81 ms]
 
 现在知道了 KV server 性能有问题，但并不知道问题出在哪里。我们需要使用合适的测量方式。
 
-目前，比较好的端对端的性能监控和测量工具是 jaeger，我们可以在 KV server/client 侧收集监控信息，发送给 jaeger 来查看在服务器和客户端的整个处理流程中，时间都花费到哪里去了。
+目前，比较好的端对端的性能监控和测量工具是 jaeger，我们可以在 KV server/client 侧收集监控信息，发送给 jaeger
+来查看在服务器和客户端的整个处理流程中，时间都花费到哪里去了。
 
 之前我们在 KV server 里使用的日志工具是
 tracing，不过日志只是它的诸多功能之一，它还能做[ instrument](https://docs.rs/tracing/0.1.28/tracing/attr.instrument.html)
-，然后配合 [opentelemetry 库](https://github.com/open-telemetry/opentelemetry-rust)，我们就可以把 instrument 的结果发送给 jaeger 了。
+，然后配合 [opentelemetry 库](https://github.com/open-telemetry/opentelemetry-rust)，我们就可以把 instrument 的结果发送给
+jaeger 了。
 
 &lt;details id=&quot;admonition-1-加入jaeger&quot; class=&quot;admonition note&quot;&gt;
 &lt;summary class=&quot;admonition-title&quot;&gt;
@@ -25894,7 +26134,8 @@ jobs:
 </ul>
 </div>
 </details>
-<p>一般来说，每家企业都有自己的 CI/CD 的工具链，这里为了展示方便，我们演示了如何使用 github action 对 Rust 代码做 CI，你可以按照自己的需要来处理。</p>
+<p>一般来说，每家企业都有自己的 CI/CD 的工具链，这里为了展示方便，我们演示了如何使用 github action 对 Rust 代码做
+CI，你可以按照自己的需要来处理。</p>
 <p>在刚才的 action 代码中，还编译并上传了文档，所以我们可以通过 github pages 很方便地访问文档：</p>
 <p><img src="https://raw.githubusercontent.com/KuanHsiaoKuo/writing_materials/main/imgs/885d092273f8cacda1a65867a2489ea7.png" alt="img" /></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="构建自己的类axum异步web框架"><a class="header" href="#构建自己的类axum异步web框架">构建自己的类axum异步Web框架</a></h1>

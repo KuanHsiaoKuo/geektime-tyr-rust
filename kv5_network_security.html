@@ -181,6 +181,22 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="五网络安全生成-x509-证书"><a class="header" href="#五网络安全生成-x509-证书">五、网络安全：生成 x509 证书</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了如何使用 TLS 来保证客户端和服务器间的安全性。</p>
+<ol>
+<li>文章首先介绍了 TLS 的作用和 TLS 的数据封装</li>
+<li>然后详细讲解了如何使用 tokio-rustls 库来实现 TLS</li>
+<li>文章提供了两个数据结构 TlsServerAcceptor / TlsClientConnector，分别用于存放 TLS ServerConfig 和 TLS ClientConfig</li>
+<li>并提供了 accept() 和 connect() 方法，用于把底层的协议转换成 TLS stream。</li>
+<li>最后，文章提供了一个测试用例，演示了如何使用 TLS 客户端和服务器之间进行通信。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#%E4%BA%94%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8%E7%94%9F%E6%88%90-x509-%E8%AF%81%E4%B9%A6">五、网络安全：生成 x509 证书</a>
@@ -197,7 +213,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:21 UTC 2023 -->
 <!--te-->
 <details id="admonition-那么当我们的应用架构在-tcp-上时如何使用-tls-来保证客户端和服务器间的安全性呢" class="admonition question">
 <summary class="admonition-title">
@@ -317,7 +333,8 @@ async fn gen_files(pem: &amp;CertPem) -&gt; Result&lt;()&gt; {
 <p>所以今天要做的就是在上一讲的网络处理的基础上，添加 TLS 支持，使得 KV server 的客户端服务器之间的通讯被严格保护起来，确保最大程度的安全，免遭第三方的偷窥、篡改以及仿造。</p>
 <h3 id="实现tls"><a class="header" href="#实现tls">实现TLS</a></h3>
 <p>好，接下来我们看看 TLS 怎么实现。</p>
-<p>估计很多人一听 TLS 或者 SSL，就头皮发麻，因为之前跟 <a href="https://www.openssl.org">openssl</a> 打交道有过很多不好的经历。openssl 的代码库太庞杂，API 不友好，编译链接都很费劲。</p>
+<p>估计很多人一听 TLS 或者 SSL，就头皮发麻，因为之前跟 <a href="https://www.openssl.org">openssl</a> 打交道有过很多不好的经历。openssl
+的代码库太庞杂，API 不友好，编译链接都很费劲。</p>
 <details id="admonition-不过在-rust-下使用-tls-的体验还是很不错的" class="admonition info">
 <summary class="admonition-title">
 <p>不过，在 Rust 下使用 TLS 的体验还是很不错的： </p>
@@ -518,7 +535,8 @@ fn load_key(key: &amp;str) -&gt; Result&lt;PrivateKey, KvError&gt; {
 </div>
 </details>
 <blockquote>
-<p>处理完 config 后，这段代码的核心逻辑其实就是客户端的 connect() 方法和服务器的 accept() 方法，它们都接受一个满足 AsyncRead + AsyncWrite + Unpin + Send 的 stream。</p>
+<p>处理完 config 后，这段代码的核心逻辑其实就是客户端的 connect() 方法和服务器的 accept() 方法，它们都接受一个满足
+AsyncRead + AsyncWrite + Unpin + Send 的 stream。</p>
 </blockquote>
 <details id="admonition-3-考虑到通用性我们不希望-tls-代码只能接受-tcpstream所以这里提供了一个泛型参数-s" class="admonition note">
 <summary class="admonition-title">
@@ -754,7 +772,8 @@ async fn main() -&gt; Result&lt;()&gt; {
 </div>
 </details>
 <blockquote>
-<p>这就是使用 trait 做面向接口编程的巨大威力，系统的各个组件可以来自不同的 crates，但只要其接口一致（或者我们创建 adapter 使其接口一致），就可以无缝插入。</p>
+<p>这就是使用 trait 做面向接口编程的巨大威力，系统的各个组件可以来自不同的 crates，但只要其接口一致（或者我们创建 adapter
+使其接口一致），就可以无缝插入。</p>
 </blockquote>
 <details id="admonition-测试通过" class="admonition success">
 <summary class="admonition-title">
@@ -778,15 +797,20 @@ async fn main() -&gt; Result&lt;()&gt; {
 <p>现在，我们的 KV server 已经具备足够的安全性了！</p>
 <p>以后，等我们使用配置文件，就可以根据配置文件读取证书和私钥。这样可以在部署的时候，才从 vault 中获取私钥，既保证灵活性，又能保证系统自身的安全。</p>
 <h2 id="网络安全开发回顾"><a class="header" href="#网络安全开发回顾">网络安全开发回顾</a></h2>
-<p>网络安全是开发网络相关的应用程序中非常重要的一个环节。虽然 KV Server 这样的服务基本上会运行在云端受控的网络环境中，不会对 internet 提供服务，然而云端内部的安全性也不容忽视。你不希望数据在流动的过程中被篡改。</p>
-<p>TLS 很好地解决了安全性的问题，可以保证整个传输过程中数据的机密性和完整性。如果使用客户端证书的话，还可以做一定程度的客户端合法性的验证。比如你可以在云端为所有有权访问 KV server
+<p>网络安全是开发网络相关的应用程序中非常重要的一个环节。虽然 KV Server 这样的服务基本上会运行在云端受控的网络环境中，不会对
+internet 提供服务，然而云端内部的安全性也不容忽视。你不希望数据在流动的过程中被篡改。</p>
+<p>TLS 很好地解决了安全性的问题，可以保证整个传输过程中数据的机密性和完整性。如果使用客户端证书的话，还可以做一定程度的客户端合法性的验证。比如你可以在云端为所有有权访问
+KV server
 的客户端签发客户端证书，这样，只要客户端的私钥不泄露，就只有拥有证书的客户端才能访问 KV server。</p>
-<p>不知道你现在有没有觉得，在 Rust 下使用 TLS 是非常方便的一件事情。并且，我们构建的 ProstServerStream / ProstClientStream，因为有足够好的抽象，可以在 TcpStream 和 TlsStream
+<p>不知道你现在有没有觉得，在 Rust 下使用 TLS 是非常方便的一件事情。并且，我们构建的 ProstServerStream /
+ProstClientStream，因为有足够好的抽象，可以在 TcpStream 和 TlsStream
 之间游刃有余地切换。当你构建好相关的代码，只需要把 TcpStream 换成 TlsStream，KV server 就可以无缝切换到一个安全的网络协议栈。</p>
 <h2 id="考虑双向验证"><a class="header" href="#考虑双向验证">考虑双向验证</a></h2>
-<p>目前我们的 kvc / kvs 只做了单向的验证，如果服务器要验证客户端的证书，该怎么做？如果你没有头绪，可以再仔细看看测试 TLS 的代码，然后改动 kvc/kvs 使得双向验证也能通过吧。</p>
+<p>目前我们的 kvc / kvs 只做了单向的验证，如果服务器要验证客户端的证书，该怎么做？如果你没有头绪，可以再仔细看看测试 TLS
+的代码，然后改动 kvc/kvs 使得双向验证也能通过吧。</p>
 <p>除了 TLS，另外一个被广泛使用的处理应用层安全的协议是 <a href="https://noiseprotocol.org">noise protocol</a>
-。你可以阅读<a href="https://zhuanlan.zhihu.com/p/96944134">陈天的这篇文章</a>了解 noise protocol。Rust 下有<a href="https://github.com/mcginty/snow"> snow </a>
+。你可以阅读<a href="https://zhuanlan.zhihu.com/p/96944134">陈天的这篇文章</a>了解 noise protocol。Rust
+下有<a href="https://github.com/mcginty/snow"> snow </a>
 这个很优秀的库处理 noise
 protocol。对于有余力的同学，你们可以看看它的文档，尝试着写段<a href="https://github.com/seanmonstar/reqwest/blob/master/src/tls.rs">类似reqwest的 tls.rs 的代码</a>
 ，让我们的 kvs / kvc 可以使用 noise protocol。</p>

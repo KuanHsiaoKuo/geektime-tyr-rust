@@ -181,6 +181,23 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="二实现并验证协议层"><a class="header" href="#二实现并验证协议层">二、实现并验证协议层</a></h1>
+<details id="admonition-summarize" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize"></a></p>
+</summary>
+<div>
+<p>本篇文章主要讲解了如何实现并验证协议层和Storage trait。</p>
+<ol>
+<li>在实现协议层时，需要创建项目并添加依赖</li>
+<li>处理protobuf，实现Storage trait和CommandService trait</li>
+<li>最后实现Service结构。</li>
+<li>在实现Storage trait时，需要定义外界如何和存储打交道，包括get、set、contains、del、get_all和get_iter等接口。</li>
+<li>在实现过程中，使用了dashmap创建MemTable结构。</li>
+<li>还提供了测试代码，帮助读者理解和实践。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#%E4%BA%8C%E5%AE%9E%E7%8E%B0%E5%B9%B6%E9%AA%8C%E8%AF%81%E5%8D%8F%E8%AE%AE%E5%B1%82">二、实现并验证协议层</a>
@@ -214,7 +231,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:20 UTC 2023 -->
 <!--te-->
 <p>还是按照上一讲定义接口的顺序来一个一个测试：首先我们来构建协议层。</p>
 <h2 id="创建项目添加依赖"><a class="header" href="#创建项目添加依赖">创建项目，添加依赖</a></h2>
@@ -445,7 +462,8 @@ async fn main() -&gt; Result&lt;()&gt; {
 </details>
 <h2 id="实现并验证-storage-trait"><a class="header" href="#实现并验证-storage-trait">实现并验证 Storage trait</a></h2>
 <p>接下来构建 Storage trait。</p>
-<p>我们上一讲谈到了如何使用嵌套的支持并发的 im-memory HashMap 来实现 storage trait。由于 Arc&lt;RwLock&lt;HashMap&lt;K, V&gt;&gt;&gt; 这样的支持并发的 HashMap 是一个刚需，Rust
+<p>我们上一讲谈到了如何使用嵌套的支持并发的 im-memory HashMap 来实现 storage trait。由于 Arc&lt;RwLock&lt;HashMap&lt;K, V&gt;&gt;&gt; 这样的支持并发的
+HashMap 是一个刚需，Rust
 生态有很多相关的 crate 支持，这里我们可以使用 dashmap 创建一个 MemTable 结构，来实现 Storage trait。</p>
 <details id="admonition-实现" class="admonition note">
 <summary class="admonition-title">
@@ -1160,7 +1178,8 @@ pub fn assert_res_error(res: CommandResponse, code: u32, msg: &amp;str) {
 </div>
 </details>
 <blockquote>
-<p>注意，这里的 assert_res_ok() 和 assert_res_error() 是从 src/service/command_service.rs 中挪过来的。在开发的过程中，不光产品代码需要不断重构，测试代码也需要重构来贯彻
+<p>注意，这里的 assert_res_ok() 和 assert_res_error() 是从 src/service/command_service.rs
+中挪过来的。在开发的过程中，不光产品代码需要不断重构，测试代码也需要重构来贯彻
 DRY 思想。</p>
 </blockquote>
 <h3 id="围绕接口测试"><a class="header" href="#围绕接口测试">围绕接口测试</a></h3>
@@ -1178,7 +1197,8 @@ DRY 思想。</p>
 </div>
 </details>
 <h3 id="继续写代码"><a class="header" href="#继续写代码">继续写代码</a></h3>
-<p>好，我们回来写代码。在这段测试中，已经敲定了 Service 这个数据结构的使用蓝图，它可以跨线程，可以调用 execute 来执行某个 CommandRequest 命令，返回 CommandResponse。</p>
+<p>好，我们回来写代码。在这段测试中，已经敲定了 Service 这个数据结构的使用蓝图，它可以跨线程，可以调用 execute 来执行某个
+CommandRequest 命令，返回 CommandResponse。</p>
 <details id="admonition-根据这些想法在-srcservicemodrs-里添加-service-的声明和实现" class="admonition note">
 <summary class="admonition-title">
 <p>根据这些想法，在 src/service/mod.rs 里添加 Service 的声明和实现：</p>
@@ -1354,10 +1374,12 @@ async fn main() -&gt; Result&lt;()&gt; {
 </div>
 </details>
 <h2 id="为剩下6个命令构建测试并实现"><a class="header" href="#为剩下6个命令构建测试并实现">为剩下6个命令构建测试并实现</a></h2>
-<p>为剩下 6 个命令 HMGET、HMSET、HDEL、HMDEL、HEXIST、HMEXIST 构建测试，并实现它们。在测试和实现过程中，你也许需要添加更多的 From<T> 的实现。</p>
+<p>为剩下 6 个命令 HMGET、HMSET、HDEL、HMDEL、HEXIST、HMEXIST 构建测试，并实现它们。在测试和实现过程中，你也许需要添加更多的
+From<T> 的实现。</p>
 <h2 id="考虑用线程池处理并发"><a class="header" href="#考虑用线程池处理并发">考虑用线程池处理并发</a></h2>
 <p>虽然我们的 KV server 使用了 concurrent hashmap 来处理并发，但这并不一定是最好的选择。</p>
-<p>我们也可以创建一个线程池，每个线程有自己的 HashMap。当 HGET/HSET 等命令来临时，可以对 key 做个哈希，然后分派到 “拥有” 那个 key
+<p>我们也可以创建一个线程池，每个线程有自己的 HashMap。当 HGET/HSET 等命令来临时，可以对 key 做个哈希，然后分派到 “拥有” 那个
+key
 的线程，这样，可以避免在处理的时候加锁，提高系统的吞吐。你可以想想如果用这种方式处理，该怎么做。</p>
 
             </main>

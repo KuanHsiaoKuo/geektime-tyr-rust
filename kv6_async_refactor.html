@@ -181,6 +181,21 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="六异步处理"><a class="header" href="#六异步处理">六、异步处理</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了 Rust 异步处理的相关知识。</p>
+<ol>
+<li>首先回顾了构建 KV server 的过程，然后介绍了异步重构的必要性。</li>
+<li>接着，详细讲解了如何创建 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait</li>
+<li>然后让 ProstServerStream 和 ProstClientStream 使用它。</li>
+<li>最后，分别实现了 Stream 和 Sink 的 poll_next()、poll_ready()、start_send()、poll_flush() 和 poll_close() 方法。</li>
+</ol>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#%E5%85%AD%E5%BC%82%E6%AD%A5%E5%A4%84%E7%90%86">六、异步处理</a>
@@ -199,7 +214,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:21 UTC 2023 -->
 <!--te-->
 <h2 id="回顾构建过程"><a class="header" href="#回顾构建过程">回顾构建过程</a></h2>
 <p>之前已经完成了一个相对完善的 KV server。</p>
@@ -270,7 +285,8 @@
 </div>
 </div>
 <h2 id="开始做异步重构"><a class="header" href="#开始做异步重构">开始做异步重构</a></h2>
-<p>虽然我们很早就已经撰写了不少异步或者和异步有关的代码。但是最能体现 Rust 异步本质的 poll()、poll_read()、poll_next() 这样的处理函数还没有怎么写过，之前测试异步的 read_frame() 写过一个
+<p>虽然我们很早就已经撰写了不少异步或者和异步有关的代码。但是最能体现 Rust 异步本质的 poll()、poll_read()、poll_next()
+这样的处理函数还没有怎么写过，之前测试异步的 read_frame() 写过一个
 DummyStream，算是体验了一下底层的异步处理函数的复杂接口。</p>
 <details id="admonition-不过在-dummystream-里并没有做任何复杂的动作" class="admonition note">
 <summary class="admonition-title">
@@ -338,7 +354,8 @@ while let Some(Ok(cmd)) = stream.next().await {
 </blockquote>
 </div>
 </details>
-<p>所以这里就构造一个 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait，然后让 ProstServerStream 和 ProstClientStream 使用它。</p>
+<p>所以这里就构造一个 ProstStream 结构，让它实现 Stream 和 Sink 这两个 trait，然后让 ProstServerStream 和 ProstClientStream
+使用它。</p>
 <h2 id="创建-proststream"><a class="header" href="#创建-proststream">创建 ProstStream</a></h2>
 <details id="admonition-在开始重构之前先来简单复习一下-stream-trait-和-sink-trait" class="admonition note">
 <summary class="admonition-title">
@@ -499,7 +516,8 @@ where
 </details>
 <p>接下来我们就一个个处理。</p>
 <blockquote>
-<p>注意对于 In 和 Out 参数，还为其约束了 FrameCoder，这样，在实现里我们可以使用 decode_frame() 和 encode_frame() 来获取一个 Item 或者 encode 一个 Item。</p>
+<p>注意对于 In 和 Out 参数，还为其约束了 FrameCoder，这样，在实现里我们可以使用 decode_frame() 和 encode_frame() 来获取一个
+Item 或者 encode 一个 Item。</p>
 </blockquote>
 <details id="admonition-1-stream-的实现-主要是stream-的-poll_next-方法" class="admonition note">
 <summary class="admonition-title">
@@ -683,7 +701,8 @@ impl&lt;S, Req, Res&gt; Unpin for ProstStream&lt;S, Req, Res&gt; where S: Unpin 
 </div>
 </details>
 <h3 id="测试"><a class="header" href="#测试">测试！</a></h3>
-<p>又到了重要的测试环节。我们需要写点测试来确保 ProstStream 能正常工作。因为之前在 src/network/frame.rs 中写了个 DummyStream，实现了 AsyncRead，我们只需要扩展它，让它再实现
+<p>又到了重要的测试环节。我们需要写点测试来确保 ProstStream 能正常工作。因为之前在 src/network/frame.rs 中写了个
+DummyStream，实现了 AsyncRead，我们只需要扩展它，让它再实现
 AsyncWrite。</p>
 <details id="admonition-1-为了让它可以被复用我们将其从-framers-中移出来放在-srcnetworkmodrs-中并修改成下面的样子记得在-framers-的测试里-use-新的-dummystream" class="admonition note">
 <summary class="admonition-title">
@@ -895,7 +914,8 @@ where
 <p>在实际开发中，进行重构来改善既有代码的质量是必不可少的。之前在开发 KV server 的过程中，我们在不断地进行一些小的重构。</p>
 <p>本节我们做了个稍微大一些的重构，为已有的代码提供更加符合异步 IO 接口的功能。</p>
 <blockquote>
-<p>从对外使用的角度来说，它并没有提供或者满足任何额外的需求，但是从代码结构和质量的角度，它使得我们的 ProstStream 可以更方便和更直观地被其它接口调用，也更容易跟整个 Rust 的现有生态结合起来。</p>
+<p>从对外使用的角度来说，它并没有提供或者满足任何额外的需求，但是从代码结构和质量的角度，它使得我们的 ProstStream
+可以更方便和更直观地被其它接口调用，也更容易跟整个 Rust 的现有生态结合起来。</p>
 </blockquote>
 <p>你可能会好奇，为什么可以这么自然地进行代码重构？这是因为我们有足够的单元测试覆盖来打底。</p>
 <p>就像生物的进化一样，好的代码是在良性的重构中不断演进出来的，而良性的重构，是在优秀的单元测试的监管下，使代码朝着正确方向迈出的步伐。在这里，单元测试扮演着生物进化中自然环境的角色，把重构过程中的错误一一扼杀。</p>

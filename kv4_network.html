@@ -181,6 +181,23 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="四网络处理"><a class="header" href="#四网络处理">四、网络处理</a></h1>
+<details id="admonition-summarize-made-by-cursor" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by cursor</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize-made-by-cursor"></a></p>
+</summary>
+<div>
+<p>本篇文章主要介绍了 Rust 中的网络处理:</p>
+<ul>
+<li>包括如何定义协议的 Frame</li>
+<li>如何撰写处理 Frame 的代码</li>
+<li>以及如何让网络层可以像 AsyncProst 那样方便使用。</li>
+<li>文章中详细介绍了 async-prost 库的使用，以及如何自己处理封包和解包的逻辑。</li>
+<li>同时，还介绍了如何使用 tokio-util 库来处理和 frame 相关的封包解包的主要需求，包括 LinesDelimited 和 LengthDelimited。</li>
+<li>最后，文章还介绍了如何为 CommandRequest / CommandResponse 提供缺省实现，以便做 frame 级别的处理。</li>
+</ul>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#%E5%9B%9B%E7%BD%91%E7%BB%9C%E5%A4%84%E7%90%86">四、网络处理</a>
@@ -195,7 +212,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:21 UTC 2023 -->
 <!--te-->
 <h2 id="async-prost"><a class="header" href="#async-prost">async-prost</a></h2>
 <p>之前一直在使用一个神秘的 <a href="https://github.com/tyrchen/async-prost">async-prost 库</a>，我们神奇地完成了 TCP frame 的封包和解包。</p>
@@ -254,7 +271,8 @@
 </ul>
 </div>
 </details>
-<p>tokio 有个 tokio-util 库，已经帮我们处理了和 frame 相关的封包解包的主要需求，包括 LinesDelimited（处理 \r\n 分隔符）和 LengthDelimited（处理长度分隔符）。</p>
+<p>tokio 有个 tokio-util 库，已经帮我们处理了和 frame 相关的封包解包的主要需求，包括 LinesDelimited（处理 \r\n 分隔符）和
+LengthDelimited（处理长度分隔符）。</p>
 <details id="admonition-我们可以使用它的-lengthdelimitedcodec-尝试一下" class="admonition note">
 <summary class="admonition-title">
 <p>我们可以使用它的 LengthDelimitedCodec 尝试一下。 </p>
