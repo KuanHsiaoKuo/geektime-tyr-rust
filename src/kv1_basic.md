@@ -10,19 +10,18 @@
 ~~~
 
 <!--ts-->
-
 * [一、基本流程](#一基本流程)
-    * [为什么选 KV server 来实操呢？](#为什么选-kv-server-来实操呢)
-    * [先来一个短平糙的实现](#先来一个短平糙的实现)
-    * [架构和设计](#架构和设计)
-        * [主体交互接口](#主体交互接口)
-        * [客户端和服务器间的协议](#客户端和服务器间的协议)
-            * [CommandService trait](#commandservice-trait)
-        * [Storage trait](#storage-trait)
-        * [trait的好处](#trait的好处)
+   * [为什么选 KV server 来实操呢？](#为什么选-kv-server-来实操呢)
+   * [先来一个短平糙的实现](#先来一个短平糙的实现)
+   * [架构和设计](#架构和设计)
+      * [主体交互接口](#主体交互接口)
+      * [客户端和服务器间的协议](#客户端和服务器间的协议)
+         * [CommandService trait](#commandservice-trait)
+      * [Storage trait](#storage-trait)
+      * [trait的好处](#trait的好处)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:20 UTC 2023 -->
 
 <!--te-->
 
