@@ -1,5 +1,18 @@
 # 内存
 
+~~~admonish note title="graph made by cursor" collapsible=true
+```mermaid
+graph TD
+    A[内存] --> B[栈]
+    A --> C[堆]
+    B --> D[栈溢出]
+    C --> E[堆溢出]
+    C --> F[使用堆引用共享数据]
+    B --> G[栈帧示意图]
+    C --> H[字符串内存使用图]
+```
+~~~
+
 ~~~admonish abstract title="Summarize made by cursor" collapsible=true
 本文主要介绍了 Rust 中的内存管理:
 - 包括栈和堆的概念、栈溢出和堆溢出的问题以及如何使用堆引用共享数据。
