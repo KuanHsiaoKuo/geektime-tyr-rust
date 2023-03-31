@@ -181,6 +181,87 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="future"><a class="header" href="#future">Future</a></h1>
+<details id="admonition-summarize-made-by-chatgpt" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by chatGPT</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize-made-by-chatgpt"></a></p>
+</summary>
+<div>
+<ol>
+<li>Rust的Future和JavaScript的Promise、Python的Future非常相似，都代表了在未来的某个时刻才能得到的结果的值。</li>
+<li>async/await是Future的语法糖，async定义了一个可以并发执行的任务，而await则触发这个任务并发执行。</li>
+<li>Future的出现是为了解决CPU算力和IO速度之间的矛盾，而async/await则是为了更好地利用CPU资源。</li>
+<li>在使用async/await时，需要注意不能把代码写成单独await的形式，需要使用try_join!来轮询多个Future。</li>
+<li>Future和线程的区别在于，Future是无栈协程，线程是有栈协程。</li>
+<li>Future的本质是Reactor Pattern，async/await是Future的语法糖，它们使用状态机将Promise/Future这样的结构包装起来进行处理。</li>
+</ol>
+<ul>
+<li>Rust 的 Future 机制允许我们编写非阻塞的异步代码，从而避免了在等待 I/O 操作时线程的阻塞。</li>
+<li>Rust 中的 Async 和 Await 关键字可以帮助我们编写基于 Future 的异步代码，使其更易于阅读和编写。 通过 Futures-rs 库和 Tokio 运行时库，我们可以更方便地创建和管理 Future。</li>
+<li>Tokio 运行时库是一个用于异步 I/O 操作的高效运行时系统。</li>
+<li>Rust 的异步编程模型是基于回调的，通过定义 Future 的回调函数，我们可以实现异步代码的执行。</li>
+<li>Async 和 Await 关键字的底层实现是基于 Future 和生成器的，通过使用生成器，我们可以更方便地编写异步代码</li>
+</ul>
+</div>
+</details>
+<details id="admonition-questions-made-by-chatgpt" class="admonition question">
+<summary class="admonition-title">
+<p>Questions made by chatGPT</p>
+<p><a class="admonition-anchor-link" href="#admonition-questions-made-by-chatgpt"></a></p>
+</summary>
+<div>
+<ol>
+<li>Rust中的Future机制的作用是什么？</li>
+<li>Async和Await关键字的作用是什么？</li>
+<li>Futures-rs库和Tokio运行时库的作用分别是什么？</li>
+<li>Rust的异步编程模型基于什么原理？</li>
+<li>Async和Await关键字的底层实现基于什么技术？</li>
+<li>Rust中的异步编程模型相比于同步编程模型有哪些优势？</li>
+<li>Rust中如何通过Future实现非阻塞异步代码？</li>
+<li>什么是Tokio运行时库，它的主要作用是什么？</li>
+<li>Rust中的生成器是什么？它如何与Async和Await关键字相关联？</li>
+<li>在Rust中，通过什么机制可以实现异步任务之间的协作？</li>
+<li>在Rust中，如何处理异步操作的错误？</li>
+<li>在Rust中，如何同时处理多个异步任务？</li>
+<li>Rust中的异步编程模型与其他语言中的异步编程模型有何异同？</li>
+<li>在Rust中，如何控制异步任务的执行顺序？</li>
+<li>什么是Futures combinators？在Rust的异步编程中如何使用它们？</li>
+<li>在Rust中，如何处理长时间运行的异步任务？</li>
+<li>Rust中的异步编程是否支持并发和并行处理？</li>
+<li>如何在Rust中实现异步文件操作？</li>
+<li>Rust中的异步编程是否适用于网络编程？如何处理网络编程中的异步操作？</li>
+<li>在Rust中，如何实现跨线程的异步通信？</li>
+</ol>
+</div>
+</details>
+<details id="admonition-answers-made-by-chatgpt" class="admonition tip">
+<summary class="admonition-title">
+<p>Answers made by chatGPT</p>
+<p><a class="admonition-anchor-link" href="#admonition-answers-made-by-chatgpt"></a></p>
+</summary>
+<div>
+<p>Rust中的Future机制的作用是什么？ 答：Rust中的Future机制允许我们编写非阻塞的异步代码，从而避免了在等待I/O操作时线程的阻塞。</p>
+<p>Async和Await关键字的作用是什么？ 答：Async和Await关键字可以帮助我们编写基于Future的异步代码，使其更易于阅读和编写。</p>
+<p>Futures-rs库和Tokio运行时库的作用分别是什么？ 答：Futures-rs库和Tokio运行时库可以帮助我们更方便地创建和管理Future，Tokio运行时库是一个用于异步I/O操作的高效运行时系统。</p>
+<p>Rust的异步编程模型基于什么原理？ 答：Rust的异步编程模型基于回调的，通过定义Future的回调函数，我们可以实现异步代码的执行。</p>
+<p>Async和Await关键字的底层实现基于什么技术？ 答：Async和Await关键字的底层实现基于Future和生成器的。</p>
+<p>Rust中的异步编程模型相比于同步编程模型有哪些优势？ 答：Rust的异步编程模型相比于同步编程模型具有更高的效率和更好的性能。</p>
+<p>Rust中如何通过Future实现非阻塞异步代码？ 答：我们可以使用Future的回调函数，通过定义异步代码的执行流程来实现非阻塞异步代码。</p>
+<p>什么是Tokio运行时库，它的主要作用是什么？ 答：Tokio运行时库是一个用于异步I/O操作的高效运行时系统，它的主要作用是提供异步I/O操作的支持，并管理异步任务的执行。</p>
+<p>Rust中的生成器是什么？它如何与Async和Await关键字相关联？ 答：生成器是一种特殊的函数，它可以挂起并恢复执行，异步编程中的Async和Await关键字可以利用生成器的特性来实现非阻塞异步代码。</p>
+<p>在Rust中，通过什么机制可以实现异步任务之间的协作？ 答：Rust中可以使用Future的组合器（Futures combinators）来实现异步任务之间的协作。</p>
+<p>在Rust中，如何处理异步操作的错误？ 答：可以使用Future的Error trait来处理异步操作的错误，它提供了一种标准的错误处理方式。</p>
+<p>在Rust中，如何同时处理多个异步任务？ 答：可以使用Future的join或race方法来同时处理多个异步任务。</p>
+<p>Rust中的异步编程模型与其他语言中的异步编程模型有何异同？</p>
+<p>Rust中的Async和Await关键字与JavaScript中的Async和Await关键字有何异同？ 答：Rust中的Async和Await关键字与JavaScript中的Async和Await关键字有相似之处，但是实现方式不同，Rust是基于Future和生成器的，而JavaScript是基于Promise和生成器的。</p>
+<p>Rust中的异步编程模型是否适合所有场景？ 答：Rust的异步编程模型适用于大部分需要异步编程的场景，但是对于一些对性能要求非常高的场景，可能需要使用更底层的异步编程模型。</p>
+<p>Rust中的Future和Tokio与Java中的Future和CompletableFuture有何异同？ 答：Rust中的Future和Tokio与Java中的Future和CompletableFuture有相似之处，但是实现方式不同，Rust是基于回调函数的，而Java是基于Promise的。</p>
+<p>Rust中的异步编程模型是否可以在Web开发中使用？ 答：Rust的异步编程模型可以在Web开发中使用，尤其是在高并发场景下，可以通过异步编程提高性能。</p>
+<p>Rust中的Tokio与Go语言中的Goroutines和Channels有何异同？ 答：Rust中的Tokio与Go语言中的Goroutines和Channels有相似之处，都是基于协程的，但是实现方式不同，Tokio是基于回调函数的，而Go是基于Channel的。</p>
+<p>Rust中的异步编程模型与C++中的异步编程模型有何异同？ 答：Rust中的异步编程模型与C++中的异步编程模型有相似之处，但是实现方式不同，Rust是基于Future和生成器的，而C++是基于协程的。</p>
+<p>Rust中的异步编程模型是否需要特殊的编程技巧？ 答：Rust中的异步编程模型需要一些特殊的编程技巧，例如使用Future的组合器来处理异步任务之间的协作，以及使用Error trait来处理异步操作的错误。</p>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#future">Future</a>
@@ -208,7 +289,7 @@
 </li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Thu Mar 30 03:25:16 UTC 2023 -->
+<!-- Added by: runner, at: Fri Mar 31 10:32:42 UTC 2023 -->
 <!--te-->
 <h2 id="actor是有栈协程future是无栈协程"><a class="header" href="#actor是有栈协程future是无栈协程">actor是有栈协程，Future是无栈协程</a></h2>
 <details id="admonition-actor是有栈协程future是无栈协程" class="admonition info">
@@ -336,7 +417,8 @@ fn toml2yaml(content: &amp;str) -&gt; Result&lt;String&gt; {
 </details>
 <blockquote>
 <p>这里还有很大的 CPU 浪费：
-我们读完第一个文件才开始读第二个文件，有没有可能两个文件同时读取呢？这样总共等待的时间是 max(time_for_file1, time_for_file2)，而非 time_for_file1 + time_for_file2 。</p>
+我们读完第一个文件才开始读第二个文件，有没有可能两个文件同时读取呢？这样总共等待的时间是 max(time_for_file1,
+time_for_file2)，而非 time_for_file1 + time_for_file2 。</p>
 </blockquote>
 <details id="admonition-2-多线程版本读写文件类似await" class="admonition info">
 <summary class="admonition-title">
