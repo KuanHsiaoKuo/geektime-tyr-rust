@@ -9,18 +9,17 @@
 ~~~
 
 <!--ts-->
-
 * [六、异步处理](#六异步处理)
-    * [回顾构建过程](#回顾构建过程)
-    * [开始做异步重构](#开始做异步重构)
-    * [创建 ProstStream](#创建-proststream)
-        * [测试！](#测试)
-    * [使用 ProstStream](#使用-proststream)
-    * [异步处理回顾：单元测试的重要性](#异步处理回顾单元测试的重要性)
-    * [思考题](#思考题)
+   * [回顾构建过程](#回顾构建过程)
+   * [开始做异步重构](#开始做异步重构)
+   * [创建 ProstStream](#创建-proststream)
+      * [测试！](#测试)
+   * [使用 ProstStream](#使用-proststream)
+   * [异步处理回顾：单元测试的重要性](#异步处理回顾单元测试的重要性)
+   * [思考题](#思考题)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:13 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:21 UTC 2023 -->
 
 <!--te-->
 

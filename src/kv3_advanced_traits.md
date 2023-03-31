@@ -17,23 +17,22 @@
 ~~~
 
 <!--ts-->
-
 * [三、高级trait技巧](#三高级trait技巧)
-    * [处理 Iterator](#处理-iterator)
-    * [支持事件通知](#支持事件通知)
-        * [先看事件处理函数如何注册。](#先看事件处理函数如何注册)
-            * [思路](#思路)
-            * [先写测试](#先写测试)
-            * [fn_received的链式调用](#fn_received的链式调用)
-    * [为持久化数据库实现 Storage trait](#为持久化数据库实现-storage-trait)
-        * [方案选择](#方案选择)
-        * [为sled实现Storage trait，并测试通过](#为sled实现storage-trait并测试通过)
-    * [构建新的 KV server](#构建新的-kv-server)
-    * [进一步认识trait的威力](#进一步认识trait的威力)
-    * [泛型结构和生命周期标注更多用于阅读源码](#泛型结构和生命周期标注更多用于阅读源码)
+   * [处理 Iterator](#处理-iterator)
+   * [支持事件通知](#支持事件通知)
+      * [先看事件处理函数如何注册。](#先看事件处理函数如何注册)
+         * [思路](#思路)
+         * [先写测试](#先写测试)
+         * [fn_received的链式调用](#fn_received的链式调用)
+   * [为持久化数据库实现 Storage trait](#为持久化数据库实现-storage-trait)
+      * [方案选择](#方案选择)
+      * [为sled实现Storage trait，并测试通过](#为sled实现storage-trait并测试通过)
+   * [构建新的 KV server](#构建新的-kv-server)
+   * [进一步认识trait的威力](#进一步认识trait的威力)
+   * [泛型结构和生命周期标注更多用于阅读源码](#泛型结构和生命周期标注更多用于阅读源码)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Wed Mar 29 06:23:12 UTC 2023 -->
+<!-- Added by: runner, at: Thu Mar 30 03:25:20 UTC 2023 -->
 
 <!--te-->
 
