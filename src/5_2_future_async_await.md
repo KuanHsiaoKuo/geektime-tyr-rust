@@ -1,20 +1,102 @@
 # Future
 
+```admonish abstract title="Summarize made by chatGPT" collapsible=true
+1. Rust的Future和JavaScript的Promise、Python的Future非常相似，都代表了在未来的某个时刻才能得到的结果的值。
+2. async/await是Future的语法糖，async定义了一个可以并发执行的任务，而await则触发这个任务并发执行。
+3. Future的出现是为了解决CPU算力和IO速度之间的矛盾，而async/await则是为了更好地利用CPU资源。
+4. 在使用async/await时，需要注意不能把代码写成单独await的形式，需要使用try_join!来轮询多个Future。
+5. Future和线程的区别在于，Future是无栈协程，线程是有栈协程。
+6. Future的本质是Reactor Pattern，async/await是Future的语法糖，它们使用状态机将Promise/Future这样的结构包装起来进行处理。
+
+- Rust 的 Future 机制允许我们编写非阻塞的异步代码，从而避免了在等待 I/O 操作时线程的阻塞。
+- Rust 中的 Async 和 Await 关键字可以帮助我们编写基于 Future 的异步代码，使其更易于阅读和编写。 通过 Futures-rs 库和 Tokio 运行时库，我们可以更方便地创建和管理 Future。
+- Tokio 运行时库是一个用于异步 I/O 操作的高效运行时系统。
+- Rust 的异步编程模型是基于回调的，通过定义 Future 的回调函数，我们可以实现异步代码的执行。
+- Async 和 Await 关键字的底层实现是基于 Future 和生成器的，通过使用生成器，我们可以更方便地编写异步代码
+```
+
+```admonish question title="Questions made by chatGPT" collapsible=true
+1. Rust中的Future机制的作用是什么？
+2. Async和Await关键字的作用是什么？
+3. Futures-rs库和Tokio运行时库的作用分别是什么？
+4. Rust的异步编程模型基于什么原理？
+5. Async和Await关键字的底层实现基于什么技术？
+6. Rust中的异步编程模型相比于同步编程模型有哪些优势？
+7. Rust中如何通过Future实现非阻塞异步代码？
+8. 什么是Tokio运行时库，它的主要作用是什么？
+9. Rust中的生成器是什么？它如何与Async和Await关键字相关联？
+10. 在Rust中，通过什么机制可以实现异步任务之间的协作？
+11. 在Rust中，如何处理异步操作的错误？
+12. 在Rust中，如何同时处理多个异步任务？
+13. Rust中的异步编程模型与其他语言中的异步编程模型有何异同？
+14. 在Rust中，如何控制异步任务的执行顺序？
+15. 什么是Futures combinators？在Rust的异步编程中如何使用它们？
+16. 在Rust中，如何处理长时间运行的异步任务？
+17. Rust中的异步编程是否支持并发和并行处理？
+18. 如何在Rust中实现异步文件操作？
+19. Rust中的异步编程是否适用于网络编程？如何处理网络编程中的异步操作？
+20. 在Rust中，如何实现跨线程的异步通信？
+```
+
+```admonish tip title="Answers made by chatGPT" collapsible=true
+Rust中的Future机制的作用是什么？ 答：Rust中的Future机制允许我们编写非阻塞的异步代码，从而避免了在等待I/O操作时线程的阻塞。
+
+Async和Await关键字的作用是什么？ 答：Async和Await关键字可以帮助我们编写基于Future的异步代码，使其更易于阅读和编写。
+
+Futures-rs库和Tokio运行时库的作用分别是什么？ 答：Futures-rs库和Tokio运行时库可以帮助我们更方便地创建和管理Future，Tokio运行时库是一个用于异步I/O操作的高效运行时系统。
+
+Rust的异步编程模型基于什么原理？ 答：Rust的异步编程模型基于回调的，通过定义Future的回调函数，我们可以实现异步代码的执行。
+
+Async和Await关键字的底层实现基于什么技术？ 答：Async和Await关键字的底层实现基于Future和生成器的。
+
+Rust中的异步编程模型相比于同步编程模型有哪些优势？ 答：Rust的异步编程模型相比于同步编程模型具有更高的效率和更好的性能。
+
+Rust中如何通过Future实现非阻塞异步代码？ 答：我们可以使用Future的回调函数，通过定义异步代码的执行流程来实现非阻塞异步代码。
+
+什么是Tokio运行时库，它的主要作用是什么？ 答：Tokio运行时库是一个用于异步I/O操作的高效运行时系统，它的主要作用是提供异步I/O操作的支持，并管理异步任务的执行。
+
+Rust中的生成器是什么？它如何与Async和Await关键字相关联？ 答：生成器是一种特殊的函数，它可以挂起并恢复执行，异步编程中的Async和Await关键字可以利用生成器的特性来实现非阻塞异步代码。
+
+在Rust中，通过什么机制可以实现异步任务之间的协作？ 答：Rust中可以使用Future的组合器（Futures combinators）来实现异步任务之间的协作。
+
+在Rust中，如何处理异步操作的错误？ 答：可以使用Future的Error trait来处理异步操作的错误，它提供了一种标准的错误处理方式。
+
+在Rust中，如何同时处理多个异步任务？ 答：可以使用Future的join或race方法来同时处理多个异步任务。
+
+Rust中的异步编程模型与其他语言中的异步编程模型有何异同？
+
+Rust中的Async和Await关键字与JavaScript中的Async和Await关键字有何异同？ 答：Rust中的Async和Await关键字与JavaScript中的Async和Await关键字有相似之处，但是实现方式不同，Rust是基于Future和生成器的，而JavaScript是基于Promise和生成器的。
+
+Rust中的异步编程模型是否适合所有场景？ 答：Rust的异步编程模型适用于大部分需要异步编程的场景，但是对于一些对性能要求非常高的场景，可能需要使用更底层的异步编程模型。
+
+Rust中的Future和Tokio与Java中的Future和CompletableFuture有何异同？ 答：Rust中的Future和Tokio与Java中的Future和CompletableFuture有相似之处，但是实现方式不同，Rust是基于回调函数的，而Java是基于Promise的。
+
+Rust中的异步编程模型是否可以在Web开发中使用？ 答：Rust的异步编程模型可以在Web开发中使用，尤其是在高并发场景下，可以通过异步编程提高性能。
+
+Rust中的Tokio与Go语言中的Goroutines和Channels有何异同？ 答：Rust中的Tokio与Go语言中的Goroutines和Channels有相似之处，都是基于协程的，但是实现方式不同，Tokio是基于回调函数的，而Go是基于Channel的。
+
+Rust中的异步编程模型与C++中的异步编程模型有何异同？ 答：Rust中的异步编程模型与C++中的异步编程模型有相似之处，但是实现方式不同，Rust是基于Future和生成器的，而C++是基于协程的。
+
+Rust中的异步编程模型是否需要特殊的编程技巧？ 答：Rust中的异步编程模型需要一些特殊的编程技巧，例如使用Future的组合器来处理异步任务之间的协作，以及使用Error trait来处理异步操作的错误。
+
+```
+
 <!--ts-->
+
 * [Future](#future)
-   * [actor是有栈协程，Future是无栈协程](#actor是有栈协程future是无栈协程)
-   * [Rust的Future](#rust的future)
-   * [Future和async/await](#future和asyncawait)
-      * [二者是什么关系？](#二者是什么关系)
-      * [为什么需要Future，那不用async/await有什么问题？](#为什么需要future那不用asyncawait有什么问题)
-   * [从async fn深入了解Reactor Pattern](#从async-fn深入了解reactor-pattern)
-      * [首先看看Future的定义](#首先看看future的定义)
-      * [然后看看async fn这个语法糖](#然后看看async-fn这个语法糖)
-      * [异步的本质其实就是 executor](#异步的本质其实就是-executor)
-      * [executor和reactor都是reactor pattern(事件循环)的组成部分](#executor和reactor都是reactor-pattern事件循环的组成部分)
-      * [executor 和 reactor 是怎么联动最终让 Future 得到了一个结果?](#executor-和-reactor-是怎么联动最终让-future-得到了一个结果)
-   * [使用 Future 的注意事项](#使用-future-的注意事项)
-   * [对比线程学习Future](#对比线程学习future)
+    * [actor是有栈协程，Future是无栈协程](#actor是有栈协程future是无栈协程)
+    * [Rust的Future](#rust的future)
+    * [Future和async/await](#future和asyncawait)
+        * [二者是什么关系？](#二者是什么关系)
+        * [为什么需要Future，那不用async/await有什么问题？](#为什么需要future那不用asyncawait有什么问题)
+    * [从async fn深入了解Reactor Pattern](#从async-fn深入了解reactor-pattern)
+        * [首先看看Future的定义](#首先看看future的定义)
+        * [然后看看async fn这个语法糖](#然后看看async-fn这个语法糖)
+        * [异步的本质其实就是 executor](#异步的本质其实就是-executor)
+        * [executor和reactor都是reactor pattern(事件循环)的组成部分](#executor和reactor都是reactor-pattern事件循环的组成部分)
+        * [executor 和 reactor 是怎么联动最终让 Future 得到了一个结果?](#executor-和-reactor-是怎么联动最终让-future-得到了一个结果)
+    * [使用 Future 的注意事项](#使用-future-的注意事项)
+    * [对比线程学习Future](#对比线程学习future)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
 <!-- Added by: runner, at: Wed Mar 29 06:23:10 UTC 2023 -->
@@ -118,7 +200,8 @@ fn toml2yaml(content: &str) -> Result<String> {
 ~~~
 
 > 这里还有很大的 CPU 浪费：
-> 我们读完第一个文件才开始读第二个文件，有没有可能两个文件同时读取呢？这样总共等待的时间是 max(time_for_file1, time_for_file2)，而非 time_for_file1 + time_for_file2 。
+> 我们读完第一个文件才开始读第二个文件，有没有可能两个文件同时读取呢？这样总共等待的时间是 max(time_for_file1,
+> time_for_file2)，而非 time_for_file1 + time_for_file2 。
 
 ~~~admonish info title="2. 多线程版本读写文件，类似await" collapsible=true
 这并不难，我们可以把文件读取和写入的操作放入单独的线程中执行，比如（代码）：

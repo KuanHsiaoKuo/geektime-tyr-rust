@@ -1,34 +1,68 @@
 # 并发原语
 
+```admonish abstract title="Summarize made by cursor" collapsible=true
+本文主要介绍了 Rust 中的并发原语:
+1. 包括自由竞争模式、map/reduce 模式和 DAG 模式。
+2. 在自由竞争模式下，我们需要用互斥锁来保护某个临界区，使进入临界区的任务拥有独占访问的权限。
+3. 在 map/reduce 模式下，我们需要用原子锁来保证任务的同步。
+4. 在 DAG 模式下，我们需要用条件变量来保证任务的同步。 
+5. 本文还介绍了 Rust 中的几种并发原语，包括 Atomic、Mutex、Condvar、Channel 和 Actor model。最后，本文还介绍了如何用 Rust 实现一个基本的 MPSC Channel。
+```
+
+```admonish question title="Questions made by cursor" collapsible=false
+1. Rust中的并发原语有哪些？
+2. Rust中的自由竞争模式下需要用什么来保护某个临界区？
+3. Rust中的map/reduce模式下需要用什么来保证任务的同步？
+4. Rust中的DAG模式下需要用什么来保证任务的同步？
+5. Rust中的几种并发原语有哪些？
+6. Rust中如何用实现一个基本的MPSC Channel？
+```
+
+```admonish tip title="Answers made by cursor" collapsible=true
+1. Rust中的并发原语有哪些？ 
+Atomic、Mutex、Condvar、Channel 和 Actor model。
+2. Rust中的自由竞争模式下需要用什么来保护某个临界区？
+互斥锁 Mutex。
+3. Rust中的map/reduce模式下需要用什么来保证任务的同步？
+原子锁 Atomic。
+4. Rust中的DAG模式下需要用什么来保证任务的同步？
+条件变量 Condvar。
+5. Rust中的几种并发原语有哪些？
+Atomic、Mutex、Condvar、Channel 和 Actor model。
+6. Rust中如何用实现一个基本的MPSC Channel？
+可以使用 std::sync::mpsc::channel 函数来创建一个 MPSC Channel，也可以自己实现一个基本的 MPSC Channel。
+```
+
 <!--ts-->
+
 * [并发原语](#并发原语)
 * [并发的难点、工作模式和核心](#并发的难点工作模式和核心)
 * [常见并发模型梳理，也就是并发原语](#常见并发模型梳理也就是并发原语)
 * [工作模式一、自由竞争: Atomic &amp; Mutex](#工作模式一自由竞争-atomic--mutex)
-   * [Atomic解决独占问题](#atomic解决独占问题)
+    * [Atomic解决独占问题](#atomic解决独占问题)
 * [工作模式二、限制顺序并发: map/reduce](#工作模式二限制顺序并发-mapreduce)
-   * [Atomic还存在2个问题](#atomic还存在2个问题)
-   * [用CAS操作+Ordering解决两个问题](#用cas操作ordering解决两个问题)
-      * [CAS操作解决问题1](#cas操作解决问题1)
-      * [Ordering解决问题2：CAS需要Ordering参数说明操作的内存顺序](#ordering解决问题2cas需要ordering参数说明操作的内存顺序)
-      * [解决过程](#解决过程)
-      * [临界区优化](#临界区优化)
-   * [Atomic还有什么用](#atomic还有什么用)
-   * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
-   * [Atomic和Mutex的联系](#atomic和mutex的联系)
+    * [Atomic还存在2个问题](#atomic还存在2个问题)
+    * [用CAS操作+Ordering解决两个问题](#用cas操作ordering解决两个问题)
+        * [CAS操作解决问题1](#cas操作解决问题1)
+        * [Ordering解决问题2：CAS需要Ordering参数说明操作的内存顺序](#ordering解决问题2cas需要ordering参数说明操作的内存顺序)
+        * [解决过程](#解决过程)
+        * [临界区优化](#临界区优化)
+    * [Atomic还有什么用](#atomic还有什么用)
+    * [更高层面的Atomic: Mutex(Mutual Exclusive)](#更高层面的atomic-mutexmutual-exclusive)
+    * [Atomic和Mutex的联系](#atomic和mutex的联系)
 * [工作模式三、限制依赖并发：DAG 模式](#工作模式三限制依赖并发dag-模式)
-   * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
-   * [condvar介绍与使用](#condvar介绍与使用)
-   * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
-      * [Channel](#channel)
-         * [Channel分类](#channel分类)
-      * [Actor](#actor)
-      * [Channel/Actor对比与联系](#channelactor对比与联系)
+    * [Atomic和Mutex不能解决DAG模式, 所以有Condvar](#atomic和mutex不能解决dag模式-所以有condvar)
+    * [condvar介绍与使用](#condvar介绍与使用)
+    * [复杂DAG模式：Channel or Actor](#复杂dag模式channel-or-actor)
+        * [Channel](#channel)
+            * [Channel分类](#channel分类)
+        * [Actor](#actor)
+        * [Channel/Actor对比与联系](#channelactor对比与联系)
 * [至于async/await，又是另一个故事](#至于asyncawait又是另一个故事)
 * [自己实现一个基本的MPSC Channel](#自己实现一个基本的mpsc-channel)
-   * [测试驱动的设计](#测试驱动的设计)
-   * [实现 MPSC channel](#实现-mpsc-channel)
-   * [回顾测试驱动开发](#回顾测试驱动开发)
+    * [测试驱动的设计](#测试驱动的设计)
+    * [实现 MPSC channel](#实现-mpsc-channel)
+    * [回顾测试驱动开发](#回顾测试驱动开发)
 * [小结一下各种并发原语的使用场景](#小结一下各种并发原语的使用场景)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
