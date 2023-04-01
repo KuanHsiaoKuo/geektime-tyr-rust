@@ -1,27 +1,109 @@
 # async/await内部是怎么实现的？
 
+```admonish abstract title="Summarize made by chatGPT" collapsible=true
+*   Asynchronous programming is a way of writing code that can perform multiple tasks concurrently, without blocking the main thread.
+*   Rust provides a number of abstractions for working with asynchronous code, including futures, async functions, and tokio.
+*   The `async/await` syntax is a convenient way of writing asynchronous code in Rust, allowing developers to write code that looks similar to synchronous code.
+*   To use `async/await`, developers must mark functions as `async` and use the `await` keyword to await the completion of asynchronous tasks.
+*   `async/await` can be used with a number of Rust libraries, including tokio and async-std.
+```
+
+~~~admonish question title="Q&A made by chatGPT" collapsible=true
+1.  What is asynchronous programming?
+
+Answer: Asynchronous programming is a way of writing code that can perform multiple tasks concurrently, without blocking the main thread. In an asynchronous program, tasks are executed independently of each other, allowing the program to make progress even if some tasks take longer to complete than others.
+
+2.  What is a future in Rust?
+
+Answer: A future is a placeholder object that represents a value that may not be available yet. In Rust, futures are used to represent asynchronous tasks that may complete at some point in the future. Futures allow developers to write code that can execute multiple tasks concurrently, without blocking the main thread.
+
+Here is an example code for a future in Rust:
+
+```rust
+async fn hello() -> String {
+    "Hello, world!".to_string()
+}
+
+let future = hello();
+```
+
+In this code, the `hello` function returns a future that will eventually resolve to a string. The future is stored in the `future` variable.
+
+3.  What is an async function in Rust?
+
+Answer: An async function is a function that can be executed asynchronously using the `async/await` syntax in Rust. An async function is marked with the `async` keyword, and it can use the `await` keyword to wait for the completion of asynchronous tasks.
+
+Here is an example code for an async function in Rust:
+
+```rust
+async fn get_data() -> String {
+    let response = reqwest::get("https://example.com/data").await.unwrap();
+    response.text().await.unwrap()
+}
+```
+
+In this code, the `get_data` function makes an HTTP request to `https://example.com/data` using the reqwest library. The `await` keyword is used to wait for the completion of the request and the response, which are both asynchronous tasks.
+
+4.  What is the `async/await` syntax in Rust?
+
+Answer: The `async/await` syntax is a convenient way of writing asynchronous code in Rust. With this syntax, developers can write code that looks similar to synchronous code, while still taking advantage of asynchronous programming.
+
+Here is an example code for the `async/await` syntax in Rust:
+
+```rust
+async fn get_data() -> String {
+    let response = reqwest::get("https://example.com/data").await.unwrap();
+    response.text().await.unwrap()
+}
+```
+
+In this code, the `get_data` function is marked as `async`, and the `await` keyword is used to wait for the completion of two asynchronous tasks: the HTTP request and the response.
+
+5.  What is tokio in Rust?
+
+Answer: Tokio is a runtime for writing asynchronous Rust applications. Tokio provides a number of abstractions for working with asynchronous code, including futures, tasks, and streams. Tokio is built on top of Rust's `async/await` syntax, and it is widely used in the Rust community for writing high-performance, concurrent applications.
+
+6.  How do you create a task in Tokio?
+
+Answer: To create a task in Tokio, you can use the `tokio::spawn` function. The `spawn` function takes a closure that returns a future, and it returns a handle to the spawned task.
+
+Here is an example code for creating a task in Tokio:
+
+```rust
+let handle = tokio::spawn(async {
+    // Do some async work here
+});
+
+// Wait for the task to complete
+let result = handle.await.unwrap();
+```
+
+In this code, the `tokio::spawn` function is used to create a new task that performs some async work. The `handle.await` call is used to wait for the task to complete, and the result of the task is stored in the \`
+~~~
+
 <!--ts-->
+
 * [async/await内部是怎么实现的？](#asyncawait内部是怎么实现的)
 * [Future、Async/Await的联动理解](#futureasyncawait的联动理解)
 * [问题一：async 产生的 Future 究竟是什么类型？](#问题一async-产生的-future-究竟是什么类型)
 * [问题二：Future 是怎么被 executor 处理的](#问题二future-是怎么被-executor-处理的)
-   * [再度深入Future Trait： Context、Pin](#再度深入future-trait-contextpin)
-   * [Context::waker: Waker 的调用机制](#contextwaker-waker-的调用机制)
-      * [Context包含Waker](#context包含waker)
-      * [Waker包含Vtable记录回调](#waker包含vtable记录回调)
-   * [Future 是怎么被 executor 处理的](#future-是怎么被-executor-处理的)
-      * [不断pool](#不断pool)
-      * [实现Future trait匹配不同逻辑](#实现future-trait匹配不同逻辑)
-      * [实现过程其实是一个状态机](#实现过程其实是一个状态机)
-   * [为什么需要 Pin？](#为什么需要-pin)
-      * [异步代码会出现自引用结构](#异步代码会出现自引用结构)
-      * [自引用结构的问题](#自引用结构的问题)
-      * [Pin就是为了解决这个问题](#pin就是为了解决这个问题)
-   * [联想Unpin](#联想unpin)
-      * [Unpin声明可以移动](#unpin声明可以移动)
-      * [!Unpin](#unpin)
-      * [Unpin与Pin的关系](#unpin与pin的关系)
-      * [Box&lt;T&gt;的Unpin思考](#boxt的unpin思考)
+    * [再度深入Future Trait： Context、Pin](#再度深入future-trait-contextpin)
+    * [Context::waker: Waker 的调用机制](#contextwaker-waker-的调用机制)
+        * [Context包含Waker](#context包含waker)
+        * [Waker包含Vtable记录回调](#waker包含vtable记录回调)
+    * [Future 是怎么被 executor 处理的](#future-是怎么被-executor-处理的)
+        * [不断pool](#不断pool)
+        * [实现Future trait匹配不同逻辑](#实现future-trait匹配不同逻辑)
+        * [实现过程其实是一个状态机](#实现过程其实是一个状态机)
+    * [为什么需要 Pin？](#为什么需要-pin)
+        * [异步代码会出现自引用结构](#异步代码会出现自引用结构)
+        * [自引用结构的问题](#自引用结构的问题)
+        * [Pin就是为了解决这个问题](#pin就是为了解决这个问题)
+    * [联想Unpin](#联想unpin)
+        * [Unpin声明可以移动](#unpin声明可以移动)
+        * [!Unpin](#unpin)
+        * [Unpin与Pin的关系](#unpin与pin的关系)
+        * [Box&lt;T&gt;的Unpin思考](#boxt的unpin思考)
 * [回顾整理Future的Context、Pin/Unpin，以及async/await](#回顾整理future的contextpinunpin以及asyncawait)
 
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
@@ -228,7 +310,8 @@ impl Waker {
 
 ~~~
 
-不过，虽然我们开发时会使用 tokio，但阅读、理解代码时，我建议看 futures 库，比如 waker vtable 的定义。futures 库还有一个简单的 executor，也非常适合进一步通过代码理解 executor 的原理。
+不过，虽然我们开发时会使用 tokio，但阅读、理解代码时，我建议看 futures 库，比如 waker vtable 的定义。futures 库还有一个简单的
+executor，也非常适合进一步通过代码理解 executor 的原理。
 
 ## Future 是怎么被 executor 处理的
 
@@ -401,7 +484,8 @@ async fn write_hello_file_async(name: &str) -> anyhow::Result<()> {
 
 ## 为什么需要 Pin？
 
-我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &self / &mut self，可是 poll() 却使用了 Pin<&mut self>，为什么？
+我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &self / &mut self，可是 poll() 却使用了
+Pin<&mut self>，为什么？
 好搞明白这个问题，回到 pin 。刚才我们手写状态机代码的过程，能帮你理解为什么会需要 Pin 这个问题。
 
 ### 异步代码会出现自引用结构
