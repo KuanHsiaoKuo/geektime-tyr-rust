@@ -181,6 +181,96 @@
                     <nav class="pagetoc"></nav>
                 </div>
                 <h1 id="asyncawait内部是怎么实现的"><a class="header" href="#asyncawait内部是怎么实现的">async/await内部是怎么实现的？</a></h1>
+<details id="admonition-summarize-made-by-chatgpt" class="admonition abstract">
+<summary class="admonition-title">
+<p>Summarize made by chatGPT</p>
+<p><a class="admonition-anchor-link" href="#admonition-summarize-made-by-chatgpt"></a></p>
+</summary>
+<div>
+<ul>
+<li>Asynchronous programming is a way of writing code that can perform multiple tasks concurrently, without blocking the main thread.</li>
+<li>Rust provides a number of abstractions for working with asynchronous code, including futures, async functions, and tokio.</li>
+<li>The <code>async/await</code> syntax is a convenient way of writing asynchronous code in Rust, allowing developers to write code that looks similar to synchronous code.</li>
+<li>To use <code>async/await</code>, developers must mark functions as <code>async</code> and use the <code>await</code> keyword to await the completion of asynchronous tasks.</li>
+<li><code>async/await</code> can be used with a number of Rust libraries, including tokio and async-std.</li>
+</ul>
+</div>
+</details>
+<details id="admonition-qa-made-by-chatgpt" class="admonition question">
+<summary class="admonition-title">
+<p>Q&amp;A made by chatGPT</p>
+<p><a class="admonition-anchor-link" href="#admonition-qa-made-by-chatgpt"></a></p>
+</summary>
+<div>
+<ol>
+<li>What is asynchronous programming?</li>
+</ol>
+<p>Answer: Asynchronous programming is a way of writing code that can perform multiple tasks concurrently, without blocking the main thread. In an asynchronous program, tasks are executed independently of each other, allowing the program to make progress even if some tasks take longer to complete than others.</p>
+<ol start="2">
+<li>What is a future in Rust?</li>
+</ol>
+<p>Answer: A future is a placeholder object that represents a value that may not be available yet. In Rust, futures are used to represent asynchronous tasks that may complete at some point in the future. Futures allow developers to write code that can execute multiple tasks concurrently, without blocking the main thread.</p>
+<p>Here is an example code for a future in Rust:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn hello() -&gt; String {
+    &quot;Hello, world!&quot;.to_string()
+}
+
+let future = hello();
+<span class="boring">}
+</span></code></pre></pre>
+<p>In this code, the <code>hello</code> function returns a future that will eventually resolve to a string. The future is stored in the <code>future</code> variable.</p>
+<ol start="3">
+<li>What is an async function in Rust?</li>
+</ol>
+<p>Answer: An async function is a function that can be executed asynchronously using the <code>async/await</code> syntax in Rust. An async function is marked with the <code>async</code> keyword, and it can use the <code>await</code> keyword to wait for the completion of asynchronous tasks.</p>
+<p>Here is an example code for an async function in Rust:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn get_data() -&gt; String {
+    let response = reqwest::get(&quot;https://example.com/data&quot;).await.unwrap();
+    response.text().await.unwrap()
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>In this code, the <code>get_data</code> function makes an HTTP request to <code>https://example.com/data</code> using the reqwest library. The <code>await</code> keyword is used to wait for the completion of the request and the response, which are both asynchronous tasks.</p>
+<ol start="4">
+<li>What is the <code>async/await</code> syntax in Rust?</li>
+</ol>
+<p>Answer: The <code>async/await</code> syntax is a convenient way of writing asynchronous code in Rust. With this syntax, developers can write code that looks similar to synchronous code, while still taking advantage of asynchronous programming.</p>
+<p>Here is an example code for the <code>async/await</code> syntax in Rust:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>async fn get_data() -&gt; String {
+    let response = reqwest::get(&quot;https://example.com/data&quot;).await.unwrap();
+    response.text().await.unwrap()
+}
+<span class="boring">}
+</span></code></pre></pre>
+<p>In this code, the <code>get_data</code> function is marked as <code>async</code>, and the <code>await</code> keyword is used to wait for the completion of two asynchronous tasks: the HTTP request and the response.</p>
+<ol start="5">
+<li>What is tokio in Rust?</li>
+</ol>
+<p>Answer: Tokio is a runtime for writing asynchronous Rust applications. Tokio provides a number of abstractions for working with asynchronous code, including futures, tasks, and streams. Tokio is built on top of Rust’s <code>async/await</code> syntax, and it is widely used in the Rust community for writing high-performance, concurrent applications.</p>
+<ol start="6">
+<li>How do you create a task in Tokio?</li>
+</ol>
+<p>Answer: To create a task in Tokio, you can use the <code>tokio::spawn</code> function. The <code>spawn</code> function takes a closure that returns a future, and it returns a handle to the spawned task.</p>
+<p>Here is an example code for creating a task in Tokio:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let handle = tokio::spawn(async {
+    // Do some async work here
+});
+
+// Wait for the task to complete
+let result = handle.await.unwrap();
+<span class="boring">}
+</span></code></pre></pre>
+<p>In this code, the <code>tokio::spawn</code> function is used to create a new task that performs some async work. The <code>handle.await</code> call is used to wait for the task to complete, and the result of the task is stored in the `</p>
+</div>
+</details>
 <!--ts-->
 <ul>
 <li><a href="#asyncawait%E5%86%85%E9%83%A8%E6%98%AF%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0%E7%9A%84">async/await内部是怎么实现的？</a></li>
@@ -222,7 +312,7 @@
 <li><a href="#%E5%9B%9E%E9%A1%BE%E6%95%B4%E7%90%86future%E7%9A%84contextpinunpin%E4%BB%A5%E5%8F%8Aasyncawait">回顾整理Future的Context、Pin/Unpin，以及async/await</a></li>
 </ul>
 <!-- Created by https://github.com/ekalinin/github-markdown-toc -->
-<!-- Added by: runner, at: Fri Mar 31 10:32:42 UTC 2023 -->
+<!-- Added by: runner, at: Sat Apr  1 15:59:56 UTC 2023 -->
 <!--te-->
 <h1 id="futureasyncawait的联动理解"><a class="header" href="#futureasyncawait的联动理解">Future、Async/Await的联动理解</a></h1>
 <div id="admonition-对-future-和-asyncawait-的基本概念有一个比较扎实的理解" class="admonition info">
@@ -425,7 +515,8 @@ impl Waker {
 </blockquote>
 </div>
 </details>
-<p>不过，虽然我们开发时会使用 tokio，但阅读、理解代码时，我建议看 futures 库，比如 waker vtable 的定义。futures 库还有一个简单的 executor，也非常适合进一步通过代码理解 executor 的原理。</p>
+<p>不过，虽然我们开发时会使用 tokio，但阅读、理解代码时，我建议看 futures 库，比如 waker vtable 的定义。futures 库还有一个简单的
+executor，也非常适合进一步通过代码理解 executor 的原理。</p>
 <h2 id="future-是怎么被-executor-处理的"><a class="header" href="#future-是怎么被-executor-处理的">Future 是怎么被 executor 处理的</a></h2>
 <h3 id="不断pool"><a class="header" href="#不断pool">不断pool</a></h3>
 <details id="admonition-不断poll匹配状态执行不同逻辑" class="admonition info">
@@ -598,7 +689,8 @@ async fn write_hello_file_async(name: &amp;str) -&gt; anyhow::Result&lt;()&gt; {
 </div>
 </details>
 <h2 id="为什么需要-pin"><a class="header" href="#为什么需要-pin">为什么需要 Pin？</a></h2>
-<p>我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &amp;self / &amp;mut self，可是 poll() 却使用了 Pin&lt;&amp;mut self&gt;，为什么？
+<p>我们接下来看 Pin。这是一个奇怪的数据结构，正常数据结构的方法都是直接使用 self / &amp;self / &amp;mut self，可是 poll() 却使用了
+Pin&lt;&amp;mut self&gt;，为什么？
 好搞明白这个问题，回到 pin 。刚才我们手写状态机代码的过程，能帮你理解为什么会需要 Pin 这个问题。</p>
 <h3 id="异步代码会出现自引用结构"><a class="header" href="#异步代码会出现自引用结构">异步代码会出现自引用结构</a></h3>
 <details id="admonition-什么场景下会出现自引用数据结构" class="admonition question">
